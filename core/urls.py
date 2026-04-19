@@ -23,6 +23,8 @@ urlpatterns = [
     path('recuperar-password/', views.recuperar_password_view, name='recuperar_password'),
     # Pantalla para establecer nueva contraseña con token.
     path('reset-password/<str:token>/', views.reset_password_view, name='reset_password'),
+    # Página de exposición con slides actuariales y demo simplificada.
+    path('expo-actuaria/', views.expo_actuaria_view, name='expo_actuaria'),
     # Cierre de sesión y limpieza de datos de autenticación.
     path('logout/',              views.logout_view,    name='logout'),
     # Vista principal del alumno (perfil académico).

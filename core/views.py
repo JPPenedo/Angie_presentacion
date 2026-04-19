@@ -841,3 +841,54 @@ def perfil_alumno(request):
         'pct_avance': pct_avance,
     }
     return render(request, 'core/perfil_alumno.html', context)
+
+
+def expo_actuaria_view(request):
+    """
+    Vista pública de exposición:
+    - Slides sobre enfoques matemáticos actuariales implícitos en el proyecto.
+    - Prototipo demo simplificado con estilo consistente.
+    """
+    slides = [
+        {
+            'titulo': 'Modelo de Riesgo y Clasificación',
+            'idea': 'La segmentación en riesgo Alto/Medio/Bajo funciona como una clasificación supervisada simplificada.',
+            'enfoque': 'Estadística multivariada, regresión logística y análisis discriminante.',
+        },
+        {
+            'titulo': 'Probabilidad de Aprobación',
+            'idea': 'El indicador de aprobación modela eventos Bernoulli y tasas agregadas por grupo.',
+            'enfoque': 'Teoría de probabilidad, inferencia y estimación de proporciones.',
+        },
+        {
+            'titulo': 'Series Temporales Académicas',
+            'idea': 'La evolución de promedios por semestre permite monitorear tendencia y volatilidad académica.',
+            'enfoque': 'Series de tiempo, suavizamiento y detección de cambios estructurales.',
+        },
+        {
+            'titulo': 'Métricas para Toma de Decisión',
+            'idea': 'El tablero resume información con KPIs para priorizar intervención docente.',
+            'enfoque': 'Investigación de operaciones y analítica descriptiva para decisión.',
+        },
+        {
+            'titulo': 'Plan de Estudios de Actuaría',
+            'idea': 'El prototipo conecta cursos base (probabilidad, estadística, procesos estocásticos, riesgo).',
+            'enfoque': 'Integración curricular hacia modelación actuarial aplicada.',
+        },
+    ]
+
+    demo_alumnos = [
+        {'nombre': 'A. García', 'calificacion': 8.7, 'riesgo': 'Bajo'},
+        {'nombre': 'C. Mendoza', 'calificacion': 6.1, 'riesgo': 'Medio'},
+        {'nombre': 'S. Ramírez', 'calificacion': 5.4, 'riesgo': 'Alto'},
+        {'nombre': 'D. Flores', 'calificacion': 9.0, 'riesgo': 'Bajo'},
+    ]
+
+    context = {
+        'slides': slides,
+        'demo_alumnos': demo_alumnos,
+        'demo_promedio': round(sum(a['calificacion'] for a in demo_alumnos) / len(demo_alumnos), 2),
+        'demo_aprobacion': round(sum(1 for a in demo_alumnos if a['calificacion'] >= 6) / len(demo_alumnos) * 100),
+        'demo_riesgo_alto': sum(1 for a in demo_alumnos if a['riesgo'] == 'Alto'),
+    }
+    return render(request, 'core/expo_actuaria.html', context)
