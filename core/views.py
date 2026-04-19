@@ -20,7 +20,10 @@ from django.core.mail import send_mail
 from django.conf import settings
 from datetime import timedelta
 import secrets
+import logging
 from .models import CuentaAlumno
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Usuarios demo (sin modelos, autenticación por sesión)
@@ -630,28 +633,32 @@ def recuperar_password_view(request):
     info = None
     error = None
 
-    if request.method == 'POST':
-        correo = request.POST.get('correo', '').strip().lower()
-        if not correo:
-            error = 'Debes ingresar un correo institucional.'
-        else:
-            try:
-                cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
-            except DatabaseError:
-                error = 'No se pudo procesar la recuperación. Verifica migraciones de base de datos en el servidor.'
-                return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
-            if cuenta:
+    try:
+        if request.method == 'POST':
+            correo = request.POST.get('correo', '').strip().lower()
+            if not correo:
+                error = 'Debes ingresar un correo institucional.'
+            else:
                 try:
-                    cuenta.reset_token = secrets.token_urlsafe(24)
-                    cuenta.reset_token_expires_at = timezone.now() + timedelta(minutes=30)
-                    cuenta.save(update_fields=['reset_token', 'reset_token_expires_at'])
-                    _send_password_reset_email(request, cuenta)
+                    cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
                 except DatabaseError:
-                    error = 'No se pudo guardar el token de recuperación. Verifica migraciones de base de datos en el servidor.'
-                except Exception:
-                    error = 'No se pudo enviar el correo de recuperación. Revisa la configuración SMTP.'
-            if not error:
-                info = 'Si el correo existe, enviamos un enlace de recuperación.'
+                    error = 'No se pudo procesar la recuperación. Verifica migraciones de base de datos en el servidor.'
+                    return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
+                if cuenta:
+                    try:
+                        cuenta.reset_token = secrets.token_urlsafe(24)
+                        cuenta.reset_token_expires_at = timezone.now() + timedelta(minutes=30)
+                        cuenta.save(update_fields=['reset_token', 'reset_token_expires_at'])
+                        _send_password_reset_email(request, cuenta)
+                    except DatabaseError:
+                        error = 'No se pudo guardar el token de recuperación. Verifica migraciones de base de datos en el servidor.'
+                    except Exception:
+                        error = 'No se pudo enviar el correo de recuperación. Revisa la configuración SMTP.'
+                if not error:
+                    info = 'Si el correo existe, enviamos un enlace de recuperación.'
+    except Exception:
+        logger.exception('Error inesperado en recuperar_password_view')
+        error = 'Ocurrió un error inesperado al procesar la recuperación.'
 
     return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
 
