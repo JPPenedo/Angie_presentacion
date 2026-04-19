@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="fw-bold mb-1" style="font-size:1.5rem;color:#1a2b3c;">Panel de Control Docente</h1>
+    <p class="text-muted mb-0" style="font-size:0.88rem;">
+      <i class="bi bi-calendar3 me-1"></i>Ciclo Enero–Mayo 2026 &nbsp;&middot;&nbsp;
+      <i class="bi bi-mortarboard me-1"></i>Licenciatura en Actuaría
+    </p>
+  </div>
+  <span class="badge text-bg-warning fs-6 px-3 py-2" style="font-size:0.75rem !important;">
+    <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ total_alertas }} alertas activas
+  </span>
+</div>
+
+<!-- ── MÉTRICAS GLOBALES ── -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value text-primary">{{ total_alumnos }}</div>
+          <div class="stat-label">Total de Alumnos</div>
+        </div>
+        <div class="stat-icon" style="background:#e8f0fe;">
+          <i class="bi bi-people-fill text-primary"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:#003A70;">{{ promedio_general }}</div>
+          <div class="stat-label">Promedio General</div>
+        </div>
+        <div class="stat-icon" style="background:#e6f0e6;">
+          <i class="bi bi-bar-chart-line-fill" style="color:#198754;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value text-success">{{ pct_aprobacion_global }}%</div>
+          <div class="stat-label">Índice de Aprobación</div>
+        </div>
+        <div class="stat-icon" style="background:#d1fae5;">
+          <i class="bi bi-check-circle-fill text-success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value text-danger">{{ total_alertas }}</div>
+          <div class="stat-label">Alumnos en Riesgo Alto</div>
+        </div>
+        <div class="stat-icon" style="background:#fee2e2;">
+          <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PILAR 1 – TRAYECTORIAS CURRICULARES
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <span class="pillar-badge">Pilar 1</span>
+  <h2 class="section-title">Trayectorias Curriculares</h2>
+</div>
+
+<div class="row g-3 mb-5">
+  {% for g in grupos %}
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h5 class="card-title fw-bold mb-0" style="font-size:0.95rem;">{{ g.nombre }}</h5>
+            <small class="text-muted">{{ g.semestre }} &middot; {{ g.creditos }} créditos</small>
+          </div>
+          <a href="/grupo/{{ g.id }}/" class="btn btn-sm btn-outline-primary" style="font-size:0.75rem;">
+            Ver detalle <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <small class="text-muted">Avance del curso</small>
+            <small class="fw-bold">{{ g.avance }}%</small>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:{{ g.avance }}%;background:#003A70;"></div>
+          </div>
+        </div>
+
+        <div class="row text-center g-2">
+          <div class="col-4">
+            <div class="rounded-3 p-2" style="background:#f0f4f8;">
+              <div class="fw-bold" style="font-size:1.1rem;color:#003A70;">{{ g.promedio }}</div>
+              <small class="text-muted" style="font-size:0.7rem;">Promedio</small>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="rounded-3 p-2" style="background:#f0f4f8;">
+              <div class="fw-bold text-success" style="font-size:1.1rem;">{{ g.pct_aprobacion }}%</div>
+              <small class="text-muted" style="font-size:0.7rem;">Aprobados</small>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="rounded-3 p-2" style="background:#f0f4f8;">
+              <div class="fw-bold text-danger" style="font-size:1.1rem;">{{ g.riesgo_alto }}</div>
+              <small class="text-muted" style="font-size:0.7rem;">En riesgo</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PILAR 2 – VISUALIZACIONES GRUPALES
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <span class="pillar-badge">Pilar 2</span>
+  <h2 class="section-title">Visualizaciones Grupales</h2>
+</div>
+
+<div class="row g-3 mb-5">
+  <!-- Gráfica de barras: promedios por grupo -->
+  <div class="col-lg-8">
+    <div class="chart-card p-4 h-100">
+      <h6 class="fw-bold mb-3" style="color:#1a2b3c;">
+        <i class="bi bi-bar-chart-fill me-2" style="color:#003A70;"></i>Promedio por Grupo
+      </h6>
+      <canvas id="chartPromedios" height="130"></canvas>
+    </div>
+  </div>
+  <!-- Gráfica de dona: distribución de riesgo global -->
+  <div class="col-lg-4">
+    <div class="chart-card p-4 h-100 d-flex flex-column">
+      <h6 class="fw-bold mb-3" style="color:#1a2b3c;">
+        <i class="bi bi-pie-chart-fill me-2" style="color:#C8972B;"></i>Distribución de Riesgo
+      </h6>
+      <div class="flex-grow-1 d-flex align-items-center">
+        <canvas id="chartRiesgo"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PILAR 3 – INDICADORES DE INTERVENCIÓN
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <span class="pillar-badge">Pilar 3</span>
+  <h2 class="section-title">Indicadores de Intervención</h2>
+  <span class="ms-auto text-muted" style="font-size:0.82rem;">
+    Alumnos que requieren seguimiento docente
+  </span>
+</div>
+
+<div class="card border-0 shadow-sm mb-4" style="border-radius:1rem;">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" style="font-size:0.87rem;">
+        <thead style="background:#f8f9fc;">
+          <tr>
+            <th class="ps-4 py-3 fw-semibold text-muted">Alumno</th>
+            <th class="py-3 fw-semibold text-muted">Grupo / Materia</th>
+            <th class="py-3 fw-semibold text-muted text-center">Calificación</th>
+            <th class="py-3 fw-semibold text-muted text-center">Asistencia</th>
+            <th class="py-3 fw-semibold text-muted text-center">Nivel de Riesgo</th>
+            <th class="pe-4 py-3 fw-semibold text-muted text-center">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in alertas %}
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:32px;height:32px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="bi bi-person-fill text-primary" style="font-size:0.9rem;"></i>
+                </div>
+                <span class="fw-semibold">{{ a.alumno }}</span>
+              </div>
+            </td>
+            <td class="text-muted">{{ a.grupo }}</td>
+            <td class="text-center">
+              <span class="fw-bold {% if a.calificacion < 6 %}text-danger{% elif a.calificacion < 7.5 %}text-warning{% else %}text-success{% endif %}">
+                {{ a.calificacion }}
+              </span>
+            </td>
+            <td class="text-center">
+              <div style="width:80px;margin:0 auto;">
+                <div class="d-flex justify-content-between mb-1">
+                  <small style="font-size:0.7rem;">{{ a.asistencia }}%</small>
+                </div>
+                <div class="progress" style="height:6px;">
+                  <div class="progress-bar {% if a.asistencia < 70 %}bg-danger{% elif a.asistencia < 85 %}bg-warning{% else %}bg-success{% endif %}"
+                       style="width:{{ a.asistencia }}%;"></div>
+                </div>
+              </div>
+            </td>
+            <td class="text-center">
+              {% if a.riesgo == 'Alto' %}
+                <span class="badge badge-riesgo-alto px-3 py-2 rounded-pill">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>Alto
+                </span>
+              {% elif a.riesgo == 'Medio' %}
+                <span class="badge badge-riesgo-medio px-3 py-2 rounded-pill">
+                  <i class="bi bi-dash-circle-fill me-1"></i>Medio
+                </span>
+              {% else %}
+                <span class="badge badge-riesgo-bajo px-3 py-2 rounded-pill">Bajo</span>
+              {% endif %}
+            </td>
+            <td class="text-center pe-4">
+              <button class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem;" disabled>
+                <i class="bi bi-chat-dots me-1"></i>Contactar
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  // ── Datos desde Django ──
+  const grupos = [
+    {% for g in grupos %}"{{ g.nombre }}"{% if not forloop.last %},{% endif %}{% endfor %}
+  ];
+  const promedios = [
+    {% for g in grupos %}{{ g.promedio }}{% if not forloop.last %},{% endif %}{% endfor %}
+  ];
+  const pctAprobacion = [
+    {% for g in grupos %}{{ g.pct_aprobacion }}{% if not forloop.last %},{% endif %}{% endfor %}
+  ];
+
+  // Riesgo global
+  const riesgoAlto  = {% for g in grupos %}{{ g.riesgo_alto }}{% if not forloop.last %}+{% endif %}{% endfor %};
+  const riesgoMedio = {% for g in grupos %}{{ g.riesgo_medio }}{% if not forloop.last %}+{% endif %}{% endfor %};
+  const riesgoBajo  = {% for g in grupos %}{{ g.riesgo_bajo }}{% if not forloop.last %}+{% endif %}{% endfor %};
+
+  // ── Gráfica de barras: Promedios por grupo ──
+  new Chart(document.getElementById('chartPromedios'), {
+    type: 'bar',
+    data: {
+      labels: grupos,
+      datasets: [
+        {
+          label: 'Promedio',
+          data: promedios,
+          backgroundColor: '#003A70cc',
+          borderRadius: 8,
+          borderSkipped: false,
+        },
+        {
+          label: '% Aprobación',
+          data: pctAprobacion.map(v => v / 10),
+          backgroundColor: '#C8972Bcc',
+          borderRadius: 8,
+          borderSkipped: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 12 } } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (ctx.datasetIndex === 1) return ` Aprobación: ${pctAprobacion[ctx.dataIndex]}%`;
+              return ` Promedio: ${ctx.parsed.y}`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 10,
+          grid: { color: '#f0f0f0' },
+          ticks: { font: { size: 11 } }
+        },
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // ── Gráfica de dona: distribución de riesgo ──
+  new Chart(document.getElementById('chartRiesgo'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Riesgo Alto', 'Riesgo Medio', 'Sin Riesgo'],
+      datasets: [{
+        data: [riesgoAlto, riesgoMedio, riesgoBajo],
+        backgroundColor: ['#dc3545', '#fd7e14', '#198754'],
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 11 }, padding: 12, usePointStyle: true }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
