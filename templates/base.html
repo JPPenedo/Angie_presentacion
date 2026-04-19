@@ -10,208 +10,434 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
   <style>
+    /* ════════════════════════════════════
+       DESIGN TOKENS — Dark Premium Theme
+    ════════════════════════════════════ */
     :root {
-      --anahuac-blue: #003A70;
-      --anahuac-gold: #C8972B;
-      --sidebar-width: 240px;
-    }
-    body {
-      background-color: #f0f4f8;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-    .navbar-brand-text .brand-main { font-weight: 700; font-size: 1rem; }
-    .navbar-brand-text .brand-sub  { color: var(--anahuac-gold); font-size: 0.75rem; }
+      --bg:           #0e0c0b;
+      --bg-card:      #1a1714;
+      --bg-card-alt:  #211e1b;
+      --bg-sidebar:   #111009;
+      --bg-navbar:    #0b0a09;
+      --border:       rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.13);
 
-    /* Sidebar */
-    .sidebar {
-      width: var(--sidebar-width);
+      --accent:       #e8621a;
+      --accent-dim:   rgba(232,98,26,0.15);
+      --accent-glow:  rgba(232,98,26,0.35);
+      --gold:         #C8972B;
+      --gold-dim:     rgba(200,151,43,0.15);
+
+      --text:         #f0ede9;
+      --text-muted:   #7a7470;
+      --text-subtle:  #4a4744;
+
+      --success:      #34d399;
+      --success-dim:  rgba(52,211,153,0.12);
+      --danger:       #f87171;
+      --danger-dim:   rgba(248,113,113,0.12);
+      --warning:      #fbbf24;
+      --warning-dim:  rgba(251,191,36,0.12);
+      --blue:         #60a5fa;
+      --blue-dim:     rgba(96,165,250,0.12);
+
+      --sidebar-w:    245px;
+      --navbar-h:     54px;
+      --radius:       0.875rem;
+      --radius-sm:    0.5rem;
+    }
+
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.5;
       min-height: 100vh;
-      background: var(--anahuac-blue);
-      position: fixed;
-      top: 56px; left: 0;
-      padding-top: 1.5rem;
-      z-index: 100;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 99px; }
+
+    /* ─── Navbar ─── */
+    .app-navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--navbar-h);
+      background: var(--bg-navbar);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 1.25rem;
+      gap: 1rem;
+    }
+    .brand-logo {
+      width: 30px; height: 30px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-name  { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+    .brand-sub   { font-size: 0.68rem; color: var(--text-muted); }
+    .nav-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.25rem; }
+    .nav-pill {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+      padding: 0.2rem 0.6rem; border-radius: 99px;
+      background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow);
+    }
+    .nav-user {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-left: auto;
+    }
+    .nav-role-badge {
+      font-size: 0.68rem; font-weight: 600;
+      padding: 0.18rem 0.55rem; border-radius: 99px;
+    }
+    .nav-role-badge.docente { background: var(--blue-dim);    color: var(--blue);    border: 1px solid rgba(96,165,250,0.25); }
+    .nav-role-badge.alumno  { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(200,151,43,0.25); }
+    .nav-username { font-size: 0.82rem; color: var(--text); }
+    .btn-logout {
+      font-size: 0.75rem; padding: 0.25rem 0.7rem; border-radius: var(--radius-sm);
+      border: 1px solid var(--border-hover); color: var(--text-muted);
+      background: transparent; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ─── Sidebar ─── */
+    .app-sidebar {
+      position: fixed; top: var(--navbar-h); left: 0; bottom: 0;
+      width: var(--sidebar-w); z-index: 100;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      padding: 1rem 0;
       overflow-y: auto;
     }
-    .sidebar .nav-link {
-      color: rgba(255,255,255,0.75);
-      padding: 0.55rem 1.2rem;
-      border-radius: 0.375rem;
-      margin: 0.1rem 0.5rem;
-      font-size: 0.875rem;
+    .sidebar-section-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-subtle);
+      padding: 0.65rem 1.1rem 0.3rem;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.5rem 0.75rem; margin: 0.05rem 0.5rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted); font-size: 0.84rem;
       transition: background 0.15s, color 0.15s;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-      background: rgba(200,151,43,0.2);
-      color: var(--anahuac-gold);
+    .sidebar-link:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .sidebar-link.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(232,98,26,0.2);
     }
-    .sidebar-label {
-      color: rgba(255,255,255,0.35);
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.75rem 1.7rem 0.3rem;
+    .sidebar-link .s-icon {
+      width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.04);
+      transition: background 0.15s;
+    }
+    .sidebar-link.active .s-icon { background: var(--accent-dim); color: var(--accent); }
+    .sidebar-link:hover .s-icon  { background: rgba(255,255,255,0.07); }
+
+    /* Alumno avatar en sidebar */
+    .sidebar-avatar {
+      margin: 0.25rem 0.75rem 0.75rem;
+      padding: 0.85rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .avatar-circle {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--gold-dim); border: 1px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.4rem;
     }
 
-    /* Alumno sidebar accent */
-    .sidebar.sidebar-alumno { background: #0f2d52; }
-    .sidebar.sidebar-alumno .nav-link.active,
-    .sidebar.sidebar-alumno .nav-link:hover {
-      background: rgba(200,151,43,0.25);
-      color: var(--anahuac-gold);
+    /* Sidebar help card */
+    .sidebar-help {
+      margin: auto 0.75rem 0.75rem;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, rgba(232,98,26,0.12), rgba(200,151,43,0.08));
+      border: 1px solid rgba(232,98,26,0.2);
+      border-radius: var(--radius-sm);
     }
 
-    /* Main & footer */
-    .main-content {
-      margin-left: var(--sidebar-width);
-      margin-top: 56px;
-      padding: 2rem;
-      min-height: calc(100vh - 56px);
+    /* ─── Main Layout ─── */
+    .app-main {
+      margin-left: var(--sidebar-w);
+      margin-top: var(--navbar-h);
+      padding: 1.75rem 2rem;
+      min-height: calc(100vh - var(--navbar-h));
     }
-    footer {
-      margin-left: var(--sidebar-width);
-      background: white;
-      border-top: 1px solid #dee2e6;
+    .app-footer {
+      margin-left: var(--sidebar-w);
       padding: 0.75rem 2rem;
-      font-size: 0.78rem;
-      color: #6c757d;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem; color: var(--text-subtle);
+      display: flex; justify-content: space-between; align-items: center;
     }
+
+    /* ─── Cards ─── */
+    .card-dark {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card-dark:hover { border-color: var(--border-hover); }
 
     /* Stat cards */
     .stat-card {
-      border: none; border-radius: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      transition: transform 0.15s, box-shadow 0.15s;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      transition: transform 0.15s, border-color 0.15s;
     }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+    .stat-card:hover { transform: translateY(-2px); border-color: var(--border-hover); }
     .stat-icon {
-      width: 52px; height: 52px; border-radius: 0.75rem;
-      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+      width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
     }
-    .stat-value { font-size: 1.9rem; font-weight: 700; line-height: 1; }
-    .stat-label { font-size: 0.8rem; color: #6c757d; margin-top: 0.2rem; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .stat-delta { font-size: 0.72rem; margin-top: 0.3rem; }
 
-    .section-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem; }
-    .section-header .pillar-badge {
-      background: var(--anahuac-blue); color: white;
-      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em;
-      text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 100px;
+    /* Section headers */
+    .section-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 1rem;
     }
-    .section-title { font-weight: 700; font-size: 1.05rem; color: #1a2b3c; margin: 0; }
+    .pillar-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 99px;
+      background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,98,26,0.25);
+    }
+    .section-title { font-weight: 700; font-size: 1rem; color: var(--text); margin: 0; }
 
+    /* ─── Tables ─── */
+    .dark-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .dark-table thead tr { border-bottom: 1px solid var(--border); }
+    .dark-table thead th {
+      padding: 0.7rem 0.9rem; font-weight: 600;
+      font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--text-subtle); background: transparent;
+    }
+    .dark-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.1s; }
+    .dark-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+    .dark-table tbody td { padding: 0.7rem 0.9rem; vertical-align: middle; }
+    .dark-table tbody tr:last-child { border-bottom: none; }
+
+    /* ─── Badges ─── */
+    .badge-danger  { background: var(--danger-dim);  color: var(--danger);  border: 1px solid rgba(248,113,113,0.25); }
+    .badge-warning { background: var(--warning-dim); color: var(--warning); border: 1px solid rgba(251,191,36,0.25);  }
+    .badge-success { background: var(--success-dim); color: var(--success); border: 1px solid rgba(52,211,153,0.25);  }
+    .badge-accent  { background: var(--accent-dim);  color: var(--accent);  border: 1px solid rgba(232,98,26,0.25);   }
+    .badge-gold    { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(200,151,43,0.25);  }
+
+    .riesgo-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.22rem 0.7rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600;
+    }
+
+    /* ─── Progress bars ─── */
+    .prog-track {
+      background: rgba(255,255,255,0.07);
+      border-radius: 99px; overflow: hidden;
+      height: 6px;
+    }
+    .prog-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .prog-accent  { background: linear-gradient(90deg, var(--accent), var(--gold)); }
+    .prog-success { background: var(--success); }
+    .prog-warning { background: var(--warning); }
+    .prog-danger  { background: var(--danger); }
+    .prog-blue    { background: var(--blue); }
+
+    /* ─── Breadcrumb ─── */
+    .dark-crumb { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; }
+    .dark-crumb li { color: var(--text-muted); }
+    .dark-crumb li a { color: var(--text-muted); }
+    .dark-crumb li a:hover { color: var(--accent); }
+    .dark-crumb li.active { color: var(--text); }
+    .dark-crumb .sep { color: var(--text-subtle); }
+
+    /* ─── Chart cards ─── */
     .chart-card {
-      border: none; border-radius: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07); background: white;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
     }
-    .badge-riesgo-alto  { background-color: #dc3545; color: white; }
-    .badge-riesgo-medio { background-color: #fd7e14; color: white; }
-    .badge-riesgo-bajo  { background-color: #198754; color: white; }
-    .progress { border-radius: 100px; height: 8px; }
+    .chart-title { font-weight: 600; font-size: 0.88rem; color: var(--text); margin-bottom: 1rem; }
 
+    /* ─── Grupo cards ─── */
+    .grupo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      height: 100%;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .grupo-card:hover { border-color: rgba(232,98,26,0.3); transform: translateY(-2px); }
+    .mini-stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.25rem;
+      text-align: center;
+    }
+
+    /* ─── Accordion dark ─── */
+    .acc-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm) !important;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+    .acc-btn {
+      background: transparent; color: var(--text);
+      font-size: 0.88rem; font-weight: 600;
+      padding: 0.9rem 1.1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      border: none; width: 100%; text-align: left; cursor: pointer;
+    }
+    .acc-btn:not(.collapsed) { color: var(--accent); }
+    .acc-btn::after {
+      content: '\F282'; font-family: 'bootstrap-icons';
+      margin-left: auto; transition: transform 0.2s;
+      color: var(--text-muted); font-weight: 400;
+    }
+    .acc-btn:not(.collapsed)::after { transform: rotate(180deg); color: var(--accent); }
+    .acc-body { padding: 0; border-top: 1px solid var(--border); }
+
+    /* ─── Materia card (alumno) ─── */
+    .materia-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      height: 100%;
+      transition: border-color 0.2s;
+    }
+    .materia-card:hover { border-color: var(--border-hover); }
+
+    /* ─── Responsive ─── */
     @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main-content, footer { margin-left: 0; }
+      .app-sidebar { display: none; }
+      .app-main, .app-footer { margin-left: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-dark fixed-top px-3" style="background:var(--anahuac-blue);height:56px;">
-    <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="/">
-      <div style="background:var(--anahuac-gold);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-        <i class="bi bi-mortarboard-fill text-white" style="font-size:1rem;"></i>
-      </div>
-      <div class="navbar-brand-text">
-        <div class="brand-main text-white">Plataforma Académica</div>
-        <div class="brand-sub">Universidad Anáhuac Puebla · Lic. Actuaría</div>
-      </div>
-    </a>
-    <div class="d-flex align-items-center gap-3">
-      <span class="badge" style="background:var(--anahuac-gold);font-size:0.7rem;">PROTOTIPO</span>
-      {% if usuario %}
-        <div class="d-flex align-items-center gap-2">
-          {% if usuario.rol == 'docente' %}
-            <span class="badge bg-primary" style="font-size:0.7rem;">
-              <i class="bi bi-person-badge-fill me-1"></i>Docente
-            </span>
-          {% else %}
-            <span class="badge" style="background:var(--anahuac-gold);font-size:0.7rem;">
-              <i class="bi bi-mortarboard-fill me-1"></i>Alumno
-            </span>
-          {% endif %}
-          <span class="text-white" style="font-size:0.82rem;">{{ usuario.nombre }}</span>
-          <a href="{% url 'core:logout' %}" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.75rem;">
-            <i class="bi bi-box-arrow-right me-1"></i>Salir
-          </a>
-        </div>
-      {% endif %}
+  <!-- ══ NAVBAR ══ -->
+  <header class="app-navbar">
+    <div class="brand-logo">
+      <i class="bi bi-mortarboard-fill text-white" style="font-size:0.9rem;"></i>
     </div>
-  </nav>
+    <div>
+      <div class="brand-name">Plataforma Académica</div>
+      <div class="brand-sub">Universidad Anáhuac Puebla · Lic. Actuaría</div>
+    </div>
+    <div class="nav-divider"></div>
+    <span class="nav-pill">PROTOTIPO</span>
 
-  <!-- Sidebar -->
-  <nav class="sidebar {% if usuario and usuario.rol == 'alumno' %}sidebar-alumno{% endif %} d-flex flex-column">
+    {% if usuario %}
+    <div class="nav-user">
+      {% if usuario.rol == 'docente' %}
+        <span class="nav-role-badge docente"><i class="bi bi-person-badge-fill me-1"></i>Docente</span>
+      {% else %}
+        <span class="nav-role-badge alumno"><i class="bi bi-mortarboard-fill me-1"></i>Alumno</span>
+      {% endif %}
+      <span class="nav-username">{{ usuario.nombre }}</span>
+      <a href="{% url 'core:logout' %}" class="btn-logout">
+        <i class="bi bi-box-arrow-right me-1"></i>Salir
+      </a>
+    </div>
+    {% endif %}
+  </header>
+
+  <!-- ══ SIDEBAR ══ -->
+  <nav class="app-sidebar">
 
     {% if usuario and usuario.rol == 'docente' %}
-      <!-- SIDEBAR DOCENTE -->
-      <div class="sidebar-label">Panel Principal</div>
-      <a href="{% url 'core:dashboard' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">
-        <i class="bi bi-grid-1x2-fill me-2"></i>Dashboard
-      </a>
+    <!-- ── Docente nav ── -->
+    <div class="sidebar-section-label">Principal</div>
+    <a href="{% url 'core:dashboard' %}" class="sidebar-link {% if request.path == '/' %}active{% endif %}">
+      <span class="s-icon"><i class="bi bi-grid-1x2-fill"></i></span>Dashboard
+    </a>
 
-      <div class="sidebar-label mt-2">Grupos Activos</div>
-      {% for g in grupos_nav %}
-      <a href="{% url 'core:detalle_grupo' g.id %}"
-         class="nav-link {% if request.path == '/grupo/'|add:g.id|add:'/' %}active{% endif %}">
-        <i class="bi bi-people-fill me-2"></i>{{ g.nombre_corto }}
-      </a>
-      {% endfor %}
-
-      <div class="sidebar-label mt-2">Sistema</div>
-      <a href="#" class="nav-link"><i class="bi bi-info-circle me-2"></i>Acerca de</a>
+    <div class="sidebar-section-label" style="margin-top:0.5rem;">Grupos Activos</div>
+    {% for g in grupos_nav %}
+    <a href="{% url 'core:detalle_grupo' g.id %}"
+       class="sidebar-link {% if request.path == '/grupo/'|add:g.id|add:'/' %}active{% endif %}">
+      <span class="s-icon"><i class="bi bi-people-fill"></i></span>
+      <span>{{ g.nombre_corto }}</span>
+    </a>
+    {% endfor %}
 
     {% elif usuario and usuario.rol == 'alumno' %}
-      <!-- SIDEBAR ALUMNO -->
-      <div class="px-3 py-2 mb-1">
-        <div style="width:44px;height:44px;border-radius:50%;background:rgba(200,151,43,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.4rem;">
-          <i class="bi bi-mortarboard-fill" style="color:var(--anahuac-gold);font-size:1.3rem;"></i>
-        </div>
-        <div class="text-center text-white fw-semibold" style="font-size:0.82rem;">{{ usuario.nombre }}</div>
-        <div class="text-center text-white-50" style="font-size:0.7rem;">{{ usuario.matricula }} · {{ usuario.semestre_actual }}° Sem.</div>
+    <!-- ── Alumno nav ── -->
+    <div class="sidebar-avatar">
+      <div class="avatar-circle">
+        <i class="bi bi-mortarboard-fill" style="color:var(--gold);font-size:1.1rem;"></i>
       </div>
+      <div style="font-size:0.82rem;font-weight:600;color:var(--text);">{{ usuario.nombre }}</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">{{ usuario.matricula }} · {{ usuario.semestre_actual }}° Sem.</div>
+    </div>
 
-      <div class="sidebar-label">Mi Espacio</div>
-      <a href="{% url 'core:perfil_alumno' %}"
-         class="nav-link {% if request.path == '/mi-perfil/' %}active{% endif %}">
-        <i class="bi bi-person-circle me-2"></i>Mi Perfil Académico
-      </a>
-
-      <div class="sidebar-label mt-2">Sistema</div>
-      <a href="#" class="nav-link"><i class="bi bi-info-circle me-2"></i>Acerca de</a>
-
+    <div class="sidebar-section-label">Mi Espacio</div>
+    <a href="{% url 'core:perfil_alumno' %}" class="sidebar-link {% if request.path == '/mi-perfil/' %}active{% endif %}">
+      <span class="s-icon"><i class="bi bi-person-circle"></i></span>Mi Perfil Académico
+    </a>
     {% endif %}
 
-    <div class="mt-auto pb-3 px-3" style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-align:center;">
-      v1.0 · Prototipo 2026
+    <div class="sidebar-section-label" style="margin-top:0.5rem;">Sistema</div>
+    <a href="#" class="sidebar-link">
+      <span class="s-icon"><i class="bi bi-info-circle"></i></span>Acerca de
+    </a>
+
+    <!-- Help card -->
+    <div class="sidebar-help">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--accent);margin-bottom:0.25rem;">
+        <i class="bi bi-lightbulb-fill me-1"></i>¿Necesitas ayuda?
+      </div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">Proyecto Actuarial II · Prototipo v1.0</div>
     </div>
   </nav>
 
-  <!-- Main content -->
-  <main class="main-content">
+  <!-- ══ CONTENT ══ -->
+  <main class="app-main">
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="d-flex justify-content-between align-items-center">
-    <span>Plataforma Estratégica de Visualización Académica &mdash; Prototipo v1.0</span>
-    <span>Juan Pablo Penedo &middot; Proyecto Actuarial II &middot; 2026</span>
+  <footer class="app-footer">
+    <span>Plataforma Estratégica de Visualización Académica</span>
+    <span>Juan Pablo Penedo · 2026</span>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* Chart.js dark defaults */
+    Chart.defaults.color = '#7a7470';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.07)';
+    Chart.defaults.plugins.legend.labels.color = '#f0ede9';
+    Chart.defaults.plugins.tooltip.backgroundColor = '#1c1917';
+    Chart.defaults.plugins.tooltip.titleColor = '#f0ede9';
+    Chart.defaults.plugins.tooltip.bodyColor = '#a0998f';
+    Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+  </script>
+
   {% block scripts %}{% endblock %}
 </body>
 </html>

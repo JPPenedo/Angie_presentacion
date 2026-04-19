@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block title %}Mi Perfil Académico{% endblock %}
 
 {% block content %}
@@ -7,145 +6,142 @@
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div>
-    <h1 class="fw-bold mb-1" style="font-size:1.5rem;color:#1a2b3c;">Mi Perfil Académico</h1>
-    <p class="text-muted mb-0" style="font-size:0.88rem;">
-      <i class="bi bi-person-badge me-1"></i>{{ usuario.matricula }} &nbsp;&middot;&nbsp;
-      <i class="bi bi-mortarboard me-1"></i>{{ usuario.semestre_actual }}° Semestre &nbsp;&middot;&nbsp;
-      <i class="bi bi-calendar3 me-1"></i>Ene–May 2026
-    </p>
-  </div>
-  <div class="text-end">
-    <div class="badge bg-primary px-3 py-2" style="font-size:0.8rem;">
-      <i class="bi bi-award-fill me-1"></i>Licenciatura en Actuaría
+    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;">
+      <i class="bi bi-person-badge me-1"></i>{{ usuario.matricula }}
+      <span style="margin:0 0.4rem;color:var(--text-subtle);">/</span>
+      {{ usuario.semestre_actual }}° Semestre
+      <span style="margin:0 0.4rem;color:var(--text-subtle);">/</span>
+      Ene–May 2026
     </div>
+    <h1 style="font-size:1.35rem;font-weight:700;color:var(--text);margin:0;">Mi Perfil Académico</h1>
   </div>
+  <span class="riesgo-badge badge-accent" style="font-size:0.78rem;">
+    <i class="bi bi-award-fill"></i>Licenciatura en Actuaría
+  </span>
 </div>
 
-<!-- Métricas del alumno -->
+<!-- Métricas -->
 <div class="row g-3 mb-4">
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value" style="color:#003A70;">{{ promedio_global }}</div>
-          <div class="stat-label">Promedio Acumulado</div>
-        </div>
-        <div class="stat-icon" style="background:#e8f0fe;">
-          <i class="bi bi-bar-chart-line-fill text-primary"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--accent);">{{ promedio_global }}</div>
+        <div class="stat-label">Promedio Acumulado</div>
+        <div class="stat-delta" style="color:var(--text-muted);">semestres 1°–9°</div>
+      </div>
+      <div class="stat-icon" style="background:var(--accent-dim);color:var(--accent);">
+        <i class="bi bi-bar-chart-line-fill"></i>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value text-success">{{ total_creditos_hist }}</div>
-          <div class="stat-label">Créditos Acreditados</div>
-        </div>
-        <div class="stat-icon" style="background:#d1fae5;">
-          <i class="bi bi-check-circle-fill text-success"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--success);">{{ total_creditos_hist }}</div>
+        <div class="stat-label">Créditos Acreditados</div>
+        <div class="stat-delta" style="color:var(--text-muted);">de {{ usuario.creditos_totales }} totales</div>
+      </div>
+      <div class="stat-icon" style="background:var(--success-dim);color:var(--success);">
+        <i class="bi bi-check-circle-fill"></i>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value" style="color:#C8972B;">{{ pct_avance }}%</div>
-          <div class="stat-label">Avance de la Carrera</div>
-        </div>
-        <div class="stat-icon" style="background:#fff3cd;">
-          <i class="bi bi-hourglass-split" style="color:#C8972B;"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--gold);">{{ pct_avance }}%</div>
+        <div class="stat-label">Avance de la Carrera</div>
+        <div class="stat-delta" style="color:var(--text-muted);">hacia la titulación</div>
+      </div>
+      <div class="stat-icon" style="background:var(--gold-dim);color:var(--gold);">
+        <i class="bi bi-hourglass-split"></i>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value" style="color:#1a2b3c;">{{ materias_actuales|length }}</div>
-          <div class="stat-label">Materias en Curso</div>
-        </div>
-        <div class="stat-icon" style="background:#f3e8ff;">
-          <i class="bi bi-journal-bookmark-fill" style="color:#7c3aed;"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--blue);">{{ materias_actuales|length }}</div>
+        <div class="stat-label">Materias en Curso</div>
+        <div class="stat-delta" style="color:var(--text-muted);">10° semestre</div>
+      </div>
+      <div class="stat-icon" style="background:var(--blue-dim);color:var(--blue);">
+        <i class="bi bi-journal-bookmark-fill"></i>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Barra de progreso de carrera -->
-<div class="card border-0 shadow-sm mb-4 p-4" style="border-radius:1rem;">
-  <div class="d-flex justify-content-between align-items-center mb-2">
-    <span class="fw-semibold" style="font-size:0.9rem;color:#1a2b3c;">
-      <i class="bi bi-mortarboard me-2" style="color:#003A70;"></i>Progreso hacia la titulación
+<!-- Progreso carrera -->
+<div class="card-dark" style="padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+    <span style="font-size:0.88rem;font-weight:600;color:var(--text);">
+      <i class="bi bi-mortarboard me-2" style="color:var(--accent);"></i>Progreso hacia la titulación
     </span>
-    <span class="text-muted" style="font-size:0.82rem;">
+    <span style="font-size:0.78rem;color:var(--text-muted);">
       {{ total_creditos_hist }} / {{ usuario.creditos_totales }} créditos
     </span>
   </div>
-  <div class="progress" style="height:14px;border-radius:100px;">
-    <div class="progress-bar" style="width:{{ pct_avance }}%;background:linear-gradient(90deg,#003A70,#0066cc);border-radius:100px;">
-    </div>
+  <div class="prog-track" style="height:12px;">
+    <div class="prog-fill prog-accent" style="width:{{ pct_avance }}%;"></div>
   </div>
-  <div class="d-flex justify-content-between mt-1" style="font-size:0.72rem;color:#6c757d;">
+  <div style="display:flex;justify-content:space-between;margin-top:0.4rem;font-size:0.7rem;color:var(--text-subtle);">
     <span>1° Semestre</span><span>5° Semestre</span><span>10° Semestre</span>
   </div>
 </div>
 
 
-<!-- ══════════════════════
-     MATERIAS ACTUALES
-══════════════════════ -->
+<!-- ══ MATERIAS EN CURSO ══ -->
 <div class="section-header">
-  <span class="pillar-badge" style="background:#C8972B;">10° Sem</span>
+  <span class="pillar-badge" style="background:var(--gold-dim);color:var(--gold);border-color:rgba(200,151,43,0.3);">
+    10° Sem
+  </span>
   <h2 class="section-title">Materias en Curso — Ene–May 2026</h2>
 </div>
 
-<div class="row g-3 mb-5">
+<div class="row g-3 mb-4">
   {% for m in materias_actuales %}
   <div class="col-md-6">
-    <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;">
-      <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <div>
-            <h6 class="fw-bold mb-0" style="font-size:0.95rem;color:#1a2b3c;">{{ m.nombre }}</h6>
-            <small class="text-muted">{{ m.docente }}</small>
-          </div>
-          <span class="badge bg-light text-dark border" style="font-size:0.72rem;">{{ m.creditos }} cred.</span>
+    <div class="materia-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.9rem;">
+        <div style="flex:1;min-width:0;padding-right:0.75rem;">
+          <div style="font-size:0.9rem;font-weight:700;color:var(--text);">{{ m.nombre }}</div>
+          <div style="font-size:0.73rem;color:var(--text-muted);">{{ m.docente }}</div>
         </div>
+        <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);
+              color:var(--text-muted);border-radius:0.4rem;padding:0.15rem 0.5rem;
+              font-size:0.7rem;white-space:nowrap;">{{ m.creditos }} créditos</span>
+      </div>
 
-        <!-- Avance del curso -->
-        <div class="mb-3">
-          <div class="d-flex justify-content-between mb-1">
-            <small class="text-muted">Avance del curso</small>
-            <small class="fw-bold">{{ m.avance }}%</small>
-          </div>
-          <div class="progress">
-            <div class="progress-bar" style="width:{{ m.avance }}%;background:#003A70;"></div>
-          </div>
+      <div style="margin-bottom:0.85rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:0.72rem;color:var(--text-muted);">Avance del curso</span>
+          <span style="font-size:0.72rem;font-weight:700;color:var(--accent);">{{ m.avance }}%</span>
         </div>
+        <div class="prog-track">
+          <div class="prog-fill prog-accent" style="width:{{ m.avance }}%;"></div>
+        </div>
+      </div>
 
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="text-center">
-            <div class="fw-bold" style="font-size:1.3rem;color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}#198754{% elif m.calificacion_parcial >= 7 %}#003A70{% else %}#fd7e14{% endif %}{% else %}#adb5bd{% endif %};">
-              {% if m.calificacion_parcial %}{{ m.calificacion_parcial }}{% else %}&mdash;{% endif %}
-            </div>
-            <small class="text-muted" style="font-size:0.72rem;">Cal. parcial</small>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+        <div class="mini-stat">
+          <div style="font-size:1.1rem;font-weight:700;
+            color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}var(--success){% elif m.calificacion_parcial >= 7 %}var(--accent){% else %}var(--warning){% endif %}{% else %}var(--text-subtle){% endif %};">
+            {% if m.calificacion_parcial %}{{ m.calificacion_parcial }}{% else %}—{% endif %}
           </div>
-          <div class="text-center">
-            <div class="fw-bold text-muted" style="font-size:1.1rem;">{{ m.entregas }}/{{ m.total_entregas }}</div>
-            <small class="text-muted" style="font-size:0.72rem;">Entregas</small>
+          <div style="font-size:0.64rem;color:var(--text-muted);">Cal. parcial</div>
+        </div>
+        <div class="mini-stat">
+          <div style="font-size:1.1rem;font-weight:700;color:var(--text-muted);">
+            {{ m.entregas }}/{{ m.total_entregas }}
           </div>
-          <div class="text-center">
-            <div class="progress" style="width:60px;height:6px;display:inline-block;vertical-align:middle;">
-              <div class="progress-bar bg-success" style="width:{% widthratio m.entregas m.total_entregas 100 %}%;"></div>
-            </div><br>
-            <small class="text-muted" style="font-size:0.7rem;">{% widthratio m.entregas m.total_entregas 100 %}% entregado</small>
+          <div style="font-size:0.64rem;color:var(--text-muted);">Entregas</div>
+        </div>
+        <div class="mini-stat">
+          <div style="font-size:1.1rem;font-weight:700;color:var(--blue);">
+            {% widthratio m.entregas m.total_entregas 100 %}%
           </div>
+          <div style="font-size:0.64rem;color:var(--text-muted);">Entregado</div>
         </div>
       </div>
     </div>
@@ -154,79 +150,71 @@
 </div>
 
 
-<!-- ══════════════════════
-     HISTORIAL ACADÉMICO
-══════════════════════ -->
+<!-- ══ HISTORIAL ACADÉMICO ══ -->
 <div class="section-header">
   <span class="pillar-badge">Historial</span>
   <h2 class="section-title">Historial Académico</h2>
-  <span class="ms-auto text-muted" style="font-size:0.82rem;">Semestres 1° al 9° · Materias acreditadas</span>
+  <span style="margin-left:auto;font-size:0.78rem;color:var(--text-muted);">
+    Semestres 1°–9° · Materias acreditadas
+  </span>
 </div>
 
-<!-- Gráfica de promedios por semestre -->
-<div class="chart-card p-4 mb-4">
-  <h6 class="fw-bold mb-3" style="color:#1a2b3c;">
-    <i class="bi bi-graph-up me-2" style="color:#003A70;"></i>Evolución del Promedio por Semestre
-  </h6>
+<!-- Gráfica evolución -->
+<div class="chart-card mb-4">
+  <div class="chart-title">
+    <i class="bi bi-graph-up me-2" style="color:var(--accent);"></i>Evolución del Promedio por Semestre
+  </div>
   <canvas id="chartEvolucion" height="70"></canvas>
 </div>
 
-<!-- Acordeón por semestre -->
-<div class="accordion mb-4" id="historialAcordeon">
+<!-- Acordeón historial -->
+<div id="historialAcordeon" style="margin-bottom:2rem;">
   {% for sem in historial %}
-  <div class="accordion-item border-0 mb-2" style="border-radius:0.75rem;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
-    <h2 class="accordion-header">
-      <button class="accordion-button {% if not forloop.last %}collapsed{% endif %} fw-semibold"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#sem{{ forloop.counter }}"
-              style="font-size:0.9rem;">
-        <span class="me-3">{{ sem.semestre }}</span>
-        <span class="text-muted fw-normal me-auto" style="font-size:0.8rem;">{{ sem.periodo }}</span>
-        {% with total_cred=0 %}
-        <span class="badge bg-light text-dark border me-2" style="font-size:0.72rem;">
-          {{ sem.materias|length }} materias
-        </span>
-        {% endwith %}
-        <!-- Promedio del semestre -->
-        <span class="badge" style="background:#003A70;font-size:0.75rem;margin-right:0.5rem;">
-          Prom. sem.: {{ sem.prom_semestre|default_if_none:"—" }}
-        </span>
-      </button>
-    </h2>
-    <div id="sem{{ forloop.counter }}"
-         class="accordion-collapse collapse {% if forloop.last %}show{% endif %}"
-         data-bs-parent="#historialAcordeon">
-      <div class="accordion-body p-0">
-        <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-          <thead style="background:#f8f9fc;">
-            <tr>
-              <th class="ps-4 py-2 fw-semibold text-muted">Materia</th>
-              <th class="py-2 fw-semibold text-muted text-center">Créditos</th>
-              <th class="py-2 fw-semibold text-muted text-center">Calificación</th>
-              <th class="pe-4 py-2 fw-semibold text-muted text-center">Estatus</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for m in sem.materias %}
-            <tr>
-              <td class="ps-4 fw-semibold">{{ m.nombre }}</td>
-              <td class="text-center text-muted">{{ m.creditos }}</td>
-              <td class="text-center">
-                <span class="fw-bold {% if m.calificacion >= 9 %}text-success{% elif m.calificacion >= 7.5 %}text-primary{% else %}text-warning{% endif %}">
-                  {{ m.calificacion }}
-                </span>
-              </td>
-              <td class="text-center pe-4">
-                <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill" style="font-size:0.72rem;">
-                  <i class="bi bi-check-circle-fill me-1"></i>{{ m.estatus }}
-                </span>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+  <div class="acc-item">
+    <button class="acc-btn {% if not forloop.last %}collapsed{% endif %}"
+            data-bs-toggle="collapse"
+            data-bs-target="#sem{{ forloop.counter }}">
+      <span style="min-width:120px;">{{ sem.semestre }}</span>
+      <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">{{ sem.periodo }}</span>
+      <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);
+            color:var(--text-muted);border-radius:0.35rem;padding:0.1rem 0.5rem;font-size:0.7rem;
+            margin-left:0.5rem;font-weight:400;">
+        {{ sem.materias|length }} materias
+      </span>
+      <span class="riesgo-badge badge-accent" style="font-size:0.72rem;padding:0.15rem 0.55rem;margin-left:0.4rem;">
+        {{ sem.prom_semestre }}
+      </span>
+    </button>
+    <div id="sem{{ forloop.counter }}" class="acc-body collapse {% if forloop.last %}show{% endif %}">
+      <table class="dark-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th style="padding-left:1.1rem;">Materia</th>
+            <th style="text-align:center;">Créditos</th>
+            <th style="text-align:center;">Calificación</th>
+            <th style="text-align:center;padding-right:1.1rem;">Estatus</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in sem.materias %}
+          <tr>
+            <td style="padding-left:1.1rem;font-weight:600;color:var(--text);">{{ m.nombre }}</td>
+            <td style="text-align:center;color:var(--text-muted);">{{ m.creditos }}</td>
+            <td style="text-align:center;">
+              <span style="font-weight:700;
+                color:{% if m.calificacion >= 9 %}var(--success){% elif m.calificacion >= 7.5 %}var(--accent){% else %}var(--warning){% endif %};">
+                {{ m.calificacion }}
+              </span>
+            </td>
+            <td style="text-align:center;padding-right:1.1rem;">
+              <span class="riesgo-badge badge-success" style="font-size:0.72rem;padding:0.18rem 0.6rem;">
+                <i class="bi bi-check-circle-fill"></i>{{ m.estatus }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
   {% endfor %}
@@ -237,13 +225,8 @@
 
 {% block scripts %}
 <script>
-  // Promedios por semestre para la gráfica
-  const semestres = [
-    {% for sem in historial %}"{{ sem.semestre }}"{% if not forloop.last %},{% endif %}{% endfor %}
-  ];
-
-  // Calculamos promedios en Python y los pasamos
-  const promediosPorSem = [
+  const semestres = [{% for sem in historial %}"{{ sem.semestre }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const promediosSem = [
     {% for sem in historial %}
     +({% for m in sem.materias %}{{ m.calificacion }}{% if not forloop.last %}+{% endif %}{% endfor %}) / {{ sem.materias|length }}
     {% if not forloop.last %},{% endif %}
@@ -256,35 +239,29 @@
       labels: semestres,
       datasets: [{
         label: 'Promedio del semestre',
-        data: promediosPorSem,
-        borderColor: '#003A70',
-        backgroundColor: 'rgba(0,58,112,0.08)',
+        data: promediosSem,
+        borderColor: 'rgba(232,98,26,0.9)',
+        backgroundColor: 'rgba(232,98,26,0.08)',
         pointBackgroundColor: '#C8972B',
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        fill: true,
-        tension: 0.35,
-        borderWidth: 2.5,
+        pointBorderColor: '#1a1714',
+        pointBorderWidth: 2,
+        pointRadius: 6, pointHoverRadius: 8,
+        fill: true, tension: 0.38, borderWidth: 2.5,
       }]
     },
     options: {
       responsive: true,
       plugins: {
         legend: { display: false },
-        tooltip: {
-          callbacks: { label: ctx => ` Promedio: ${ctx.parsed.y.toFixed(2)}` }
-        }
+        tooltip: { callbacks: { label: ctx => ` Promedio: ${ctx.parsed.y.toFixed(2)}` } }
       },
       scales: {
         y: {
-          min: 7, max: 10,
-          grid: { color: '#f0f0f0' },
-          ticks: { font: { size: 11 } }
-        },
-        x: {
-          grid: { display: false },
+          min: 7.5, max: 10,
+          grid: { color: 'rgba(255,255,255,0.06)' },
           ticks: { font: { size: 10 } }
-        }
+        },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
       }
     }
   });

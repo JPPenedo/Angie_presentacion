@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,181 +8,246 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     :root {
-      --anahuac-blue: #003A70;
-      --anahuac-gold: #C8972B;
+      --bg:      #0e0c0b;
+      --card:    #1a1714;
+      --border:  rgba(255,255,255,0.08);
+      --accent:  #e8621a;
+      --gold:    #C8972B;
+      --text:    #f0ede9;
+      --muted:   #7a7470;
     }
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #003A70 0%, #00508a 50%, #006aa8 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
       font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 1.5rem;
     }
+
+    /* Animated background blobs */
+    .bg-blobs { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .blob {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 420px; height: 420px; background: var(--accent); top: -80px; left: -100px; animation-delay: 0s; }
+    .blob-2 { width: 320px; height: 320px; background: var(--gold);   bottom: -60px; right: -80px; animation-delay: 3s; }
+    .blob-3 { width: 200px; height: 200px; background: #8b4cf6;       top: 50%; left: 60%; animation-delay: 6s; }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(30px, 20px) scale(1.08); }
+    }
+
+    /* Card */
     .login-card {
-      width: 100%;
-      max-width: 460px;
+      position: relative; z-index: 1;
+      width: 100%; max-width: 440px;
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 1.25rem;
-      border: none;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
     }
-    .login-header {
-      background: var(--anahuac-blue);
-      border-radius: 1.25rem 1.25rem 0 0;
+    .login-top {
+      background: linear-gradient(135deg, rgba(232,98,26,0.12) 0%, rgba(200,151,43,0.06) 100%);
+      border-bottom: 1px solid var(--border);
       padding: 2rem 2rem 1.5rem;
       text-align: center;
     }
-    .brand-icon {
-      width: 56px; height: 56px;
-      background: var(--anahuac-gold);
-      border-radius: 14px;
+    .logo-wrap {
+      width: 52px; height: 52px; border-radius: 13px;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 1rem;
+      box-shadow: 0 8px 24px rgba(232,98,26,0.4);
     }
-    .role-card {
-      border: 2px solid #dee2e6;
-      border-radius: 0.75rem;
-      padding: 1rem;
+
+    /* Role selector */
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.1rem; }
+    .role-opt {
+      border: 1.5px solid var(--border);
+      border-radius: 0.7rem;
+      padding: 0.85rem 0.75rem;
+      text-align: center;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
-      text-align: center;
+      background: transparent;
     }
-    .role-card:hover { border-color: var(--anahuac-blue); background: #f0f4f8; }
-    .role-card.selected {
-      border-color: var(--anahuac-blue);
-      background: #e8f0fe;
+    .role-opt:hover { border-color: rgba(232,98,26,0.4); background: rgba(232,98,26,0.05); }
+    .role-opt.selected {
+      border-color: var(--accent);
+      background: rgba(232,98,26,0.1);
     }
-    .role-card .role-icon {
-      font-size: 1.8rem;
-      margin-bottom: 0.4rem;
-    }
-    .role-card .role-label { font-weight: 600; font-size: 0.9rem; }
-    .role-card .role-desc  { font-size: 0.75rem; color: #6c757d; }
-    .form-control:focus {
-      border-color: var(--anahuac-blue);
-      box-shadow: 0 0 0 0.2rem rgba(0,58,112,0.2);
-    }
-    .btn-login {
-      background: var(--anahuac-blue);
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 0.65rem;
+    .role-opt .ri  { font-size: 1.6rem; margin-bottom: 0.25rem; }
+    .role-opt .rl  { font-weight: 700; font-size: 0.88rem; color: var(--text); }
+    .role-opt .rd  { font-size: 0.72rem; color: var(--muted); }
+
+    /* Form */
+    .form-label-dark { font-size: 0.78rem; font-weight: 600; color: var(--muted); margin-bottom: 0.35rem; display: block; }
+    .input-dark {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
       border-radius: 0.6rem;
-      transition: background 0.15s;
+      color: var(--text);
+      padding: 0.6rem 0.9rem;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
     }
-    .btn-login:hover { background: #00508a; color: white; }
-    .demo-hint {
-      background: #fff3cd;
-      border: 1px solid #ffc107;
+    .input-dark::placeholder { color: var(--muted); }
+    .input-dark:focus { border-color: var(--accent); background: rgba(232,98,26,0.04); }
+    .input-group-dark {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
       border-radius: 0.6rem;
-      padding: 0.75rem 1rem;
-      font-size: 0.8rem;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .input-group-dark:focus-within { border-color: var(--accent); }
+    .input-group-dark .ig-icon {
+      padding: 0 0.75rem;
+      color: var(--muted); font-size: 0.9rem;
+      display: flex; align-items: center;
+    }
+    .input-group-dark input {
+      flex: 1; background: transparent; border: none;
+      color: var(--text); padding: 0.6rem 0.75rem 0.6rem 0;
+      font-size: 0.88rem; outline: none;
+    }
+    .input-group-dark input::placeholder { color: var(--muted); }
+
+    .btn-enter {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #c94d0c);
+      border: none; border-radius: 0.65rem;
+      color: white; font-weight: 700; font-size: 0.9rem;
+      padding: 0.7rem;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      box-shadow: 0 6px 20px rgba(232,98,26,0.35);
+    }
+    .btn-enter:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-enter:active { transform: translateY(0); }
+
+    .demo-box {
+      background: rgba(251,191,36,0.07);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: 0.6rem;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .demo-box strong { color: #fbbf24; }
+    .mono { font-family: 'Consolas', monospace; color: var(--text); font-size: 0.8rem; }
+
+    .error-box {
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.25);
+      border-radius: 0.6rem;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.82rem;
+      color: #f87171;
     }
   </style>
 </head>
 <body>
-
-<div class="login-card card">
-  <!-- Header -->
-  <div class="login-header">
-    <div class="brand-icon">
-      <i class="bi bi-mortarboard-fill text-white" style="font-size:1.5rem;"></i>
-    </div>
-    <h1 class="text-white fw-bold mb-0" style="font-size:1.25rem;">Plataforma Académica</h1>
-    <p class="text-white-50 mb-0" style="font-size:0.8rem;">Universidad Anáhuac Puebla · Lic. Actuaría</p>
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
   </div>
 
-  <div class="card-body p-4">
-    {% if error %}
-    <div class="alert alert-danger py-2 px-3 mb-3" style="font-size:0.85rem;">
-      <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+  <div class="login-card">
+    <!-- Top -->
+    <div class="login-top">
+      <div class="logo-wrap">
+        <i class="bi bi-mortarboard-fill text-white" style="font-size:1.4rem;"></i>
+      </div>
+      <h1 style="font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 0.2rem;">Plataforma Académica</h1>
+      <p style="font-size:0.75rem;color:var(--muted);margin:0;">Universidad Anáhuac Puebla · Lic. Actuaría</p>
     </div>
-    {% endif %}
 
-    <form method="post" id="loginForm">
-      {% csrf_token %}
+    <!-- Form -->
+    <div style="padding:1.5rem 1.75rem 1.75rem;">
+      {% if error %}
+      <div class="error-box mb-3">
+        <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+      </div>
+      {% endif %}
 
-      <!-- Selector de rol -->
-      <p class="fw-semibold mb-2" style="font-size:0.88rem;">Acceder como:</p>
-      <div class="row g-2 mb-3" id="roleSelector">
-        <div class="col-6">
-          <div class="role-card selected" data-rol="docente" onclick="selectRol('docente')">
-            <div class="role-icon text-primary"><i class="bi bi-person-badge-fill"></i></div>
-            <div class="role-label">Docente</div>
-            <div class="role-desc">Vista de grupos y alertas</div>
+      <form method="post" id="loginForm">
+        {% csrf_token %}
+
+        <p style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.6rem;">Acceder como</p>
+        <div class="role-grid">
+          <div class="role-opt selected" data-rol="docente" onclick="selectRol('docente')">
+            <div class="ri" style="color:var(--accent);"><i class="bi bi-person-badge-fill"></i></div>
+            <div class="rl">Docente</div>
+            <div class="rd">Vista de grupos</div>
+          </div>
+          <div class="role-opt" data-rol="alumno" onclick="selectRol('alumno')">
+            <div class="ri" style="color:var(--gold);"><i class="bi bi-mortarboard-fill"></i></div>
+            <div class="rl">Alumno</div>
+            <div class="rd">Mi historial</div>
           </div>
         </div>
-        <div class="col-6">
-          <div class="role-card" data-rol="alumno" onclick="selectRol('alumno')">
-            <div class="role-icon" style="color:var(--anahuac-gold);"><i class="bi bi-mortarboard-fill"></i></div>
-            <div class="role-label">Alumno</div>
-            <div class="role-desc">Mi historial y materias</div>
+        <input type="hidden" name="rol" id="rolInput" value="docente" />
+
+        <div style="margin-bottom:0.85rem;">
+          <label class="form-label-dark">Correo institucional</label>
+          <div class="input-group-dark">
+            <span class="ig-icon"><i class="bi bi-envelope"></i></span>
+            <input type="email" name="correo" id="correoInput"
+                   placeholder="usuario@anahuac.mx"
+                   value="docente@anahuac.mx" required />
           </div>
         </div>
-      </div>
-      <input type="hidden" name="rol" id="rolInput" value="docente" />
 
-      <!-- Credenciales -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold" style="font-size:0.85rem;">Correo institucional</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0">
-            <i class="bi bi-envelope text-muted"></i>
-          </span>
-          <input type="email" name="correo" id="correoInput"
-                 class="form-control border-start-0 ps-0"
-                 placeholder="usuario@anahuac.mx"
-                 value="docente@anahuac.mx" required />
+        <div style="margin-bottom:1.25rem;">
+          <label class="form-label-dark">Contraseña</label>
+          <div class="input-group-dark">
+            <span class="ig-icon"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" id="passInput"
+                   placeholder="••••••••"
+                   value="demo123" required />
+          </div>
         </div>
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-semibold" style="font-size:0.85rem;">Contraseña</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0">
-            <i class="bi bi-lock text-muted"></i>
-          </span>
-          <input type="password" name="password" id="passInput"
-                 class="form-control border-start-0 ps-0"
-                 placeholder="••••••••"
-                 value="demo123" required />
-        </div>
-      </div>
+        <button type="submit" class="btn-enter">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Entrar a la Plataforma
+        </button>
+      </form>
 
-      <button type="submit" class="btn btn-login w-100 mb-3">
-        <i class="bi bi-box-arrow-in-right me-2"></i>Entrar a la Plataforma
-      </button>
-
-      <!-- Demo hint -->
-      <div class="demo-hint">
-        <strong>Acceso Demo:</strong><br>
-        <span class="font-monospace">docente@anahuac.mx</span> · contraseña: <span class="font-monospace">demo123</span><br>
-        <span class="font-monospace">alumno@anahuac.mx</span> &nbsp;· contraseña: <span class="font-monospace">demo123</span>
+      <div class="demo-box mt-3">
+        <strong>Acceso Demo</strong><br>
+        <span class="mono">docente@anahuac.mx</span> · <span class="mono">demo123</span><br>
+        <span class="mono">alumno@anahuac.mx</span> &nbsp;· <span class="mono">demo123</span>
       </div>
-    </form>
+    </div>
+
+    <div style="padding:0.6rem 1.75rem;border-top:1px solid var(--border);display:flex;justify-content:center;gap:0.4rem;">
+      <span style="font-size:0.7rem;color:var(--muted);">
+        <i class="bi bi-shield-check me-1" style="color:var(--accent);"></i>
+        Prototipo v1.0 · Juan Pablo Penedo · 2026
+      </span>
+    </div>
   </div>
 
-  <div class="card-footer text-center text-muted py-2" style="font-size:0.75rem;border-radius:0 0 1.25rem 1.25rem;">
-    <span class="badge bg-warning text-dark me-1">PROTOTIPO</span>
-    Juan Pablo Penedo · Proyecto Actuarial II · 2026
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const CREDENCIALES = {
-    docente: { correo: 'docente@anahuac.mx', pass: 'demo123' },
-    alumno:  { correo: 'alumno@anahuac.mx',  pass: 'demo123' },
-  };
-
-  function selectRol(rol) {
-    document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector(`[data-rol="${rol}"]`).classList.add('selected');
-    document.getElementById('rolInput').value = rol;
-    document.getElementById('correoInput').value = CREDENCIALES[rol].correo;
-    document.getElementById('passInput').value   = CREDENCIALES[rol].pass;
-  }
-</script>
+  <script>
+    const CREDS = {
+      docente: { correo: 'docente@anahuac.mx', pass: 'demo123' },
+      alumno:  { correo: 'alumno@anahuac.mx',  pass: 'demo123' },
+    };
+    function selectRol(rol) {
+      document.querySelectorAll('.role-opt').forEach(c => c.classList.remove('selected'));
+      document.querySelector(`[data-rol="${rol}"]`).classList.add('selected');
+      document.getElementById('rolInput').value = rol;
+      document.getElementById('correoInput').value = CREDS[rol].correo;
+      document.getElementById('passInput').value   = CREDS[rol].pass;
+    }
+  </script>
 </body>
 </html>

@@ -1,119 +1,107 @@
 {% extends "base.html" %}
-
 {% block title %}{{ grupo.nombre }}{% endblock %}
 
 {% block content %}
 
 <!-- Breadcrumb -->
-<nav aria-label="breadcrumb" class="mb-3">
-  <ol class="breadcrumb" style="font-size:0.85rem;">
-    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Dashboard</a></li>
-    <li class="breadcrumb-item active">{{ grupo.nombre }}</li>
-  </ol>
-</nav>
+<ol class="dark-crumb mb-3">
+  <li><a href="/">Dashboard</a></li>
+  <li class="sep"><i class="bi bi-chevron-right" style="font-size:0.65rem;"></i></li>
+  <li class="active">{{ grupo.nombre }}</li>
+</ol>
 
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div>
-    <h1 class="fw-bold mb-1" style="font-size:1.5rem;color:#1a2b3c;">{{ grupo.nombre }}</h1>
-    <p class="text-muted mb-0" style="font-size:0.88rem;">
-      <i class="bi bi-calendar3 me-1"></i>{{ grupo.semestre }} &nbsp;&middot;&nbsp;
-      <i class="bi bi-award me-1"></i>{{ grupo.creditos }} créditos &nbsp;&middot;&nbsp;
+    <h1 style="font-size:1.35rem;font-weight:700;color:var(--text);margin:0 0 0.2rem;">{{ grupo.nombre }}</h1>
+    <div style="font-size:0.78rem;color:var(--text-muted);">
+      <i class="bi bi-calendar3 me-1"></i>{{ grupo.semestre }} &nbsp;·&nbsp;
+      <i class="bi bi-award me-1"></i>{{ grupo.creditos }} créditos &nbsp;·&nbsp;
       <i class="bi bi-person-badge me-1"></i>{{ grupo.docente }}
-    </p>
+    </div>
   </div>
-  <a href="/" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-arrow-left me-1"></i>Volver al Dashboard
+  <a href="/" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);
+       color:var(--text-muted);border-radius:0.5rem;padding:0.35rem 0.9rem;font-size:0.8rem;
+       transition:border-color 0.15s,color 0.15s;"
+     onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)';"
+     onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)';">
+    <i class="bi bi-arrow-left me-1"></i>Volver
   </a>
 </div>
 
-<!-- Métricas del grupo -->
+<!-- Métricas -->
 <div class="row g-3 mb-4">
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value" style="color:#003A70;">{{ stats.promedio }}</div>
-          <div class="stat-label">Promedio del Grupo</div>
-        </div>
-        <div class="stat-icon" style="background:#e8f0fe;">
-          <i class="bi bi-bar-chart-fill text-primary"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--accent);">{{ stats.promedio }}</div>
+        <div class="stat-label">Promedio del Grupo</div>
+      </div>
+      <div class="stat-icon" style="background:var(--accent-dim);color:var(--accent);">
+        <i class="bi bi-bar-chart-fill"></i>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value text-success">{{ stats.pct_aprobacion }}%</div>
-          <div class="stat-label">Índice de Aprobación</div>
-        </div>
-        <div class="stat-icon" style="background:#d1fae5;">
-          <i class="bi bi-check-circle-fill text-success"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--success);">{{ stats.pct_aprobacion }}%</div>
+        <div class="stat-label">Índice de Aprobación</div>
+      </div>
+      <div class="stat-icon" style="background:var(--success-dim);color:var(--success);">
+        <i class="bi bi-check-circle-fill"></i>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value text-danger">{{ stats.riesgo_alto }}</div>
-          <div class="stat-label">Riesgo Alto</div>
-        </div>
-        <div class="stat-icon" style="background:#fee2e2;">
-          <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--danger);">{{ stats.riesgo_alto }}</div>
+        <div class="stat-label">Riesgo Alto</div>
+      </div>
+      <div class="stat-icon" style="background:var(--danger-dim);color:var(--danger);">
+        <i class="bi bi-exclamation-triangle-fill"></i>
       </div>
     </div>
   </div>
   <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="stat-value" style="color:#1a2b3c;">{{ grupo.avance }}%</div>
-          <div class="stat-label">Avance del Curso</div>
-        </div>
-        <div class="stat-icon" style="background:#fff3cd;">
-          <i class="bi bi-hourglass-split" style="color:#C8972B;"></i>
-        </div>
+    <div class="stat-card d-flex justify-content-between align-items-center">
+      <div>
+        <div class="stat-value" style="color:var(--gold);">{{ grupo.avance }}%</div>
+        <div class="stat-label">Avance del Curso</div>
+      </div>
+      <div class="stat-icon" style="background:var(--gold-dim);color:var(--gold);">
+        <i class="bi bi-hourglass-split"></i>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- Gráficas -->
 <div class="row g-3 mb-4">
-  <!-- Barra horizontal: calificaciones individuales -->
   <div class="col-lg-8">
-    <div class="chart-card p-4 h-100">
-      <h6 class="fw-bold mb-3" style="color:#1a2b3c;">
-        <i class="bi bi-bar-chart-steps me-2" style="color:#003A70;"></i>
-        Calificación por Alumno
-      </h6>
-      <canvas id="chartAlumnos" height="180"></canvas>
+    <div class="chart-card h-100">
+      <div class="chart-title">
+        <i class="bi bi-bar-chart-steps me-2" style="color:var(--accent);"></i>Calificación por Alumno
+      </div>
+      <canvas id="chartAlumnos" height="200"></canvas>
     </div>
   </div>
-  <!-- Dona: aprobados vs reprobados -->
   <div class="col-lg-4">
-    <div class="chart-card p-4 h-100 d-flex flex-column">
-      <h6 class="fw-bold mb-3" style="color:#1a2b3c;">
-        <i class="bi bi-pie-chart-fill me-2" style="color:#C8972B;"></i>
-        Aprobados vs Reprobados
-      </h6>
-      <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+    <div class="chart-card h-100 d-flex flex-column">
+      <div class="chart-title">
+        <i class="bi bi-pie-chart-fill me-2" style="color:var(--gold);"></i>Aprobados vs Reprobados
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
         <canvas id="chartAprobados" style="max-height:180px;"></canvas>
-        <div class="mt-3 d-flex gap-3 justify-content-center" style="font-size:0.82rem;">
-          <span><i class="bi bi-circle-fill text-success me-1"></i>Aprobados: {{ stats.aprobados }}</span>
-          <span><i class="bi bi-circle-fill text-danger me-1"></i>Reprobados: {{ stats.reprobados }}</span>
+        <div style="display:flex;gap:1rem;margin-top:0.75rem;font-size:0.78rem;">
+          <span style="color:var(--success);"><i class="bi bi-circle-fill me-1"></i>Aprob.: {{ stats.aprobados }}</span>
+          <span style="color:var(--danger);"><i class="bi bi-circle-fill me-1"></i>Repro.: {{ stats.reprobados }}</span>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- Tabla de alumnos -->
 <div class="section-header">
@@ -121,146 +109,107 @@
   <h2 class="section-title">Alumnos del Grupo</h2>
 </div>
 
-<div class="card border-0 shadow-sm mb-4" style="border-radius:1rem;">
-  <div class="card-body p-0">
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0" style="font-size:0.87rem;">
-        <thead style="background:#f8f9fc;">
-          <tr>
-            <th class="ps-4 py-3 fw-semibold text-muted">#</th>
-            <th class="py-3 fw-semibold text-muted">Alumno</th>
-            <th class="py-3 fw-semibold text-muted text-center">Calificación</th>
-            <th class="py-3 fw-semibold text-muted text-center">Asistencia</th>
-            <th class="py-3 fw-semibold text-muted text-center">Entregas</th>
-            <th class="pe-4 py-3 fw-semibold text-muted text-center">Riesgo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for alumno in grupo.alumnos %}
-          <tr>
-            <td class="ps-4 text-muted">{{ forloop.counter }}</td>
-            <td>
-              <div class="d-flex align-items-center gap-2">
-                <div style="width:34px;height:34px;border-radius:50%;background:{% if alumno.riesgo == 'Alto' %}#fee2e2{% elif alumno.riesgo == 'Medio' %}#fff3cd{% else %}#d1fae5{% endif %};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i class="bi bi-person-fill {% if alumno.riesgo == 'Alto' %}text-danger{% elif alumno.riesgo == 'Medio' %}text-warning{% else %}text-success{% endif %}" style="font-size:0.9rem;"></i>
-                </div>
-                <span class="fw-semibold">{{ alumno.nombre }}</span>
-              </div>
-            </td>
-            <td class="text-center">
-              <span class="fw-bold fs-6 {% if alumno.calificacion < 6 %}text-danger{% elif alumno.calificacion < 7.5 %}text-warning{% else %}text-success{% endif %}">
-                {{ alumno.calificacion }}
-              </span>
-            </td>
-            <td class="text-center">
-              <div style="width:90px;margin:0 auto;">
-                <div class="d-flex justify-content-between mb-1">
-                  <small class="text-muted" style="font-size:0.72rem;">{{ alumno.asistencia }}%</small>
-                </div>
-                <div class="progress" style="height:7px;">
-                  <div class="progress-bar {% if alumno.asistencia < 70 %}bg-danger{% elif alumno.asistencia < 85 %}bg-warning{% else %}bg-success{% endif %}"
-                       style="width:{{ alumno.asistencia }}%;"></div>
-                </div>
-              </div>
-            </td>
-            <td class="text-center text-muted">
-              {{ alumno.entregas }}/{{ alumno.total_entregas }}
-            </td>
-            <td class="text-center pe-4">
-              {% if alumno.riesgo == 'Alto' %}
-                <span class="badge badge-riesgo-alto px-3 py-2 rounded-pill">
-                  <i class="bi bi-exclamation-circle-fill me-1"></i>Alto
-                </span>
-              {% elif alumno.riesgo == 'Medio' %}
-                <span class="badge badge-riesgo-medio px-3 py-2 rounded-pill">
-                  <i class="bi bi-dash-circle-fill me-1"></i>Medio
-                </span>
-              {% else %}
-                <span class="badge badge-riesgo-bajo px-3 py-2 rounded-pill">
-                  <i class="bi bi-check-circle-fill me-1"></i>Bajo
-                </span>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="card-dark" style="overflow:hidden;margin-bottom:2rem;">
+  <table class="dark-table" style="width:100%;">
+    <thead>
+      <tr>
+        <th style="padding-left:1.25rem;width:36px;">#</th>
+        <th>Alumno</th>
+        <th style="text-align:center;">Calificación</th>
+        <th style="text-align:center;">Asistencia</th>
+        <th style="text-align:center;">Entregas</th>
+        <th style="text-align:center;padding-right:1.25rem;">Riesgo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alumno in grupo.alumnos %}
+      <tr>
+        <td style="padding-left:1.25rem;color:var(--text-subtle);">{{ forloop.counter }}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <div style="width:32px;height:32px;border-radius:50%;flex-shrink:0;
+                 background:{% if alumno.riesgo == 'Alto' %}var(--danger-dim){% elif alumno.riesgo == 'Medio' %}var(--warning-dim){% else %}var(--success-dim){% endif %};
+                 display:flex;align-items:center;justify-content:center;">
+              <i class="bi bi-person-fill"
+                 style="font-size:0.85rem;color:{% if alumno.riesgo == 'Alto' %}var(--danger){% elif alumno.riesgo == 'Medio' %}var(--warning){% else %}var(--success){% endif %};"></i>
+            </div>
+            <span style="font-weight:600;color:var(--text);">{{ alumno.nombre }}</span>
+          </div>
+        </td>
+        <td style="text-align:center;">
+          <span style="font-weight:700;font-size:1rem;
+            color:{% if alumno.calificacion < 6 %}var(--danger){% elif alumno.calificacion < 7.5 %}var(--warning){% else %}var(--success){% endif %};">
+            {{ alumno.calificacion }}
+          </span>
+        </td>
+        <td style="text-align:center;">
+          <div style="width:88px;margin:0 auto;">
+            <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:3px;">{{ alumno.asistencia }}%</div>
+            <div class="prog-track">
+              <div class="prog-fill {% if alumno.asistencia < 70 %}prog-danger{% elif alumno.asistencia < 85 %}prog-warning{% else %}prog-success{% endif %}"
+                   style="width:{{ alumno.asistencia }}%;"></div>
+            </div>
+          </div>
+        </td>
+        <td style="text-align:center;color:var(--text-muted);">{{ alumno.entregas }}/{{ alumno.total_entregas }}</td>
+        <td style="text-align:center;padding-right:1.25rem;">
+          {% if alumno.riesgo == 'Alto' %}
+            <span class="riesgo-badge badge-danger"><i class="bi bi-exclamation-circle-fill"></i>Alto</span>
+          {% elif alumno.riesgo == 'Medio' %}
+            <span class="riesgo-badge badge-warning"><i class="bi bi-dash-circle-fill"></i>Medio</span>
+          {% else %}
+            <span class="riesgo-badge badge-success"><i class="bi bi-check-circle-fill"></i>Bajo</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 {% endblock %}
 
-
 {% block scripts %}
 <script>
-  const nombres = [
-    {% for a in grupo.alumnos %}"{{ a.nombre|truncatechars:20 }}"{% if not forloop.last %},{% endif %}{% endfor %}
-  ];
-  const califs = [
-    {% for a in grupo.alumnos %}{{ a.calificacion }}{% if not forloop.last %},{% endif %}{% endfor %}
-  ];
-  const coloresBarras = califs.map(c =>
-    c < 6 ? '#dc354580' : c < 7.5 ? '#fd7e1480' : '#19875480'
+  const nombres = [{% for a in grupo.alumnos %}"{{ a.nombre|truncatechars:18 }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const califs  = [{% for a in grupo.alumnos %}{{ a.calificacion }}{% if not forloop.last %},{% endif %}{% endfor %}];
+  const bgBars  = califs.map(c =>
+    c < 6 ? 'rgba(248,113,113,0.75)' : c < 7.5 ? 'rgba(251,191,36,0.75)' : 'rgba(52,211,153,0.75)'
   );
 
-  // Barra horizontal
   new Chart(document.getElementById('chartAlumnos'), {
     type: 'bar',
     data: {
       labels: nombres,
-      datasets: [{
-        label: 'Calificación',
-        data: califs,
-        backgroundColor: coloresBarras,
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
+      datasets: [{ label: 'Calificación', data: califs, backgroundColor: bgBars, borderRadius: 5, borderSkipped: false }]
     },
     options: {
-      indexAxis: 'y',
-      responsive: true,
+      indexAxis: 'y', responsive: true,
       plugins: {
         legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` Calificación: ${ctx.parsed.x}`
-          }
-        }
+        tooltip: { callbacks: { label: ctx => ` Calificación: ${ctx.parsed.x}` } }
       },
       scales: {
-        x: {
-          min: 0, max: 10,
-          grid: { color: '#f0f0f0' },
-          ticks: { font: { size: 11 } }
-        },
-        y: {
-          grid: { display: false },
-          ticks: { font: { size: 11 } }
-        }
+        x: { min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { font: { size: 10 } } },
+        y: { grid: { display: false }, ticks: { font: { size: 10 } } }
       }
     }
   });
 
-  // Dona aprobados vs reprobados
   new Chart(document.getElementById('chartAprobados'), {
     type: 'doughnut',
     data: {
       labels: ['Aprobados', 'Reprobados'],
       datasets: [{
         data: [{{ stats.aprobados }}, {{ stats.reprobados }}],
-        backgroundColor: ['#198754', '#dc3545'],
-        borderWidth: 2,
-        borderColor: '#fff',
-        hoverOffset: 6,
+        backgroundColor: ['rgba(52,211,153,0.8)', 'rgba(248,113,113,0.8)'],
+        borderColor: ['#1a1714', '#1a1714'],
+        borderWidth: 3, hoverOffset: 6,
       }]
     },
     options: {
-      responsive: true,
-      cutout: '62%',
-      plugins: {
-        legend: { display: false }
-      }
+      responsive: true, cutout: '62%',
+      plugins: { legend: { display: false } }
     }
   });
 </script>
