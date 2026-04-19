@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<!-- Profesor: bloque de contexto global (periodo + estado de alertas). -->
+<!-- Sugerencia de lectura: empieza por aquí para ubicar "qué ciclo" estás analizando. -->
 <!-- Page header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
@@ -20,6 +22,8 @@
   </div>
 </div>
 
+<!-- Profesor: estas tarjetas son el "resumen ejecutivo" del tablero.
+     Tómalas como diagnóstico rápido antes de ir al detalle por grupo. -->
 <!-- ── MÉTRICAS GLOBALES ── -->
 <div class="row g-3 mb-4">
   <div class="col-sm-6 col-xl-3">
@@ -82,6 +86,8 @@
 </div>
 
 <div class="row g-3 mb-4">
+  <!-- Profesor: iteramos `grupos` enviado por la vista `dashboard`.
+       Cada tarjeta representa un grupo y sus métricas ya calculadas en backend. -->
   {% for g in grupos %}
   <div class="col-md-6 col-xl-3">
     <div class="grupo-card">
@@ -133,6 +139,8 @@
 </div>
 
 
+<!-- Profesor: capa visual comparativa.
+     Aquí conviertes números sueltos en patrones que se interpretan más rápido. -->
 <!-- ══ PILAR 2 – VISUALIZACIONES GRUPALES ══ -->
 <div class="section-header">
   <span class="pillar-badge">Pilar 2</span>
@@ -161,6 +169,8 @@
 </div>
 
 
+<!-- Profesor: lista operativa de intervención.
+     Si tuvieras poco tiempo, este bloque te dice exactamente a quién atender primero. -->
 <!-- ══ PILAR 3 – INDICADORES DE INTERVENCIÓN ══ -->
 <div class="section-header">
   <span class="pillar-badge">Pilar 3</span>
@@ -241,6 +251,8 @@
 
 {% block scripts %}
 <script>
+  // Profesor: puente backend->frontend.
+  // Django inyecta variables y aquí se convierten en arreglos para Chart.js.
   const grupos = [{% for g in grupos %}"{{ g.nombre_corto }}"{% if not forloop.last %},{% endif %}{% endfor %}];
   const promedios = [{% for g in grupos %}{{ g.promedio }}{% if not forloop.last %},{% endif %}{% endfor %}];
   const pctAprob  = [{% for g in grupos %}{{ g.pct_aprobacion }}{% if not forloop.last %},{% endif %}{% endfor %}];
@@ -248,7 +260,8 @@
   const riesgoMedio = {% for g in grupos %}{{ g.riesgo_medio }}{% if not forloop.last %}+{% endif %}{% endfor %};
   const riesgoBajo  = {% for g in grupos %}{{ g.riesgo_bajo }}{% if not forloop.last %}+{% endif %}{% endfor %};
 
-  /* Bar chart */
+  /* Profesor: gráfica de barras para comparación lateral entre grupos.
+     Nota: % de aprobación se divide entre 10 para compartir eje con promedio (0-10). */
   new Chart(document.getElementById('chartPromedios'), {
     type: 'bar',
     data: {
@@ -287,7 +300,7 @@
     }
   });
 
-  /* Donut risk */
+  /* Profesor: dona de riesgo para lectura macro del estado académico general. */
   new Chart(document.getElementById('chartRiesgo'), {
     type: 'doughnut',
     data: {

@@ -1,3 +1,14 @@
+"""
+Este módulo concentra toda la lógica de presentación del prototipo.
+Se usan datos en memoria (diccionarios/listas) para fines de demo pedagógica,
+sin depender de modelos ni base de datos para autenticación académica.
+
+Guía de lectura (tipo profesor):
+1) Primero revisa los bloques de datos (USUARIOS, HISTORIAL_ALUMNO, MATERIAS_ACTUALES, GRUPOS).
+2) Luego estudia los helpers (_compute_stats, _usuario_sesion, _require_login).
+3) Finalmente sigue el flujo de vistas: login -> dashboard/docente o perfil/alumno.
+"""
+
 from django.shortcuts import render, redirect
 from django.http import Http404
 
@@ -5,6 +16,9 @@ from django.http import Http404
 # Usuarios demo (sin modelos, autenticación por sesión)
 # ---------------------------------------------------------------------------
 
+# Profesor: este diccionario reemplaza temporalmente una tabla de usuarios real.
+# Idea clave: aquí definimos "quién entra" y "qué rol tiene", lo cual determina
+# qué pantalla verá después del login (docente o alumno).
 USUARIOS = {
     'docente@anahuac.mx': {
         'password': 'demo123',
@@ -27,6 +41,9 @@ USUARIOS = {
 # Datos del alumno demo: historial + materias actuales
 # ---------------------------------------------------------------------------
 
+# Profesor: este bloque es la "fuente maestra" del historial del alumno demo.
+# Todo lo que ves en tablas y gráficas del perfil sale de aquí.
+# Si cambias calificaciones o créditos aquí, cambiarán los indicadores mostrados.
 HISTORIAL_ALUMNO = [
     {
         'semestre': '1° Semestre',
@@ -129,6 +146,8 @@ HISTORIAL_ALUMNO = [
     },
 ]
 
+# Profesor: estas materias representan el semestre actual (estado "en curso").
+# Se muestran en tarjetas con avance, calificación parcial y entregas.
 MATERIAS_ACTUALES = [
     {'nombre': 'Proyecto Actuarial II',           'creditos': 8, 'calificacion_parcial': 8.9, 'avance': 72, 'docente': 'Dr. Gilberto Morales',  'entregas': 9, 'total_entregas': 12},
     {'nombre': 'Ética Profesional del Actuario',  'creditos': 4, 'calificacion_parcial': 9.5, 'avance': 80, 'docente': 'Mtra. Laura Castillo',   'entregas': 8, 'total_entregas': 10},
@@ -140,6 +159,9 @@ MATERIAS_ACTUALES = [
 # Grupos activos (expandido con más materias de Actuaría)
 # ---------------------------------------------------------------------------
 
+# Profesor: catálogo principal para la experiencia del docente.
+# Cada grupo contiene alumnos y datos base para calcular métricas de riesgo,
+# aprobación y promedio que luego se pintan en dashboard y detalle de grupo.
 GRUPOS = {
     1: {
         'id': 1,
@@ -300,6 +322,10 @@ GRUPOS = {
 # ---------------------------------------------------------------------------
 
 def _compute_stats(alumnos):
+    """
+    Profesor: este helper transforma datos "crudos" (lista de alumnos)
+    en métricas de negocio listas para la interfaz (promedio, aprobados, riesgo, etc.).
+    """
     califs = [a['calificacion'] for a in alumnos]
     promedio = round(sum(califs) / len(califs), 1)
     aprobados = sum(1 for c in califs if c >= 6.0)
@@ -317,15 +343,24 @@ def _compute_stats(alumnos):
 
 
 def _grupos_nav():
+    """
+    Profesor: genera una versión liviana de `GRUPOS` para navegación lateral.
+    Solo toma id y nombre corto para no enviar más datos de los necesarios al menú.
+    """
     return [{'id': g['id'], 'nombre_corto': g['nombre_corto']} for g in GRUPOS.values()]
 
 
 def _usuario_sesion(request):
+    """Profesor: lectura centralizada del usuario autenticado desde sesión."""
     return request.session.get('usuario')
 
 
 def _require_login(request):
-    """Devuelve None si hay sesión válida, o un redirect a login si no."""
+    """
+    Profesor: guardia de acceso.
+    - Si no hay sesión, redirige al login.
+    - Si hay sesión, deja continuar la vista.
+    """
     if not _usuario_sesion(request):
         return redirect('core:login')
     return None
@@ -336,6 +371,12 @@ def _require_login(request):
 # ---------------------------------------------------------------------------
 
 def login_view(request):
+    """
+    Profesor: esta vista hace tres cosas:
+    1) Si ya hay sesión, evita re-login y redirige según rol.
+    2) Si llega POST, valida credenciales demo contra `USUARIOS`.
+    3) Si son correctas, guarda en sesión un perfil reducido para toda la app.
+    """
     if _usuario_sesion(request):
         u = _usuario_sesion(request)
         return redirect('core:perfil_alumno' if u['rol'] == 'alumno' else 'core:dashboard')
@@ -347,6 +388,8 @@ def login_view(request):
 
         usuario = USUARIOS.get(correo)
         if usuario and usuario['password'] == password:
+            # Profesor: aquí se "firma" la sesión de trabajo del usuario.
+            # Esta estructura será usada por navbar, control de roles y vistas.
             request.session['usuario'] = {
                 'correo': correo,
                 'rol':    usuario['rol'],
@@ -364,6 +407,7 @@ def login_view(request):
 
 
 def logout_view(request):
+    """Profesor: cierre total de sesión; elimina datos y fuerza volver a login."""
     request.session.flush()
     return redirect('core:login')
 
@@ -373,6 +417,10 @@ def logout_view(request):
 # ---------------------------------------------------------------------------
 
 def dashboard(request):
+    """
+    Profesor: vista principal para toma de decisiones del docente.
+    Construye indicadores globales y una cola de alumnos en riesgo para seguimiento.
+    """
     redir = _require_login(request)
     if redir:
         return redir
@@ -386,6 +434,7 @@ def dashboard(request):
     total_alertas = 0
     all_califs = []
 
+    # Profesor: aquí se arma el resumen global acumulando todos los grupos.
     for grupo in GRUPOS.values():
         stats = _compute_stats(grupo['alumnos'])
         grupos_con_stats.append({**grupo, **stats})
@@ -396,6 +445,7 @@ def dashboard(request):
     promedio_general = round(sum(all_califs) / len(all_califs), 1)
     pct_aprobacion_global = round(sum(1 for c in all_califs if c >= 6.0) / len(all_califs) * 100)
 
+    # Profesor: este bloque crea la "lista de intervención" (riesgo Alto/Medio).
     alertas_globales = []
     for grupo in GRUPOS.values():
         for alumno in grupo['alumnos']:
@@ -407,8 +457,11 @@ def dashboard(request):
                     'asistencia': alumno['asistencia'],
                     'riesgo': alumno['riesgo'],
                 })
+    # Profesor: orden pedagógico de prioridad:
+    # primero riesgo Alto, después riesgo Medio; en ambos casos, menor calificación primero.
     alertas_globales.sort(key=lambda x: (0 if x['riesgo'] == 'Alto' else 1, x['calificacion']))
 
+    # Profesor: `context` es el puente entre Python (backend) y HTML (template).
     context = {
         'usuario': usuario,
         'grupos': grupos_con_stats,
@@ -423,6 +476,10 @@ def dashboard(request):
 
 
 def detalle_grupo(request, grupo_id):
+    """
+    Profesor: zoom de un grupo específico.
+    Recibe `grupo_id` por URL, valida existencia y expone métricas + alumnos.
+    """
     redir = _require_login(request)
     if redir:
         return redir
@@ -431,6 +488,7 @@ def detalle_grupo(request, grupo_id):
     if usuario['rol'] == 'alumno':
         return redirect('core:perfil_alumno')
 
+    # Profesor: validación defensiva para no renderizar IDs inválidos.
     if grupo_id not in GRUPOS:
         raise Http404("Grupo no encontrado")
 
@@ -451,6 +509,10 @@ def detalle_grupo(request, grupo_id):
 # ---------------------------------------------------------------------------
 
 def perfil_alumno(request):
+    """
+    Profesor: tablero personal del alumno.
+    Resume avance curricular, materias en curso y desempeño histórico.
+    """
     redir = _require_login(request)
     if redir:
         return redir
@@ -459,7 +521,7 @@ def perfil_alumno(request):
     if usuario['rol'] == 'docente':
         return redirect('core:dashboard')
 
-    # Calcular promedio global del historial
+    # Profesor: calcula un único promedio acumulado para la tarjeta principal del perfil.
     todas_califs = [
         m['calificacion']
         for sem in HISTORIAL_ALUMNO
@@ -473,11 +535,12 @@ def perfil_alumno(request):
     )
     pct_avance = round(total_creditos_hist / usuario['creditos_totales'] * 100)
 
-    # Añadir promedio precalculado a cada semestre
+    # Profesor: enriquece cada semestre con `prom_semestre` para evitar recalcular en template.
     for sem in HISTORIAL_ALUMNO:
         califs_sem = [m['calificacion'] for m in sem['materias']]
         sem['prom_semestre'] = round(sum(califs_sem) / len(califs_sem), 2)
 
+    # Profesor: último paso: empaquetar todo en `context` y renderizar.
     context = {
         'usuario': usuario,
         'grupos_nav': [],

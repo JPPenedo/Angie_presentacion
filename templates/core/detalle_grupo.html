@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<!-- Profesor: breadcrumb = mapa de navegación.
+     Ayuda a no perder contexto cuando vienes del dashboard global al detalle puntual. -->
 <!-- Breadcrumb -->
 <ol class="dark-crumb mb-3">
   <li><a href="/">Dashboard</a></li>
@@ -10,6 +12,8 @@
   <li class="active">{{ grupo.nombre }}</li>
 </ol>
 
+<!-- Profesor: ficha descriptiva del grupo.
+     Antes de ver números, aquí validas que estás en el curso correcto. -->
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div>
@@ -29,6 +33,8 @@
   </a>
 </div>
 
+<!-- Profesor: KPIs del grupo.
+     Regla práctica: primero promedio/aprobación, luego riesgo y avance. -->
 <!-- Métricas -->
 <div class="row g-3 mb-4">
   <div class="col-sm-6 col-xl-3">
@@ -77,6 +83,8 @@
   </div>
 </div>
 
+<!-- Profesor: dos vistas complementarias.
+     Izquierda: desempeño individual; derecha: balance total aprobado/reprobado. -->
 <!-- Gráficas -->
 <div class="row g-3 mb-4">
   <div class="col-lg-8">
@@ -103,6 +111,8 @@
   </div>
 </div>
 
+<!-- Profesor: tabla de seguimiento individual.
+     Es la base para pasar del análisis al plan de acción por estudiante. -->
 <!-- Tabla de alumnos -->
 <div class="section-header">
   <span class="pillar-badge">Listado</span>
@@ -171,12 +181,15 @@
 
 {% block scripts %}
 <script>
+  // Profesor: tomamos datos del template y los traducimos a arreglos de JS.
   const nombres = [{% for a in grupo.alumnos %}"{{ a.nombre|truncatechars:18 }}"{% if not forloop.last %},{% endif %}{% endfor %}];
   const califs  = [{% for a in grupo.alumnos %}{{ a.calificacion }}{% if not forloop.last %},{% endif %}{% endfor %}];
+  // Profesor: semáforo visual por calificación para detectar casos críticos más rápido.
   const bgBars  = califs.map(c =>
     c < 6 ? 'rgba(248,113,113,0.75)' : c < 7.5 ? 'rgba(251,191,36,0.75)' : 'rgba(52,211,153,0.75)'
   );
 
+  // Profesor: barra horizontal mejora legibilidad cuando los nombres son largos.
   new Chart(document.getElementById('chartAlumnos'), {
     type: 'bar',
     data: {
@@ -196,6 +209,7 @@
     }
   });
 
+  // Profesor: resumen binario para comunicar estado del grupo en segundos.
   new Chart(document.getElementById('chartAprobados'), {
     type: 'doughnut',
     data: {

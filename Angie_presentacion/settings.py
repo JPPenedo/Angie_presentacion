@@ -15,6 +15,10 @@ from pathlib import Path
 import dj_database_url
 from decouple import Csv, config
 
+# BASE_DIR centraliza rutas absolutas del proyecto.
+# Es clave para construir rutas estables sin depender del directorio actual.
+# Profesor: piensa en BASE_DIR como "la raíz de referencia".
+# Desde aquí se construyen rutas consistentes para templates, estáticos y base de datos.
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,11 +27,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY firma sesiones, tokens CSRF y otros elementos sensibles de Django.
+# Debe venir desde variables de entorno para no exponerla en el repositorio.
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG habilita páginas de error detalladas; útil en desarrollo, riesgoso en producción.
 DEBUG = config('DEBUG', default=True, cast=bool)
 
+# ALLOWED_HOSTS controla desde qué dominios se puede servir la app.
+# Protege contra cabeceras Host maliciosas.
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
 # CSRF_TRUSTED_ORIGINS: dominios permitidos para solicitudes CSRF
@@ -38,6 +47,9 @@ CSRF_TRUSTED_ORIGINS = list(csrf_trusted_origins_env) if csrf_trusted_origins_en
 
 # Application definition
 
+# INSTALLED_APPS registra módulos que Django debe cargar.
+# Aquí se activan funcionalidades nativas y la app local "core".
+# Profesor: si una app no está aquí, Django actúa como si no existiera.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,6 +60,9 @@ INSTALLED_APPS = [
     'core',
 ]
 
+# MIDDLEWARE define una cadena de procesamiento por cada request/response.
+# El orden importa porque cada capa envuelve a la siguiente.
+# Profesor: léelo como "pipeline" de seguridad, sesión y utilidades.
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -61,6 +76,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Angie_presentacion.urls'
 
+# TEMPLATES indica dónde buscar HTML y qué utilidades inyectar en contexto.
+# Sin esto, render() no encontraría plantillas ni variables globales.
+# Profesor: `context_processors` agrega variables útiles sin repetir código en cada vista.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -85,6 +103,10 @@ WSGI_APPLICATION = 'Angie_presentacion.wsgi.application'
 
 _default_sqlite_url = 'sqlite:///' + (BASE_DIR / 'db.sqlite3').as_posix()
 
+# DATABASES usa dj_database_url para permitir cambiar de SQLite local
+# a una base productiva (por ejemplo Postgres) solo con variables de entorno.
+# Profesor: esta estrategia facilita despliegue porque el mismo código funciona
+# en local y producción cambiando solo `DATABASE_URL`.
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL', default=_default_sqlite_url),
@@ -95,6 +117,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
+# Validadores para fortalecer contraseñas y reducir credenciales débiles.
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -114,8 +137,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
+# Idioma base de la interfaz y formatos regionales.
 LANGUAGE_CODE = 'es-mx'
 
+# Zona horaria para fechas, auditoría y reportes.
 TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
@@ -126,14 +151,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+# URL pública de archivos estáticos.
 STATIC_URL = '/static/'
 
+# Carpeta destino para collectstatic en despliegue.
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Carpeta local con assets del proyecto durante desarrollo.
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+# STORAGES define cómo se almacenan archivos normales y estáticos.
+# WhiteNoise permite servir estáticos comprimidos y con versionado.
+# Profesor: este bloque es importante para que CSS/JS funcionen correctamente en producción.
 STORAGES = {
     'default': {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
@@ -144,6 +175,7 @@ STORAGES = {
 }
 
 # Media files
+# MEDIA_* separa archivos subidos por usuarios de los estáticos del sistema.
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -154,6 +186,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login (ajusta rutas cuando añadas vistas de autenticación)
+# Rutas de autenticación para redirecciones automáticas del sistema.
+# Profesor: estas rutas unifican a dónde mandar al usuario al iniciar/cerrar sesión.
 LOGIN_URL = '/login/'
 
 LOGIN_REDIRECT_URL = '/'
@@ -168,6 +202,7 @@ SESSION_COOKIE_AGE = 3600  # 1 hora (demo)
 # =====================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# Parámetros SMTP configurables vía .env para evitar credenciales hardcodeadas.
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)

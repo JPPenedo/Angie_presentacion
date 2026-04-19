@@ -1,3 +1,4 @@
 from django.test import TestCase
 
-# Create your tests here.
+# Este módulo agrupa pruebas automatizadas para validar comportamiento.
+# Sigue vacío porque el prototipo aún no incorpora suite de pruebas.

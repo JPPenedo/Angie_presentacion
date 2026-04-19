@@ -17,7 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+# Tabla principal de rutas del proyecto.
+# Centraliza la entrada al admin de Django y delega el resto a la app `core`.
+# Profesor: este archivo es el "router raíz"; rara vez contiene lógica de negocio.
 urlpatterns = [
+    # Ruta interna de administración automática de Django.
     path('admin/', admin.site.urls),
+    # Todas las páginas funcionales del sistema viven dentro de `core.urls`.
     path('', include('core.urls')),
 ]

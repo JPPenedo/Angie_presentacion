@@ -3,6 +3,8 @@
 
 {% block content %}
 
+<!-- Profesor: identificación académica del alumno.
+     Primer bloque para confirmar persona, semestre y periodo evaluado. -->
 <!-- Header -->
 <div class="d-flex justify-content-between align-items-start mb-4">
   <div>
@@ -20,6 +22,8 @@
   </span>
 </div>
 
+<!-- Profesor: KPIs personales.
+     Estos indicadores responden: ¿cómo voy?, ¿cuánto me falta?, ¿qué estoy cursando? -->
 <!-- Métricas -->
 <div class="row g-3 mb-4">
   <div class="col-sm-6 col-xl-3">
@@ -72,6 +76,8 @@
   </div>
 </div>
 
+<!-- Profesor: progreso contra plan de estudios.
+     Convierte créditos acumulados en una lectura visual de avance real. -->
 <!-- Progreso carrera -->
 <div class="card-dark" style="padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
@@ -91,6 +97,8 @@
 </div>
 
 
+<!-- Profesor: vista táctica del semestre actual.
+     Cada tarjeta te muestra desempeño parcial y cumplimiento de entregas. -->
 <!-- ══ MATERIAS EN CURSO ══ -->
 <div class="section-header">
   <span class="pillar-badge" style="background:var(--gold-dim);color:var(--gold);border-color:rgba(200,151,43,0.3);">
@@ -100,6 +108,8 @@
 </div>
 
 <div class="row g-3 mb-4">
+  <!-- Profesor: loop sobre `materias_actuales`.
+       La plantilla no calcula notas; solo presenta lo que envía la vista. -->
   {% for m in materias_actuales %}
   <div class="col-md-6">
     <div class="materia-card">
@@ -150,6 +160,7 @@
 </div>
 
 
+<!-- Profesor: visión histórica para detectar tendencias (mejora, estabilidad o caída). -->
 <!-- ══ HISTORIAL ACADÉMICO ══ -->
 <div class="section-header">
   <span class="pillar-badge">Historial</span>
@@ -159,6 +170,8 @@
   </span>
 </div>
 
+<!-- Profesor: gráfica longitudinal.
+     Úsala para analizar evolución, no solo foto instantánea del semestre. -->
 <!-- Gráfica evolución -->
 <div class="chart-card mb-4">
   <div class="chart-title">
@@ -167,6 +180,8 @@
   <canvas id="chartEvolucion" height="70"></canvas>
 </div>
 
+<!-- Profesor: acordeón por semestre.
+     Mantiene detalle completo sin saturar la pantalla principal. -->
 <!-- Acordeón historial -->
 <div id="historialAcordeon" style="margin-bottom:2rem;">
   {% for sem in historial %}
@@ -225,7 +240,10 @@
 
 {% block scripts %}
 <script>
+  // Profesor: eje X (semestres) construido con datos que vienen del backend.
   const semestres = [{% for sem in historial %}"{{ sem.semestre }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  // Profesor: calculamos promedio por semestre para visualizar tendencia.
+  // (En una versión productiva, esto podría venir precalculado desde backend.)
   const promediosSem = [
     {% for sem in historial %}
     +({% for m in sem.materias %}{{ m.calificacion }}{% if not forloop.last %}+{% endif %}{% endfor %}) / {{ sem.materias|length }}
@@ -233,6 +251,7 @@
     {% endfor %}
   ].map(v => Math.round(v * 100) / 100);
 
+  // Profesor: línea de tendencia; ideal para conversaciones de seguimiento académico.
   new Chart(document.getElementById('chartEvolucion'), {
     type: 'line',
     data: {

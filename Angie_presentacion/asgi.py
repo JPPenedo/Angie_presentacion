@@ -11,6 +11,9 @@ import os
 
 from django.core.asgi import get_asgi_application
 
+# Define el módulo de configuración que ASGI debe cargar.
+# Es obligatorio para servir la app en servidores asíncronos.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Angie_presentacion.settings')
 
+# `application` es el callable ASGI que usa el servidor (uvicorn/daphne).
 application = get_asgi_application()

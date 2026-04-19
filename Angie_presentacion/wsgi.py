@@ -11,6 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+# Define el módulo de settings para servidores WSGI (gunicorn, mod_wsgi).
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Angie_presentacion.settings')
 
+# `application` es la puerta de entrada estándar para despliegues WSGI.
 application = get_wsgi_application()
