@@ -15,6 +15,8 @@ urlpatterns = [
     path('grupo/<int:grupo_id>/', views.detalle_grupo,  name='detalle_grupo'),
     # Pantalla de acceso al sistema.
     path('login/',               views.login_view,     name='login'),
+    # Pantalla para registro de una nueva cuenta de alumno.
+    path('crear-cuenta/',        views.crear_cuenta_view, name='crear_cuenta'),
     # Cierre de sesión y limpieza de datos de autenticación.
     path('logout/',              views.logout_view,    name='logout'),
     # Vista principal del alumno (perfil académico).

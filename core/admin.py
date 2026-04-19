@@ -1,4 +1,8 @@
 from django.contrib import admin
+from .models import CuentaAlumno
 
-# Este archivo sirve para registrar modelos en el panel de administración.
-# En este prototipo no hay modelos persistentes aún, por eso queda vacío.
+
+@admin.register(CuentaAlumno)
+class CuentaAlumnoAdmin(admin.ModelAdmin):
+    list_display = ("nombre_completo", "correo_institucional", "id_institucional", "created_at")
+    search_fields = ("nombre_completo", "correo_institucional", "id_institucional")

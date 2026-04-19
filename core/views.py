@@ -11,6 +11,7 @@ Guía de lectura (tipo profesor):
 
 from django.shortcuts import render, redirect
 from django.http import Http404
+from .models import CuentaAlumno
 
 # ---------------------------------------------------------------------------
 # Usuarios demo (sin modelos, autenticación por sesión)
@@ -382,6 +383,10 @@ def login_view(request):
         return redirect('core:perfil_alumno' if u['rol'] == 'alumno' else 'core:dashboard')
 
     error = None
+    info = None
+    prefill_correo = request.GET.get('correo', '').strip().lower()
+    if request.GET.get('created') == '1':
+        info = 'Cuenta creada correctamente. Inicia sesión con tu correo y tu ID institucional (8 dígitos).'
     if request.method == 'POST':
         correo   = request.POST.get('correo', '').strip().lower()
         password = request.POST.get('password', '').strip()
@@ -400,10 +405,74 @@ def login_view(request):
             if usuario['rol'] == 'alumno':
                 return redirect('core:perfil_alumno')
             return redirect('core:dashboard')
+        cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
+        if cuenta and cuenta.id_institucional == password:
+            request.session['usuario'] = {
+                'correo': cuenta.correo_institucional,
+                'rol': 'alumno',
+                'nombre': cuenta.nombre_completo,
+                'matricula': cuenta.id_institucional,
+                'semestre_actual': 1,
+                'creditos_totales': 240,
+                'creditos_acreditados': 0,
+            }
+            return redirect('core:perfil_alumno')
         else:
-            error = 'Correo o contraseña incorrectos. Verifica tus credenciales demo.'
+            error = 'Correo o contraseña/ID incorrectos.'
 
-    return render(request, 'core/login.html', {'error': error})
+    return render(
+        request,
+        'core/login.html',
+        {
+            'error': error,
+            'info': info,
+            'prefill_correo': prefill_correo,
+        },
+    )
+
+
+def crear_cuenta_view(request):
+    """
+    Profesor: registro mínimo de cuentas para alumnos.
+    Campos solicitados: correo institucional, nombre completo e ID de 8 dígitos.
+    """
+    if _usuario_sesion(request):
+        u = _usuario_sesion(request)
+        return redirect('core:perfil_alumno' if u['rol'] == 'alumno' else 'core:dashboard')
+
+    error = None
+    form_data = {'correo': '', 'nombre_completo': '', 'id_institucional': ''}
+
+    if request.method == 'POST':
+        correo = request.POST.get('correo', '').strip().lower()
+        nombre_completo = request.POST.get('nombre_completo', '').strip()
+        id_institucional = request.POST.get('id_institucional', '').strip()
+
+        form_data = {
+            'correo': correo,
+            'nombre_completo': nombre_completo,
+            'id_institucional': id_institucional,
+        }
+
+        if not correo.endswith('@anahuac.mx'):
+            error = 'Debes usar un correo institucional que termine en @anahuac.mx.'
+        elif not nombre_completo:
+            error = 'El nombre completo es obligatorio.'
+        elif not (id_institucional.isdigit() and len(id_institucional) == 8):
+            error = 'El ID institucional debe contener exactamente 8 dígitos.'
+        elif CuentaAlumno.objects.filter(correo_institucional=correo).exists():
+            error = 'Ese correo ya tiene una cuenta registrada.'
+        elif CuentaAlumno.objects.filter(id_institucional=id_institucional).exists():
+            error = 'Ese ID institucional ya está registrado.'
+        else:
+            CuentaAlumno.objects.create(
+                correo_institucional=correo,
+                nombre_completo=nombre_completo,
+                id_institucional=id_institucional,
+            )
+            return redirect(f"{redirect('core:login').url}?created=1&correo={correo}")
+
+    return render(request, 'core/signup.html', {'error': error, 'form_data': form_data})
 
 
 def logout_view(request):
