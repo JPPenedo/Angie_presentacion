@@ -74,6 +74,16 @@
       padding: 0.65rem 0.75rem 0.65rem 0;
       outline: none;
     }
+    .input-group-dark input:-webkit-autofill,
+    .input-group-dark input:-webkit-autofill:hover,
+    .input-group-dark input:-webkit-autofill:focus,
+    .input-group-dark input:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--text);
+      -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.04) inset;
+      box-shadow: 0 0 0 1000px rgba(255,255,255,0.04) inset;
+      caret-color: var(--text);
+      transition: background-color 9999s ease-in-out 0s;
+    }
     .input-group-dark select {
       flex: 1;
       border: none;

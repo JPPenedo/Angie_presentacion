@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
+from django.db import DatabaseError
 from django.urls import reverse
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -469,9 +470,21 @@ def login_view(request):
                 return redirect('core:perfil_alumno')
             return redirect('core:dashboard')
 
-        cuenta = CuentaAlumno.objects.filter(
-            Q(correo_institucional=dato_acceso) | Q(id_institucional=dato_acceso)
-        ).first()
+        try:
+            cuenta = CuentaAlumno.objects.filter(
+                Q(correo_institucional=dato_acceso) | Q(id_institucional=dato_acceso)
+            ).first()
+        except DatabaseError:
+            error = 'No se pudo consultar cuentas registradas. Verifica que las migraciones estén aplicadas en el servidor.'
+            return render(
+                request,
+                'core/login.html',
+                {
+                    'error': error,
+                    'info': info,
+                    'prefill_dato': dato_acceso,
+                },
+            )
 
         if cuenta and check_password(password, cuenta.password_hash):
             if not cuenta.is_verified:
@@ -559,14 +572,27 @@ def crear_cuenta_view(request):
         elif CuentaAlumno.objects.filter(id_institucional=id_institucional).exists():
             error = 'Ese ID institucional ya está registrado.'
         else:
-            cuenta = CuentaAlumno.objects.create(
-                correo_institucional=correo,
-                nombre_completo=nombre_completo,
-                id_institucional=id_institucional,
-                rol=rol,
-                password_hash=make_password(password),
-                verification_token=secrets.token_urlsafe(24),
-            )
+            try:
+                cuenta = CuentaAlumno.objects.create(
+                    correo_institucional=correo,
+                    nombre_completo=nombre_completo,
+                    id_institucional=id_institucional,
+                    rol=rol,
+                    password_hash=make_password(password),
+                    verification_token=secrets.token_urlsafe(24),
+                )
+            except DatabaseError:
+                return render(
+                    request,
+                    'core/signup.html',
+                    {
+                        'error': (
+                            'No se pudo guardar la cuenta en base de datos. '
+                            'Verifica que las migraciones estén aplicadas en el servidor.'
+                        ),
+                        'form_data': form_data,
+                    },
+                )
             try:
                 _send_verification_email(request, cuenta)
             except Exception:
@@ -609,13 +635,19 @@ def recuperar_password_view(request):
         if not correo:
             error = 'Debes ingresar un correo institucional.'
         else:
-            cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
+            try:
+                cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
+            except DatabaseError:
+                error = 'No se pudo procesar la recuperación. Verifica migraciones de base de datos en el servidor.'
+                return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
             if cuenta:
-                cuenta.reset_token = secrets.token_urlsafe(24)
-                cuenta.reset_token_expires_at = timezone.now() + timedelta(minutes=30)
-                cuenta.save(update_fields=['reset_token', 'reset_token_expires_at'])
                 try:
+                    cuenta.reset_token = secrets.token_urlsafe(24)
+                    cuenta.reset_token_expires_at = timezone.now() + timedelta(minutes=30)
+                    cuenta.save(update_fields=['reset_token', 'reset_token_expires_at'])
                     _send_password_reset_email(request, cuenta)
+                except DatabaseError:
+                    error = 'No se pudo guardar el token de recuperación. Verifica migraciones de base de datos en el servidor.'
                 except Exception:
                     error = 'No se pudo enviar el correo de recuperación. Revisa la configuración SMTP.'
             if not error:
