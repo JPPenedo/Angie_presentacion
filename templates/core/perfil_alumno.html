@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil Académico{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="fw-bold mb-1" style="font-size:1.5rem;color:#1a2b3c;">Mi Perfil Académico</h1>
+    <p class="text-muted mb-0" style="font-size:0.88rem;">
+      <i class="bi bi-person-badge me-1"></i>{{ usuario.matricula }} &nbsp;&middot;&nbsp;
+      <i class="bi bi-mortarboard me-1"></i>{{ usuario.semestre_actual }}° Semestre &nbsp;&middot;&nbsp;
+      <i class="bi bi-calendar3 me-1"></i>Ene–May 2026
+    </p>
+  </div>
+  <div class="text-end">
+    <div class="badge bg-primary px-3 py-2" style="font-size:0.8rem;">
+      <i class="bi bi-award-fill me-1"></i>Licenciatura en Actuaría
+    </div>
+  </div>
+</div>
+
+<!-- Métricas del alumno -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:#003A70;">{{ promedio_global }}</div>
+          <div class="stat-label">Promedio Acumulado</div>
+        </div>
+        <div class="stat-icon" style="background:#e8f0fe;">
+          <i class="bi bi-bar-chart-line-fill text-primary"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value text-success">{{ total_creditos_hist }}</div>
+          <div class="stat-label">Créditos Acreditados</div>
+        </div>
+        <div class="stat-icon" style="background:#d1fae5;">
+          <i class="bi bi-check-circle-fill text-success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:#C8972B;">{{ pct_avance }}%</div>
+          <div class="stat-label">Avance de la Carrera</div>
+        </div>
+        <div class="stat-icon" style="background:#fff3cd;">
+          <i class="bi bi-hourglass-split" style="color:#C8972B;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:#1a2b3c;">{{ materias_actuales|length }}</div>
+          <div class="stat-label">Materias en Curso</div>
+        </div>
+        <div class="stat-icon" style="background:#f3e8ff;">
+          <i class="bi bi-journal-bookmark-fill" style="color:#7c3aed;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Barra de progreso de carrera -->
+<div class="card border-0 shadow-sm mb-4 p-4" style="border-radius:1rem;">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="fw-semibold" style="font-size:0.9rem;color:#1a2b3c;">
+      <i class="bi bi-mortarboard me-2" style="color:#003A70;"></i>Progreso hacia la titulación
+    </span>
+    <span class="text-muted" style="font-size:0.82rem;">
+      {{ total_creditos_hist }} / {{ usuario.creditos_totales }} créditos
+    </span>
+  </div>
+  <div class="progress" style="height:14px;border-radius:100px;">
+    <div class="progress-bar" style="width:{{ pct_avance }}%;background:linear-gradient(90deg,#003A70,#0066cc);border-radius:100px;">
+    </div>
+  </div>
+  <div class="d-flex justify-content-between mt-1" style="font-size:0.72rem;color:#6c757d;">
+    <span>1° Semestre</span><span>5° Semestre</span><span>10° Semestre</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════
+     MATERIAS ACTUALES
+══════════════════════ -->
+<div class="section-header">
+  <span class="pillar-badge" style="background:#C8972B;">10° Sem</span>
+  <h2 class="section-title">Materias en Curso — Ene–May 2026</h2>
+</div>
+
+<div class="row g-3 mb-5">
+  {% for m in materias_actuales %}
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h6 class="fw-bold mb-0" style="font-size:0.95rem;color:#1a2b3c;">{{ m.nombre }}</h6>
+            <small class="text-muted">{{ m.docente }}</small>
+          </div>
+          <span class="badge bg-light text-dark border" style="font-size:0.72rem;">{{ m.creditos }} cred.</span>
+        </div>
+
+        <!-- Avance del curso -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <small class="text-muted">Avance del curso</small>
+            <small class="fw-bold">{{ m.avance }}%</small>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:{{ m.avance }}%;background:#003A70;"></div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="text-center">
+            <div class="fw-bold" style="font-size:1.3rem;color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}#198754{% elif m.calificacion_parcial >= 7 %}#003A70{% else %}#fd7e14{% endif %}{% else %}#adb5bd{% endif %};">
+              {% if m.calificacion_parcial %}{{ m.calificacion_parcial }}{% else %}&mdash;{% endif %}
+            </div>
+            <small class="text-muted" style="font-size:0.72rem;">Cal. parcial</small>
+          </div>
+          <div class="text-center">
+            <div class="fw-bold text-muted" style="font-size:1.1rem;">{{ m.entregas }}/{{ m.total_entregas }}</div>
+            <small class="text-muted" style="font-size:0.72rem;">Entregas</small>
+          </div>
+          <div class="text-center">
+            <div class="progress" style="width:60px;height:6px;display:inline-block;vertical-align:middle;">
+              <div class="progress-bar bg-success" style="width:{% widthratio m.entregas m.total_entregas 100 %}%;"></div>
+            </div><br>
+            <small class="text-muted" style="font-size:0.7rem;">{% widthratio m.entregas m.total_entregas 100 %}% entregado</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+<!-- ══════════════════════
+     HISTORIAL ACADÉMICO
+══════════════════════ -->
+<div class="section-header">
+  <span class="pillar-badge">Historial</span>
+  <h2 class="section-title">Historial Académico</h2>
+  <span class="ms-auto text-muted" style="font-size:0.82rem;">Semestres 1° al 9° · Materias acreditadas</span>
+</div>
+
+<!-- Gráfica de promedios por semestre -->
+<div class="chart-card p-4 mb-4">
+  <h6 class="fw-bold mb-3" style="color:#1a2b3c;">
+    <i class="bi bi-graph-up me-2" style="color:#003A70;"></i>Evolución del Promedio por Semestre
+  </h6>
+  <canvas id="chartEvolucion" height="70"></canvas>
+</div>
+
+<!-- Acordeón por semestre -->
+<div class="accordion mb-4" id="historialAcordeon">
+  {% for sem in historial %}
+  <div class="accordion-item border-0 mb-2" style="border-radius:0.75rem;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+    <h2 class="accordion-header">
+      <button class="accordion-button {% if not forloop.last %}collapsed{% endif %} fw-semibold"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#sem{{ forloop.counter }}"
+              style="font-size:0.9rem;">
+        <span class="me-3">{{ sem.semestre }}</span>
+        <span class="text-muted fw-normal me-auto" style="font-size:0.8rem;">{{ sem.periodo }}</span>
+        {% with total_cred=0 %}
+        <span class="badge bg-light text-dark border me-2" style="font-size:0.72rem;">
+          {{ sem.materias|length }} materias
+        </span>
+        {% endwith %}
+        <!-- Promedio del semestre -->
+        <span class="badge" style="background:#003A70;font-size:0.75rem;margin-right:0.5rem;">
+          Prom. sem.: {{ sem.prom_semestre|default_if_none:"—" }}
+        </span>
+      </button>
+    </h2>
+    <div id="sem{{ forloop.counter }}"
+         class="accordion-collapse collapse {% if forloop.last %}show{% endif %}"
+         data-bs-parent="#historialAcordeon">
+      <div class="accordion-body p-0">
+        <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
+          <thead style="background:#f8f9fc;">
+            <tr>
+              <th class="ps-4 py-2 fw-semibold text-muted">Materia</th>
+              <th class="py-2 fw-semibold text-muted text-center">Créditos</th>
+              <th class="py-2 fw-semibold text-muted text-center">Calificación</th>
+              <th class="pe-4 py-2 fw-semibold text-muted text-center">Estatus</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in sem.materias %}
+            <tr>
+              <td class="ps-4 fw-semibold">{{ m.nombre }}</td>
+              <td class="text-center text-muted">{{ m.creditos }}</td>
+              <td class="text-center">
+                <span class="fw-bold {% if m.calificacion >= 9 %}text-success{% elif m.calificacion >= 7.5 %}text-primary{% else %}text-warning{% endif %}">
+                  {{ m.calificacion }}
+                </span>
+              </td>
+              <td class="text-center pe-4">
+                <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill" style="font-size:0.72rem;">
+                  <i class="bi bi-check-circle-fill me-1"></i>{{ m.estatus }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  // Promedios por semestre para la gráfica
+  const semestres = [
+    {% for sem in historial %}"{{ sem.semestre }}"{% if not forloop.last %},{% endif %}{% endfor %}
+  ];
+
+  // Calculamos promedios en Python y los pasamos
+  const promediosPorSem = [
+    {% for sem in historial %}
+    +({% for m in sem.materias %}{{ m.calificacion }}{% if not forloop.last %}+{% endif %}{% endfor %}) / {{ sem.materias|length }}
+    {% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ].map(v => Math.round(v * 100) / 100);
+
+  new Chart(document.getElementById('chartEvolucion'), {
+    type: 'line',
+    data: {
+      labels: semestres,
+      datasets: [{
+        label: 'Promedio del semestre',
+        data: promediosPorSem,
+        borderColor: '#003A70',
+        backgroundColor: 'rgba(0,58,112,0.08)',
+        pointBackgroundColor: '#C8972B',
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        fill: true,
+        tension: 0.35,
+        borderWidth: 2.5,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ` Promedio: ${ctx.parsed.y.toFixed(2)}` }
+        }
+      },
+      scales: {
+        y: {
+          min: 7, max: 10,
+          grid: { color: '#f0f0f0' },
+          ticks: { font: { size: 11 } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 10 } }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

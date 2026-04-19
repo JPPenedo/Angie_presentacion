@@ -160,6 +160,8 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/login/'
 
+SESSION_COOKIE_AGE = 3600  # 1 hora (demo)
+
 
 # =====================
 # CONFIGURACIÓN DE EMAIL

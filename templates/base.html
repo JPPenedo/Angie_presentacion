@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Plataforma Académica{% endblock %} | Universidad Anáhuac Puebla</title>
 
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
   <style>
@@ -18,25 +15,12 @@
       --anahuac-gold: #C8972B;
       --sidebar-width: 240px;
     }
-
     body {
       background-color: #f0f4f8;
       font-family: 'Segoe UI', system-ui, sans-serif;
     }
-
-    /* Navbar */
-    .navbar-brand-text {
-      font-size: 0.85rem;
-      line-height: 1.2;
-    }
-    .navbar-brand-text .brand-main {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-    .navbar-brand-text .brand-sub {
-      color: var(--anahuac-gold);
-      font-size: 0.75rem;
-    }
+    .navbar-brand-text .brand-main { font-weight: 700; font-size: 1rem; }
+    .navbar-brand-text .brand-sub  { color: var(--anahuac-gold); font-size: 0.75rem; }
 
     /* Sidebar */
     .sidebar {
@@ -44,117 +28,51 @@
       min-height: 100vh;
       background: var(--anahuac-blue);
       position: fixed;
-      top: 56px;
-      left: 0;
+      top: 56px; left: 0;
       padding-top: 1.5rem;
       z-index: 100;
+      overflow-y: auto;
     }
-
     .sidebar .nav-link {
       color: rgba(255,255,255,0.75);
-      padding: 0.6rem 1.2rem;
+      padding: 0.55rem 1.2rem;
       border-radius: 0.375rem;
       margin: 0.1rem 0.5rem;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .sidebar .nav-link:hover,
     .sidebar .nav-link.active {
       background: rgba(200,151,43,0.2);
       color: var(--anahuac-gold);
     }
-    .sidebar .nav-link i {
-      width: 20px;
-    }
     .sidebar-label {
       color: rgba(255,255,255,0.35);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 0.75rem 1.7rem 0.3rem;
     }
 
-    /* Main content */
+    /* Alumno sidebar accent */
+    .sidebar.sidebar-alumno { background: #0f2d52; }
+    .sidebar.sidebar-alumno .nav-link.active,
+    .sidebar.sidebar-alumno .nav-link:hover {
+      background: rgba(200,151,43,0.25);
+      color: var(--anahuac-gold);
+    }
+
+    /* Main & footer */
     .main-content {
       margin-left: var(--sidebar-width);
       margin-top: 56px;
       padding: 2rem;
       min-height: calc(100vh - 56px);
     }
-
-    /* Stat cards */
-    .stat-card {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    }
-    .stat-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-    }
-    .stat-value {
-      font-size: 1.9rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.8rem;
-      color: #6c757d;
-      margin-top: 0.2rem;
-    }
-
-    /* Section headers */
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .section-header .pillar-badge {
-      background: var(--anahuac-blue);
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0.2rem 0.55rem;
-      border-radius: 100px;
-    }
-    .section-title {
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: #1a2b3c;
-      margin: 0;
-    }
-
-    /* Chart cards */
-    .chart-card {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      background: white;
-    }
-
-    /* Risk badges */
-    .badge-riesgo-alto   { background-color: #dc3545; color: white; }
-    .badge-riesgo-medio  { background-color: #fd7e14; color: white; }
-    .badge-riesgo-bajo   { background-color: #198754; color: white; }
-
-    /* Progress bars */
-    .progress { border-radius: 100px; height: 8px; }
-
-    /* Footer */
     footer {
       margin-left: var(--sidebar-width);
       background: white;
@@ -163,6 +81,37 @@
       font-size: 0.78rem;
       color: #6c757d;
     }
+
+    /* Stat cards */
+    .stat-card {
+      border: none; border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+    .stat-icon {
+      width: 52px; height: 52px; border-radius: 0.75rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+    }
+    .stat-value { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: #6c757d; margin-top: 0.2rem; }
+
+    .section-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .section-header .pillar-badge {
+      background: var(--anahuac-blue); color: white;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 100px;
+    }
+    .section-title { font-weight: 700; font-size: 1.05rem; color: #1a2b3c; margin: 0; }
+
+    .chart-card {
+      border: none; border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07); background: white;
+    }
+    .badge-riesgo-alto  { background-color: #dc3545; color: white; }
+    .badge-riesgo-medio { background-color: #fd7e14; color: white; }
+    .badge-riesgo-bajo  { background-color: #198754; color: white; }
+    .progress { border-radius: 100px; height: 8px; }
 
     @media (max-width: 768px) {
       .sidebar { display: none; }
@@ -173,7 +122,7 @@
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-dark fixed-top px-3" style="background: var(--anahuac-blue); height:56px;">
+  <nav class="navbar navbar-dark fixed-top px-3" style="background:var(--anahuac-blue);height:56px;">
     <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="/">
       <div style="background:var(--anahuac-gold);width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;">
         <i class="bi bi-mortarboard-fill text-white" style="font-size:1rem;"></i>
@@ -185,31 +134,71 @@
     </a>
     <div class="d-flex align-items-center gap-3">
       <span class="badge" style="background:var(--anahuac-gold);font-size:0.7rem;">PROTOTIPO</span>
-      <div class="d-flex align-items-center gap-2 text-white-50" style="font-size:0.82rem;">
-        <i class="bi bi-person-circle" style="font-size:1.1rem;color:white;"></i>
-        <span class="text-white">Dr. Gilberto Morales</span>
-      </div>
+      {% if usuario %}
+        <div class="d-flex align-items-center gap-2">
+          {% if usuario.rol == 'docente' %}
+            <span class="badge bg-primary" style="font-size:0.7rem;">
+              <i class="bi bi-person-badge-fill me-1"></i>Docente
+            </span>
+          {% else %}
+            <span class="badge" style="background:var(--anahuac-gold);font-size:0.7rem;">
+              <i class="bi bi-mortarboard-fill me-1"></i>Alumno
+            </span>
+          {% endif %}
+          <span class="text-white" style="font-size:0.82rem;">{{ usuario.nombre }}</span>
+          <a href="{% url 'core:logout' %}" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.75rem;">
+            <i class="bi bi-box-arrow-right me-1"></i>Salir
+          </a>
+        </div>
+      {% endif %}
     </div>
   </nav>
 
   <!-- Sidebar -->
-  <nav class="sidebar d-flex flex-column">
-    <div class="sidebar-label">Navegación</div>
-    <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
-      <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
-    </a>
+  <nav class="sidebar {% if usuario and usuario.rol == 'alumno' %}sidebar-alumno{% endif %} d-flex flex-column">
 
-    <div class="sidebar-label mt-3">Grupos</div>
-    {% for g in grupos_nav %}
-    <a href="/grupo/{{ g.id }}/" class="nav-link {% if request.path == '/grupo/'|add:g.id|add:'/' %}active{% endif %}">
-      <i class="bi bi-people-fill me-2"></i> {{ g.nombre_corto }}
-    </a>
-    {% endfor %}
+    {% if usuario and usuario.rol == 'docente' %}
+      <!-- SIDEBAR DOCENTE -->
+      <div class="sidebar-label">Panel Principal</div>
+      <a href="{% url 'core:dashboard' %}" class="nav-link {% if request.path == '/' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill me-2"></i>Dashboard
+      </a>
 
-    <div class="sidebar-label mt-3">Sistema</div>
-    <a href="#" class="nav-link">
-      <i class="bi bi-info-circle me-2"></i> Acerca de
-    </a>
+      <div class="sidebar-label mt-2">Grupos Activos</div>
+      {% for g in grupos_nav %}
+      <a href="{% url 'core:detalle_grupo' g.id %}"
+         class="nav-link {% if request.path == '/grupo/'|add:g.id|add:'/' %}active{% endif %}">
+        <i class="bi bi-people-fill me-2"></i>{{ g.nombre_corto }}
+      </a>
+      {% endfor %}
+
+      <div class="sidebar-label mt-2">Sistema</div>
+      <a href="#" class="nav-link"><i class="bi bi-info-circle me-2"></i>Acerca de</a>
+
+    {% elif usuario and usuario.rol == 'alumno' %}
+      <!-- SIDEBAR ALUMNO -->
+      <div class="px-3 py-2 mb-1">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(200,151,43,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 0.4rem;">
+          <i class="bi bi-mortarboard-fill" style="color:var(--anahuac-gold);font-size:1.3rem;"></i>
+        </div>
+        <div class="text-center text-white fw-semibold" style="font-size:0.82rem;">{{ usuario.nombre }}</div>
+        <div class="text-center text-white-50" style="font-size:0.7rem;">{{ usuario.matricula }} · {{ usuario.semestre_actual }}° Sem.</div>
+      </div>
+
+      <div class="sidebar-label">Mi Espacio</div>
+      <a href="{% url 'core:perfil_alumno' %}"
+         class="nav-link {% if request.path == '/mi-perfil/' %}active{% endif %}">
+        <i class="bi bi-person-circle me-2"></i>Mi Perfil Académico
+      </a>
+
+      <div class="sidebar-label mt-2">Sistema</div>
+      <a href="#" class="nav-link"><i class="bi bi-info-circle me-2"></i>Acerca de</a>
+
+    {% endif %}
+
+    <div class="mt-auto pb-3 px-3" style="font-size:0.7rem;color:rgba(255,255,255,0.3);text-align:center;">
+      v1.0 · Prototipo 2026
+    </div>
   </nav>
 
   <!-- Main content -->
