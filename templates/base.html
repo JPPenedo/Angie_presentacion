@@ -195,13 +195,13 @@
   <!-- Sidebar -->
   <nav class="sidebar d-flex flex-column">
     <div class="sidebar-label">Navegación</div>
-    <a href="/" class="nav-link {% block nav_dashboard %}{% endblock %}">
+    <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
       <i class="bi bi-grid-1x2-fill me-2"></i> Dashboard
     </a>
 
     <div class="sidebar-label mt-3">Grupos</div>
     {% for g in grupos_nav %}
-    <a href="/grupo/{{ g.id }}/" class="nav-link {% block nav_grupo_{{ g.id }} %}{% endblock %}">
+    <a href="/grupo/{{ g.id }}/" class="nav-link {% if request.path == '/grupo/'|add:g.id|add:'/' %}active{% endif %}">
       <i class="bi bi-people-fill me-2"></i> {{ g.nombre_corto }}
     </a>
     {% endfor %}
