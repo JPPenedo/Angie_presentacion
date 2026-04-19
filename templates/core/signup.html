@@ -74,6 +74,18 @@
       padding: 0.65rem 0.75rem 0.65rem 0;
       outline: none;
     }
+    .input-group-dark select {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      padding: 0.65rem 0.75rem 0.65rem 0;
+      outline: none;
+    }
+    .input-group-dark select option {
+      background: #1a1714;
+      color: #f0ede9;
+    }
     .btn-main {
       width: 100%;
       border: none;
@@ -132,6 +144,18 @@
         {% csrf_token %}
 
         <div style="margin-bottom:0.85rem;">
+          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Tipo de cuenta</label>
+          <div class="input-group-dark">
+            <span class="ig-icon"><i class="bi bi-diagram-3"></i></span>
+            <select name="rol">
+              <option value="alumno" {% if form_data.rol == 'alumno' %}selected{% endif %}>Alumno</option>
+              <option value="docente" {% if form_data.rol == 'docente' %}selected{% endif %}>Docente</option>
+              <option value="coordinacion" {% if form_data.rol == 'coordinacion' %}selected{% endif %}>Coordinación académica</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.85rem;">
           <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Correo institucional</label>
           <div class="input-group-dark">
             <span class="ig-icon"><i class="bi bi-envelope"></i></span>
@@ -155,13 +179,33 @@
           </div>
         </div>
 
+        <div style="margin-bottom:0.85rem;">
+          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Contraseña</label>
+          <div class="input-group-dark">
+            <span class="ig-icon"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" minlength="6" placeholder="Mínimo 6 caracteres" required />
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.2rem;">
+          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Confirmar contraseña</label>
+          <div class="input-group-dark">
+            <span class="ig-icon"><i class="bi bi-shield-lock"></i></span>
+            <input type="password" name="password_confirm" id="passConfirmInput" minlength="6" placeholder="Repite la contraseña" required />
+          </div>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:var(--muted);margin-top:0.45rem;cursor:pointer;">
+            <input type="checkbox" id="showPassSignup" style="accent-color:#e8621a;" />
+            Mostrar contraseñas
+          </label>
+        </div>
+
         <button type="submit" class="btn-main">
           <i class="bi bi-check2-circle me-2"></i>Crear cuenta
         </button>
       </form>
 
       <div class="note-box">
-        Al crear tu cuenta, podrás iniciar sesión usando tu correo institucional y tu ID de 8 dígitos.
+        Al crear tu cuenta, podrás iniciar sesión con correo o ID institucional + contraseña.
       </div>
 
       <a href="{% url 'core:login' %}" class="back-link">
@@ -169,5 +213,14 @@
       </a>
     </div>
   </div>
+  <script>
+    const passSignup = document.querySelector('input[name="password"]');
+    const passConfirmSignup = document.getElementById('passConfirmInput');
+    document.getElementById('showPassSignup').addEventListener('change', function () {
+      const type = this.checked ? 'text' : 'password';
+      passSignup.type = type;
+      passConfirmSignup.type = type;
+    });
+  </script>
 </body>
 </html>

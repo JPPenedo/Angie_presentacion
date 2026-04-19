@@ -157,19 +157,23 @@
         {% csrf_token %}
 
         <div style="margin-bottom:0.85rem;">
-          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Correo institucional</label>
+          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Correo institucional o ID institucional</label>
           <div class="input-group-dark">
             <span class="ig-icon"><i class="bi bi-envelope"></i></span>
-            <input type="email" name="correo" id="correoInput" placeholder="usuario@anahuac.mx" value="{{ prefill_correo }}" required />
+            <input type="text" name="dato_acceso" id="correoInput" placeholder="usuario@anahuac.mx o 12345678" value="{{ prefill_dato }}" required />
           </div>
         </div>
 
         <div style="margin-bottom:1.2rem;">
-          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Contraseña o ID institucional</label>
+          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Contraseña</label>
           <div class="input-group-dark">
             <span class="ig-icon"><i class="bi bi-lock"></i></span>
-            <input type="password" name="password" id="passInput" placeholder="Ingresa tu contraseña o ID de 8 dígitos" required />
+            <input type="password" name="password" id="passInput" placeholder="Ingresa tu contraseña" required />
           </div>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:var(--muted);margin-top:0.45rem;cursor:pointer;">
+            <input type="checkbox" id="showPassLogin" style="accent-color:#e8621a;" />
+            Mostrar contraseña
+          </label>
         </div>
 
         <button type="submit" class="btn-enter">
@@ -181,10 +185,14 @@
         <div style="margin-bottom:0.35rem;"><strong>Acceso demo rápido</strong></div>
         <button class="quick-btn" onclick="fillDemo('docente@anahuac.mx','demo123')">Docente demo</button>
         <button class="quick-btn" onclick="fillDemo('alumno@anahuac.mx','demo123')">Alumno demo</button>
+        <button class="quick-btn" onclick="fillDemo('coordinacion@anahuac.mx','demo123')">Coordinación demo</button>
       </div>
 
       <a href="{% url 'core:crear_cuenta' %}" class="helper-link">
         <i class="bi bi-person-plus me-1"></i>¿No tienes cuenta? Crear cuenta
+      </a>
+      <a href="{% url 'core:recuperar_password' %}" class="helper-link" style="margin-top:0.5rem;">
+        <i class="bi bi-key me-1"></i>¿Olvidaste tu contraseña?
       </a>
     </div>
   </div>
@@ -194,6 +202,9 @@
       document.getElementById('correoInput').value = correo;
       document.getElementById('passInput').value = pass;
     }
+    document.getElementById('showPassLogin').addEventListener('change', function () {
+      document.getElementById('passInput').type = this.checked ? 'text' : 'password';
+    });
   </script>
 </body>
 </html>

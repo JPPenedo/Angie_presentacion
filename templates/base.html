@@ -100,6 +100,7 @@
     }
     .nav-role-badge.docente { background: var(--blue-dim);    color: var(--blue);    border: 1px solid rgba(96,165,250,0.25); }
     .nav-role-badge.alumno  { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(200,151,43,0.25); }
+    .nav-role-badge.coordinacion { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,98,26,0.25); }
     .nav-username { font-size: 0.82rem; color: var(--text); }
     .btn-logout {
       font-size: 0.75rem; padding: 0.25rem 0.7rem; border-radius: var(--radius-sm);
@@ -360,6 +361,8 @@
     <div class="nav-user">
       {% if usuario.rol == 'docente' %}
         <span class="nav-role-badge docente"><i class="bi bi-person-badge-fill me-1"></i>Docente</span>
+      {% elif usuario.rol == 'coordinacion' %}
+        <span class="nav-role-badge coordinacion"><i class="bi bi-diagram-3-fill me-1"></i>Coordinación</span>
       {% else %}
         <span class="nav-role-badge alumno"><i class="bi bi-mortarboard-fill me-1"></i>Alumno</span>
       {% endif %}
@@ -376,7 +379,7 @@
   <nav class="app-sidebar">
 
     <!-- Profesor: menú docente orientado a monitoreo de grupos. -->
-    {% if usuario and usuario.rol == 'docente' %}
+    {% if usuario and usuario.rol != 'alumno' %}
     <!-- ── Docente nav ── -->
     <div class="sidebar-section-label">Principal</div>
     <a href="{% url 'core:dashboard' %}" class="sidebar-link {% if request.path == '/' %}active{% endif %}">

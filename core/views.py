@@ -11,6 +11,14 @@ Guía de lectura (tipo profesor):
 
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.contrib.auth.hashers import check_password, make_password
+from django.db.models import Q
+from django.urls import reverse
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
+from datetime import timedelta
+import secrets
 from .models import CuentaAlumno
 
 # ---------------------------------------------------------------------------
@@ -35,6 +43,12 @@ USUARIOS = {
         'semestre_actual': 10,
         'creditos_totales': 240,
         'creditos_acreditados': 208,
+    },
+    'coordinacion@anahuac.mx': {
+        'password': 'demo123',
+        'rol': 'coordinacion',
+        'nombre': 'Mtra. Andrea Paredes',
+        'cargo': 'Coordinación Académica',
     },
 }
 
@@ -367,6 +381,51 @@ def _require_login(request):
     return None
 
 
+def _build_absolute_url(request, path):
+    """Construye URL absoluta para enlaces enviados por correo."""
+    return request.build_absolute_uri(path)
+
+
+def _send_verification_email(request, cuenta):
+    """Envía un correo breve para validar la cuenta recién creada."""
+    verify_url = _build_absolute_url(
+        request,
+        reverse('core:verificar_cuenta', args=[cuenta.verification_token]),
+    )
+    send_mail(
+        subject='Verifica tu cuenta - Plataforma Académica',
+        message=(
+            f'Hola {cuenta.nombre_completo},\n\n'
+            'Gracias por registrarte. Para activar tu cuenta, confirma tu correo aquí:\n'
+            f'{verify_url}\n\n'
+            'Si no solicitaste esta cuenta, ignora este mensaje.'
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[cuenta.correo_institucional],
+        fail_silently=False,
+    )
+
+
+def _send_password_reset_email(request, cuenta):
+    """Envía enlace temporal para restablecer contraseña."""
+    reset_url = _build_absolute_url(
+        request,
+        reverse('core:reset_password', args=[cuenta.reset_token]),
+    )
+    send_mail(
+        subject='Recuperación de contraseña - Plataforma Académica',
+        message=(
+            f'Hola {cuenta.nombre_completo},\n\n'
+            'Recibimos una solicitud para restablecer tu contraseña.\n'
+            f'Usa este enlace (vigente por 30 minutos):\n{reset_url}\n\n'
+            'Si no solicitaste este cambio, puedes ignorar este correo.'
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[cuenta.correo_institucional],
+        fail_silently=False,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Vistas de autenticación
 # ---------------------------------------------------------------------------
@@ -375,8 +434,8 @@ def login_view(request):
     """
     Profesor: esta vista hace tres cosas:
     1) Si ya hay sesión, evita re-login y redirige según rol.
-    2) Si llega POST, valida credenciales demo contra `USUARIOS`.
-    3) Si son correctas, guarda en sesión un perfil reducido para toda la app.
+    2) Si llega POST, valida dato de acceso (correo o ID) + contraseña.
+    3) Si son correctos, guarda en sesión un perfil reducido para toda la app.
     """
     if _usuario_sesion(request):
         u = _usuario_sesion(request)
@@ -384,19 +443,23 @@ def login_view(request):
 
     error = None
     info = None
-    prefill_correo = request.GET.get('correo', '').strip().lower()
+    prefill_dato = request.GET.get('dato', '').strip().lower()
     if request.GET.get('created') == '1':
-        info = 'Cuenta creada correctamente. Inicia sesión con tu correo y tu ID institucional (8 dígitos).'
+        info = 'Cuenta creada. Revisa tu correo y verifica tu cuenta para poder iniciar sesión.'
+    if request.GET.get('verified') == '1':
+        info = 'Correo verificado correctamente. Ya puedes iniciar sesión.'
+    if request.GET.get('reset') == '1':
+        info = 'Contraseña actualizada correctamente. Ya puedes iniciar sesión.'
     if request.method == 'POST':
-        correo   = request.POST.get('correo', '').strip().lower()
+        dato_acceso = request.POST.get('dato_acceso', '').strip().lower()
         password = request.POST.get('password', '').strip()
 
-        usuario = USUARIOS.get(correo)
+        usuario = USUARIOS.get(dato_acceso)
         if usuario and usuario['password'] == password:
             # Profesor: aquí se "firma" la sesión de trabajo del usuario.
             # Esta estructura será usada por navbar, control de roles y vistas.
             request.session['usuario'] = {
-                'correo': correo,
+                'correo': dato_acceso,
                 'rol':    usuario['rol'],
                 'nombre': usuario['nombre'],
                 **({k: usuario[k] for k in ('matricula', 'semestre_actual', 'creditos_totales', 'creditos_acreditados')}
@@ -405,20 +468,36 @@ def login_view(request):
             if usuario['rol'] == 'alumno':
                 return redirect('core:perfil_alumno')
             return redirect('core:dashboard')
-        cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
-        if cuenta and cuenta.id_institucional == password:
+
+        cuenta = CuentaAlumno.objects.filter(
+            Q(correo_institucional=dato_acceso) | Q(id_institucional=dato_acceso)
+        ).first()
+
+        if cuenta and check_password(password, cuenta.password_hash):
+            if not cuenta.is_verified:
+                error = 'Tu cuenta aún no está verificada. Revisa tu correo institucional.'
+                return render(
+                    request,
+                    'core/login.html',
+                    {
+                        'error': error,
+                        'info': info,
+                        'prefill_dato': dato_acceso,
+                    },
+                )
             request.session['usuario'] = {
                 'correo': cuenta.correo_institucional,
-                'rol': 'alumno',
+                'rol': cuenta.rol,
                 'nombre': cuenta.nombre_completo,
                 'matricula': cuenta.id_institucional,
-                'semestre_actual': 1,
+                'semestre_actual': 1 if cuenta.rol == 'alumno' else None,
                 'creditos_totales': 240,
-                'creditos_acreditados': 0,
+                'creditos_acreditados': 0 if cuenta.rol == 'alumno' else None,
+                'cargo': 'Coordinación Académica' if cuenta.rol == 'coordinacion' else ('Docente' if cuenta.rol == 'docente' else ''),
             }
-            return redirect('core:perfil_alumno')
+            return redirect('core:perfil_alumno' if cuenta.rol == 'alumno' else 'core:dashboard')
         else:
-            error = 'Correo o contraseña/ID incorrectos.'
+            error = 'Dato de acceso o contraseña incorrectos.'
 
     return render(
         request,
@@ -426,53 +505,156 @@ def login_view(request):
         {
             'error': error,
             'info': info,
-            'prefill_correo': prefill_correo,
+            'prefill_dato': prefill_dato,
         },
     )
 
 
 def crear_cuenta_view(request):
     """
-    Profesor: registro mínimo de cuentas para alumnos.
-    Campos solicitados: correo institucional, nombre completo e ID de 8 dígitos.
+    Profesor: registro mínimo de cuentas para alumnos/docentes/coordinación.
+    Campos: rol, correo institucional, nombre completo, ID de 8 dígitos y contraseña.
     """
     if _usuario_sesion(request):
         u = _usuario_sesion(request)
         return redirect('core:perfil_alumno' if u['rol'] == 'alumno' else 'core:dashboard')
 
     error = None
-    form_data = {'correo': '', 'nombre_completo': '', 'id_institucional': ''}
+    form_data = {
+        'rol': 'alumno',
+        'correo': '',
+        'nombre_completo': '',
+        'id_institucional': '',
+    }
 
     if request.method == 'POST':
         correo = request.POST.get('correo', '').strip().lower()
         nombre_completo = request.POST.get('nombre_completo', '').strip()
         id_institucional = request.POST.get('id_institucional', '').strip()
+        rol = request.POST.get('rol', 'alumno').strip()
+        password = request.POST.get('password', '').strip()
+        password_confirm = request.POST.get('password_confirm', '').strip()
 
         form_data = {
+            'rol': rol,
             'correo': correo,
             'nombre_completo': nombre_completo,
             'id_institucional': id_institucional,
         }
 
-        if not correo.endswith('@anahuac.mx'):
+        if rol not in {'alumno', 'docente', 'coordinacion'}:
+            error = 'Selecciona un rol válido.'
+        elif not correo.endswith('@anahuac.mx'):
             error = 'Debes usar un correo institucional que termine en @anahuac.mx.'
         elif not nombre_completo:
             error = 'El nombre completo es obligatorio.'
         elif not (id_institucional.isdigit() and len(id_institucional) == 8):
             error = 'El ID institucional debe contener exactamente 8 dígitos.'
+        elif len(password) < 6:
+            error = 'La contraseña debe tener al menos 6 caracteres.'
+        elif password != password_confirm:
+            error = 'La confirmación de contraseña no coincide.'
         elif CuentaAlumno.objects.filter(correo_institucional=correo).exists():
             error = 'Ese correo ya tiene una cuenta registrada.'
         elif CuentaAlumno.objects.filter(id_institucional=id_institucional).exists():
             error = 'Ese ID institucional ya está registrado.'
         else:
-            CuentaAlumno.objects.create(
+            cuenta = CuentaAlumno.objects.create(
                 correo_institucional=correo,
                 nombre_completo=nombre_completo,
                 id_institucional=id_institucional,
+                rol=rol,
+                password_hash=make_password(password),
+                verification_token=secrets.token_urlsafe(24),
             )
-            return redirect(f"{redirect('core:login').url}?created=1&correo={correo}")
+            try:
+                _send_verification_email(request, cuenta)
+            except Exception:
+                # Si falla SMTP, mantenemos cuenta creada y mostramos mensaje explicativo.
+                return render(
+                    request,
+                    'core/signup.html',
+                    {
+                        'error': (
+                            'La cuenta se creó, pero no se pudo enviar el correo de verificación. '
+                            'Revisa la configuración de email SMTP.'
+                        ),
+                        'form_data': {'rol': 'alumno', 'correo': '', 'nombre_completo': '', 'id_institucional': ''},
+                    },
+                )
+            return redirect(f"{redirect('core:login').url}?created=1&dato={correo}")
 
     return render(request, 'core/signup.html', {'error': error, 'form_data': form_data})
+
+
+def verificar_cuenta_view(request, token):
+    """Marca cuenta como verificada usando token enviado por correo."""
+    cuenta = CuentaAlumno.objects.filter(verification_token=token).first()
+    if not cuenta:
+        return redirect(reverse('core:login'))
+
+    cuenta.is_verified = True
+    cuenta.verification_token = ''
+    cuenta.save(update_fields=['is_verified', 'verification_token'])
+    return redirect(f"{reverse('core:login')}?verified=1&dato={cuenta.correo_institucional}")
+
+
+def recuperar_password_view(request):
+    """Solicita recuperación de contraseña por correo institucional."""
+    info = None
+    error = None
+
+    if request.method == 'POST':
+        correo = request.POST.get('correo', '').strip().lower()
+        if not correo:
+            error = 'Debes ingresar un correo institucional.'
+        else:
+            cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
+            if cuenta:
+                cuenta.reset_token = secrets.token_urlsafe(24)
+                cuenta.reset_token_expires_at = timezone.now() + timedelta(minutes=30)
+                cuenta.save(update_fields=['reset_token', 'reset_token_expires_at'])
+                try:
+                    _send_password_reset_email(request, cuenta)
+                except Exception:
+                    error = 'No se pudo enviar el correo de recuperación. Revisa la configuración SMTP.'
+            if not error:
+                info = 'Si el correo existe, enviamos un enlace de recuperación.'
+
+    return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
+
+
+def reset_password_view(request, token):
+    """Permite definir una nueva contraseña usando token temporal."""
+    cuenta = CuentaAlumno.objects.filter(reset_token=token).first()
+    if not cuenta or not cuenta.reset_token_is_valid():
+        return render(
+            request,
+            'core/password_recovery_reset.html',
+            {'error': 'El enlace de recuperación es inválido o ya expiró.', 'token_valid': False},
+        )
+
+    error = None
+    if request.method == 'POST':
+        password = request.POST.get('password', '').strip()
+        password_confirm = request.POST.get('password_confirm', '').strip()
+
+        if len(password) < 6:
+            error = 'La contraseña debe tener al menos 6 caracteres.'
+        elif password != password_confirm:
+            error = 'La confirmación de contraseña no coincide.'
+        else:
+            cuenta.password_hash = make_password(password)
+            cuenta.reset_token = ''
+            cuenta.reset_token_expires_at = None
+            cuenta.save(update_fields=['password_hash', 'reset_token', 'reset_token_expires_at'])
+            return redirect(f"{reverse('core:login')}?reset=1&dato={cuenta.correo_institucional}")
+
+    return render(
+        request,
+        'core/password_recovery_reset.html',
+        {'error': error, 'token_valid': True},
+    )
 
 
 def logout_view(request):
@@ -587,7 +769,7 @@ def perfil_alumno(request):
         return redir
 
     usuario = _usuario_sesion(request)
-    if usuario['rol'] == 'docente':
+    if usuario['rol'] != 'alumno':
         return redirect('core:dashboard')
 
     # Profesor: calcula un único promedio acumulado para la tarjeta principal del perfil.
