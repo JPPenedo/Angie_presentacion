@@ -852,28 +852,118 @@ def expo_actuaria_view(request):
     slides = [
         {
             'titulo': 'Modelo de Riesgo y Clasificación',
-            'idea': 'La segmentación en riesgo Alto/Medio/Bajo funciona como una clasificación supervisada simplificada.',
-            'enfoque': 'Estadística multivariada, regresión logística y análisis discriminante.',
+            'idea': (
+                'La segmentación Alto / Medio / Bajo del tablero es, en realidad, una '
+                'clasificación supervisada: cada alumno se asigna a una clase de riesgo '
+                'a partir de variables académicas observadas.'
+            ),
+            'modelo': (
+                'P(Y = 1 | X) = 1 / (1 + e^{-(β₀ + β₁·calif + β₂·asist + …)})'
+            ),
+            'enfoque': (
+                'Regresión logística, análisis discriminante lineal y curvas ROC: '
+                'herramientas actuariales para scoring y tarificación donde se estima '
+                'la probabilidad de un siniestro (aquí, “reprobar”) dado un perfil.'
+            ),
+            'conceptos': [
+                'Probabilidad condicional P(riesgo | desempeño)',
+                'Función logística como score de riesgo',
+                'Matriz de confusión para validar el clasificador',
+            ],
+            'demo': 'riesgo',
         },
         {
-            'titulo': 'Probabilidad de Aprobación',
-            'idea': 'El indicador de aprobación modela eventos Bernoulli y tasas agregadas por grupo.',
-            'enfoque': 'Teoría de probabilidad, inferencia y estimación de proporciones.',
+            'titulo': 'Probabilidad de Aprobación (Bernoulli)',
+            'idea': (
+                'El indicador “aprobado / no aprobado” es un experimento Bernoulli. '
+                'La tasa del grupo es la media muestral de esos ensayos y se puede '
+                'acompañar de un intervalo de confianza.'
+            ),
+            'modelo': (
+                'X_i ~ Bernoulli(p),   p̂ = (1/n) Σ X_i,   '
+                'IC₉₅% = p̂ ± 1.96·√(p̂(1−p̂)/n)'
+            ),
+            'enfoque': (
+                'Inferencia estadística clásica: estimación puntual y por intervalo '
+                'de una proporción. Es el mismo principio con el que un actuario '
+                'estima frecuencias de siniestro o tasas de mortalidad.'
+            ),
+            'conceptos': [
+                'Distribución Bernoulli / Binomial',
+                'Estimador máximo verosímil de p',
+                'Ley de grandes números e IC asintóticos',
+            ],
+            'demo': 'bernoulli',
         },
         {
             'titulo': 'Series Temporales Académicas',
-            'idea': 'La evolución de promedios por semestre permite monitorear tendencia y volatilidad académica.',
-            'enfoque': 'Series de tiempo, suavizamiento y detección de cambios estructurales.',
+            'idea': (
+                'El promedio por semestre es una serie temporal. Observar su tendencia '
+                'y su volatilidad permite anticipar deterioro académico, igual que un '
+                'actuario vigila la siniestralidad en el tiempo.'
+            ),
+            'modelo': (
+                'Yₜ = Tₜ + Sₜ + εₜ,   '
+                'MAₖ(t) = (1/k) Σ_{i=0..k-1} Y_{t−i},   '
+                'σ̂²ₜ = Var(Y_{t−k:t})'
+            ),
+            'enfoque': (
+                'Descomposición tendencia–estacionalidad–ruido, suavizamiento por '
+                'medias móviles y detección de cambios estructurales: base directa '
+                'de la modelación actuarial dinámica (reservas IBNR, proyecciones).'
+            ),
+            'conceptos': [
+                'Tendencia vs. ruido aleatorio',
+                'Medias móviles y suavizamiento exponencial',
+                'Volatilidad rodante como señal de riesgo',
+            ],
+            'demo': 'series',
         },
         {
-            'titulo': 'Métricas para Toma de Decisión',
-            'idea': 'El tablero resume información con KPIs para priorizar intervención docente.',
-            'enfoque': 'Investigación de operaciones y analítica descriptiva para decisión.',
+            'titulo': 'Métricas y Decisión Bajo Riesgo',
+            'idea': (
+                'Los KPIs del dashboard (promedio, % aprobación, casos en alto) son '
+                'un resumen que permite decidir a quién intervenir primero. Es el '
+                'mismo razonamiento costo/beneficio que usa un actuario al priorizar.'
+            ),
+            'modelo': (
+                'Prioridad_i = P(reprobar_i) · Impacto_i,   '
+                'Pérdida esperada  E[L(d)] = Σ P(θ)·c(d, θ)'
+            ),
+            'enfoque': (
+                'Teoría de decisión bayesiana e investigación de operaciones: '
+                'elegir la acción d* que minimiza la pérdida esperada sobre '
+                'los estados de la naturaleza θ (alumnos en riesgo).'
+            ),
+            'conceptos': [
+                'Función de pérdida y utilidad esperada',
+                'KPIs como estadísticos de decisión',
+                'Asignación óptima de recursos docentes',
+            ],
+            'demo': 'kpis',
         },
         {
             'titulo': 'Plan de Estudios de Actuaría',
-            'idea': 'El prototipo conecta cursos base (probabilidad, estadística, procesos estocásticos, riesgo).',
-            'enfoque': 'Integración curricular hacia modelación actuarial aplicada.',
+            'idea': (
+                'El prototipo no es un caso aislado: encadena las materias base de '
+                'Actuaría (probabilidad → estadística → procesos estocásticos → '
+                'teoría del riesgo) sobre un problema real con datos.'
+            ),
+            'modelo': (
+                'Currículo ≈ DAG de dependencias:  Prob → Estadística → '
+                'Procesos estocásticos → Teoría del riesgo → Modelos actuariales'
+            ),
+            'enfoque': (
+                'Integración curricular: cada módulo del sistema corresponde a una '
+                'asignatura y muestra cómo se componen para generar valor actuarial '
+                'aplicado (riesgo, pricing, reservas).'
+            ),
+            'conceptos': [
+                'Probabilidad y Estadística',
+                'Procesos estocásticos',
+                'Teoría del riesgo y modelos actuariales',
+            ],
+            'demo': 'curriculo',
         },
     ]
 

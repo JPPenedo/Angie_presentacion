@@ -21,81 +21,387 @@
       --warning: #fbbf24;
       --danger: #f87171;
       --blue: #60a5fa;
+      --violet: #a78bfa;
     }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(34,197,94,0.09), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(96,165,250,0.06), transparent 60%),
+        var(--bg);
       color: var(--text);
+      min-height: 100vh;
     }
     .wrap {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 1.4rem 1.2rem 2.2rem;
+      padding: 1.4rem 1.2rem 2.6rem;
     }
+
+    /* ---------- HERO ---------- */
     .hero {
-      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(74,222,128,0.1));
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(96,165,250,0.08));
       border: 1px solid rgba(34,197,94,0.25);
       border-radius: 1rem;
       padding: 1.2rem 1.3rem;
       margin-bottom: 1rem;
     }
-    .hero h1 { font-size: 1.45rem; margin: 0 0 0.35rem; }
-    .hero p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+    .hero::after{
+      content:"";
+      position:absolute; inset:-40% -20% auto auto; width:60%; height:180%;
+      background: conic-gradient(from 90deg, rgba(34,197,94,0.14), transparent 40%);
+      filter: blur(40px); pointer-events:none;
+      animation: spin 18s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg);} }
+    .hero h1 { font-size: 1.55rem; margin: 0 0 0.35rem; letter-spacing:-0.01em;}
+    .hero p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
     .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 1rem 0 0.7rem;
-      font-weight: 700;
+      display: flex; align-items: center; gap: 0.5rem;
+      margin: 1.2rem 0 0.7rem; font-weight: 700;
     }
     .badge-pill {
       border: 1px solid rgba(34,197,94,0.25);
       background: rgba(34,197,94,0.12);
       color: var(--accent);
-      border-radius: 999px;
-      font-size: 0.7rem;
-      padding: 0.18rem 0.55rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      border-radius: 999px; font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
     }
+
+    /* ---------- SLIDES STAGE ---------- */
     .slides-shell {
+      position: relative;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 1rem;
-      padding: 1rem;
+      padding: 0.9rem 0.9rem 0.9rem;
+      overflow: hidden;
+    }
+    .progress-rail {
+      height: 3px; width:100%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px; overflow: hidden;
+      margin-bottom: 0.85rem;
+    }
+    .progress-bar-x {
+      height: 100%; width: 20%;
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+      border-radius: 999px;
+      transition: width 0.7s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 0 14px rgba(34,197,94,0.45);
+    }
+
+    .stage {
+      position: relative;
+      min-height: 440px;
     }
     .slide {
-      display: none;
+      position: absolute; inset: 0;
       background: var(--card-alt);
       border: 1px solid var(--border);
-      border-radius: 0.8rem;
-      padding: 1rem;
+      border-radius: 0.85rem;
+      padding: 1rem 1.1rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.985) translateY(12px);
+      filter: blur(12px) saturate(0.8);
+      clip-path: inset(0 100% 0 0 round 0.85rem);
+      transition:
+        opacity 0.55s ease,
+        transform 0.7s cubic-bezier(.2,.8,.2,1),
+        filter 0.55s ease,
+        clip-path 0.75s cubic-bezier(.65,.05,.15,1);
     }
-    .slide.active { display: block; }
-    .slide h3 { margin: 0 0 0.55rem; font-size: 1.08rem; }
-    .slide p { margin: 0.35rem 0; color: var(--muted); font-size: 0.88rem; }
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+      filter: blur(0) saturate(1);
+      clip-path: inset(0 0% 0 0 round 0.85rem);
+      z-index: 2;
+    }
+    .slide.exit-left {
+      opacity: 0;
+      transform: scale(0.97) translateX(-4%) translateY(-4px);
+      filter: blur(14px) saturate(0.6);
+      clip-path: inset(0 0 0 100% round 0.85rem);
+    }
+    /* When going backwards, old slide exits to the right */
+    .slide.exit-right {
+      opacity: 0;
+      transform: scale(0.97) translateX(4%) translateY(-4px);
+      filter: blur(14px) saturate(0.6);
+      clip-path: inset(0 100% 0 0 round 0.85rem);
+    }
+
+    .slide h3 {
+      margin: 0 0 0.25rem; font-size: 1.18rem; letter-spacing:-0.01em;
+    }
+    .slide .subtitle {
+      color: var(--accent); font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700;
+      margin-bottom: 0.55rem;
+    }
+    .slide p { margin: 0.35rem 0; color: #cfc9c4; font-size: 0.9rem; line-height: 1.45; }
+    .slide p strong { color: var(--text); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      margin-top: 0.6rem;
+    }
+    @media (max-width: 820px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .stage { min-height: 720px; }
+    }
+
+    /* stagger animation on active slide children */
+    .slide.active .anim { animation: riseIn 0.7s cubic-bezier(.2,.8,.2,1) both; }
+    .slide.active .anim:nth-child(1) { animation-delay: 0.05s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 0.15s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 0.25s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 0.35s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 0.45s; }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+      to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+
+    .math-chip {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(96,165,250,0.08));
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 0.6rem;
+      padding: 0.55rem 0.75rem;
+      color: #e6f7ec;
+      font-family: "Cambria Math","Latin Modern Math", "Segoe UI", serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.01em;
+      margin-top: 0.4rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    .concept-list {
+      margin: 0.6rem 0 0; padding: 0; list-style: none;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .concept-list li {
+      font-size: 0.82rem; color: #d9d3ce;
+      padding: 0.32rem 0.55rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 0.45rem;
+    }
+    .concept-list li::before {
+      content: "\2022"; color: var(--accent);
+      margin-right: 0.45rem; font-weight: 900;
+    }
+
+    /* ---------- MINI DEMO ---------- */
+    .mini-demo {
+      position: relative;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      min-height: 260px;
+      overflow: hidden;
+    }
+    .mini-demo .demo-head {
+      display:flex; justify-content:space-between; align-items:center;
+      font-size: 0.72rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      margin-bottom: 0.55rem;
+    }
+    .mini-demo .demo-head .dots3 {
+      display:flex; gap:4px;
+    }
+    .mini-demo .demo-head .dots3 span{
+      width:8px;height:8px;border-radius:50%;
+      background: rgba(255,255,255,0.15);
+    }
+    .mini-demo .demo-head .dots3 span:nth-child(1){ background:#f87171; }
+    .mini-demo .demo-head .dots3 span:nth-child(2){ background:#fbbf24; }
+    .mini-demo .demo-head .dots3 span:nth-child(3){ background:#34d399; }
+
+    /* demo-riesgo */
+    .risk-cards {
+      display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
+    }
+    .risk-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 0.55rem;
+      padding: 0.55rem 0.6rem;
+      display:flex; flex-direction:column; gap:0.25rem;
+      position: relative; overflow: hidden;
+    }
+    .risk-card .name { font-size: 0.82rem; font-weight:600; }
+    .risk-card .score-row {
+      display:flex; align-items:center; gap: 0.4rem;
+      font-size: 0.72rem; color: var(--muted);
+    }
+    .risk-card .score-bar {
+      flex:1; height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); overflow:hidden;
+    }
+    .risk-card .score-fill {
+      height: 100%; width: 0%;
+      border-radius: 999px;
+      transition: width 1s cubic-bezier(.2,.8,.2,1);
+    }
+    .risk-card .tag {
+      position:absolute; top:0.5rem; right:0.5rem;
+      font-size: 0.66rem; padding: 0.1rem 0.45rem;
+      border-radius: 999px; border:1px solid;
+    }
+    .r-alto  { color: var(--danger);  border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.1); }
+    .r-medio { color: var(--warning); border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.1); }
+    .r-bajo  { color: var(--success); border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.1); }
+    .fill-alto  { background: linear-gradient(90deg, #f87171, #fb7185); }
+    .fill-medio { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .fill-bajo  { background: linear-gradient(90deg, #34d399, #22c55e); }
+
+    /* demo-bernoulli */
+    .bernoulli-grid {
+      display:grid; grid-template-columns: repeat(10, 1fr); gap: 4px;
+    }
+    .bern-cell{
+      aspect-ratio: 1 / 1;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      transform: scale(0);
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1), background 0.3s;
+    }
+    .bern-cell.filled { transform: scale(1); }
+    .bern-cell.ok   { background: linear-gradient(135deg, #22c55e, #4ade80); }
+    .bern-cell.fail { background: linear-gradient(135deg, #f87171, #fb7185); }
+    .bern-meter {
+      margin-top: 0.7rem;
+      height: 8px; border-radius: 999px;
+      background: rgba(255,255,255,0.06); overflow: hidden;
+    }
+    .bern-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #22c55e, #60a5fa);
+      transition: width 1.2s cubic-bezier(.2,.8,.2,1);
+    }
+    .bern-legend {
+      display:flex; justify-content:space-between;
+      font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem;
+    }
+
+    /* demo-series canvas wrapper */
+    .series-wrap { position: relative; height: 220px; }
+
+    /* demo-kpis */
+    .kpi-grid {
+      display:grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;
+    }
+    .kpi-tile {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      padding: 0.7rem 0.75rem;
+      position: relative; overflow:hidden;
+    }
+    .kpi-tile .ic { font-size: 1.1rem; color: var(--accent); }
+    .kpi-tile .val {
+      font-size: 1.6rem; font-weight: 800; margin-top: 0.2rem;
+      letter-spacing: -0.02em;
+    }
+    .kpi-tile .lbl { color: var(--muted); font-size: 0.72rem; }
+    .kpi-tile .spark {
+      position:absolute; inset: auto 0 0 0; height: 26px; opacity: 0.55;
+    }
+    .priority-list {
+      margin-top: 0.55rem;
+    }
+    .priority-row {
+      display:flex; justify-content:space-between; align-items:center;
+      font-size: 0.78rem; padding: 0.35rem 0.5rem;
+      border: 1px solid var(--border); border-radius: 0.45rem;
+      margin-top: 0.3rem;
+      background: rgba(255,255,255,0.02);
+    }
+    .priority-row .pbar {
+      width: 90px; height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); overflow:hidden;
+    }
+    .priority-row .pbar > span {
+      display:block; height:100%;
+      background: linear-gradient(90deg, var(--danger), var(--warning));
+    }
+
+    /* demo-curriculo SVG */
+    .dag {
+      width: 100%;
+      height: 240px;
+    }
+    .dag .edge {
+      stroke: rgba(34,197,94,0.55);
+      stroke-width: 1.4;
+      fill: none;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      animation: drawEdge 1.2s ease forwards;
+    }
+    .dag .edge.e2 { animation-delay: 0.25s; }
+    .dag .edge.e3 { animation-delay: 0.5s; }
+    .dag .edge.e4 { animation-delay: 0.75s; }
+    @keyframes drawEdge { to { stroke-dashoffset: 0; } }
+    .dag .node rect {
+      fill: rgba(34,197,94,0.08);
+      stroke: rgba(34,197,94,0.35);
+      rx: 10; ry: 10;
+    }
+    .dag .node text { fill: #e6f7ec; font-size: 11px; font-weight: 600; }
+    .dag .node.final rect { fill: rgba(96,165,250,0.1); stroke: rgba(96,165,250,0.4); }
+    .dag .node.final text { fill: #dbe9ff; }
+
+    /* ---------- CONTROLS ---------- */
     .controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 0.7rem;
+      margin-top: 0.8rem;
     }
     .btn-darkx {
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.04);
       color: var(--text);
-      border-radius: 0.5rem;
-      font-size: 0.82rem;
-      padding: 0.35rem 0.75rem;
+      border-radius: 0.6rem;
+      font-size: 0.85rem;
+      padding: 0.45rem 0.9rem;
+      transition: all 0.25s ease;
     }
-    .btn-darkx:hover { border-color: rgba(34,197,94,0.4); color: var(--accent); }
-    .dots { display: flex; gap: 0.35rem; }
+    .btn-darkx:hover {
+      border-color: rgba(34,197,94,0.4);
+      color: var(--accent);
+      background: rgba(34,197,94,0.06);
+      transform: translateY(-1px);
+    }
+    .dots { display: flex; gap: 0.4rem; }
     .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
+      width: 22px; height: 6px; border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      cursor: pointer;
+      transition: all 0.4s ease;
     }
-    .dot.active { background: var(--accent); }
+    .dot.active {
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+      width: 42px;
+      box-shadow: 0 0 12px rgba(34,197,94,0.4);
+    }
+
+    /* ---------- DEMO SHELL (kept) ---------- */
     .demo-shell {
       background: var(--card);
       border: 1px solid var(--border);
@@ -134,30 +440,193 @@
       font-size: 0.72rem;
       border: 1px solid;
     }
-    .r-alto { color: var(--danger); border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.1); }
-    .r-medio { color: var(--warning); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.1); }
-    .r-bajo { color: var(--success); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.1); }
   </style>
 </head>
 <body>
   <div class="wrap">
+
     <div class="hero">
       <h1>Exposición: Enfoque Actuarial del Proyecto</h1>
-      <p>Ruta sugerida para demo: primero slides conceptuales, después mini prototipo operativo.</p>
+      <p>Cada slide muestra el concepto matemático-actuarial <em>y</em> una simulación del fragmento de la plataforma donde vive ese concepto.</p>
     </div>
 
     <div class="section-title">
       <span class="badge-pill">Slides</span>
-      <span>Enfoques matemáticos implícitos</span>
+      <span>Enfoques probabilísticos, estadísticos y actuariales</span>
     </div>
+
     <div class="slides-shell">
-      {% for s in slides %}
-      <article class="slide {% if forloop.first %}active{% endif %}" data-slide-index="{{ forloop.counter0 }}">
-        <h3>{{ s.titulo }}</h3>
-        <p><strong>Idea en el sistema:</strong> {{ s.idea }}</p>
-        <p><strong>Relación con Actuaría:</strong> {{ s.enfoque }}</p>
-      </article>
-      {% endfor %}
+      <div class="progress-rail"><div class="progress-bar-x" id="progressBar"></div></div>
+
+      <div class="stage" id="stage">
+        {% for s in slides %}
+        <article class="slide {% if forloop.first %}active{% endif %}"
+                 data-slide-index="{{ forloop.counter0 }}"
+                 data-demo="{{ s.demo }}">
+          <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Enfoque Actuarial</div>
+          <h3 class="anim">{{ s.titulo }}</h3>
+
+          <div class="grid-2">
+            <div>
+              <p class="anim"><strong>Idea en el sistema.</strong> {{ s.idea }}</p>
+              <div class="math-chip anim">{{ s.modelo }}</div>
+              <p class="anim" style="margin-top:0.6rem;"><strong>Relación con Actuaría.</strong> {{ s.enfoque }}</p>
+              <ul class="concept-list anim">
+                {% for c in s.conceptos %}<li>{{ c }}</li>{% endfor %}
+              </ul>
+            </div>
+
+            <div class="mini-demo anim">
+              <div class="demo-head">
+                <span><i class="bi bi-window-stack me-1"></i>Fragmento simulado de la plataforma</span>
+                <span class="dots3"><span></span><span></span><span></span></span>
+              </div>
+
+              {% if s.demo == 'riesgo' %}
+              <div class="risk-cards">
+                <div class="risk-card">
+                  <span class="tag r-bajo">Bajo</span>
+                  <div class="name">A. García</div>
+                  <div class="score-row">
+                    <span>score</span>
+                    <div class="score-bar"><div class="score-fill fill-bajo" data-target="22"></div></div>
+                    <span>0.22</span>
+                  </div>
+                </div>
+                <div class="risk-card">
+                  <span class="tag r-medio">Medio</span>
+                  <div class="name">C. Mendoza</div>
+                  <div class="score-row">
+                    <span>score</span>
+                    <div class="score-bar"><div class="score-fill fill-medio" data-target="58"></div></div>
+                    <span>0.58</span>
+                  </div>
+                </div>
+                <div class="risk-card">
+                  <span class="tag r-alto">Alto</span>
+                  <div class="name">S. Ramírez</div>
+                  <div class="score-row">
+                    <span>score</span>
+                    <div class="score-bar"><div class="score-fill fill-alto" data-target="83"></div></div>
+                    <span>0.83</span>
+                  </div>
+                </div>
+                <div class="risk-card">
+                  <span class="tag r-bajo">Bajo</span>
+                  <div class="name">D. Flores</div>
+                  <div class="score-row">
+                    <span>score</span>
+                    <div class="score-bar"><div class="score-fill fill-bajo" data-target="14"></div></div>
+                    <span>0.14</span>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:0.6rem;font-size:0.72rem;color:var(--muted);">
+                P(reprobar) = σ(β·x) · Cada tarjeta es un caso del clasificador.
+              </div>
+              {% endif %}
+
+              {% if s.demo == 'bernoulli' %}
+              <div class="bernoulli-grid" data-bern></div>
+              <div class="bern-meter"><div class="bern-fill" data-bern-fill></div></div>
+              <div class="bern-legend">
+                <span>n = 100 ensayos X<sub>i</sub> ~ Bernoulli(p)</span>
+                <span><strong style="color:var(--success);">p̂ = <span data-bern-p>0.00</span></strong></span>
+              </div>
+              {% endif %}
+
+              {% if s.demo == 'series' %}
+              <div class="series-wrap"><canvas data-series></canvas></div>
+              <div style="margin-top:0.45rem;font-size:0.72rem;color:var(--muted);">
+                Promedio semestral (línea) · Media móvil MA₃ (suavizada).
+              </div>
+              {% endif %}
+
+              {% if s.demo == 'kpis' %}
+              <div class="kpi-grid">
+                <div class="kpi-tile">
+                  <div class="ic"><i class="bi bi-people-fill"></i></div>
+                  <div class="val" data-counter="24" data-decimals="0">0</div>
+                  <div class="lbl">Alumnos monitoreados</div>
+                </div>
+                <div class="kpi-tile">
+                  <div class="ic" style="color:var(--blue);"><i class="bi bi-graph-up"></i></div>
+                  <div class="val" data-counter="7.42" data-decimals="2">0.00</div>
+                  <div class="lbl">Promedio del grupo</div>
+                </div>
+                <div class="kpi-tile">
+                  <div class="ic" style="color:var(--success);"><i class="bi bi-check-circle-fill"></i></div>
+                  <div class="val" data-counter="78" data-decimals="0">0</div>
+                  <div class="lbl">% Aprobación</div>
+                </div>
+                <div class="kpi-tile">
+                  <div class="ic" style="color:var(--danger);"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                  <div class="val" data-counter="5" data-decimals="0">0</div>
+                  <div class="lbl">Casos riesgo alto</div>
+                </div>
+              </div>
+              <div class="priority-list">
+                <div class="priority-row">
+                  <span>S. Ramírez</span>
+                  <div class="pbar"><span style="width:86%"></span></div>
+                  <span style="color:var(--danger)">prioridad 0.86</span>
+                </div>
+                <div class="priority-row">
+                  <span>C. Mendoza</span>
+                  <div class="pbar"><span style="width:54%"></span></div>
+                  <span style="color:var(--warning)">prioridad 0.54</span>
+                </div>
+              </div>
+              {% endif %}
+
+              {% if s.demo == 'curriculo' %}
+              <svg class="dag" viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(34,197,94,0.7)" />
+                  </marker>
+                </defs>
+                <g class="node">
+                  <rect x="10"  y="95"  width="100" height="50"/>
+                  <text x="60"  y="118" text-anchor="middle">Probabilidad</text>
+                  <text x="60"  y="132" text-anchor="middle" font-size="9" fill="#a39d98">Slide 2</text>
+                </g>
+                <g class="node">
+                  <rect x="140" y="30"  width="100" height="50"/>
+                  <text x="190" y="53"  text-anchor="middle">Estadística</text>
+                  <text x="190" y="67"  text-anchor="middle" font-size="9" fill="#a39d98">Slide 1</text>
+                </g>
+                <g class="node">
+                  <rect x="140" y="160" width="100" height="50"/>
+                  <text x="190" y="183" text-anchor="middle">Series / Procesos</text>
+                  <text x="190" y="197" text-anchor="middle" font-size="9" fill="#a39d98">Slide 3</text>
+                </g>
+                <g class="node">
+                  <rect x="275" y="95"  width="110" height="50"/>
+                  <text x="330" y="118" text-anchor="middle">Teoría del Riesgo</text>
+                  <text x="330" y="132" text-anchor="middle" font-size="9" fill="#a39d98">Slide 4</text>
+                </g>
+                <g class="node final">
+                  <rect x="410" y="95"  width="100" height="50"/>
+                  <text x="460" y="118" text-anchor="middle">Actuaría</text>
+                  <text x="460" y="132" text-anchor="middle" font-size="9" fill="#a39d98">aplicada</text>
+                </g>
+                <path class="edge"    d="M110,115 C130,80 130,55 140,55"  marker-end="url(#arrow)"/>
+                <path class="edge e2" d="M110,125 C130,165 130,185 140,185" marker-end="url(#arrow)"/>
+                <path class="edge e3" d="M240,55  C260,85 265,115 275,115"  marker-end="url(#arrow)"/>
+                <path class="edge e4" d="M240,185 C260,155 265,130 275,130" marker-end="url(#arrow)"/>
+                <path class="edge e4" d="M385,120 C400,120 405,120 410,120" marker-end="url(#arrow)"/>
+              </svg>
+              <div style="font-size:0.72rem;color:var(--muted);">
+                DAG curricular: cada slide de esta exposición es un nodo del plan.
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
       <div class="controls">
         <button class="btn-darkx" id="prevSlide"><i class="bi bi-arrow-left me-1"></i>Anterior</button>
         <div class="dots">
@@ -231,20 +700,192 @@
   </div>
 
   <script>
-    // Slides simples para la exposición.
+    /* ---------------- SLIDE ENGINE ---------------- */
     const slides = Array.from(document.querySelectorAll('.slide'));
-    const dots = Array.from(document.querySelectorAll('.dot'));
+    const dots   = Array.from(document.querySelectorAll('.dot'));
+    const progressBar = document.getElementById('progressBar');
     let idx = 0;
-    function paintSlide(next) {
-      idx = (next + slides.length) % slides.length;
-      slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-    }
-    document.getElementById('prevSlide').addEventListener('click', () => paintSlide(idx - 1));
-    document.getElementById('nextSlide').addEventListener('click', () => paintSlide(idx + 1));
-    dots.forEach((d, i) => d.addEventListener('click', () => paintSlide(i)));
+    let animating = false;
 
-    // Gráfica mini del prototipo simplificado.
+    function go(next) {
+      if (animating) return;
+      const target = (next + slides.length) % slides.length;
+      if (target === idx) return;
+      animating = true;
+      let direction = target > idx ? 1 : -1;
+      // wrap-around: último -> primero debe sentirse hacia adelante, y viceversa
+      if (idx === slides.length - 1 && target === 0) direction = 1;
+      else if (idx === 0 && target === slides.length - 1) direction = -1;
+
+      const current = slides[idx];
+      const incoming = slides[target];
+
+      // exit class (depending on direction)
+      current.classList.remove('active');
+      current.classList.add(direction === 1 ? 'exit-left' : 'exit-right');
+
+      // prepare incoming from opposite side
+      incoming.classList.remove('exit-left','exit-right');
+      // force reflow for transition restart
+      void incoming.offsetWidth;
+      // Enter
+      requestAnimationFrame(() => {
+        incoming.classList.add('active');
+      });
+
+      setTimeout(() => {
+        current.classList.remove('exit-left','exit-right');
+        animating = false;
+      }, 780);
+
+      dots.forEach((d, i) => d.classList.toggle('active', i === target));
+      progressBar.style.width = ((target + 1) / slides.length * 100) + '%';
+      idx = target;
+
+      activateDemo(incoming);
+    }
+
+    document.getElementById('prevSlide').addEventListener('click', () => go(idx - 1));
+    document.getElementById('nextSlide').addEventListener('click', () => go(idx + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(idx + 1);
+      if (e.key === 'ArrowLeft')  go(idx - 1);
+    });
+
+    // Initial progress
+    progressBar.style.width = (1 / slides.length * 100) + '%';
+
+    /* ---------------- DEMO ACTIVATORS (per slide) ---------------- */
+    const seriesCharts = new WeakMap();
+
+    function activateDemo(slideEl) {
+      const demo = slideEl.dataset.demo;
+      if (demo === 'riesgo')     activateRiesgo(slideEl);
+      if (demo === 'bernoulli')  activateBernoulli(slideEl);
+      if (demo === 'series')     activateSeries(slideEl);
+      if (demo === 'kpis')       activateKpis(slideEl);
+      if (demo === 'curriculo')  activateCurriculo(slideEl);
+    }
+
+    function activateRiesgo(slideEl) {
+      const fills = slideEl.querySelectorAll('.score-fill');
+      fills.forEach(f => { f.style.width = '0%'; });
+      setTimeout(() => {
+        fills.forEach(f => { f.style.width = (f.dataset.target || 0) + '%'; });
+      }, 120);
+    }
+
+    function activateBernoulli(slideEl) {
+      const grid = slideEl.querySelector('[data-bern]');
+      const fill = slideEl.querySelector('[data-bern-fill]');
+      const pOut = slideEl.querySelector('[data-bern-p]');
+      if (!grid) return;
+      const p = 0.74; // tasa simulada de aprobación
+      const n = 100;
+      grid.innerHTML = '';
+      const cells = [];
+      for (let i = 0; i < n; i++) {
+        const c = document.createElement('div');
+        c.className = 'bern-cell';
+        grid.appendChild(c);
+        cells.push(c);
+      }
+      let done = 0;
+      const order = [...Array(n).keys()].sort(() => Math.random() - 0.5);
+      order.forEach((k, step) => {
+        setTimeout(() => {
+          const ok = Math.random() < p;
+          cells[k].classList.add('filled', ok ? 'ok' : 'fail');
+          done++;
+          if (pOut) pOut.textContent = (Array.from(cells).filter(x => x.classList.contains('ok')).length / n).toFixed(2);
+          if (fill) fill.style.width = (done) + '%';
+        }, step * 14);
+      });
+    }
+
+    function activateSeries(slideEl) {
+      const canvas = slideEl.querySelector('[data-series]');
+      if (!canvas) return;
+      if (seriesCharts.has(canvas)) {
+        seriesCharts.get(canvas).destroy();
+      }
+      const labels = ['2022-1','2022-2','2023-1','2023-2','2024-1','2024-2','2025-1','2025-2'];
+      const base  = [7.1, 7.4, 7.0, 6.8, 7.3, 7.6, 7.2, 7.5];
+      // media móvil MA_3
+      const ma = base.map((_, i, arr) => {
+        const k = 3;
+        const from = Math.max(0, i - k + 1);
+        const slice = arr.slice(from, i + 1);
+        return +(slice.reduce((a,b)=>a+b,0)/slice.length).toFixed(2);
+      });
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Promedio',
+              data: base,
+              borderColor: 'rgba(96,165,250,0.9)',
+              backgroundColor: 'rgba(96,165,250,0.15)',
+              tension: 0.35, fill: true, pointRadius: 3,
+            },
+            {
+              label: 'MA₃',
+              data: ma,
+              borderColor: 'rgba(34,197,94,1)',
+              borderDash: [6, 4],
+              tension: 0.35, fill: false, pointRadius: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          animation: { duration: 900, easing: 'easeOutCubic' },
+          plugins: { legend: { labels: { color: '#cfc9c4', font: { size: 10 } } } },
+          scales: {
+            y: { min: 6, max: 8, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#a39d98' } },
+            x: { grid: { display: false }, ticks: { color: '#a39d98', font: { size: 10 } } },
+          },
+        },
+      });
+      seriesCharts.set(canvas, chart);
+    }
+
+    function activateKpis(slideEl) {
+      const els = slideEl.querySelectorAll('[data-counter]');
+      els.forEach(el => {
+        const target = parseFloat(el.dataset.counter);
+        const decimals = parseInt(el.dataset.decimals || '0', 10);
+        const duration = 1100;
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = (target * eased).toFixed(decimals);
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    function activateCurriculo(slideEl) {
+      // reiniciar animaciones de aristas
+      const edges = slideEl.querySelectorAll('.edge');
+      edges.forEach(e => {
+        e.style.animation = 'none';
+        void e.getBoundingClientRect();
+        e.style.animation = '';
+      });
+    }
+
+    // Activate first demo on load
+    window.addEventListener('load', () => {
+      activateDemo(slides[0]);
+    });
+
+    /* ---------------- CHART MINI (demo global) ---------------- */
     const labels = [{% for a in demo_alumnos %}"{{ a.nombre }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
     const values = [{% for a in demo_alumnos %}{{ a.calificacion }}{% if not forloop.last %}, {% endif %}{% endfor %}];
     const colors = [{% for a in demo_alumnos %}{% if a.riesgo == 'Alto' %}"rgba(248,113,113,0.8)"{% elif a.riesgo == 'Medio' %}"rgba(251,191,36,0.8)"{% else %}"rgba(52,211,153,0.8)"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}];
