@@ -286,10 +286,10 @@
       filter: blur(12px) saturate(0.8);
       clip-path: inset(0 100% 0 0 round 0.85rem);
       transition:
-        opacity 0.55s ease,
-        transform 0.7s cubic-bezier(.2,.8,.2,1),
-        filter 0.55s ease,
-        clip-path 0.75s cubic-bezier(.65,.05,.15,1);
+        opacity 0.9s ease,
+        transform 1.25s cubic-bezier(.2,.8,.2,1),
+        filter 0.9s ease,
+        clip-path 1.35s cubic-bezier(.65,.05,.15,1);
     }
     .slide.active {
       opacity: 1;
@@ -335,60 +335,128 @@
       .stage { min-height: 720px; }
     }
 
-    /* ---- Cinemática de entrada ----
-       Paso 1 (0 → 55%): la mini-demo aparece grande y cerca, con glow naranja.
-       Paso 2 (55% → 100%): retrocede a su celda del grid.
-       Paso 3 (desde ~0.75s): el texto entra en stagger y toma protagonismo. */
-    .slide.active .mini-demo {
-      animation: demoIntro 1.15s cubic-bezier(.2,.8,.2,1) both;
-      transform-origin: 50% 50%;
-    }
-    @keyframes demoIntro {
-      0% {
-        opacity: 0;
-        transform: scale(1.42) translate(-30%, 6%);
-        filter: blur(14px) brightness(1.25) saturate(1.15);
-        box-shadow:
-          0 35px 110px -20px rgba(249,115,22,0.75),
-          0 0 70px -5px rgba(249,115,22,0.5),
-          inset 0 0 0 1px rgba(249,115,22,0.55);
-      }
-      22% {
-        opacity: 1;
-        transform: scale(1.42) translate(-30%, 6%);
-        filter: blur(0) brightness(1.25) saturate(1.15);
-        box-shadow:
-          0 35px 110px -20px rgba(249,115,22,0.75),
-          0 0 70px -5px rgba(249,115,22,0.5),
-          inset 0 0 0 1px rgba(249,115,22,0.55);
-      }
-      55% {
-        opacity: 1;
-        transform: scale(1.35) translate(-26%, 4%);
-        filter: blur(0) brightness(1.18) saturate(1.1);
-        box-shadow:
-          0 28px 90px -18px rgba(249,115,22,0.6),
-          0 0 50px -6px rgba(249,115,22,0.4),
-          inset 0 0 0 1px rgba(249,115,22,0.4);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translate(0, 0);
-        filter: blur(0) brightness(1) saturate(1);
-        box-shadow:
-          0 0 0 rgba(249,115,22,0);
-      }
+    /* ---- Cinemática de entrada (lenta y distinta por slide) ----
+       Cada demo tiene su propio @keyframes con un "lenguaje" visual:
+       riesgo=escáner girado, bernoulli=dado que cae, series=flyby horizontal,
+       kpis=zoom con flash, curriculo=rotación 3D. */
+    .slide.active .mini-demo { transform-origin: 50% 50%; }
+
+    .slide.active[data-demo="riesgo"]    .mini-demo { animation: introRiesgo    2.4s cubic-bezier(.2,.8,.2,1)  both; }
+    .slide.active[data-demo="bernoulli"] .mini-demo { animation: introBernoulli 2.2s cubic-bezier(.34,1.2,.64,1) both; }
+    .slide.active[data-demo="series"]    .mini-demo { animation: introSeries    2.6s cubic-bezier(.22,.1,.25,1) both; }
+    .slide.active[data-demo="kpis"]      .mini-demo { animation: introKpis      2.1s cubic-bezier(.5,0,.1,1)   both; }
+    .slide.active[data-demo="curriculo"] .mini-demo { animation: introCurriculo 2.5s cubic-bezier(.2,.8,.2,1)  both; }
+
+    /* Glow naranja reutilizable para el hold (usado en todas) */
+    /* (se aplica inline por keyframe para que cada animación module su intensidad) */
+
+    /* 1) RIESGO — entra girada, se endereza (escáner) */
+    @keyframes introRiesgo {
+      0%   { opacity: 0;
+             transform: scale(1.32) translate(18%, -8%) rotate(-5deg);
+             filter: blur(18px) brightness(1.2);
+             box-shadow: 0 35px 110px -20px rgba(249,115,22,0.75), 0 0 70px -5px rgba(249,115,22,0.5), inset 0 0 0 1px rgba(249,115,22,0.55); }
+      20%  { opacity: 1;
+             transform: scale(1.42) translate(-28%, 6%) rotate(-2deg);
+             filter: blur(0) brightness(1.22); }
+      38%  { transform: scale(1.42) translate(-28%, 6%) rotate(-1deg); }
+      62%  { transform: scale(1.34) translate(-24%, 4%) rotate(0deg);
+             filter: blur(0) brightness(1.1);
+             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.5), 0 0 45px -6px rgba(249,115,22,0.35), inset 0 0 0 1px rgba(249,115,22,0.35); }
+      100% { opacity: 1;
+             transform: scale(1) translate(0,0) rotate(0deg);
+             filter: blur(0) brightness(1);
+             box-shadow: 0 0 0 rgba(249,115,22,0); }
     }
 
-    /* Texto: stagger que empieza cuando la demo ya está retrocediendo */
-    .slide.active .anim { animation: riseIn 0.7s cubic-bezier(.2,.8,.2,1) both; }
-    .slide.active .anim:nth-child(1) { animation-delay: 0.72s; }
-    .slide.active .anim:nth-child(2) { animation-delay: 0.82s; }
-    .slide.active .anim:nth-child(3) { animation-delay: 0.92s; }
-    .slide.active .anim:nth-child(4) { animation-delay: 1.02s; }
-    .slide.active .anim:nth-child(5) { animation-delay: 1.12s; }
+    /* 2) BERNOULLI — cae desde arriba con overshoot y mini-rebote (dado) */
+    @keyframes introBernoulli {
+      0%   { opacity: 0;
+             transform: scale(1.22) translate(-28%, -42%) rotate(2deg);
+             filter: blur(20px) brightness(1.3);
+             box-shadow: 0 40px 120px -20px rgba(249,115,22,0.8), 0 0 80px -4px rgba(249,115,22,0.55), inset 0 0 0 1px rgba(249,115,22,0.6); }
+      18%  { opacity: 1;
+             transform: scale(1.46) translate(-30%, 10%) rotate(0deg);
+             filter: blur(0) brightness(1.25); }
+      30%  { transform: scale(1.42) translate(-30%, 4%); }
+      40%  { transform: scale(1.44) translate(-30%, 8%); }
+      52%  { transform: scale(1.42) translate(-30%, 6%); }
+      66%  { transform: scale(1.38) translate(-28%, 5%);
+             filter: blur(0) brightness(1.15);
+             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.55), 0 0 50px -6px rgba(249,115,22,0.4), inset 0 0 0 1px rgba(249,115,22,0.4); }
+      100% { opacity: 1;
+             transform: scale(1) translate(0,0) rotate(0);
+             filter: blur(0) brightness(1);
+             box-shadow: 0 0 0 rgba(249,115,22,0); }
+    }
+
+    /* 3) SERIES — flyby horizontal desde la izquierda con skew */
+    @keyframes introSeries {
+      0%   { opacity: 0;
+             transform: scale(1.5) translate(-55%, 14%) skewX(7deg);
+             filter: blur(22px) saturate(1.4) brightness(1.2);
+             box-shadow: 0 40px 120px -20px rgba(249,115,22,0.75), 0 0 70px -5px rgba(249,115,22,0.5), inset 0 0 0 1px rgba(249,115,22,0.5); }
+      22%  { opacity: 1;
+             transform: scale(1.44) translate(-30%, 6%) skewX(0);
+             filter: blur(0) saturate(1.2) brightness(1.22); }
+      40%  { transform: scale(1.42) translate(-30%, 6%); }
+      65%  { transform: scale(1.34) translate(-26%, 4%);
+             filter: blur(0) saturate(1.05) brightness(1.1);
+             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.55), 0 0 50px -6px rgba(249,115,22,0.4), inset 0 0 0 1px rgba(249,115,22,0.4); }
+      100% { opacity: 1;
+             transform: scale(1) translate(0,0) skewX(0);
+             filter: blur(0) saturate(1) brightness(1);
+             box-shadow: 0 0 0 rgba(249,115,22,0); }
+    }
+
+    /* 4) KPIS — zoom fuerte + flash de brillo, retroceso en pasos */
+    @keyframes introKpis {
+      0%   { opacity: 0;
+             transform: scale(1.72) translate(-28%, 6%);
+             filter: blur(26px) brightness(1.45);
+             box-shadow: 0 45px 140px -20px rgba(249,115,22,0.85), 0 0 90px -4px rgba(249,115,22,0.6), inset 0 0 0 1px rgba(249,115,22,0.7); }
+      14%  { opacity: 1;
+             transform: scale(1.56) translate(-30%, 7%);
+             filter: blur(0) brightness(1.35); }
+      30%  { transform: scale(1.5) translate(-30%, 6%);
+             filter: blur(0) brightness(1.25); }
+      55%  { transform: scale(1.38) translate(-28%, 5%);
+             filter: blur(0) brightness(1.1);
+             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.5), 0 0 50px -6px rgba(249,115,22,0.35), inset 0 0 0 1px rgba(249,115,22,0.35); }
+      100% { opacity: 1;
+             transform: scale(1) translate(0,0);
+             filter: blur(0) brightness(1);
+             box-shadow: 0 0 0 rgba(249,115,22,0); }
+    }
+
+    /* 5) CURRICULO — rotación 3D con perspectiva (grafo que se abre) */
+    @keyframes introCurriculo {
+      0%   { opacity: 0;
+             transform: perspective(900px) scale(1.4) translate(-28%, 6%) rotateY(-36deg);
+             filter: blur(18px) brightness(1.2);
+             box-shadow: 0 40px 120px -20px rgba(249,115,22,0.75), 0 0 70px -5px rgba(249,115,22,0.5), inset 0 0 0 1px rgba(249,115,22,0.55); }
+      22%  { opacity: 1;
+             transform: perspective(900px) scale(1.44) translate(-30%, 6%) rotateY(-8deg);
+             filter: blur(0) brightness(1.22); }
+      36%  { transform: perspective(900px) scale(1.42) translate(-30%, 6%) rotateY(0deg); }
+      62%  { transform: perspective(900px) scale(1.35) translate(-28%, 5%) rotateY(0deg);
+             filter: blur(0) brightness(1.1);
+             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.55), 0 0 50px -6px rgba(249,115,22,0.4), inset 0 0 0 1px rgba(249,115,22,0.4); }
+      100% { opacity: 1;
+             transform: perspective(900px) scale(1) translate(0,0) rotateY(0);
+             filter: blur(0) brightness(1);
+             box-shadow: 0 0 0 rgba(249,115,22,0); }
+    }
+
+    /* Texto: stagger más lento y con más espera (aprox 1.2s → 2s) */
+    .slide.active .anim { animation: riseIn 1s cubic-bezier(.2,.8,.2,1) both; }
+    .slide.active .anim:nth-child(1) { animation-delay: 1.20s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 1.35s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 1.50s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 1.65s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 1.80s; }
     @keyframes riseIn {
-      from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+      from { opacity: 0; transform: translateY(18px); filter: blur(8px); }
       to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
     }
 
@@ -1004,7 +1072,7 @@
       setTimeout(() => {
         current.classList.remove('exit-left','exit-right');
         animating = false;
-      }, 780);
+      }, 1400);
 
       dots.forEach((d, i) => d.classList.toggle('active', i === target));
       progressBar.style.width = ((target + 1) / slides.length * 100) + '%';
@@ -1068,7 +1136,7 @@
           done++;
           if (pOut) pOut.textContent = (Array.from(cells).filter(x => x.classList.contains('ok')).length / n).toFixed(2);
           if (fill) fill.style.width = (done) + '%';
-        }, step * 14);
+        }, step * 24);
       });
     }
 
@@ -1110,7 +1178,7 @@
         },
         options: {
           responsive: true, maintainAspectRatio: false,
-          animation: { duration: 900, easing: 'easeOutCubic' },
+          animation: { duration: 1500, easing: 'easeOutCubic' },
           plugins: { legend: { labels: { color: '#cfc9c4', font: { size: 10 } } } },
           scales: {
             y: { min: 6, max: 8, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#a39d98' } },
@@ -1126,7 +1194,7 @@
       els.forEach(el => {
         const target = parseFloat(el.dataset.counter);
         const decimals = parseInt(el.dataset.decimals || '0', 10);
-        const duration = 1100;
+        const duration = 1700;
         const start = performance.now();
         function tick(now) {
           const t = Math.min(1, (now - start) / duration);
