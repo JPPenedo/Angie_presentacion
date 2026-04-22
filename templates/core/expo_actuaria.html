@@ -32,47 +32,131 @@
       color: var(--text);
       min-height: 100vh;
       position: relative;
-      /* grid sutil tipo "circuit board" */
+      /* grid sutil tipo "circuit board" (fijo, no scrollea) */
       background-color: var(--bg);
       background-image:
         linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
       background-size: 44px 44px, 44px 44px;
-      background-position: 0 0, 0 0;
+      background-attachment: fixed;
       overflow-x: hidden;
     }
-    /* Halos naranjas en movimiento lento (fondo dinámico) */
-    body::before,
-    body::after {
-      content: "";
+
+    /* ===== JUEGO DE LUCES EN MOVIMIENTO ===== */
+    .lights {
       position: fixed;
       inset: 0;
-      pointer-events: none;
       z-index: 0;
-      will-change: transform;
+      pointer-events: none;
+      overflow: hidden;
     }
-    body::before {
+    .light {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      mix-blend-mode: screen;
+      will-change: transform, opacity;
+    }
+    .l1 {
+      width: 620px; height: 560px; left: -8%; top: 2%;
+      background: radial-gradient(closest-side, rgba(249,115,22,0.85), transparent 70%);
+      animation:
+        drift1 22s cubic-bezier(.45,.05,.55,.95) infinite alternate,
+        pulseA 7.5s ease-in-out infinite;
+    }
+    .l2 {
+      width: 520px; height: 520px; right: -10%; top: 8%;
+      background: radial-gradient(closest-side, rgba(253,186,116,0.65), transparent 72%);
+      animation:
+        drift2 28s cubic-bezier(.45,.05,.55,.95) infinite alternate,
+        pulseB 9s ease-in-out infinite;
+    }
+    .l3 {
+      width: 440px; height: 420px; left: 32%; top: 55%;
+      background: radial-gradient(closest-side, rgba(251,146,60,0.75), transparent 70%);
+      animation:
+        drift3 19s cubic-bezier(.45,.05,.55,.95) infinite alternate,
+        pulseA 6s ease-in-out infinite;
+    }
+    .l4 {
+      width: 420px; height: 380px; right: 12%; bottom: -10%;
+      background: radial-gradient(closest-side, rgba(245,158,11,0.6), transparent 70%);
+      animation:
+        drift4 31s cubic-bezier(.45,.05,.55,.95) infinite alternate,
+        pulseB 8s ease-in-out infinite;
+    }
+    .l5 {
+      width: 320px; height: 300px; left: 6%; bottom: 14%;
+      background: radial-gradient(closest-side, rgba(249,115,22,0.55), transparent 70%);
+      animation:
+        drift5 16s cubic-bezier(.45,.05,.55,.95) infinite alternate,
+        pulseA 5s ease-in-out infinite;
+    }
+    /* Barrido cónico lento sobre todo */
+    .light-sweep {
+      position: absolute;
+      inset: -35%;
+      background: conic-gradient(from 0deg,
+        transparent 0deg 50deg,
+        rgba(249,115,22,0.12) 90deg,
+        transparent 150deg 230deg,
+        rgba(253,186,116,0.09) 280deg,
+        transparent 330deg 360deg
+      );
+      filter: blur(60px);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      animation: sweep 55s linear infinite;
+    }
+    /* Vignette sutil para que las luces no desborden la percepción */
+    .lights::after {
+      content: "";
+      position: absolute; inset: 0;
       background:
-        radial-gradient(620px 520px at 25% 30%, rgba(249,115,22,0.28), transparent 60%);
-      filter: blur(10px);
-      animation: glowDrift1 22s ease-in-out infinite alternate;
+        radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
     }
-    body::after {
-      background:
-        radial-gradient(540px 460px at 75% 65%, rgba(253,186,116,0.18), transparent 60%),
-        radial-gradient(320px 260px at 50% 90%, rgba(251,146,60,0.14), transparent 60%);
-      filter: blur(14px);
-      animation: glowDrift2 28s ease-in-out infinite alternate;
+
+    @keyframes drift1 {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      50%  { transform: translate3d(25%, 18%, 0) scale(1.15); }
+      100% { transform: translate3d(-12%, 32%, 0) scale(0.9); }
     }
-    @keyframes glowDrift1 {
-      0%   { transform: translate3d(-6%, -4%, 0) scale(1); }
-      50%  { transform: translate3d(8%,  6%, 0) scale(1.08); }
-      100% { transform: translate3d(-4%, 10%, 0) scale(0.95); }
+    @keyframes drift2 {
+      0%   { transform: translate3d(0,0,0) scale(0.95); }
+      50%  { transform: translate3d(-22%, 24%, 0) scale(1.22); }
+      100% { transform: translate3d(12%, -18%, 0) scale(1.06); }
     }
-    @keyframes glowDrift2 {
-      0%   { transform: translate3d(6%, 8%, 0)  scale(1.05); }
-      50%  { transform: translate3d(-10%, -4%, 0) scale(0.92); }
-      100% { transform: translate3d(4%, -8%, 0)  scale(1.1); }
+    @keyframes drift3 {
+      0%   { transform: translate3d(0,0,0) scale(1.1); }
+      50%  { transform: translate3d(18%, -30%, 0) scale(0.82); }
+      100% { transform: translate3d(-24%, 12%, 0) scale(1.2); }
+    }
+    @keyframes drift4 {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      50%  { transform: translate3d(-28%, -22%, 0) scale(1.12); }
+      100% { transform: translate3d(14%, -32%, 0) scale(0.88); }
+    }
+    @keyframes drift5 {
+      0%   { transform: translate3d(0,0,0) scale(0.95); }
+      50%  { transform: translate3d(22%, -18%, 0) scale(1.18); }
+      100% { transform: translate3d(34%, 24%, 0) scale(0.85); }
+    }
+    @keyframes pulseA {
+      0%, 100% { opacity: 0.55; }
+      50%      { opacity: 0.95; }
+    }
+    @keyframes pulseB {
+      0%, 100% { opacity: 0.4; }
+      50%      { opacity: 0.8; }
+    }
+    @keyframes sweep {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Respeta usuarios con "reducir movimiento" */
+    @media (prefers-reduced-motion: reduce) {
+      .light, .light-sweep { animation: none; opacity: 0.6; }
     }
     .wrap {
       position: relative;
@@ -536,6 +620,14 @@
   </style>
 </head>
 <body>
+  <div class="lights" aria-hidden="true">
+    <div class="light l1"></div>
+    <div class="light l2"></div>
+    <div class="light l3"></div>
+    <div class="light l4"></div>
+    <div class="light l5"></div>
+    <div class="light-sweep"></div>
+  </div>
   <div class="wrap">
 
     <div class="hero">
