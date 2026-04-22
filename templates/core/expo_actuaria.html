@@ -42,7 +42,11 @@
       overflow-x: hidden;
     }
 
-    /* ===== JUEGO DE LUCES EN MOVIMIENTO ===== */
+    /* ===== LUZ DINÁMICA TIPO "TREN PASANDO EN LA OSCURIDAD" =====
+       - Dos ambientes muy sutiles de base (evitan el fondo totalmente negro).
+       - Streaks horizontales que cruzan el viewport a diferentes velocidades
+         (parallax: los cercanos gruesos y rápidos, los lejanos finos y lentos).
+       - Sparks: pequeños puntos brillantes veloces (reflejos de ventana). */
     .lights {
       position: fixed;
       inset: 0;
@@ -50,113 +54,125 @@
       pointer-events: none;
       overflow: hidden;
     }
-    .light {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(70px);
-      mix-blend-mode: screen;
-      will-change: transform, opacity;
-    }
-    .l1 {
-      width: 620px; height: 560px; left: -8%; top: 2%;
-      background: radial-gradient(closest-side, rgba(249,115,22,0.85), transparent 70%);
-      animation:
-        drift1 22s cubic-bezier(.45,.05,.55,.95) infinite alternate,
-        pulseA 7.5s ease-in-out infinite;
-    }
-    .l2 {
-      width: 520px; height: 520px; right: -10%; top: 8%;
-      background: radial-gradient(closest-side, rgba(253,186,116,0.65), transparent 72%);
-      animation:
-        drift2 28s cubic-bezier(.45,.05,.55,.95) infinite alternate,
-        pulseB 9s ease-in-out infinite;
-    }
-    .l3 {
-      width: 440px; height: 420px; left: 32%; top: 55%;
-      background: radial-gradient(closest-side, rgba(251,146,60,0.75), transparent 70%);
-      animation:
-        drift3 19s cubic-bezier(.45,.05,.55,.95) infinite alternate,
-        pulseA 6s ease-in-out infinite;
-    }
-    .l4 {
-      width: 420px; height: 380px; right: 12%; bottom: -10%;
-      background: radial-gradient(closest-side, rgba(245,158,11,0.6), transparent 70%);
-      animation:
-        drift4 31s cubic-bezier(.45,.05,.55,.95) infinite alternate,
-        pulseB 8s ease-in-out infinite;
-    }
-    .l5 {
-      width: 320px; height: 300px; left: 6%; bottom: 14%;
-      background: radial-gradient(closest-side, rgba(249,115,22,0.55), transparent 70%);
-      animation:
-        drift5 16s cubic-bezier(.45,.05,.55,.95) infinite alternate,
-        pulseA 5s ease-in-out infinite;
-    }
-    /* Barrido cónico lento sobre todo */
-    .light-sweep {
-      position: absolute;
-      inset: -35%;
-      background: conic-gradient(from 0deg,
-        transparent 0deg 50deg,
-        rgba(249,115,22,0.12) 90deg,
-        transparent 150deg 230deg,
-        rgba(253,186,116,0.09) 280deg,
-        transparent 330deg 360deg
-      );
-      filter: blur(60px);
-      mix-blend-mode: screen;
-      opacity: 0.8;
-      animation: sweep 55s linear infinite;
-    }
-    /* Vignette sutil para que las luces no desborden la percepción */
     .lights::after {
       content: "";
       position: absolute; inset: 0;
-      background:
-        radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
+      background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
       pointer-events: none;
     }
 
-    @keyframes drift1 {
+    /* ---- Base ambiental (muy leve, sólo para que no se vea plano) ---- */
+    .ambient {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    .ambient.a1 {
+      width: 620px; height: 540px; left: -10%; top: 8%;
+      background: radial-gradient(closest-side, rgba(249,115,22,0.35), transparent 70%);
+      animation: ambDrift1 38s ease-in-out infinite alternate;
+    }
+    .ambient.a2 {
+      width: 480px; height: 440px; right: -8%; bottom: -4%;
+      background: radial-gradient(closest-side, rgba(251,146,60,0.28), transparent 70%);
+      animation: ambDrift2 44s ease-in-out infinite alternate;
+    }
+    @keyframes ambDrift1 {
       0%   { transform: translate3d(0,0,0) scale(1); }
-      50%  { transform: translate3d(25%, 18%, 0) scale(1.15); }
-      100% { transform: translate3d(-12%, 32%, 0) scale(0.9); }
+      100% { transform: translate3d(22%, 14%, 0) scale(1.1); }
     }
-    @keyframes drift2 {
-      0%   { transform: translate3d(0,0,0) scale(0.95); }
-      50%  { transform: translate3d(-22%, 24%, 0) scale(1.22); }
-      100% { transform: translate3d(12%, -18%, 0) scale(1.06); }
+    @keyframes ambDrift2 {
+      0%   { transform: translate3d(0,0,0) scale(1.05); }
+      100% { transform: translate3d(-18%, -12%, 0) scale(0.95); }
     }
-    @keyframes drift3 {
-      0%   { transform: translate3d(0,0,0) scale(1.1); }
-      50%  { transform: translate3d(18%, -30%, 0) scale(0.82); }
-      100% { transform: translate3d(-24%, 12%, 0) scale(1.2); }
+
+    /* ---- Streaks: barras de luz que cruzan el viewport ---- */
+    .streak {
+      position: absolute;
+      left: -80vw;
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        rgba(249,115,22,0) 0%,
+        rgba(249,115,22,0.55) 18%,
+        rgba(253,186,116,1) 50%,
+        rgba(249,115,22,0.55) 82%,
+        rgba(249,115,22,0) 100%);
+      box-shadow:
+        0 0 18px 2px rgba(249,115,22,0.55),
+        0 0 55px 10px rgba(249,115,22,0.28);
+      mix-blend-mode: screen;
+      opacity: 0;
+      will-change: transform, opacity;
     }
-    @keyframes drift4 {
-      0%   { transform: translate3d(0,0,0) scale(1); }
-      50%  { transform: translate3d(-28%, -22%, 0) scale(1.12); }
-      100% { transform: translate3d(14%, -32%, 0) scale(0.88); }
+    .streak.reverse { left: auto; right: -80vw; }
+
+    /* Parallax: delgados=lejos=lento / gruesos=cerca=rápido */
+    .s1 { top:  8%; width: 48vw;  height: 2px; filter: blur(1.2px);
+          animation: streakLR 12s linear infinite; animation-delay:  0s;   }
+    .s2 { top: 22%; width: 80vw;  height: 4px; filter: blur(3px);
+          animation: streakLR  9s linear infinite; animation-delay: -3.2s; }
+    .s3 { top: 36%; width: 42vw;  height: 2px; filter: blur(1.4px);
+          animation: streakRL 13s linear infinite; animation-delay: -1.5s; }
+    .s4 { top: 52%; width: 95vw;  height: 5px; filter: blur(4px);
+          animation: streakLR  7s linear infinite; animation-delay: -5s;   }
+    .s5 { top: 64%; width: 55vw;  height: 2px; filter: blur(1.4px);
+          animation: streakRL 11s linear infinite; animation-delay: -4s;   }
+    .s6 { top: 78%; width: 70vw;  height: 3px; filter: blur(2.5px);
+          animation: streakLR  8s linear infinite; animation-delay: -2.3s; }
+    .s7 { top: 92%; width: 38vw;  height: 2px; filter: blur(1.2px);
+          animation: streakLR 14s linear infinite; animation-delay: -6s;   }
+
+    @keyframes streakLR {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      6%   { opacity: 0.95; }
+      94%  { opacity: 0.95; }
+      100% { transform: translate3d(180vw, 0, 0); opacity: 0; }
     }
-    @keyframes drift5 {
-      0%   { transform: translate3d(0,0,0) scale(0.95); }
-      50%  { transform: translate3d(22%, -18%, 0) scale(1.18); }
-      100% { transform: translate3d(34%, 24%, 0) scale(0.85); }
+    @keyframes streakRL {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      6%   { opacity: 0.95; }
+      94%  { opacity: 0.95; }
+      100% { transform: translate3d(-180vw, 0, 0); opacity: 0; }
     }
-    @keyframes pulseA {
-      0%, 100% { opacity: 0.55; }
-      50%      { opacity: 0.95; }
+
+    /* ---- Sparks: puntos brillantes rápidos (reflejos tipo ventana) ---- */
+    .spark {
+      position: absolute;
+      width: 7px; height: 7px;
+      left: -10vw;
+      border-radius: 50%;
+      background: #ffe1bd;
+      box-shadow:
+        0 0 10px 2px rgba(253,186,116,0.95),
+        0 0 28px 6px rgba(249,115,22,0.55);
+      mix-blend-mode: screen;
+      opacity: 0;
+      will-change: transform, opacity;
     }
-    @keyframes pulseB {
-      0%, 100% { opacity: 0.4; }
-      50%      { opacity: 0.8; }
+    .spark.reverse { left: auto; right: -10vw; }
+    .sp1 { top: 30%; animation: sparkLR 5.5s linear infinite; animation-delay: -1s; }
+    .sp2 { top: 58%; animation: sparkRL 6.5s linear infinite; animation-delay: -3s; }
+    .sp3 { top: 14%; animation: sparkLR 7s   linear infinite; animation-delay: -4s; }
+    .sp4 { top: 82%; animation: sparkRL 5s   linear infinite; animation-delay: -2s; }
+
+    @keyframes sparkLR {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      12%  { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { transform: translate3d(120vw, 0, 0); opacity: 0; }
     }
-    @keyframes sweep {
-      to { transform: rotate(360deg); }
+    @keyframes sparkRL {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      12%  { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { transform: translate3d(-120vw, 0, 0); opacity: 0; }
     }
 
     /* Respeta usuarios con "reducir movimiento" */
     @media (prefers-reduced-motion: reduce) {
-      .light, .light-sweep { animation: none; opacity: 0.6; }
+      .streak, .spark, .ambient { animation: none; opacity: 0.35; }
     }
     .wrap {
       position: relative;
@@ -734,12 +750,19 @@
 </head>
 <body>
   <div class="lights" aria-hidden="true">
-    <div class="light l1"></div>
-    <div class="light l2"></div>
-    <div class="light l3"></div>
-    <div class="light l4"></div>
-    <div class="light l5"></div>
-    <div class="light-sweep"></div>
+    <div class="ambient a1"></div>
+    <div class="ambient a2"></div>
+    <div class="streak s1"></div>
+    <div class="streak s2"></div>
+    <div class="streak s3 reverse"></div>
+    <div class="streak s4"></div>
+    <div class="streak s5 reverse"></div>
+    <div class="streak s6"></div>
+    <div class="streak s7"></div>
+    <div class="spark sp1"></div>
+    <div class="spark sp2 reverse"></div>
+    <div class="spark sp3"></div>
+    <div class="spark sp4 reverse"></div>
   </div>
   <div class="wrap">
 
