@@ -758,8 +758,12 @@
     }
 
     /* Modal centrado: el simulador "despega" al viewport y queda por encima
-       de todo con su propio tamaño cómodo para interactuar. */
-    .slide[data-demo="simulador"] .mini-demo.sim-open {
+       de todo con su propio tamaño cómodo para interactuar. Ojo: la .slide
+       padre tiene transform/filter/clip-path, que capturaría el position:
+       fixed; por eso en JS portamos el .mini-demo a <body> al abrir para
+       que el viewport sea el contenedor real. Los selectores por tanto NO
+       están scopeados a .slide. */
+    .mini-demo.sim-open {
       position: fixed;
       inset: 0;
       margin: auto;                           /* centrado perfecto en viewport */
@@ -769,25 +773,61 @@
       z-index: 9999;
       overflow-y: auto;
       overflow-x: hidden;
-      border-color: rgba(249,115,22,0.6);
+      background: var(--card-alt, #1a1411);
+      border: 1px solid rgba(249,115,22,0.6);
+      border-radius: 0.9rem;
+      padding: 1rem 1.1rem;
+      color: var(--text, #efe6dc);
       box-shadow:
         0 45px 120px -18px rgba(249,115,22,0.6),
         0 0 90px -12px rgba(249,115,22,0.4),
         inset 0 0 0 1.5px rgba(249,115,22,0.55);
+      /* Neutralizamos cualquier filter/animación heredada por si quedó
+         residuo del intro de la slide. */
+      filter: none !important;
+      animation: none !important;
+      clip-path: none !important;
     }
-    /* Cuando está abierto, sim-stage crece para llenar el modal. */
-    .slide[data-demo="simulador"] .mini-demo.sim-open .sim-stage {
+    .mini-demo.sim-open .sim-stage {
       min-height: 420px;
       flex: 1;
     }
-    .slide[data-demo="simulador"] .sim-stage {
+    .slide[data-demo="simulador"] .sim-stage,
+    .mini-demo.sim-open .sim-stage {
       transition: min-height 0.55s cubic-bezier(.2,.8,.2,1);
     }
 
     /* Los KPIs y charts aprovechan el espacio extra del modal. */
-    .slide[data-demo="simulador"] .mini-demo.sim-open .sim-kpi .v { font-size: 1.4rem; }
-    .slide[data-demo="simulador"] .mini-demo.sim-open .sim-chart-box { height: 180px; }
-    .slide[data-demo="simulador"] .mini-demo.sim-open .sim-title { font-size: 0.95rem; }
+    .mini-demo.sim-open .sim-kpi .v { font-size: 1.4rem; }
+    .mini-demo.sim-open .sim-chart-box { height: 180px; }
+    .mini-demo.sim-open .sim-title { font-size: 0.95rem; }
+
+    /* Botón de cierre visible en la esquina del modal. */
+    .mini-demo .sim-close {
+      display: none;
+    }
+    .mini-demo.sim-open .sim-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0.55rem;
+      right: 0.55rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(249,115,22,0.45);
+      background: rgba(249,115,22,0.12);
+      color: var(--accent, #f97316);
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 2;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .mini-demo.sim-open .sim-close:hover {
+      background: rgba(249,115,22,0.25);
+      transform: scale(1.05);
+    }
 
     /* Backdrop oscurecido + blur detrás del simulador abierto. */
     .sim-backdrop {
@@ -806,7 +846,7 @@
     }
 
     @media (max-width: 820px) {
-      .slide[data-demo="simulador"] .mini-demo.sim-open {
+      .mini-demo.sim-open {
         width: 94vw;
         height: 90vh;
         min-height: 90vh;
@@ -1704,6 +1744,9 @@
               {% endif %}
 
               {% if s.demo == 'simulador' %}
+              <button type="button" class="sim-close" aria-label="Cerrar simulador" data-sim-close>
+                <i class="bi bi-x-lg"></i>
+              </button>
               <div class="sim-wrap" data-sim>
                 <!-- Barra de pasos -->
                 <div class="sim-steps">
@@ -2083,11 +2126,17 @@
 
       // Si salíamos de la slide del simulador con el modal abierto, lo
       // colapsamos al instante para que no quede flotando. También
-      // cancelamos cualquier auto-apertura pendiente para que no dispare
-      // después de que la slide ya dejó de estar activa.
-      document.querySelectorAll('.slide[data-demo="simulador"] .mini-demo').forEach(el => {
+      // cancelamos cualquier auto-apertura pendiente y devolvemos el
+      // mini-demo portalado a su ancla dentro de la slide.
+      document.querySelectorAll('.mini-demo').forEach(el => {
         clearTimeout(el._autoOpenTO);
-        el.classList.remove('sim-open');
+        if (el.classList.contains('sim-open')) {
+          el.classList.remove('sim-open');
+          el.style.animation = 'none';
+          if (el._simAnchor && el._simAnchor.parentNode) {
+            el._simAnchor.parentNode.insertBefore(el, el._simAnchor.nextSibling);
+          }
+        }
         el.style.transition = 'none';
         el.style.transform = '';
       });
@@ -2304,6 +2353,11 @@
       if (!mini) return;
       if (!mini.dataset.zoomBound) bindSimulatorZoom(mini, wrap);
 
+      // Permite que la regla CSS `.slide.active[data-demo="simulador"]
+      // .mini-demo { animation }` vuelva a disparar el intro cuando la
+      // slide se reactiva (habíamos anclado animation:none al cerrar).
+      mini.style.animation = '';
+
       // Esperamos a que termine la animación de entrada de la slide para
       // que la transición FLIP parta desde el reposo y se vea suave.
       clearTimeout(mini._autoOpenTO);
@@ -2313,12 +2367,19 @@
       }, 2250);
     }
 
-    /* FLIP-based modal zoom: promovemos el mini-demo a position:fixed
-       centrado y lo devolvemos a la celda del grid cuando se navega fuera
-       de la slide. El truco FLIP hace que la transición sea suave a pesar
-       del cambio de position.                                           */
+    /* Portal + FLIP modal zoom: la .slide padre tiene transform, filter y
+       clip-path, que atrapan cualquier position:fixed de sus descendientes
+       dentro de la tarjeta. Para que el simulador realmente "salga" de la
+       slide y quede centrado en el viewport, movemos el .mini-demo al
+       <body> al abrir (y lo devolvemos a su ancla original al cerrar). El
+       FLIP calcula posición/tamaño inicial vs final para animar el salto
+       de forma suave.                                                      */
     function bindSimulatorZoom(mini, wrap) {
       const DUR = 550;
+
+      // Ancla para volver al lugar exacto dentro de la slide.
+      const anchor = document.createComment('mini-demo-anchor');
+      mini.parentNode.insertBefore(anchor, mini);
 
       let backdrop = document.querySelector('.sim-backdrop');
       if (!backdrop) {
@@ -2329,13 +2390,28 @@
 
       function flip(toOpen) {
         const first = mini.getBoundingClientRect();
-        mini.classList.toggle('sim-open', toOpen);
-        backdrop.classList.toggle('on',   toOpen);
+
+        if (toOpen) {
+          // Portal al <body> para escapar transforms/filters/clip-paths
+          // del padre y que position:fixed sea relativo al viewport.
+          document.body.appendChild(mini);
+          mini.classList.add('sim-open');
+        } else {
+          mini.classList.remove('sim-open');
+          // Al re-insertarlo en la slide volvería a matchear la regla
+          // `.slide.active[data-demo="simulador"] .mini-demo { animation }`
+          // y re-dispararía el intro; lo evitamos anclando animation:none.
+          mini.style.animation = 'none';
+          // Regresamos al DOM original, junto a su ancla.
+          anchor.parentNode.insertBefore(mini, anchor.nextSibling);
+        }
+        backdrop.classList.toggle('on', toOpen);
+
         const last = mini.getBoundingClientRect();
         const dx = first.left - last.left;
         const dy = first.top  - last.top;
-        const sx = first.width  / last.width;
-        const sy = first.height / last.height;
+        const sx = (first.width  || 1) / (last.width  || 1);
+        const sy = (first.height || 1) / (last.height || 1);
         mini.style.transition = 'none';
         mini.style.transformOrigin = '0 0';
         mini.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
@@ -2355,8 +2431,18 @@
 
       mini._simOpen  = open;
       mini._simClose = close;
+      mini._simAnchor = anchor;
 
-      // Escape hatch: ESC cierra el modal (útil para leer el resto de la slide).
+      // Botón de cierre visible dentro del modal.
+      const closeBtn = mini.querySelector('[data-sim-close]');
+      if (closeBtn) closeBtn.addEventListener('click', close);
+
+      // Click en el backdrop también cierra.
+      backdrop.addEventListener('click', () => {
+        if (mini.classList.contains('sim-open')) close();
+      });
+
+      // Escape hatch: ESC cierra el modal.
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && mini.classList.contains('sim-open')) close();
       });
