@@ -746,6 +746,313 @@
       font-size: 0.72rem;
       border: 1px solid;
     }
+
+    /* ==================== DASHBOARD MULTI-ESCENA ==================== */
+    #dashShell {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(600px 340px at 20% 0%, rgba(249,115,22,0.1), transparent 60%),
+        radial-gradient(500px 300px at 100% 100%, rgba(253,186,116,0.07), transparent 60%),
+        var(--card);
+      border: 1px solid rgba(249,115,22,0.18);
+      box-shadow: 0 10px 40px -15px rgba(0,0,0,0.55), 0 0 60px -30px rgba(249,115,22,0.4);
+    }
+    .dash-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.55rem;
+      margin-bottom: 0.85rem;
+    }
+    @media (max-width: 760px) { .dash-kpis { grid-template-columns: repeat(2, 1fr); } }
+    .dash-kpi {
+      display: flex; gap: 0.55rem; align-items: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+      border: 1px solid var(--border);
+      border-radius: 0.7rem;
+      padding: 0.55rem 0.7rem;
+      position: relative; overflow: hidden;
+    }
+    .dash-kpi::after {
+      content: ""; position: absolute; top: 0; left: -60%;
+      width: 55%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+      animation: shineSweep 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .dash-kpi:nth-child(2)::after { animation-delay: 1.6s; }
+    .dash-kpi:nth-child(3)::after { animation-delay: 3.2s; }
+    .dash-kpi:nth-child(4)::after { animation-delay: 4.8s; }
+    .dash-kpi .dk-ic {
+      width: 30px; height: 30px; display: grid; place-items: center;
+      border-radius: 0.45rem;
+      background: rgba(249,115,22,0.08);
+      color: var(--accent);
+      font-size: 1rem;
+    }
+    .dash-kpi .dk-v {
+      font-size: 1.3rem; font-weight: 800; line-height: 1; letter-spacing: -0.01em;
+    }
+    .dash-kpi .dk-l {
+      color: var(--muted); font-size: 0.7rem; margin-top: 0.15rem;
+    }
+
+    .dash-scene-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.6rem;
+    }
+    .dsh-title { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 0.95rem; }
+    .dsh-badge {
+      font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1px solid rgba(249,115,22,0.3);
+      background: rgba(249,115,22,0.1);
+      color: var(--accent);
+      border-radius: 999px; padding: 0.15rem 0.5rem;
+    }
+    .dsh-actions { display: flex; gap: 0.3rem; }
+    .dsh-btn {
+      width: 32px; height: 32px; padding: 0;
+      display: grid; place-items: center;
+      font-size: 0.85rem;
+    }
+
+    .dash-stage {
+      position: relative;
+      min-height: 340px;
+      border-radius: 0.8rem;
+      overflow: hidden;
+    }
+    .dash-scene {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      border: 1px solid var(--border);
+      border-radius: 0.8rem;
+      padding: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.985) translateY(10px);
+      filter: blur(10px);
+      clip-path: inset(0 100% 0 0 round 0.8rem);
+      transition:
+        opacity 0.85s ease,
+        transform 1.15s cubic-bezier(.2,.8,.2,1),
+        filter 0.85s ease,
+        clip-path 1.2s cubic-bezier(.65,.05,.15,1);
+    }
+    .dash-scene.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+      clip-path: inset(0 0% 0 0 round 0.8rem);
+      z-index: 2;
+    }
+    .dash-scene.exit-left {
+      opacity: 0;
+      transform: scale(0.97) translateX(-4%);
+      filter: blur(12px);
+      clip-path: inset(0 0 0 100% round 0.8rem);
+    }
+    .dash-scene.exit-right {
+      opacity: 0;
+      transform: scale(0.97) translateX(4%);
+      filter: blur(12px);
+      clip-path: inset(0 100% 0 0 round 0.8rem);
+    }
+
+    .scene-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 0.85rem;
+      height: 100%;
+    }
+    @media (max-width: 900px) {
+      .scene-grid { grid-template-columns: 1fr; }
+      .dash-stage { min-height: 600px; }
+    }
+    .scene-main {
+      position: relative;
+      min-height: 300px;
+    }
+    .scene-main canvas { max-height: 320px; }
+    .scene-side {
+      display: flex; flex-direction: column; gap: 0.55rem;
+      overflow: hidden;
+    }
+    .side-title {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); font-weight: 700;
+    }
+    .side-note {
+      margin-top: auto; font-size: 0.72rem; color: var(--muted);
+      padding-top: 0.4rem; border-top: 1px dashed rgba(255,255,255,0.06);
+    }
+
+    /* Risk breakdown (scene donut) */
+    .risk-breakdown { display: flex; flex-direction: column; gap: 0.4rem; }
+    .rb-row {
+      display: grid;
+      grid-template-columns: 10px 60px 30px 1fr;
+      align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.5rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+    }
+    .rb-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
+    .rb-count { font-weight: 700; text-align: right; }
+    .rb-bar {
+      height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden; position: relative;
+    }
+    .rb-bar > span {
+      display: block; height: 100%;
+      border-radius: 999px;
+      position: relative; overflow: hidden;
+    }
+    .r-bajo-tint  .rb-bar > span { background: linear-gradient(90deg, #34d399, #22c55e); }
+    .r-medio-tint .rb-bar > span { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .r-alto-tint  .rb-bar > span { background: linear-gradient(90deg, #f87171, #ef4444); }
+
+    /* Side mini-kpis (scene line) */
+    .side-mini-kpis {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem;
+    }
+    .smk {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 0.55rem;
+      padding: 0.5rem 0.6rem;
+    }
+    .smk-l { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .smk-v { font-size: 1.05rem; font-weight: 700; margin-top: 0.1rem; }
+    .smk-v.up   { color: var(--success); }
+    .smk-v.down { color: var(--danger); }
+
+    /* Performers (scene radar) */
+    .performers { display: flex; flex-direction: column; gap: 0.3rem; }
+    .perf {
+      display: grid; grid-template-columns: 90px 1fr 34px;
+      align-items: center; gap: 0.5rem;
+      padding: 0.32rem 0.5rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 0.45rem;
+      font-size: 0.78rem;
+    }
+    .perf-bar {
+      height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden; position: relative;
+    }
+    .perf-bar > span {
+      display: block; height: 100%; border-radius: 999px;
+      position: relative; overflow: hidden;
+    }
+    .perf.up   .perf-bar > span { background: linear-gradient(90deg, #34d399, #4ade80); }
+    .perf.down .perf-bar > span { background: linear-gradient(90deg, #f87171, #fb7185); }
+    .perf-val { text-align: right; font-weight: 700; }
+
+    /* Clasificador (scene scatter) */
+    .clf-metrics {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem;
+    }
+    .clf-m {
+      background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(249,115,22,0.22);
+      border-radius: 0.55rem;
+      padding: 0.55rem 0.6rem;
+    }
+    .clf-l { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .clf-v { font-size: 1.2rem; font-weight: 800; color: var(--accent-soft); margin-top: 0.1rem; }
+
+    /* Dots dashboard */
+    .dash-dots {
+      display: flex; gap: 0.35rem; justify-content: center;
+      margin-top: 0.6rem;
+    }
+    .ddot {
+      width: 20px; height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .ddot.active {
+      width: 36px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      box-shadow: 0 0 10px rgba(249,115,22,0.55);
+    }
+
+    /* ============== BRILLO SUTIL EN BARRAS ==============
+       Shine sweep diagonal que pasa cada ~6–8s por barras HTML. */
+    @keyframes shineSweep {
+      0%   { transform: translateX(0); opacity: 0; }
+      12%  { opacity: 1; }
+      55%  { opacity: 1; }
+      75%  { transform: translateX(360%); opacity: 0; }
+      100% { transform: translateX(360%); opacity: 0; }
+    }
+    /* Sobre score bars, bern-fill, rb-bar, perf-bar, priority pbar */
+    .score-fill,
+    .bern-fill,
+    .rb-bar > span,
+    .perf-bar > span,
+    .priority-row .pbar > span {
+      position: relative;
+      overflow: hidden;
+    }
+    .score-fill::after,
+    .bern-fill::after,
+    .rb-bar > span::after,
+    .perf-bar > span::after,
+    .priority-row .pbar > span::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -30%;
+      width: 30%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+      animation: shineSweep 6.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    /* Desfases por posición para que no brillen todas a la vez */
+    .risk-card:nth-child(1) .score-fill::after { animation-delay: 0s; }
+    .risk-card:nth-child(2) .score-fill::after { animation-delay: 1.1s; }
+    .risk-card:nth-child(3) .score-fill::after { animation-delay: 2.2s; }
+    .risk-card:nth-child(4) .score-fill::after { animation-delay: 3.3s; }
+    .rb-row:nth-child(1) .rb-bar > span::after { animation-delay: 0.4s; }
+    .rb-row:nth-child(2) .rb-bar > span::after { animation-delay: 1.8s; }
+    .rb-row:nth-child(3) .rb-bar > span::after { animation-delay: 3.1s; }
+    .perf:nth-child(1) .perf-bar > span::after { animation-delay: 0.2s; }
+    .perf:nth-child(2) .perf-bar > span::after { animation-delay: 1.4s; }
+    .perf:nth-child(3) .perf-bar > span::after { animation-delay: 2.6s; }
+    .perf:nth-child(4) .perf-bar > span::after { animation-delay: 3.8s; }
+    .priority-row:nth-child(1) .pbar > span::after { animation-delay: 0.7s; }
+    .priority-row:nth-child(2) .pbar > span::after { animation-delay: 2.9s; }
+
+    /* ============== GLOW SUTIL EN CANVAS CHART.JS ==============
+       Drop-shadow apenas perceptible que pulsa lento. */
+    #scBars, #scDonut, #scLine, #scRadar, #scScatter,
+    .mini-demo canvas {
+      animation: canvasGlow 6.5s ease-in-out infinite;
+    }
+    #scDonut   { animation-delay: 0.8s; }
+    #scLine    { animation-delay: 1.6s; }
+    #scRadar   { animation-delay: 2.4s; }
+    #scScatter { animation-delay: 3.2s; }
+    @keyframes canvasGlow {
+      0%, 100% { filter: drop-shadow(0 0 0 rgba(249,115,22,0)); }
+      50%      { filter: drop-shadow(0 0 6px rgba(249,115,22,0.35)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .score-fill::after, .bern-fill::after, .rb-bar > span::after,
+      .perf-bar > span::after, .priority-row .pbar > span::after,
+      .dash-kpi::after { animation: none; opacity: 0; }
+      #scBars, #scDonut, #scLine, #scRadar, #scScatter,
+      .mini-demo canvas { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -998,62 +1305,217 @@
     </div>
 
     <div class="section-title">
-      <span class="badge-pill">Demo</span>
-      <span>Prototipo simplificado (misma estética, menor complejidad)</span>
+      <span class="badge-pill">Dashboard Demo</span>
+      <span>Prototipo operativo (ciclo automático de vistas)</span>
     </div>
-    <div class="demo-shell">
-      <div class="row g-2 mb-2">
-        <div class="col-md-4">
-          <div class="kpi">
-            <div class="v" style="color:var(--blue);">{{ demo_alumnos|length }}</div>
-            <div class="l">Alumnos monitoreados</div>
+    <div class="demo-shell" id="dashShell">
+      <!-- KPIs fijos -->
+      <div class="dash-kpis">
+        <div class="dash-kpi">
+          <div class="dk-ic"><i class="bi bi-people-fill"></i></div>
+          <div>
+            <div class="dk-v" data-kpi="24" data-decimals="0">0</div>
+            <div class="dk-l">Alumnos monitoreados</div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="kpi">
-            <div class="v" style="color:var(--accent);">{{ demo_promedio }}</div>
-            <div class="l">Promedio del grupo demo</div>
+        <div class="dash-kpi">
+          <div class="dk-ic" style="color:var(--accent-soft);"><i class="bi bi-graph-up"></i></div>
+          <div>
+            <div class="dk-v" data-kpi="7.42" data-decimals="2">0.00</div>
+            <div class="dk-l">Promedio grupal</div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="kpi">
-            <div class="v" style="color:var(--danger);">{{ demo_riesgo_alto }}</div>
-            <div class="l">Casos en riesgo alto</div>
+        <div class="dash-kpi">
+          <div class="dk-ic" style="color:var(--success);"><i class="bi bi-check-circle-fill"></i></div>
+          <div>
+            <div class="dk-v" data-kpi="78" data-decimals="0" data-suffix="%">0</div>
+            <div class="dk-l">Tasa de aprobación</div>
+          </div>
+        </div>
+        <div class="dash-kpi">
+          <div class="dk-ic" style="color:var(--danger);"><i class="bi bi-exclamation-triangle-fill"></i></div>
+          <div>
+            <div class="dk-v" data-kpi="5" data-decimals="0">0</div>
+            <div class="dk-l">Riesgo alto</div>
           </div>
         </div>
       </div>
 
-      <div class="row g-3">
-        <div class="col-lg-6">
-          <canvas id="chartMini" height="160"></canvas>
+      <!-- Header de escena -->
+      <div class="dash-scene-header">
+        <div class="dsh-title">
+          <span class="dsh-badge">Vista <span id="dashSceneIdx">1</span> / <span id="dashSceneTotal">5</span></span>
+          <span id="dashSceneTitle">Calificaciones por alumno</span>
         </div>
-        <div class="col-lg-6">
-          <table class="mini-table">
-            <thead>
-              <tr>
-                <th>Alumno</th>
-                <th>Calificación</th>
-                <th>Riesgo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for a in demo_alumnos %}
-              <tr>
-                <td>{{ a.nombre }}</td>
-                <td>{{ a.calificacion }}</td>
-                <td>
-                  <span class="risk {% if a.riesgo == 'Alto' %}r-alto{% elif a.riesgo == 'Medio' %}r-medio{% else %}r-bajo{% endif %}">
-                    {{ a.riesgo }}
-                  </span>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <div style="margin-top:0.7rem;color:var(--muted);font-size:0.8rem;">
-            Este demo conserva la narrativa visual del sistema principal, pero reduce estructura para exposición rápida.
+        <div class="dsh-actions">
+          <button class="btn-darkx dsh-btn" id="dashPrev" aria-label="Anterior"><i class="bi bi-chevron-left"></i></button>
+          <button class="btn-darkx dsh-btn" id="dashPause" aria-label="Pausa"><i class="bi bi-pause-fill"></i></button>
+          <button class="btn-darkx dsh-btn" id="dashNext" aria-label="Siguiente"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Stage con escenas -->
+      <div class="dash-stage" id="dashStage">
+        <!-- SCENE 1: Barras calificaciones -->
+        <section class="dash-scene active" data-scene="bars">
+          <div class="scene-grid">
+            <div class="scene-main">
+              <canvas id="scBars"></canvas>
+            </div>
+            <div class="scene-side">
+              <div class="side-title">Ranking</div>
+              <table class="mini-table">
+                <thead><tr><th>Alumno</th><th>Cal.</th><th>Riesgo</th></tr></thead>
+                <tbody id="dashTableBody">
+                  {% for a in demo_alumnos %}
+                  <tr>
+                    <td>{{ a.nombre }}</td>
+                    <td>{{ a.calificacion }}</td>
+                    <td>
+                      <span class="risk {% if a.riesgo == 'Alto' %}r-alto{% elif a.riesgo == 'Medio' %}r-medio{% else %}r-bajo{% endif %}">{{ a.riesgo }}</span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </section>
+
+        <!-- SCENE 2: Doughnut de riesgo -->
+        <section class="dash-scene" data-scene="donut">
+          <div class="scene-grid">
+            <div class="scene-main">
+              <canvas id="scDonut"></canvas>
+            </div>
+            <div class="scene-side">
+              <div class="side-title">Distribución de riesgo</div>
+              <div class="risk-breakdown">
+                <div class="rb-row r-bajo-tint">
+                  <span class="rb-dot" style="background:#34d399"></span>
+                  <span class="rb-name">Bajo</span>
+                  <span class="rb-count">14</span>
+                  <div class="rb-bar"><span style="width:58%"></span></div>
+                </div>
+                <div class="rb-row r-medio-tint">
+                  <span class="rb-dot" style="background:#fbbf24"></span>
+                  <span class="rb-name">Medio</span>
+                  <span class="rb-count">5</span>
+                  <div class="rb-bar"><span style="width:21%"></span></div>
+                </div>
+                <div class="rb-row r-alto-tint">
+                  <span class="rb-dot" style="background:#f87171"></span>
+                  <span class="rb-name">Alto</span>
+                  <span class="rb-count">5</span>
+                  <div class="rb-bar"><span style="width:21%"></span></div>
+                </div>
+              </div>
+              <div class="side-note">
+                p(Alto) ≈ 0.21 · intervalo 95 % [0.13, 0.32]
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCENE 3: Línea temporal -->
+        <section class="dash-scene" data-scene="line">
+          <div class="scene-grid">
+            <div class="scene-main">
+              <canvas id="scLine"></canvas>
+            </div>
+            <div class="scene-side">
+              <div class="side-title">Tendencia semestral</div>
+              <div class="side-mini-kpis">
+                <div class="smk">
+                  <div class="smk-l">Δ último semestre</div>
+                  <div class="smk-v up">+0.32</div>
+                </div>
+                <div class="smk">
+                  <div class="smk-l">Tendencia 2024–25</div>
+                  <div class="smk-v up">alcista</div>
+                </div>
+                <div class="smk">
+                  <div class="smk-l">Volatilidad σ̂</div>
+                  <div class="smk-v">0.24</div>
+                </div>
+                <div class="smk">
+                  <div class="smk-l">MA₃ actual</div>
+                  <div class="smk-v">7.43</div>
+                </div>
+              </div>
+              <div class="side-note">
+                Yₜ = Tₜ + Sₜ + εₜ · suavizado por media móvil
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCENE 4: Radar -->
+        <section class="dash-scene" data-scene="radar">
+          <div class="scene-grid">
+            <div class="scene-main">
+              <canvas id="scRadar"></canvas>
+            </div>
+            <div class="scene-side">
+              <div class="side-title">Top vs. bottom</div>
+              <div class="performers">
+                <div class="perf up">
+                  <span class="perf-name">A. García</span>
+                  <div class="perf-bar"><span style="width:92%"></span></div>
+                  <span class="perf-val">9.2</span>
+                </div>
+                <div class="perf up">
+                  <span class="perf-name">D. Flores</span>
+                  <div class="perf-bar"><span style="width:88%"></span></div>
+                  <span class="perf-val">8.8</span>
+                </div>
+                <div class="perf down">
+                  <span class="perf-name">C. Mendoza</span>
+                  <div class="perf-bar"><span style="width:54%"></span></div>
+                  <span class="perf-val">5.4</span>
+                </div>
+                <div class="perf down">
+                  <span class="perf-name">S. Ramírez</span>
+                  <div class="perf-bar"><span style="width:48%"></span></div>
+                  <span class="perf-val">4.8</span>
+                </div>
+              </div>
+              <div class="side-note">
+                Competencias: asistencia, tareas, exámenes, participación, trabajo final.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCENE 5: Scatter clasificador -->
+        <section class="dash-scene" data-scene="scatter">
+          <div class="scene-grid">
+            <div class="scene-main">
+              <canvas id="scScatter"></canvas>
+            </div>
+            <div class="scene-side">
+              <div class="side-title">Métricas del clasificador</div>
+              <div class="clf-metrics">
+                <div class="clf-m"><div class="clf-l">Accuracy</div><div class="clf-v">0.84</div></div>
+                <div class="clf-m"><div class="clf-l">Precisión (Alto)</div><div class="clf-v">0.79</div></div>
+                <div class="clf-m"><div class="clf-l">Recall (Alto)</div><div class="clf-v">0.71</div></div>
+                <div class="clf-m"><div class="clf-l">AUC</div><div class="clf-v">0.88</div></div>
+              </div>
+              <div class="side-note">
+                Eje X: asistencia (%), Eje Y: calificación · colores = clase de riesgo
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Progress dots -->
+      <div class="dash-dots">
+        <span class="ddot active" data-ddot="0"></span>
+        <span class="ddot" data-ddot="1"></span>
+        <span class="ddot" data-ddot="2"></span>
+        <span class="ddot" data-ddot="3"></span>
+        <span class="ddot" data-ddot="4"></span>
       </div>
     </div>
   </div>
@@ -1244,22 +1706,224 @@
       activateDemo(slides[0]);
     });
 
-    /* ---------------- CHART MINI (demo global) ---------------- */
-    const labels = [{% for a in demo_alumnos %}"{{ a.nombre }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
-    const values = [{% for a in demo_alumnos %}{{ a.calificacion }}{% if not forloop.last %}, {% endif %}{% endfor %}];
-    const colors = [{% for a in demo_alumnos %}{% if a.riesgo == 'Alto' %}"rgba(248,113,113,0.8)"{% elif a.riesgo == 'Medio' %}"rgba(251,191,36,0.8)"{% else %}"rgba(52,211,153,0.8)"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}];
-    new Chart(document.getElementById('chartMini'), {
-      type: 'bar',
-      data: { labels, datasets: [{ label: 'Calificación', data: values, backgroundColor: colors, borderRadius: 6, borderSkipped: false }] },
-      options: {
+    /* =================== DASHBOARD MULTI-ESCENA =================== */
+    (() => {
+      const gridColor = 'rgba(255,255,255,0.06)';
+      const tickColor = '#a39d98';
+      const baseScales = {
+        y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 10 } } },
+      };
+      const baseOpts = {
         responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#a39d98' } },
-          x: { grid: { display: false }, ticks: { color: '#a39d98' } },
+        maintainAspectRatio: false,
+        animation: { duration: 1200, easing: 'easeOutCubic' },
+        plugins: { legend: { labels: { color: '#cfc9c4', font: { size: 10 } } } },
+      };
+
+      // ---- Datos demo (ligeros, sólo para estética) ----
+      const alumnosNames = [{% for a in demo_alumnos %}"{{ a.nombre }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+      const alumnosVals  = [{% for a in demo_alumnos %}{{ a.calificacion }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+      const alumnosColors = [{% for a in demo_alumnos %}{% if a.riesgo == 'Alto' %}"rgba(248,113,113,0.85)"{% elif a.riesgo == 'Medio' %}"rgba(251,191,36,0.85)"{% else %}"rgba(52,211,153,0.85)"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}];
+
+      // ---- 1. Bar chart: calificaciones por alumno ----
+      new Chart(document.getElementById('scBars'), {
+        type: 'bar',
+        data: { labels: alumnosNames, datasets: [{
+          label: 'Calificación', data: alumnosVals,
+          backgroundColor: alumnosColors,
+          borderRadius: 8, borderSkipped: false,
+          hoverBackgroundColor: alumnosColors.map(c => c.replace('0.85', '1')),
+        }]},
+        options: { ...baseOpts, plugins: { ...baseOpts.plugins, legend: { display: false } },
+          scales: { y: { ...baseScales.y, min: 0, max: 10 }, x: baseScales.x } },
+      });
+
+      // ---- 2. Doughnut: distribución de riesgo ----
+      new Chart(document.getElementById('scDonut'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Bajo', 'Medio', 'Alto'],
+          datasets: [{
+            data: [14, 5, 5],
+            backgroundColor: ['rgba(52,211,153,0.85)', 'rgba(251,191,36,0.85)', 'rgba(248,113,113,0.85)'],
+            borderColor: 'rgba(0,0,0,0)', borderWidth: 2,
+            hoverOffset: 10,
+          }],
         },
-      },
-    });
+        options: { ...baseOpts, cutout: '62%',
+          plugins: { ...baseOpts.plugins, legend: { position: 'bottom', labels: { color: '#cfc9c4', font: { size: 10 }, boxWidth: 10 } } } },
+      });
+
+      // ---- 3. Line: tendencia semestral + MA3 ----
+      const trendLabels = ['2022-1','2022-2','2023-1','2023-2','2024-1','2024-2','2025-1','2025-2'];
+      const trendBase   = [7.1, 7.4, 7.0, 6.8, 7.3, 7.6, 7.2, 7.5];
+      const trendMA = trendBase.map((_, i, a) => {
+        const k = 3, f = Math.max(0, i-k+1);
+        const s = a.slice(f, i+1);
+        return +(s.reduce((x,y)=>x+y,0)/s.length).toFixed(2);
+      });
+      new Chart(document.getElementById('scLine'), {
+        type: 'line',
+        data: { labels: trendLabels, datasets: [
+          { label: 'Promedio', data: trendBase,
+            borderColor: 'rgba(96,165,250,1)', backgroundColor: 'rgba(96,165,250,0.14)',
+            tension: 0.35, fill: true, pointRadius: 3 },
+          { label: 'MA₃', data: trendMA,
+            borderColor: 'rgba(249,115,22,1)', borderDash: [6, 4],
+            tension: 0.35, fill: false, pointRadius: 0 },
+        ]},
+        options: { ...baseOpts, scales: { y: { ...baseScales.y, min: 6, max: 8 }, x: baseScales.x } },
+      });
+
+      // ---- 4. Radar: competencias ----
+      new Chart(document.getElementById('scRadar'), {
+        type: 'radar',
+        data: {
+          labels: ['Asistencia', 'Tareas', 'Exámenes', 'Participación', 'Trabajo final'],
+          datasets: [
+            { label: 'A. García',   data: [9.0, 8.4, 8.8, 9.1, 9.2],
+              borderColor: 'rgba(52,211,153,1)', backgroundColor: 'rgba(52,211,153,0.22)',
+              pointBackgroundColor: 'rgba(52,211,153,1)' },
+            { label: 'S. Ramírez',  data: [6.2, 5.0, 4.8, 5.4, 5.8],
+              borderColor: 'rgba(248,113,113,1)', backgroundColor: 'rgba(248,113,113,0.22)',
+              pointBackgroundColor: 'rgba(248,113,113,1)' },
+            { label: 'Promedio',    data: [7.3, 7.1, 7.4, 7.0, 7.5],
+              borderColor: 'rgba(249,115,22,1)', backgroundColor: 'rgba(249,115,22,0.15)',
+              pointBackgroundColor: 'rgba(249,115,22,1)', borderDash: [5, 4] },
+          ],
+        },
+        options: { ...baseOpts,
+          scales: { r: {
+            suggestedMin: 0, suggestedMax: 10,
+            grid:   { color: 'rgba(255,255,255,0.08)' },
+            angleLines: { color: 'rgba(255,255,255,0.08)' },
+            pointLabels: { color: '#cfc9c4', font: { size: 10 } },
+            ticks: { color: tickColor, backdropColor: 'transparent', font: { size: 9 } },
+          }}
+        },
+      });
+
+      // ---- 5. Scatter: clasificador (asistencia vs calificación) ----
+      const scatterPoints = [
+        // bajo riesgo
+        { x: 95, y: 9.0 }, { x: 92, y: 8.7 }, { x: 90, y: 8.4 }, { x: 94, y: 9.2 },
+        { x: 88, y: 8.0 }, { x: 86, y: 7.8 }, { x: 91, y: 8.5 },
+        // medio riesgo
+        { x: 78, y: 6.8 }, { x: 75, y: 6.4 }, { x: 72, y: 6.1 }, { x: 80, y: 7.0 },
+        // alto riesgo
+        { x: 58, y: 5.2 }, { x: 55, y: 4.8 }, { x: 62, y: 5.4 }, { x: 50, y: 4.2 }, { x: 65, y: 5.8 },
+      ];
+      new Chart(document.getElementById('scScatter'), {
+        type: 'scatter',
+        data: {
+          datasets: [
+            { label: 'Bajo',  data: scatterPoints.slice(0,7),
+              backgroundColor: 'rgba(52,211,153,0.85)', pointRadius: 5 },
+            { label: 'Medio', data: scatterPoints.slice(7,11),
+              backgroundColor: 'rgba(251,191,36,0.85)', pointRadius: 5 },
+            { label: 'Alto',  data: scatterPoints.slice(11),
+              backgroundColor: 'rgba(248,113,113,0.85)', pointRadius: 5 },
+          ],
+        },
+        options: { ...baseOpts,
+          scales: {
+            x: { title: { display: true, text: 'Asistencia (%)', color: tickColor, font: { size: 10 } },
+                 min: 40, max: 100, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+            y: { title: { display: true, text: 'Calificación',   color: tickColor, font: { size: 10 } },
+                 min: 3, max: 10, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+          },
+        },
+      });
+
+      // ---- Contadores animados de los KPIs superiores ----
+      const kpiEls = document.querySelectorAll('.dk-v[data-kpi]');
+      kpiEls.forEach(el => {
+        const target = parseFloat(el.dataset.kpi);
+        const decimals = parseInt(el.dataset.decimals || '0', 10);
+        const suffix = el.dataset.suffix || '';
+        const duration = 1800;
+        const start = performance.now();
+        function tick(now) {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = (target * eased).toFixed(decimals) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+
+      // ---- Ciclo de escenas ----
+      const scenes = Array.from(document.querySelectorAll('.dash-scene'));
+      const ddots  = Array.from(document.querySelectorAll('.ddot'));
+      const idxEl  = document.getElementById('dashSceneIdx');
+      const titleEl= document.getElementById('dashSceneTitle');
+      const pauseBtn = document.getElementById('dashPause');
+      const prevBtn  = document.getElementById('dashPrev');
+      const nextBtn  = document.getElementById('dashNext');
+      const shell    = document.getElementById('dashShell');
+      const sceneTitles = {
+        bars:    'Calificaciones por alumno',
+        donut:   'Distribución de riesgo',
+        line:    'Tendencia semestral',
+        radar:   'Competencias (radar)',
+        scatter: 'Clasificador: asistencia vs. calificación',
+      };
+      let dIdx = 0;
+      let dAnimating = false;
+      let paused = false;
+      let timer = null;
+      const CYCLE_MS = 7000;
+
+      function dashGo(next) {
+        if (dAnimating) return;
+        const target = (next + scenes.length) % scenes.length;
+        if (target === dIdx) return;
+        dAnimating = true;
+        let direction = target > dIdx ? 1 : -1;
+        if (dIdx === scenes.length - 1 && target === 0) direction = 1;
+        else if (dIdx === 0 && target === scenes.length - 1) direction = -1;
+
+        const current = scenes[dIdx];
+        const incoming = scenes[target];
+        current.classList.remove('active');
+        current.classList.add(direction === 1 ? 'exit-left' : 'exit-right');
+        incoming.classList.remove('exit-left','exit-right');
+        void incoming.offsetWidth;
+        requestAnimationFrame(() => incoming.classList.add('active'));
+        setTimeout(() => {
+          current.classList.remove('exit-left','exit-right');
+          dAnimating = false;
+        }, 1250);
+
+        ddots.forEach((d, i) => d.classList.toggle('active', i === target));
+        idxEl.textContent = target + 1;
+        titleEl.textContent = sceneTitles[incoming.dataset.scene] || '';
+        dIdx = target;
+      }
+
+      function schedule() {
+        clearInterval(timer);
+        if (paused) return;
+        timer = setInterval(() => dashGo(dIdx + 1), CYCLE_MS);
+      }
+
+      prevBtn.addEventListener('click', () => { dashGo(dIdx - 1); schedule(); });
+      nextBtn.addEventListener('click', () => { dashGo(dIdx + 1); schedule(); });
+      ddots.forEach((d, i) => d.addEventListener('click', () => { dashGo(i); schedule(); }));
+      pauseBtn.addEventListener('click', () => {
+        paused = !paused;
+        pauseBtn.innerHTML = paused
+          ? '<i class="bi bi-play-fill"></i>'
+          : '<i class="bi bi-pause-fill"></i>';
+        schedule();
+      });
+      // Pausar al pasar el mouse (UX fino)
+      shell.addEventListener('mouseenter', () => { clearInterval(timer); });
+      shell.addEventListener('mouseleave', () => { schedule(); });
+
+      schedule();
+    })();
   </script>
 </body>
 </html>
