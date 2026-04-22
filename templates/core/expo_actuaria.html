@@ -1046,12 +1046,69 @@
       50%      { filter: drop-shadow(0 0 6px rgba(249,115,22,0.35)); }
     }
 
+    /* ============== TOAST "NUEVO ALUMNO" ============== */
+    .ns-toast {
+      position: absolute;
+      top: 0.75rem; right: 0.75rem;
+      z-index: 12;
+      display: flex; gap: 0.55rem; align-items: center;
+      padding: 0.5rem 0.7rem;
+      border-radius: 0.65rem;
+      background: linear-gradient(135deg, rgba(249,115,22,0.26), rgba(253,186,116,0.08));
+      border: 1px solid rgba(249,115,22,0.5);
+      box-shadow:
+        0 10px 30px -6px rgba(0,0,0,0.4),
+        0 0 30px -2px rgba(249,115,22,0.55);
+      opacity: 0;
+      transform: translateY(-12px) scale(0.94);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s cubic-bezier(.2,.8,.2,1);
+      pointer-events: none;
+      max-width: calc(100% - 1.5rem);
+    }
+    .ns-toast.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .ns-toast .ns-ic {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(249,115,22,0.28);
+      color: #ffe1bd;
+      display: grid; place-items: center;
+      font-size: 0.95rem;
+      box-shadow: 0 0 12px rgba(249,115,22,0.55);
+    }
+    .ns-toast .ns-label {
+      font-size: 0.64rem;
+      color: #ffcc99;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .ns-toast .ns-row {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem;
+      margin-top: 0.15rem;
+    }
+    .ns-toast .ns-sep { color: var(--muted); }
+    .ns-toast .risk { font-size: 0.66rem; padding: 0.12rem 0.45rem; }
+
+    /* Pulso del KPI al agregar alumno */
+    .dash-kpi.kpi-bump { animation: kpiBump 0.8s ease; }
+    @keyframes kpiBump {
+      0%, 100% { transform: scale(1); box-shadow: none; border-color: var(--border); }
+      40%      { transform: scale(1.04); box-shadow: 0 0 22px rgba(249,115,22,0.55); border-color: rgba(249,115,22,0.55); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .score-fill::after, .bern-fill::after, .rb-bar > span::after,
       .perf-bar > span::after, .priority-row .pbar > span::after,
       .dash-kpi::after { animation: none; opacity: 0; }
       #scBars, #scDonut, #scLine, #scRadar, #scScatter,
       .mini-demo canvas { animation: none; }
+      .ns-toast { transition: none; }
     }
   </style>
 </head>
@@ -1309,6 +1366,20 @@
       <span>Prototipo operativo (ciclo automático de vistas)</span>
     </div>
     <div class="demo-shell" id="dashShell">
+      <!-- Toast: nuevo alumno agregado -->
+      <div class="ns-toast" id="nsToast" aria-live="polite">
+        <div class="ns-ic"><i class="bi bi-person-plus-fill"></i></div>
+        <div class="ns-body">
+          <div class="ns-label">Nuevo alumno en la base</div>
+          <div class="ns-row">
+            <strong id="nsName">—</strong>
+            <span class="ns-sep">·</span>
+            <span>cal.&nbsp;<strong id="nsGrade">—</strong></span>
+            <span class="risk" id="nsRisk">—</span>
+          </div>
+        </div>
+      </div>
+
       <!-- KPIs fijos -->
       <div class="dash-kpis">
         <div class="dash-kpi">
@@ -1727,11 +1798,11 @@
       const alumnosColors = [{% for a in demo_alumnos %}{% if a.riesgo == 'Alto' %}"rgba(248,113,113,0.85)"{% elif a.riesgo == 'Medio' %}"rgba(251,191,36,0.85)"{% else %}"rgba(52,211,153,0.85)"{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}];
 
       // ---- 1. Bar chart: calificaciones por alumno ----
-      new Chart(document.getElementById('scBars'), {
+      const chartBars = new Chart(document.getElementById('scBars'), {
         type: 'bar',
-        data: { labels: alumnosNames, datasets: [{
-          label: 'Calificación', data: alumnosVals,
-          backgroundColor: alumnosColors,
+        data: { labels: alumnosNames.slice(), datasets: [{
+          label: 'Calificación', data: alumnosVals.slice(),
+          backgroundColor: alumnosColors.slice(),
           borderRadius: 8, borderSkipped: false,
           hoverBackgroundColor: alumnosColors.map(c => c.replace('0.85', '1')),
         }]},
@@ -1740,7 +1811,7 @@
       });
 
       // ---- 2. Doughnut: distribución de riesgo ----
-      new Chart(document.getElementById('scDonut'), {
+      const chartDonut = new Chart(document.getElementById('scDonut'), {
         type: 'doughnut',
         data: {
           labels: ['Bajo', 'Medio', 'Alto'],
@@ -1763,7 +1834,7 @@
         const s = a.slice(f, i+1);
         return +(s.reduce((x,y)=>x+y,0)/s.length).toFixed(2);
       });
-      new Chart(document.getElementById('scLine'), {
+      const chartLine = new Chart(document.getElementById('scLine'), {
         type: 'line',
         data: { labels: trendLabels, datasets: [
           { label: 'Promedio', data: trendBase,
@@ -1777,7 +1848,7 @@
       });
 
       // ---- 4. Radar: competencias ----
-      new Chart(document.getElementById('scRadar'), {
+      const chartRadar = new Chart(document.getElementById('scRadar'), {
         type: 'radar',
         data: {
           labels: ['Asistencia', 'Tareas', 'Exámenes', 'Participación', 'Trabajo final'],
@@ -1814,7 +1885,7 @@
         // alto riesgo
         { x: 58, y: 5.2 }, { x: 55, y: 4.8 }, { x: 62, y: 5.4 }, { x: 50, y: 4.2 }, { x: 65, y: 5.8 },
       ];
-      new Chart(document.getElementById('scScatter'), {
+      const chartScatter = new Chart(document.getElementById('scScatter'), {
         type: 'scatter',
         data: {
           datasets: [
@@ -1923,6 +1994,207 @@
       shell.addEventListener('mouseleave', () => { schedule(); });
 
       schedule();
+
+      // =================================================
+      //  VIDA DEL DASHBOARD: micro-jitter + nuevo alumno
+      // =================================================
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const jitter = (a, b) => (Math.random() * 2 - 1) * ((b - a) / 2) + (a + b) / 2;
+
+      // (1) Barras: jitter sutil en las calificaciones
+      setInterval(() => {
+        const ds = chartBars.data.datasets[0];
+        const n = ds.data.length;
+        const howMany = Math.min(2, Math.max(1, Math.floor(n / 4)));
+        const touched = new Set();
+        for (let k = 0; k < howMany; k++) {
+          let i; do { i = Math.floor(Math.random() * n); } while (touched.has(i) && touched.size < n);
+          touched.add(i);
+          const delta = (Math.random() - 0.5) * 0.18;
+          ds.data[i] = +clamp(ds.data[i] + delta, 4.5, 9.8).toFixed(2);
+          const g = ds.data[i];
+          ds.backgroundColor[i] = g >= 7 ? 'rgba(52,211,153,0.85)'
+                               : g >= 6 ? 'rgba(251,191,36,0.85)'
+                               : 'rgba(248,113,113,0.85)';
+        }
+        chartBars.update();
+      }, 3500);
+
+      // (2) Doughnut: intercambia 1 caso entre categorías (como si un alumno reclasificara)
+      setInterval(() => {
+        const d = chartDonut.data.datasets[0].data;
+        let from, to;
+        for (let attempts = 0; attempts < 6; attempts++) {
+          from = Math.floor(Math.random() * 3);
+          if (d[from] > 1) break;
+        }
+        do { to = Math.floor(Math.random() * 3); } while (to === from);
+        if (d[from] > 1) {
+          d[from] = d[from] - 1;
+          d[to]   = d[to] + 1;
+          chartDonut.update();
+        }
+      }, 4200);
+
+      // (3) Línea: jitter en los últimos valores + recálculo de MA3
+      function recomputeMA3() {
+        const base = chartLine.data.datasets[0].data;
+        const ma = base.map((_, i, a) => {
+          const f = Math.max(0, i - 2);
+          const s = a.slice(f, i + 1);
+          return +(s.reduce((x, y) => x + y, 0) / s.length).toFixed(2);
+        });
+        chartLine.data.datasets[1].data = ma;
+      }
+      setInterval(() => {
+        const ds = chartLine.data.datasets[0];
+        const n = ds.data.length;
+        // jitter sólo en los últimos 3 (lo más "vivo")
+        for (let i = Math.max(0, n - 3); i < n; i++) {
+          ds.data[i] = +clamp(ds.data[i] + (Math.random() - 0.5) * 0.08, 5.5, 9.2).toFixed(2);
+        }
+        recomputeMA3();
+        chartLine.update();
+      }, 3800);
+
+      // (4) Radar: jitter muy suave en todos los datasets
+      setInterval(() => {
+        chartRadar.data.datasets.forEach(ds => {
+          ds.data = ds.data.map(v => +clamp(v + (Math.random() - 0.5) * 0.14, 3, 10).toFixed(2));
+        });
+        chartRadar.update();
+      }, 4500);
+
+      // (5) Scatter: jitter de todos los puntos (como lecturas en vivo)
+      setInterval(() => {
+        chartScatter.data.datasets.forEach(ds => {
+          ds.data.forEach(pt => {
+            pt.x = +clamp(pt.x + (Math.random() - 0.5) * 0.9, 42, 99).toFixed(2);
+            pt.y = +clamp(pt.y + (Math.random() - 0.5) * 0.14, 3.2, 9.8).toFixed(2);
+          });
+        });
+        chartScatter.update();
+      }, 2800);
+
+      // ---- Pulso visual del canvas ante eventos importantes ----
+      function pulseCanvas(id) {
+        const c = document.getElementById(id);
+        if (!c) return;
+        c.style.transition = 'filter 1.2s ease-out';
+        c.style.filter = 'drop-shadow(0 0 18px rgba(249,115,22,0.9))';
+        clearTimeout(c._pulseT);
+        c._pulseT = setTimeout(() => { c.style.filter = ''; }, 1200);
+      }
+
+      // ---- Toast "Nuevo alumno en la base" ----
+      const nsToast = document.getElementById('nsToast');
+      const nsName  = document.getElementById('nsName');
+      const nsGrade = document.getElementById('nsGrade');
+      const nsRisk  = document.getElementById('nsRisk');
+      function showToast(name, grade, bucket) {
+        if (!nsToast) return;
+        nsName.textContent  = name;
+        nsGrade.textContent = grade.toFixed(1);
+        const names = ['Bajo', 'Medio', 'Alto'];
+        const cls   = ['r-bajo', 'r-medio', 'r-alto'];
+        nsRisk.className = 'risk ' + cls[bucket];
+        nsRisk.textContent = names[bucket];
+        nsToast.classList.add('show');
+        clearTimeout(nsToast._hideT);
+        nsToast._hideT = setTimeout(() => nsToast.classList.remove('show'), 3200);
+      }
+
+      // ---- KPI "Alumnos monitoreados" ++ al llegar un nuevo alumno ----
+      const kpiMonEl = document.querySelector('.dash-kpi:nth-child(1) .dk-v');
+      let monCount = kpiMonEl ? parseInt(kpiMonEl.dataset.kpi, 10) || 24 : 24;
+      function bumpMonitoreados() {
+        if (!kpiMonEl) return;
+        monCount++;
+        kpiMonEl.textContent = String(monCount);
+        const card = kpiMonEl.closest('.dash-kpi');
+        card.classList.remove('kpi-bump');
+        void card.offsetWidth;
+        card.classList.add('kpi-bump');
+      }
+
+      // ---- Pool de nombres para los "alumnos nuevos" ----
+      const nuevosPool = [
+        'M. Juárez', 'R. Torres', 'L. Castro', 'I. Vargas',
+        'N. Herrera', 'P. Salinas', 'E. Vega', 'O. Ramos',
+        'C. Núñez', 'A. Medina', 'T. Peña', 'F. Gómez',
+      ];
+      let poolIdx = 0;
+
+      // Rangos (x=asistencia, y=calificación) por clase de riesgo para el scatter
+      const scatterRanges = [
+        { xMin: 86, xMax: 99, yMin: 7.6, yMax: 9.4 }, // bajo
+        { xMin: 70, xMax: 84, yMin: 6.1, yMax: 7.5 }, // medio
+        { xMin: 48, xMax: 67, yMin: 3.8, yMax: 5.9 }, // alto
+      ];
+
+      function addStudentToEcosystem() {
+        const name  = nuevosPool[poolIdx++ % nuevosPool.length];
+        const grade = +(5.2 + Math.random() * 4.2).toFixed(1);
+        const bucket = grade >= 7 ? 0 : grade >= 6 ? 1 : 2;
+
+        // -- Barras: empuja una barra nueva, quita la más antigua si > 7
+        const barDs = chartBars.data.datasets[0];
+        if (chartBars.data.labels.length >= 7) {
+          chartBars.data.labels.shift();
+          barDs.data.shift();
+          barDs.backgroundColor.shift();
+        }
+        const col = bucket === 0 ? 'rgba(52,211,153,0.85)'
+                  : bucket === 1 ? 'rgba(251,191,36,0.85)'
+                  : 'rgba(248,113,113,0.85)';
+        chartBars.data.labels.push(name);
+        barDs.data.push(grade);
+        barDs.backgroundColor.push(col);
+        chartBars.update();
+
+        // -- Doughnut: +1 en la categoría que le corresponde
+        chartDonut.data.datasets[0].data[bucket] += 1;
+        chartDonut.update();
+
+        // -- Scatter: nuevo punto en el cluster correspondiente
+        const r = scatterRanges[bucket];
+        chartScatter.data.datasets[bucket].data.push({
+          x: +(r.xMin + Math.random() * (r.xMax - r.xMin)).toFixed(1),
+          y: +(r.yMin + Math.random() * (r.yMax - r.yMin)).toFixed(1),
+        });
+        chartScatter.update();
+
+        // -- Efectos visuales
+        pulseCanvas('scBars');
+        pulseCanvas('scDonut');
+        pulseCanvas('scScatter');
+        bumpMonitoreados();
+        showToast(name, grade, bucket);
+      }
+
+      // Primer alumno a los ~9s; después cada 16s
+      setTimeout(addStudentToEcosystem, 9000);
+      setInterval(addStudentToEcosystem, 16000);
+
+      // ---- Línea: cada 22s "cierra un semestre" y abre uno nuevo ----
+      let semesterCounter = chartLine.data.labels.length;
+      setInterval(() => {
+        const base = chartLine.data.datasets[0];
+        const ma   = chartLine.data.datasets[1];
+        if (chartLine.data.labels.length >= 10) {
+          chartLine.data.labels.shift();
+          base.data.shift();
+          ma.data.shift();
+        }
+        semesterCounter++;
+        chartLine.data.labels.push('S' + semesterCounter);
+        const prev = base.data[base.data.length - 1];
+        const next = +clamp(prev + (Math.random() - 0.35) * 0.35, 5.8, 9.2).toFixed(2);
+        base.data.push(next);
+        recomputeMA3();
+        chartLine.update();
+        pulseCanvas('scLine');
+      }, 22000);
     })();
   </script>
 </body>
