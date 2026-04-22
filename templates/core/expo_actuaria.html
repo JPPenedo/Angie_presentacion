@@ -1946,6 +1946,18 @@
       let timer = null;
       const CYCLE_MS = 7000;
 
+      function snapToActive() {
+        // Fuerza el estado "sólo la escena dIdx visible" (anti-overlap)
+        scenes.forEach((s, i) => {
+          if (i === dIdx) {
+            s.classList.remove('exit-left', 'exit-right');
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active', 'exit-left', 'exit-right');
+          }
+        });
+      }
+
       function dashGo(next) {
         if (dAnimating) return;
         const target = (next + scenes.length) % scenes.length;
@@ -1957,21 +1969,52 @@
 
         const current = scenes[dIdx];
         const incoming = scenes[target];
+
+        // Defensa: limpia cualquier clase residual en escenas no involucradas
+        scenes.forEach((s, i) => {
+          if (i !== dIdx && i !== target) {
+            s.classList.remove('active', 'exit-left', 'exit-right');
+          }
+        });
+
         current.classList.remove('active');
         current.classList.add(direction === 1 ? 'exit-left' : 'exit-right');
         incoming.classList.remove('exit-left','exit-right');
         void incoming.offsetWidth;
         requestAnimationFrame(() => incoming.classList.add('active'));
-        setTimeout(() => {
-          current.classList.remove('exit-left','exit-right');
-          dAnimating = false;
-        }, 1250);
 
         ddots.forEach((d, i) => d.classList.toggle('active', i === target));
         idxEl.textContent = target + 1;
         titleEl.textContent = sceneTitles[incoming.dataset.scene] || '';
         dIdx = target;
+
+        setTimeout(() => {
+          // Snap duro al final de la transición
+          scenes.forEach((s, i) => {
+            if (i !== dIdx) s.classList.remove('active', 'exit-left', 'exit-right');
+          });
+          dAnimating = false;
+        }, 1250);
       }
+
+      // Janitor: cada 6s audita estado cuando no está animando (anti-throttle)
+      setInterval(() => {
+        if (dAnimating || document.hidden) return;
+        const activeCount = scenes.filter(s => s.classList.contains('active')).length;
+        const exitCount = scenes.filter(s =>
+          s.classList.contains('exit-left') || s.classList.contains('exit-right')
+        ).length;
+        if (activeCount !== 1 || exitCount > 0) snapToActive();
+      }, 6000);
+
+      // Al volver a la pestaña, reconcilia inmediatamente
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          dAnimating = false;
+          snapToActive();
+          schedule();
+        }
+      });
 
       function schedule() {
         clearInterval(timer);
@@ -1996,85 +2039,228 @@
       schedule();
 
       // =================================================
-      //  VIDA DEL DASHBOARD: micro-jitter + nuevo alumno
+      //  VIDA DEL DASHBOARD: jitter visible + nuevo alumno
+      //  Magnitudes pensadas para NOTARSE en la forma de
+      //  cada gráfico y en los números laterales.
       // =================================================
       const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-      const jitter = (a, b) => (Math.random() * 2 - 1) * ((b - a) / 2) + (a + b) / 2;
+      const colorFor = g => g >= 7 ? 'rgba(52,211,153,0.85)'
+                          : g >= 6 ? 'rgba(251,191,36,0.85)'
+                          :          'rgba(248,113,113,0.85)';
+      const riskFor  = g => g >= 7 ? 'Bajo'  : g >= 6 ? 'Medio' : 'Alto';
+      const riskCls  = g => g >= 7 ? 'r-bajo': g >= 6 ? 'r-medio': 'r-alto';
 
-      // (1) Barras: jitter sutil en las calificaciones
-      setInterval(() => {
-        const ds = chartBars.data.datasets[0];
-        const n = ds.data.length;
-        const howMany = Math.min(2, Math.max(1, Math.floor(n / 4)));
-        const touched = new Set();
-        for (let k = 0; k < howMany; k++) {
-          let i; do { i = Math.floor(Math.random() * n); } while (touched.has(i) && touched.size < n);
-          touched.add(i);
-          const delta = (Math.random() - 0.5) * 0.18;
-          ds.data[i] = +clamp(ds.data[i] + delta, 4.5, 9.8).toFixed(2);
-          const g = ds.data[i];
-          ds.backgroundColor[i] = g >= 7 ? 'rgba(52,211,153,0.85)'
-                               : g >= 6 ? 'rgba(251,191,36,0.85)'
-                               : 'rgba(248,113,113,0.85)';
-        }
-        chartBars.update();
-      }, 3500);
+      // ------ Sincronización de paneles laterales ------
+      const dashTableBody = document.getElementById('dashTableBody');
+      function syncBarsTable() {
+        if (!dashTableBody) return;
+        const names = chartBars.data.labels;
+        const vals  = chartBars.data.datasets[0].data;
+        // ordenar por calificación desc para ranking
+        const idxs = names.map((_, i) => i).sort((a, b) => vals[b] - vals[a]);
+        // render
+        const rows = idxs.map(i => {
+          const g = vals[i];
+          return '<tr>'
+            + '<td>' + names[i] + '</td>'
+            + '<td>' + g.toFixed(1) + '</td>'
+            + '<td><span class="risk ' + riskCls(g) + '">' + riskFor(g) + '</span></td>'
+            + '</tr>';
+        }).join('');
+        dashTableBody.innerHTML = rows;
+      }
 
-      // (2) Doughnut: intercambia 1 caso entre categorías (como si un alumno reclasificara)
-      setInterval(() => {
+      const rbRows = document.querySelectorAll('.risk-breakdown .rb-row');
+      const rbNote = document.querySelector('.dash-scene[data-scene="donut"] .side-note');
+      function syncDonutBreakdown() {
         const d = chartDonut.data.datasets[0].data;
-        let from, to;
-        for (let attempts = 0; attempts < 6; attempts++) {
-          from = Math.floor(Math.random() * 3);
-          if (d[from] > 1) break;
+        const total = d.reduce((a, b) => a + b, 0) || 1;
+        [0, 1, 2].forEach(i => {
+          const row = rbRows[i]; if (!row) return;
+          row.querySelector('.rb-count').textContent = d[i];
+          const bar = row.querySelector('.rb-bar > span');
+          const pct = (d[i] / total * 100);
+          if (bar) bar.style.width = pct.toFixed(0) + '%';
+        });
+        if (rbNote) {
+          const pAlto = d[2] / total;
+          const se = Math.sqrt(pAlto * (1 - pAlto) / Math.max(1, total));
+          const lo = Math.max(0, pAlto - 1.96 * se);
+          const hi = Math.min(1, pAlto + 1.96 * se);
+          rbNote.textContent = 'p(Alto) ≈ ' + pAlto.toFixed(2)
+            + ' · intervalo 95 % [' + lo.toFixed(2) + ', ' + hi.toFixed(2) + ']';
         }
-        do { to = Math.floor(Math.random() * 3); } while (to === from);
-        if (d[from] > 1) {
-          d[from] = d[from] - 1;
-          d[to]   = d[to] + 1;
-          chartDonut.update();
-        }
-      }, 4200);
+      }
 
-      // (3) Línea: jitter en los últimos valores + recálculo de MA3
+      const smks = document.querySelectorAll('.side-mini-kpis .smk .smk-v');
+      function syncLineMetrics() {
+        const d = chartLine.data.datasets[0].data;
+        const ma = chartLine.data.datasets[1].data;
+        if (!d.length || smks.length < 4) return;
+        const delta  = d[d.length - 1] - d[d.length - 2];
+        const tend   = d[d.length - 1] - d[0];
+        // volatilidad (σ̂)
+        const mean = d.reduce((a, b) => a + b, 0) / d.length;
+        const varc = d.reduce((a, b) => a + (b - mean) ** 2, 0) / d.length;
+        const sd   = Math.sqrt(varc);
+        const ma3  = ma[ma.length - 1];
+        smks[0].textContent = (delta >= 0 ? '+' : '') + delta.toFixed(2);
+        smks[0].className = 'smk-v ' + (delta >= 0 ? 'up' : 'down');
+        smks[1].textContent = tend >= 0.2 ? 'alcista' : tend <= -0.2 ? 'bajista' : 'estable';
+        smks[1].className = 'smk-v ' + (tend >= 0 ? 'up' : 'down');
+        smks[2].textContent = sd.toFixed(2);
+        smks[3].textContent = ma3.toFixed(2);
+      }
+
+      const perfRows = document.querySelectorAll('.performers .perf');
+      function syncRadarPerformers() {
+        // tick sutil de los 4 scores con sincronización al radar promedio
+        if (!perfRows.length) return;
+        const promedio = chartRadar.data.datasets[chartRadar.data.datasets.length - 1].data;
+        const avgR = promedio.reduce((a,b)=>a+b,0) / promedio.length;
+        perfRows.forEach(row => {
+          const valEl = row.querySelector('.perf-val');
+          const bar   = row.querySelector('.perf-bar > span');
+          if (!valEl || !bar) return;
+          let cur = parseFloat(valEl.textContent) || 7;
+          // jitter pequeño + leve reversión al promedio radar
+          cur += (Math.random() - 0.5) * 0.18 + (avgR - cur) * 0.02;
+          cur = clamp(cur, 3.5, 9.8);
+          valEl.textContent = cur.toFixed(1);
+          bar.style.width = (cur * 10).toFixed(1) + '%';
+          row.classList.toggle('up',   cur >= 7);
+          row.classList.toggle('down', cur <  7);
+        });
+      }
+
+      // ------ TOP KPIs sincronizados (arriba del dashboard) ------
+      const kpiAvgEl  = document.querySelector('.dash-kpi:nth-child(2) .dk-v');
+      const kpiApEl   = document.querySelector('.dash-kpi:nth-child(3) .dk-v');
+      const kpiHighEl = document.querySelector('.dash-kpi:nth-child(4) .dk-v');
+      let apRate = 78;
+      function syncTopKpis() {
+        if (kpiAvgEl) {
+          const d = chartBars.data.datasets[0].data;
+          const avg = d.reduce((a, b) => a + b, 0) / d.length;
+          kpiAvgEl.textContent = avg.toFixed(2);
+        }
+        if (kpiApEl) {
+          apRate = clamp(apRate + (Math.random() - 0.5) * 0.9, 70, 92);
+          kpiApEl.textContent = apRate.toFixed(0) + '%';
+        }
+        if (kpiHighEl) {
+          kpiHighEl.textContent = String(chartDonut.data.datasets[0].data[2]);
+        }
+      }
+
+      // ------ Métricas del clasificador (scatter) ------
+      const clfVals = document.querySelectorAll('.clf-metrics .clf-v');
+      const clfState = Array.from(clfVals).map(el => parseFloat(el.textContent));
+      function syncClfMetrics() {
+        clfVals.forEach((el, i) => {
+          clfState[i] = clamp(clfState[i] + (Math.random() - 0.5) * 0.012, 0.6, 0.96);
+          el.textContent = clfState[i].toFixed(2);
+        });
+      }
+
+      // ---- MA3 helper ----
       function recomputeMA3() {
         const base = chartLine.data.datasets[0].data;
-        const ma = base.map((_, i, a) => {
+        chartLine.data.datasets[1].data = base.map((_, i, a) => {
           const f = Math.max(0, i - 2);
           const s = a.slice(f, i + 1);
           return +(s.reduce((x, y) => x + y, 0) / s.length).toFixed(2);
         });
-        chartLine.data.datasets[1].data = ma;
       }
+
+      // Helper: saltar updates cuando pestaña oculta (CPU + rendering estable)
+      const hidden = () => document.hidden;
+
+      // (1) BARRAS — magnitud visible + tabla ranking reactiva
       setInterval(() => {
+        if (hidden()) return;
+        const ds = chartBars.data.datasets[0];
+        const n = ds.data.length;
+        // Uno o dos alumnos "reciben nueva nota" a la vez (±0.28)
+        const howMany = Math.random() < 0.6 ? 1 : 2;
+        const touched = new Set();
+        for (let k = 0; k < howMany; k++) {
+          let i; do { i = Math.floor(Math.random() * n); } while (touched.has(i) && touched.size < n);
+          touched.add(i);
+          const delta = (Math.random() - 0.5) * 0.56;
+          ds.data[i] = +clamp(ds.data[i] + delta, 4.0, 9.9).toFixed(2);
+          ds.backgroundColor[i] = colorFor(ds.data[i]);
+        }
+        chartBars.update();
+        syncBarsTable();
+        syncTopKpis();
+      }, 3500);
+
+      // (2) DOUGHNUT — reclasifica 1 caso (visible en la porción) + ocasional ±1
+      setInterval(() => {
+        if (hidden()) return;
+        const d = chartDonut.data.datasets[0].data;
+        const r = Math.random();
+        if (r < 0.75) {
+          // swap
+          let from, to;
+          for (let attempts = 0; attempts < 6; attempts++) {
+            from = Math.floor(Math.random() * 3);
+            if (d[from] > 1) break;
+          }
+          do { to = Math.floor(Math.random() * 3); } while (to === from);
+          if (d[from] > 1) { d[from] -= 1; d[to] += 1; }
+        } else {
+          // pequeño flujo: +1 en una categoría, -1 en otra con mayor probabilidad
+          const k = Math.floor(Math.random() * 3);
+          if (d[k] > 1) d[k] -= 1; else d[(k + 1) % 3] -= 1;
+        }
+        chartDonut.update();
+        syncDonutBreakdown();
+        syncTopKpis();
+      }, 4200);
+
+      // (3) LINE — jitter en los últimos 3 (visible en la curva y MA₃)
+      setInterval(() => {
+        if (hidden()) return;
         const ds = chartLine.data.datasets[0];
         const n = ds.data.length;
-        // jitter sólo en los últimos 3 (lo más "vivo")
         for (let i = Math.max(0, n - 3); i < n; i++) {
-          ds.data[i] = +clamp(ds.data[i] + (Math.random() - 0.5) * 0.08, 5.5, 9.2).toFixed(2);
+          ds.data[i] = +clamp(ds.data[i] + (Math.random() - 0.5) * 0.22, 5.8, 9.2).toFixed(2);
         }
         recomputeMA3();
         chartLine.update();
+        syncLineMetrics();
       }, 3800);
 
-      // (4) Radar: jitter muy suave en todos los datasets
+      // (4) RADAR — jitter visible en la forma del pentágono
       setInterval(() => {
+        if (hidden()) return;
         chartRadar.data.datasets.forEach(ds => {
-          ds.data = ds.data.map(v => +clamp(v + (Math.random() - 0.5) * 0.14, 3, 10).toFixed(2));
+          ds.data = ds.data.map(v => +clamp(v + (Math.random() - 0.5) * 0.32, 3, 10).toFixed(2));
         });
         chartRadar.update();
+        syncRadarPerformers();
       }, 4500);
 
-      // (5) Scatter: jitter de todos los puntos (como lecturas en vivo)
+      // (5) SCATTER — nube de puntos respira (deriva notable) + métricas tickeando
       setInterval(() => {
+        if (hidden()) return;
         chartScatter.data.datasets.forEach(ds => {
           ds.data.forEach(pt => {
-            pt.x = +clamp(pt.x + (Math.random() - 0.5) * 0.9, 42, 99).toFixed(2);
-            pt.y = +clamp(pt.y + (Math.random() - 0.5) * 0.14, 3.2, 9.8).toFixed(2);
+            pt.x = +clamp(pt.x + (Math.random() - 0.5) * 1.8, 42, 99).toFixed(2);
+            pt.y = +clamp(pt.y + (Math.random() - 0.5) * 0.26, 3.2, 9.8).toFixed(2);
           });
         });
         chartScatter.update();
+        syncClfMetrics();
       }, 2800);
+
+      // Sync inicial
+      syncBarsTable();
+      syncDonutBreakdown();
+      syncLineMetrics();
+      syncRadarPerformers();
 
       // ---- Pulso visual del canvas ante eventos importantes ----
       function pulseCanvas(id) {
@@ -2164,6 +2350,11 @@
         });
         chartScatter.update();
 
+        // -- Sincroniza paneles laterales (tabla, breakdown, KPIs)
+        syncBarsTable();
+        syncDonutBreakdown();
+        syncTopKpis();
+
         // -- Efectos visuales
         pulseCanvas('scBars');
         pulseCanvas('scDonut');
@@ -2193,8 +2384,142 @@
         base.data.push(next);
         recomputeMA3();
         chartLine.update();
+        syncLineMetrics();
         pulseCanvas('scLine');
       }, 22000);
+    })();
+
+    /* =====================================================
+       VIDA DE LOS MINI-DEMOS DE LAS SLIDES (slides con texto)
+       Cambios sutiles pero visibles en barras / KPIs / series
+       para que las estadísticas "respiren" mientras se lee.
+       ===================================================== */
+    (() => {
+      const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const hidden = () => document.hidden;
+
+      // --- Slide "riesgo": 4 tarjetas con score de clasificador ---
+      const riskCards = Array.from(document.querySelectorAll('.risk-cards .risk-card'));
+      const riskState = riskCards.map(card => {
+        const fill = card.querySelector('.score-fill');
+        return {
+          card, fill,
+          value: parseFloat(fill?.dataset.target || '50'),
+          label: card.querySelector('.score-row > span:last-child'),
+        };
+      });
+      if (riskState.length) {
+        setInterval(() => {
+          if (hidden()) return;
+          riskState.forEach(s => {
+            if (!s.fill) return;
+            // ±3 pp por tick — se nota en el ancho pero sin saltos bruscos
+            s.value = clamp(s.value + (Math.random() - 0.5) * 6, 5, 95);
+            s.fill.style.width = s.value.toFixed(1) + '%';
+            if (s.label) s.label.textContent = (s.value / 100).toFixed(2);
+          });
+        }, 3200);
+      }
+
+      // --- Slide "kpis": 4 tiles + 2 barras de prioridad ---
+      const kpiTiles = Array.from(document.querySelectorAll('.kpi-grid .kpi-tile .val[data-counter]'));
+      const kpiSt = kpiTiles.map(el => ({
+        el,
+        value: parseFloat(el.dataset.counter),
+        decimals: parseInt(el.dataset.decimals || '0', 10),
+        min: 0, max: 100,
+      }));
+      // configurar rangos por posición
+      if (kpiSt[0]) { kpiSt[0].min = 20; kpiSt[0].max = 40; kpiSt[0].step = 1; kpiSt[0].rate = 0.18; }
+      if (kpiSt[1]) { kpiSt[1].min = 6.5; kpiSt[1].max = 8.2; kpiSt[1].step = 0.06; kpiSt[1].rate = 1; }
+      if (kpiSt[2]) { kpiSt[2].min = 68; kpiSt[2].max = 90; kpiSt[2].step = 0.9; kpiSt[2].rate = 1; }
+      if (kpiSt[3]) { kpiSt[3].min = 2;  kpiSt[3].max = 8;  kpiSt[3].step = 1; kpiSt[3].rate = 0.22; }
+      if (kpiSt.length) {
+        // El `activateKpis` del engine anima el contador hasta `data-counter`
+        // al activar la slide; después de ese tiempo entramos a "vida propia".
+        setTimeout(() => {
+          setInterval(() => {
+            if (hidden()) return;
+            kpiSt.forEach(s => {
+              if (Math.random() > (s.rate ?? 1)) return;
+              const delta = (Math.random() - 0.5) * 2 * s.step;
+              let next = s.value + delta;
+              if (s.decimals === 0) next = Math.round(next);
+              s.value = clamp(next, s.min, s.max);
+              s.el.textContent = s.value.toFixed(s.decimals);
+            });
+          }, 3000);
+        }, 2600);
+      }
+
+      // Priority bars en el slide kpis
+      const pBars = Array.from(document.querySelectorAll('.priority-row .pbar > span'));
+      const pLabels = Array.from(document.querySelectorAll('.priority-row > span:last-child'));
+      if (pBars.length) {
+        setInterval(() => {
+          if (hidden()) return;
+          pBars.forEach((bar, i) => {
+            const cur = parseFloat(bar.style.width) || 50;
+            const next = clamp(cur + (Math.random() - 0.5) * 4.5, 30, 95);
+            bar.style.width = next.toFixed(1) + '%';
+            const txt = pLabels[i];
+            if (txt) {
+              const cls = txt.style.color || '';
+              txt.textContent = 'prioridad ' + (next / 100).toFixed(2);
+              txt.style.color = cls;
+            }
+          });
+        }, 3600);
+      }
+
+      // --- Slide "series": gráfico Chart.js dentro de la slide ---
+      setInterval(() => {
+        if (hidden()) return;
+        if (typeof Chart === 'undefined' || !Chart.getChart) return;
+        document.querySelectorAll('[data-series]').forEach(canvas => {
+          const chart = Chart.getChart(canvas);
+          if (!chart) return;
+          const base = chart.data.datasets[0].data;
+          const n = base.length;
+          // jitter en los últimos 3 puntos, visible pero controlado
+          for (let i = Math.max(0, n - 3); i < n; i++) {
+            base[i] = +clamp(base[i] + (Math.random() - 0.5) * 0.18, 6.2, 7.9).toFixed(2);
+          }
+          // recomputar MA₃
+          chart.data.datasets[1].data = base.map((_, i, a) => {
+            const f = Math.max(0, i - 2);
+            const s = a.slice(f, i + 1);
+            return +(s.reduce((x, y) => x + y, 0) / s.length).toFixed(2);
+          });
+          chart.update();
+        });
+      }, 3700);
+
+      // --- Slide "bernoulli": después de la animación inicial, sigue "tomando muestras" ---
+      // Cada ~2.5s, alternar ~2 celdas entre ok/fail para que el p̂ oscile ligeramente
+      setInterval(() => {
+        if (hidden()) return;
+        document.querySelectorAll('[data-bern]').forEach(grid => {
+          const cells = grid.querySelectorAll('.bern-cell.filled');
+          if (cells.length < 10) return; // esperar a que haya muestras
+          // cambia 2 celdas de estado
+          for (let k = 0; k < 2; k++) {
+            const c = cells[Math.floor(Math.random() * cells.length)];
+            if (c.classList.contains('ok')) {
+              c.classList.remove('ok'); c.classList.add('fail');
+            } else {
+              c.classList.remove('fail'); c.classList.add('ok');
+            }
+          }
+          const grid2 = grid;
+          const all = grid2.querySelectorAll('.bern-cell');
+          const oks = grid2.querySelectorAll('.bern-cell.ok').length;
+          const pOut = grid2.parentElement.querySelector('[data-bern-p]');
+          if (pOut && all.length) pOut.textContent = (oks / all.length).toFixed(2);
+          const meter = grid2.parentElement.querySelector('[data-bern-fill]');
+          if (meter) meter.style.width = (oks / all.length * 100).toFixed(0) + '%';
+        });
+      }, 2500);
     })();
   </script>
 </body>
