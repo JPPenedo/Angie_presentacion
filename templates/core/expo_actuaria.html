@@ -743,8 +743,9 @@
 
     /* ---------- demo-simulador ---------- */
     /* Estado normal: el simulador vive en su columna y sólo muestra la parte
-       superior (paso 1). Al pasar el cursor se promueve a un modal centrado
-       (position: fixed) con animación FLIP gestionada por JS. */
+       superior (paso 1). Al entrar la slide se promueve automáticamente a un
+       modal centrado (position: fixed) con animación FLIP gestionada por JS
+       para que los botones sean cómodos de presionar. */
     .slide[data-demo="simulador"] .mini-demo {
       min-height: 280px;
       position: relative;
@@ -755,22 +756,6 @@
         border-color 0.35s ease;
       will-change: transform;
     }
-    .slide[data-demo="simulador"] .mini-demo::after {
-      content: "Pasa el cursor para expandir";
-      position: absolute;
-      right: 0.75rem; bottom: 0.55rem;
-      font-size: 0.62rem;
-      color: var(--accent-soft);
-      background: rgba(249,115,22,0.12);
-      border: 1px solid rgba(249,115,22,0.35);
-      border-radius: 999px;
-      padding: 0.15rem 0.55rem;
-      letter-spacing: 0.04em;
-      pointer-events: none;
-      opacity: 0.9;
-      transition: opacity 0.25s ease;
-    }
-    .slide[data-demo="simulador"] .mini-demo.sim-open::after { opacity: 0; }
 
     /* Modal centrado: el simulador "despega" al viewport y queda por encima
        de todo con su propio tamaño cómodo para interactuar. */
@@ -2097,8 +2082,11 @@
       idx = target;
 
       // Si salíamos de la slide del simulador con el modal abierto, lo
-      // colapsamos al instante para que no quede flotando.
-      document.querySelectorAll('.mini-demo.sim-open').forEach(el => {
+      // colapsamos al instante para que no quede flotando. También
+      // cancelamos cualquier auto-apertura pendiente para que no dispare
+      // después de que la slide ya dejó de estar activa.
+      document.querySelectorAll('.slide[data-demo="simulador"] .mini-demo').forEach(el => {
+        clearTimeout(el._autoOpenTO);
         el.classList.remove('sim-open');
         el.style.transition = 'none';
         el.style.transform = '';
@@ -2310,34 +2298,33 @@
       }
       show(0);
 
-      // Zoom "modal" al pasar el cursor sobre el mini-demo del simulador.
+      // El simulador se promueve automáticamente a un modal centrado cuando
+      // la slide queda activa, para que los botones sean cómodos de usar.
       const mini = slideEl.querySelector('.mini-demo');
-      if (mini && !mini.dataset.zoomBound) bindSimulatorZoom(mini, wrap);
+      if (!mini) return;
+      if (!mini.dataset.zoomBound) bindSimulatorZoom(mini, wrap);
+
+      // Esperamos a que termine la animación de entrada de la slide para
+      // que la transición FLIP parta desde el reposo y se vea suave.
+      clearTimeout(mini._autoOpenTO);
+      mini._autoOpenTO = setTimeout(() => {
+        if (!slideEl.classList.contains('active')) return;
+        if (mini._simOpen) mini._simOpen();
+      }, 2250);
     }
 
-    /* FLIP-based modal zoom: cuando el cursor entra al mini-demo lo
-       promovemos a position:fixed centrado; al salir lo devolvemos a la
-       celda del grid. El truco FLIP hace que ambas transiciones sean
-       suaves a pesar del cambio de position.                            */
+    /* FLIP-based modal zoom: promovemos el mini-demo a position:fixed
+       centrado y lo devolvemos a la celda del grid cuando se navega fuera
+       de la slide. El truco FLIP hace que la transición sea suave a pesar
+       del cambio de position.                                           */
     function bindSimulatorZoom(mini, wrap) {
       const DUR = 550;
-      let state = 'closed';          // closed | opening | open | closing
-      let lastMouse = { x: -1, y: -1 };
 
       let backdrop = document.querySelector('.sim-backdrop');
       if (!backdrop) {
         backdrop = document.createElement('div');
         backdrop.className = 'sim-backdrop';
         document.body.appendChild(backdrop);
-      }
-
-      document.addEventListener('mousemove', (e) => {
-        lastMouse.x = e.clientX; lastMouse.y = e.clientY;
-      }, { passive: true });
-
-      function mouseInside(rect) {
-        return lastMouse.x >= rect.left && lastMouse.x <= rect.right &&
-               lastMouse.y >= rect.top  && lastMouse.y <= rect.bottom;
       }
 
       function flip(toOpen) {
@@ -2355,7 +2342,6 @@
         mini.getBoundingClientRect(); // forzar reflow
         mini.style.transition = `transform ${DUR}ms cubic-bezier(.2,.8,.2,1)`;
         mini.style.transform  = '';
-        // Redibuja los charts una vez que el modal llegó a su tamaño final
         if (toOpen) {
           setTimeout(() => {
             const step = +wrap.dataset.step || 0;
@@ -2364,34 +2350,15 @@
         }
       }
 
-      function open() {
-        if (state !== 'closed') return;
-        state = 'opening';
-        flip(true);
-        setTimeout(() => {
-          state = 'open';
-          // Si el cursor no siguió al modal al centrarse, lo cerramos.
-          const r = mini.getBoundingClientRect();
-          if (!mouseInside(r)) close();
-        }, DUR);
-      }
+      function open()  { if (!mini.classList.contains('sim-open')) flip(true);  }
+      function close() { if ( mini.classList.contains('sim-open')) flip(false); }
 
-      function close() {
-        if (state !== 'open') return;
-        state = 'closing';
-        flip(false);
-        setTimeout(() => { state = 'closed'; }, DUR);
-      }
+      mini._simOpen  = open;
+      mini._simClose = close;
 
-      // Durante opening/closing ignoramos mouseenter/leave para evitar
-      // oscilaciones (el elemento se está moviendo bajo el cursor).
-      mini.addEventListener('mouseenter', () => { if (state === 'closed') open(); });
-      mini.addEventListener('mouseleave', () => { if (state === 'open')   close(); });
-
-      // Cerrar con click fuera o con ESC.
-      backdrop.addEventListener('click', () => { if (state === 'open') close(); });
+      // Escape hatch: ESC cierra el modal (útil para leer el resto de la slide).
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && state === 'open') close();
+        if (e.key === 'Escape' && mini.classList.contains('sim-open')) close();
       });
 
       mini.dataset.zoomBound = '1';
