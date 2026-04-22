@@ -13,8 +13,10 @@
       --card: #1a1714;
       --card-alt: #211e1b;
       --border: rgba(255,255,255,0.08);
-      --accent: #22c55e;
-      --gold: #4ade80;
+      --accent: #f97316;
+      --accent-2: #fb923c;
+      --accent-soft: #fdba74;
+      --gold: #fbbf24;
       --text: #f0ede9;
       --muted: #7a7470;
       --success: #34d399;
@@ -27,14 +29,54 @@
     body {
       margin: 0;
       font-family: "Segoe UI", system-ui, sans-serif;
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(34,197,94,0.09), transparent 60%),
-        radial-gradient(900px 500px at 110% 10%, rgba(96,165,250,0.06), transparent 60%),
-        var(--bg);
       color: var(--text);
       min-height: 100vh;
+      position: relative;
+      /* grid sutil tipo "circuit board" */
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 44px 44px, 44px 44px;
+      background-position: 0 0, 0 0;
+      overflow-x: hidden;
+    }
+    /* Halos naranjas en movimiento lento (fondo dinámico) */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+    body::before {
+      background:
+        radial-gradient(620px 520px at 25% 30%, rgba(249,115,22,0.28), transparent 60%);
+      filter: blur(10px);
+      animation: glowDrift1 22s ease-in-out infinite alternate;
+    }
+    body::after {
+      background:
+        radial-gradient(540px 460px at 75% 65%, rgba(253,186,116,0.18), transparent 60%),
+        radial-gradient(320px 260px at 50% 90%, rgba(251,146,60,0.14), transparent 60%);
+      filter: blur(14px);
+      animation: glowDrift2 28s ease-in-out infinite alternate;
+    }
+    @keyframes glowDrift1 {
+      0%   { transform: translate3d(-6%, -4%, 0) scale(1); }
+      50%  { transform: translate3d(8%,  6%, 0) scale(1.08); }
+      100% { transform: translate3d(-4%, 10%, 0) scale(0.95); }
+    }
+    @keyframes glowDrift2 {
+      0%   { transform: translate3d(6%, 8%, 0)  scale(1.05); }
+      50%  { transform: translate3d(-10%, -4%, 0) scale(0.92); }
+      100% { transform: translate3d(4%, -8%, 0)  scale(1.1); }
     }
     .wrap {
+      position: relative;
+      z-index: 1;
       max-width: 1180px;
       margin: 0 auto;
       padding: 1.4rem 1.2rem 2.6rem;
@@ -44,18 +86,19 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(96,165,250,0.08));
-      border: 1px solid rgba(34,197,94,0.25);
+      background: linear-gradient(135deg, rgba(249,115,22,0.22), rgba(251,146,60,0.08));
+      border: 1px solid rgba(249,115,22,0.3);
       border-radius: 1rem;
       padding: 1.2rem 1.3rem;
       margin-bottom: 1rem;
+      box-shadow: 0 0 60px -10px rgba(249,115,22,0.25);
     }
     .hero::after{
       content:"";
       position:absolute; inset:-40% -20% auto auto; width:60%; height:180%;
-      background: conic-gradient(from 90deg, rgba(34,197,94,0.14), transparent 40%);
+      background: conic-gradient(from 90deg, rgba(249,115,22,0.22), rgba(253,186,116,0.08), transparent 45%);
       filter: blur(40px); pointer-events:none;
-      animation: spin 18s linear infinite;
+      animation: spin 22s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg);} }
     .hero h1 { font-size: 1.55rem; margin: 0 0 0.35rem; letter-spacing:-0.01em;}
@@ -66,8 +109,8 @@
       margin: 1.2rem 0 0.7rem; font-weight: 700;
     }
     .badge-pill {
-      border: 1px solid rgba(34,197,94,0.25);
-      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(249,115,22,0.25);
+      background: rgba(249,115,22,0.12);
       color: var(--accent);
       border-radius: 999px; font-size: 0.7rem;
       padding: 0.2rem 0.6rem;
@@ -75,13 +118,59 @@
     }
 
     /* ---------- SLIDES STAGE ---------- */
+    .slides-section {
+      position: relative;
+    }
+    .circuit-decor {
+      position: absolute;
+      top: 40px;
+      width: 130px;
+      height: 240px;
+      pointer-events: none;
+      opacity: 0.55;
+      filter: drop-shadow(0 0 8px rgba(249,115,22,0.35));
+    }
+    .circuit-decor.left  { left: -135px; }
+    .circuit-decor.right { right: -135px; transform: scaleX(-1); }
+    @media (max-width: 1280px) {
+      .circuit-decor { display: none; }
+    }
+
     .slides-shell {
       position: relative;
-      background: var(--card);
-      border: 1px solid var(--border);
+      background:
+        radial-gradient(600px 320px at var(--gx, 30%) var(--gy, 20%), rgba(249,115,22,0.22), transparent 62%),
+        radial-gradient(500px 280px at 80% 90%, rgba(253,186,116,0.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 40%),
+        var(--card);
+      border: 1px solid rgba(249,115,22,0.22);
       border-radius: 1rem;
       padding: 0.9rem 0.9rem 0.9rem;
       overflow: hidden;
+      box-shadow:
+        inset 0 0 1px rgba(255,255,255,0.05),
+        0 10px 40px -12px rgba(0,0,0,0.55),
+        0 0 80px -30px rgba(249,115,22,0.55);
+    }
+    /* Halo interno que orbita lentamente dentro del shell */
+    .slides-shell::before {
+      content: "";
+      position: absolute;
+      width: 60%;
+      height: 120%;
+      left: -15%;
+      top: -20%;
+      background: radial-gradient(closest-side, rgba(249,115,22,0.25), transparent 70%);
+      filter: blur(28px);
+      pointer-events: none;
+      z-index: 0;
+      animation: shellOrbit 16s ease-in-out infinite alternate;
+    }
+    .slides-shell > * { position: relative; z-index: 1; }
+    @keyframes shellOrbit {
+      0%   { transform: translate(0%, 0%)   scale(1); }
+      50%  { transform: translate(40%, 10%) scale(1.15); }
+      100% { transform: translate(75%, -5%) scale(0.95); }
     }
     .progress-rail {
       height: 3px; width:100%;
@@ -91,10 +180,10 @@
     }
     .progress-bar-x {
       height: 100%; width: 20%;
-      background: linear-gradient(90deg, var(--accent), var(--blue));
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
       border-radius: 999px;
       transition: width 0.7s cubic-bezier(.2,.8,.2,1);
-      box-shadow: 0 0 14px rgba(34,197,94,0.45);
+      box-shadow: 0 0 14px rgba(249,115,22,0.55);
     }
 
     .stage {
@@ -176,8 +265,8 @@
 
     .math-chip {
       display: inline-block;
-      background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(96,165,250,0.08));
-      border: 1px solid rgba(34,197,94,0.22);
+      background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(253,186,116,0.08));
+      border: 1px solid rgba(249,115,22,0.3);
       border-radius: 0.6rem;
       padding: 0.55rem 0.75rem;
       color: #e6f7ec;
@@ -290,7 +379,7 @@
     }
     .bern-fill {
       height: 100%; width: 0%;
-      background: linear-gradient(90deg, #22c55e, #60a5fa);
+      background: linear-gradient(90deg, #f97316, #fdba74);
       transition: width 1.2s cubic-bezier(.2,.8,.2,1);
     }
     .bern-legend {
@@ -346,7 +435,7 @@
       height: 240px;
     }
     .dag .edge {
-      stroke: rgba(34,197,94,0.55);
+      stroke: rgba(249,115,22,0.55);
       stroke-width: 1.4;
       fill: none;
       stroke-dasharray: 200;
@@ -358,13 +447,17 @@
     .dag .edge.e4 { animation-delay: 0.75s; }
     @keyframes drawEdge { to { stroke-dashoffset: 0; } }
     .dag .node rect {
-      fill: rgba(34,197,94,0.08);
-      stroke: rgba(34,197,94,0.35);
+      fill: rgba(249,115,22,0.08);
+      stroke: rgba(249,115,22,0.35);
       rx: 10; ry: 10;
     }
     .dag .node text { fill: #e6f7ec; font-size: 11px; font-weight: 600; }
-    .dag .node.final rect { fill: rgba(96,165,250,0.1); stroke: rgba(96,165,250,0.4); }
-    .dag .node.final text { fill: #dbe9ff; }
+    .dag .node.final rect {
+      fill: rgba(249,115,22,0.15);
+      stroke: rgba(249,115,22,0.55);
+      filter: drop-shadow(0 0 6px rgba(249,115,22,0.45));
+    }
+    .dag .node.final text { fill: #ffe7cf; }
 
     /* ---------- CONTROLS ---------- */
     .controls {
@@ -383,9 +476,9 @@
       transition: all 0.25s ease;
     }
     .btn-darkx:hover {
-      border-color: rgba(34,197,94,0.4);
+      border-color: rgba(249,115,22,0.4);
       color: var(--accent);
-      background: rgba(34,197,94,0.06);
+      background: rgba(249,115,22,0.06);
       transform: translateY(-1px);
     }
     .dots { display: flex; gap: 0.4rem; }
@@ -396,9 +489,9 @@
       transition: all 0.4s ease;
     }
     .dot.active {
-      background: linear-gradient(90deg, var(--accent), var(--blue));
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
       width: 42px;
-      box-shadow: 0 0 12px rgba(34,197,94,0.4);
+      box-shadow: 0 0 12px rgba(249,115,22,0.55);
     }
 
     /* ---------- DEMO SHELL (kept) ---------- */
@@ -455,7 +548,44 @@
       <span>Enfoques probabilísticos, estadísticos y actuariales</span>
     </div>
 
-    <div class="slides-shell">
+    <div class="slides-section">
+      <svg class="circuit-decor left" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="circL" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="rgba(249,115,22,0.0)"/>
+            <stop offset="60%"  stop-color="rgba(249,115,22,0.75)"/>
+            <stop offset="100%" stop-color="rgba(253,186,116,1)"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#circL)" stroke-width="1.1">
+          <path d="M0 20  H70  L90 40   V90  L120 120 H130"/>
+          <path d="M0 120 H40  L60 140  V180 L110 200 H130"/>
+          <path d="M0 70  H30  L50 90   V110 L80 130  H130"/>
+        </g>
+        <g fill="rgba(253,186,116,1)">
+          <circle cx="2"  cy="20"  r="2.5"/>
+          <circle cx="2"  cy="70"  r="2.5"/>
+          <circle cx="2"  cy="120" r="2.5"/>
+        </g>
+        <g fill="rgba(249,115,22,0.9)">
+          <circle cx="90" cy="40"  r="2"/>
+          <circle cx="60" cy="140" r="2"/>
+          <circle cx="50" cy="90"  r="2"/>
+        </g>
+      </svg>
+      <svg class="circuit-decor right" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="none" stroke="url(#circL)" stroke-width="1.1">
+          <path d="M0 30  H55  L75 55   V110 L110 135 H130"/>
+          <path d="M0 130 H35  L55 150  V185 L100 205 H130"/>
+          <path d="M0 85  H25  L45 100  V120 L75 140  H130"/>
+        </g>
+        <g fill="rgba(253,186,116,1)">
+          <circle cx="2"  cy="30"  r="2.5"/>
+          <circle cx="2"  cy="85"  r="2.5"/>
+          <circle cx="2"  cy="130" r="2.5"/>
+        </g>
+      </svg>
+      <div class="slides-shell">
       <div class="progress-rail"><div class="progress-bar-x" id="progressBar"></div></div>
 
       <div class="stage" id="stage">
@@ -550,7 +680,7 @@
                   <div class="lbl">Alumnos monitoreados</div>
                 </div>
                 <div class="kpi-tile">
-                  <div class="ic" style="color:var(--blue);"><i class="bi bi-graph-up"></i></div>
+                  <div class="ic" style="color:var(--accent-soft);"><i class="bi bi-graph-up"></i></div>
                   <div class="val" data-counter="7.42" data-decimals="2">0.00</div>
                   <div class="lbl">Promedio del grupo</div>
                 </div>
@@ -583,7 +713,7 @@
               <svg class="dag" viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(34,197,94,0.7)" />
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(249,115,22,0.7)" />
                   </marker>
                 </defs>
                 <g class="node">
@@ -635,6 +765,7 @@
           {% endfor %}
         </div>
         <button class="btn-darkx" id="nextSlide">Siguiente<i class="bi bi-arrow-right ms-1"></i></button>
+      </div>
       </div>
     </div>
 
@@ -834,7 +965,7 @@
             {
               label: 'MA₃',
               data: ma,
-              borderColor: 'rgba(34,197,94,1)',
+              borderColor: 'rgba(249,115,22,1)',
               borderDash: [6, 4],
               tension: 0.35, fill: false, pointRadius: 0,
             },
