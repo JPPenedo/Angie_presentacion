@@ -742,6 +742,55 @@
     .dag .node.final text { fill: #ffe7cf; }
 
     /* ---------- demo-simulador ---------- */
+    /* El simulador es más alto que el resto de demos; por defecto sólo se asoma
+       la parte superior y al pasar el cursor crece para mostrar todo el flujo. */
+    .slide[data-demo="simulador"] .mini-demo {
+      min-height: 280px;
+      transition:
+        min-height 0.45s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+      will-change: min-height, box-shadow;
+    }
+    .slide[data-demo="simulador"] .mini-demo::after {
+      content: "Pasa el cursor para expandir";
+      position: absolute;
+      right: 0.75rem; bottom: 0.55rem;
+      font-size: 0.62rem;
+      color: var(--accent-soft);
+      background: rgba(249,115,22,0.12);
+      border: 1px solid rgba(249,115,22,0.35);
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      opacity: 0.9;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .slide[data-demo="simulador"] .mini-demo:hover {
+      min-height: 540px;
+      border-color: rgba(249,115,22,0.55);
+      box-shadow:
+        0 22px 70px -16px rgba(249,115,22,0.5),
+        0 0 40px -6px rgba(249,115,22,0.3),
+        inset 0 0 0 1px rgba(249,115,22,0.35);
+    }
+    .slide[data-demo="simulador"] .mini-demo:hover::after {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    .slide[data-demo="simulador"] .sim-stage {
+      transition: min-height 0.45s cubic-bezier(.2,.8,.2,1);
+    }
+    .slide[data-demo="simulador"] .mini-demo:hover .sim-stage {
+      min-height: 380px;
+    }
+    /* En pantallas anchas (grid 2-col ya expandido) damos aún más aire */
+    @media (min-width: 1200px) {
+      .slide[data-demo="simulador"] .mini-demo:hover { min-height: 560px; }
+      .slide[data-demo="simulador"] .mini-demo:hover .sim-stage { min-height: 400px; }
+    }
+
     .sim-wrap {
       position: relative;
       display: flex;
