@@ -851,119 +851,126 @@ def expo_actuaria_view(request):
     """
     slides = [
         {
-            'titulo': 'Modelo de Riesgo y Clasificación',
+            'titulo': 'Avance Curricular hacia los 360 Créditos',
             'idea': (
-                'La segmentación Alto / Medio / Bajo del tablero es, en realidad, una '
-                'clasificación supervisada: cada alumno se asigna a una clase de riesgo '
-                'a partir de variables académicas observadas.'
+                'La plataforma muestra cuántos créditos lleva cada alumno sobre los '
+                '360 que exige el plan. Observar la distribución del grupo revela '
+                'dónde se concentra la masa del alumnado y dónde aparecen brechas '
+                'que frenan el camino a la titulación.'
             ),
             'modelo': (
-                'P(Y = 1 | X) = 1 / (1 + e^{-(β₀ + β₁·calif + β₂·asist + …)})'
+                'F̂(c) = (1/n) Σ 1{Cᵢ ≤ c},   '
+                'P50 = inf{ c : F̂(c) ≥ 0.5 },   '
+                'S(c) = 1 − F(c)'
             ),
             'enfoque': (
-                'Regresión logística, análisis discriminante lineal y curvas ROC: '
-                'herramientas actuariales para scoring y tarificación donde se estima '
-                'la probabilidad de un siniestro (aquí, “reprobar”) dado un perfil.'
+                'Función de distribución empírica y función de supervivencia S(c): '
+                'el mismo instrumento con el que un actuario construye tablas de '
+                'mortalidad, trasladado al "tiempo vivido" en créditos académicos.'
             ),
             'conceptos': [
-                'Probabilidad condicional P(riesgo | desempeño)',
-                'Función logística como score de riesgo',
-                'Matriz de confusión para validar el clasificador',
-            ],
-            'demo': 'riesgo',
-        },
-        {
-            'titulo': 'Probabilidad de Aprobación (Bernoulli)',
-            'idea': (
-                'El indicador “aprobado / no aprobado” es un experimento Bernoulli. '
-                'La tasa del grupo es la media muestral de esos ensayos y se puede '
-                'acompañar de un intervalo de confianza.'
-            ),
-            'modelo': (
-                'X_i ~ Bernoulli(p),   p̂ = (1/n) Σ X_i,   '
-                'IC₉₅% = p̂ ± 1.96·√(p̂(1−p̂)/n)'
-            ),
-            'enfoque': (
-                'Inferencia estadística clásica: estimación puntual y por intervalo '
-                'de una proporción. Es el mismo principio con el que un actuario '
-                'estima frecuencias de siniestro o tasas de mortalidad.'
-            ),
-            'conceptos': [
-                'Distribución Bernoulli / Binomial',
-                'Estimador máximo verosímil de p',
-                'Ley de grandes números e IC asintóticos',
+                'Distribución empírica F̂ y percentiles del avance',
+                'Función de supervivencia académica S(c)=P(aún en curso)',
+                'Detección de rezago: colas izquierdas de la distribución',
             ],
             'demo': 'bernoulli',
         },
         {
-            'titulo': 'Series Temporales Académicas',
+            'titulo': 'Red de Prerrequisitos y Desbloqueo',
             'idea': (
-                'El promedio por semestre es una serie temporal. Observar su tendencia '
-                'y su volatilidad permite anticipar deterioro académico, igual que un '
-                'actuario vigila la siniestralidad en el tiempo.'
+                'El plan de estudios no es lineal: muchas materias exigen haber '
+                'aprobado otras antes (Cálculo 1 → Cálculo 2, Probabilidad → '
+                'Estadística). La plataforma modela esa red y abre automáticamente '
+                'las materias que el alumno ya puede cursar.'
             ),
             'modelo': (
-                'Yₜ = Tₜ + Sₜ + εₜ,   '
-                'MAₖ(t) = (1/k) Σ_{i=0..k-1} Y_{t−i},   '
-                'σ̂²ₜ = Var(Y_{t−k:t})'
+                'G = (V, E) DAG,   abierto(i) ⇔ ∀ j ∈ prereq(i): aprobado(j),   '
+                'P(avanza a i) = ∏_{j ∈ prereq(i)} P(aprobar j)'
             ),
             'enfoque': (
-                'Descomposición tendencia–estacionalidad–ruido, suavizamiento por '
-                'medias móviles y detección de cambios estructurales: base directa '
-                'de la modelación actuarial dinámica (reservas IBNR, proyecciones).'
+                'Teoría de grafos y modelos multi-estado tipo Markov — la misma '
+                'estructura con la que Actuaría de vida describe transiciones '
+                '(activo → inválido → fallecido), aplicada a estados curriculares.'
             ),
             'conceptos': [
-                'Tendencia vs. ruido aleatorio',
-                'Medias móviles y suavizamiento exponencial',
-                'Volatilidad rodante como señal de riesgo',
+                'Orden topológico y camino crítico del plan',
+                'Probabilidad multiplicativa sobre la cadena de materias',
+                'Cadenas de Markov sobre estados "materia aprobada"',
+            ],
+            'demo': 'curriculo',
+        },
+        {
+            'titulo': 'Cuellos de Botella: Materias Críticas',
+            'idea': (
+                'Algunas materias concentran la mayor tasa de reprobación y frenan '
+                'el avance de cohortes enteras. Detectarlas a tiempo permite '
+                'focalizar esfuerzos antes de que se vuelvan una barrera para '
+                'alcanzar los 360 créditos.'
+            ),
+            'modelo': (
+                'reprobaciónₘ = (1/nₘ) Σ 1{Xᵢ,ₘ < 6},   '
+                'criticidadₘ = reprobaciónₘ · out-deg(m)'
+            ),
+            'enfoque': (
+                'Análisis de severidad y pruebas de proporciones — el mismo '
+                'razonamiento con el que un actuario identifica los ramos con '
+                'mayor siniestralidad para asignar reservas y reforzar control.'
+            ),
+            'conceptos': [
+                'Proporciones por estrato y prueba z de igualdad',
+                'Severidad condicional: materias aguas arriba del DAG',
+                'Semaforización para priorizar intervención docente',
             ],
             'demo': 'series',
         },
         {
-            'titulo': 'Métricas y Decisión Bajo Riesgo',
+            'titulo': 'Perfil de Rezago por Alumno',
             'idea': (
-                'Los KPIs del dashboard (promedio, % aprobación, casos en alto) son '
-                'un resumen que permite decidir a quién intervenir primero. Es el '
-                'mismo razonamiento costo/beneficio que usa un actuario al priorizar.'
+                'Comparar los créditos reales de cada alumno contra los créditos '
+                'esperados a su semestre detecta rezago — un diagnóstico más rico '
+                'que la sola calificación, porque combina avance, prerrequisitos '
+                'y desempeño.'
             ),
             'modelo': (
-                'Prioridad_i = P(reprobar_i) · Impacto_i,   '
-                'Pérdida esperada  E[L(d)] = Σ P(θ)·c(d, θ)'
+                'rezagoᵢ = esperadoₜ − realesᵢ,   '
+                'scoreᵢ = σ( α·rezagoᵢ + β·reprobacionesᵢ + γ·prom̄ᵢ )'
             ),
             'enfoque': (
-                'Teoría de decisión bayesiana e investigación de operaciones: '
-                'elegir la acción d* que minimiza la pérdida esperada sobre '
-                'los estados de la naturaleza θ (alumnos en riesgo).'
+                'Clasificación supervisada y scoring: la misma idea que usa un '
+                'actuario para asignar primas según perfil de riesgo, aplicada '
+                'a un "score de rezago académico" sobre el alumnado.'
+            ),
+            'conceptos': [
+                'Score logístico multivariable (avance + desempeño)',
+                'Segmentación en clases (bajo / medio / alto rezago)',
+                'Validación con AUC y matriz de confusión',
+            ],
+            'demo': 'riesgo',
+        },
+        {
+            'titulo': 'Priorización de Intervención y Recursos',
+            'idea': (
+                'Una vez identificado el rezago y las materias críticas, la '
+                'plataforma ordena a quiénes conviene apoyar primero: la '
+                'intervención que más acerca al alumnado a los 360 créditos '
+                'con los recursos disponibles.'
+            ),
+            'modelo': (
+                'Prioridadᵢ = P( no llegar a 360 en T semestres ) · impactoᵢ,   '
+                'E[ L(d) ] = Σ P(θ)·c(d, θ)'
+            ),
+            'enfoque': (
+                'Teoría de decisión bajo incertidumbre y optimización: un '
+                'actuario elige la acción d* que minimiza la pérdida esperada; '
+                'aquí se traduce en asignar asesorías y tutorías a quienes más '
+                'las necesitan.'
             ),
             'conceptos': [
                 'Función de pérdida y utilidad esperada',
                 'KPIs como estadísticos de decisión',
-                'Asignación óptima de recursos docentes',
+                'Asignación óptima de asesorías y tutorías',
             ],
             'demo': 'kpis',
-        },
-        {
-            'titulo': 'Plan de Estudios de Actuaría',
-            'idea': (
-                'El prototipo no es un caso aislado: encadena las materias base de '
-                'Actuaría (probabilidad → estadística → procesos estocásticos → '
-                'teoría del riesgo) sobre un problema real con datos.'
-            ),
-            'modelo': (
-                'Currículo ≈ DAG de dependencias:  Prob → Estadística → '
-                'Procesos estocásticos → Teoría del riesgo → Modelos actuariales'
-            ),
-            'enfoque': (
-                'Integración curricular: cada módulo del sistema corresponde a una '
-                'asignatura y muestra cómo se componen para generar valor actuarial '
-                'aplicado (riesgo, pricing, reservas).'
-            ),
-            'conceptos': [
-                'Probabilidad y Estadística',
-                'Procesos estocásticos',
-                'Teoría del riesgo y modelos actuariales',
-            ],
-            'demo': 'curriculo',
         },
     ]
 

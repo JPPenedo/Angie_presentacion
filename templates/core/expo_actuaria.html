@@ -585,6 +585,11 @@
     .bern-cell.filled { transform: scale(1); }
     .bern-cell.ok   { background: linear-gradient(135deg, #22c55e, #4ade80); }
     .bern-cell.fail { background: linear-gradient(135deg, #f87171, #fb7185); }
+    /* Buckets de avance en créditos (0-90, 90-180, 180-270, 270-360) */
+    .bern-cell.bk0 { background: linear-gradient(135deg, #3f3a34, #524a41); }
+    .bern-cell.bk1 { background: linear-gradient(135deg, #b45309, #d97706); }
+    .bern-cell.bk2 { background: linear-gradient(135deg, #f97316, #fb923c); }
+    .bern-cell.bk3 { background: linear-gradient(135deg, #15803d, #4ade80); }
     .bern-meter {
       margin-top: 0.7rem;
       height: 8px; border-radius: 999px;
@@ -599,6 +604,28 @@
       display:flex; justify-content:space-between;
       font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem;
     }
+    .bk-legend { align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+    .bk-chips { display: inline-flex; flex-wrap: wrap; gap: 0.35rem 0.55rem; }
+    .bk-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.68rem;
+      letter-spacing: 0.02em;
+      color: #d4cdc6;
+    }
+    .bk-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      box-shadow: 0 0 4px rgba(0,0,0,0.35);
+    }
+    .bk-dot.bk0 { background: #524a41; }
+    .bk-dot.bk1 { background: #d97706; }
+    .bk-dot.bk2 { background: #fb923c; }
+    .bk-dot.bk3 { background: #4ade80; }
 
     /* demo-series canvas wrapper */
     .series-wrap { position: relative; height: 220px; }
@@ -1208,59 +1235,67 @@
               <div class="risk-cards">
                 <div class="risk-card">
                   <span class="tag r-bajo">Bajo</span>
-                  <div class="name">A. García</div>
+                  <div class="name">A. García · 198 / 210 cr.</div>
                   <div class="score-row">
-                    <span>score</span>
+                    <span>rezago</span>
                     <div class="score-bar"><div class="score-fill fill-bajo" data-target="22"></div></div>
                     <span>0.22</span>
                   </div>
                 </div>
                 <div class="risk-card">
                   <span class="tag r-medio">Medio</span>
-                  <div class="name">C. Mendoza</div>
+                  <div class="name">C. Mendoza · 142 / 180 cr.</div>
                   <div class="score-row">
-                    <span>score</span>
+                    <span>rezago</span>
                     <div class="score-bar"><div class="score-fill fill-medio" data-target="58"></div></div>
                     <span>0.58</span>
                   </div>
                 </div>
                 <div class="risk-card">
                   <span class="tag r-alto">Alto</span>
-                  <div class="name">S. Ramírez</div>
+                  <div class="name">S. Ramírez · 96 / 180 cr.</div>
                   <div class="score-row">
-                    <span>score</span>
+                    <span>rezago</span>
                     <div class="score-bar"><div class="score-fill fill-alto" data-target="83"></div></div>
                     <span>0.83</span>
                   </div>
                 </div>
                 <div class="risk-card">
                   <span class="tag r-bajo">Bajo</span>
-                  <div class="name">D. Flores</div>
+                  <div class="name">D. Flores · 258 / 270 cr.</div>
                   <div class="score-row">
-                    <span>score</span>
+                    <span>rezago</span>
                     <div class="score-bar"><div class="score-fill fill-bajo" data-target="14"></div></div>
                     <span>0.14</span>
                   </div>
                 </div>
               </div>
               <div style="margin-top:0.6rem;font-size:0.72rem;color:var(--muted);">
-                P(reprobar) = σ(β·x) · Cada tarjeta es un caso del clasificador.
+                score = σ(α·rezago + β·reprobaciones + γ·prom̄) · reales vs. esperados al semestre.
               </div>
               {% endif %}
 
               {% if s.demo == 'bernoulli' %}
               <div class="bernoulli-grid" data-bern></div>
               <div class="bern-meter"><div class="bern-fill" data-bern-fill></div></div>
-              <div class="bern-legend">
-                <span>n = 100 ensayos X<sub>i</sub> ~ Bernoulli(p)</span>
-                <span><strong style="color:var(--success);">p̂ = <span data-bern-p>0.00</span></strong></span>
+              <div class="bern-legend bk-legend">
+                <span class="bk-chips">
+                  <span class="bk-chip"><span class="bk-dot bk0"></span>0–90</span>
+                  <span class="bk-chip"><span class="bk-dot bk1"></span>90–180</span>
+                  <span class="bk-chip"><span class="bk-dot bk2"></span>180–270</span>
+                  <span class="bk-chip"><span class="bk-dot bk3"></span>270–360</span>
+                </span>
+                <span><strong style="color:var(--accent-soft);">P50 = <span data-bern-p>0</span> cr.</strong></span>
+              </div>
+              <div style="margin-top:0.4rem;font-size:0.72rem;color:var(--muted);">
+                n = 100 alumnos · cada celda es un caso; color = créditos acumulados hacia los 360.
               </div>
               {% endif %}
 
               {% if s.demo == 'series' %}
               <div class="series-wrap"><canvas data-series></canvas></div>
               <div style="margin-top:0.45rem;font-size:0.72rem;color:var(--muted);">
-                Promedio semestral (línea) · Media móvil MA₃ (suavizada).
+                Tasa de reprobación por materia · barras ordenadas = cuellos de botella.
               </div>
               {% endif %}
 
@@ -1269,22 +1304,22 @@
                 <div class="kpi-tile">
                   <div class="ic"><i class="bi bi-people-fill"></i></div>
                   <div class="val" data-counter="24" data-decimals="0">0</div>
-                  <div class="lbl">Alumnos monitoreados</div>
+                  <div class="lbl">Alumnos en seguimiento</div>
                 </div>
                 <div class="kpi-tile">
-                  <div class="ic" style="color:var(--accent-soft);"><i class="bi bi-graph-up"></i></div>
-                  <div class="val" data-counter="7.42" data-decimals="2">0.00</div>
-                  <div class="lbl">Promedio del grupo</div>
+                  <div class="ic" style="color:var(--accent-soft);"><i class="bi bi-speedometer2"></i></div>
+                  <div class="val" data-counter="65.4" data-decimals="1">0.0</div>
+                  <div class="lbl">Avance medio (% de 360)</div>
                 </div>
                 <div class="kpi-tile">
-                  <div class="ic" style="color:var(--success);"><i class="bi bi-check-circle-fill"></i></div>
-                  <div class="val" data-counter="78" data-decimals="0">0</div>
-                  <div class="lbl">% Aprobación</div>
+                  <div class="ic" style="color:var(--success);"><i class="bi bi-mortarboard-fill"></i></div>
+                  <div class="val" data-counter="28" data-decimals="0">0</div>
+                  <div class="lbl">% cerca de titularse</div>
                 </div>
                 <div class="kpi-tile">
-                  <div class="ic" style="color:var(--danger);"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                  <div class="ic" style="color:var(--danger);"><i class="bi bi-hourglass-split"></i></div>
                   <div class="val" data-counter="5" data-decimals="0">0</div>
-                  <div class="lbl">Casos riesgo alto</div>
+                  <div class="lbl">Casos con rezago alto</div>
                 </div>
               </div>
               <div class="priority-list">
@@ -1299,6 +1334,9 @@
                   <span style="color:var(--warning)">prioridad 0.54</span>
                 </div>
               </div>
+              <div style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted);">
+                Prioridadᵢ = P(no llegar a 360 en T sem.) · impactoᵢ · asignación sobre recursos finitos.
+              </div>
               {% endif %}
 
               {% if s.demo == 'curriculo' %}
@@ -1310,28 +1348,28 @@
                 </defs>
                 <g class="node">
                   <rect x="10"  y="95"  width="100" height="50"/>
-                  <text x="60"  y="118" text-anchor="middle">Probabilidad</text>
-                  <text x="60"  y="132" text-anchor="middle" font-size="9" fill="#a39d98">Slide 2</text>
+                  <text x="60"  y="118" text-anchor="middle">Cálculo 1</text>
+                  <text x="60"  y="132" text-anchor="middle" font-size="9" fill="#a39d98">aprobado</text>
                 </g>
                 <g class="node">
                   <rect x="140" y="30"  width="100" height="50"/>
-                  <text x="190" y="53"  text-anchor="middle">Estadística</text>
-                  <text x="190" y="67"  text-anchor="middle" font-size="9" fill="#a39d98">Slide 1</text>
+                  <text x="190" y="53"  text-anchor="middle">Cálculo 2</text>
+                  <text x="190" y="67"  text-anchor="middle" font-size="9" fill="#a39d98">requiere Cálc 1</text>
                 </g>
                 <g class="node">
                   <rect x="140" y="160" width="100" height="50"/>
-                  <text x="190" y="183" text-anchor="middle">Series / Procesos</text>
-                  <text x="190" y="197" text-anchor="middle" font-size="9" fill="#a39d98">Slide 3</text>
+                  <text x="190" y="183" text-anchor="middle">Probabilidad</text>
+                  <text x="190" y="197" text-anchor="middle" font-size="9" fill="#a39d98">requiere Cálc 1</text>
                 </g>
                 <g class="node">
                   <rect x="275" y="95"  width="110" height="50"/>
-                  <text x="330" y="118" text-anchor="middle">Teoría del Riesgo</text>
-                  <text x="330" y="132" text-anchor="middle" font-size="9" fill="#a39d98">Slide 4</text>
+                  <text x="330" y="118" text-anchor="middle">Procesos Estoc.</text>
+                  <text x="330" y="132" text-anchor="middle" font-size="9" fill="#a39d98">Cálc 2 + Prob</text>
                 </g>
                 <g class="node final">
                   <rect x="410" y="95"  width="100" height="50"/>
-                  <text x="460" y="118" text-anchor="middle">Actuaría</text>
-                  <text x="460" y="132" text-anchor="middle" font-size="9" fill="#a39d98">aplicada</text>
+                  <text x="460" y="118" text-anchor="middle">Teoría del</text>
+                  <text x="460" y="132" text-anchor="middle" font-size="9" fill="#ffe7cf">Riesgo</text>
                 </g>
                 <path class="edge"    d="M110,115 C130,80 130,55 140,55"  marker-end="url(#arrow)"/>
                 <path class="edge e2" d="M110,125 C130,165 130,185 140,185" marker-end="url(#arrow)"/>
@@ -1340,7 +1378,7 @@
                 <path class="edge e4" d="M385,120 C400,120 405,120 410,120" marker-end="url(#arrow)"/>
               </svg>
               <div style="font-size:0.72rem;color:var(--muted);">
-                DAG curricular: cada slide de esta exposición es un nodo del plan.
+                DAG de prerrequisitos · aprobar un nodo "abre" los que dependen de él.
               </div>
               {% endif %}
             </div>
@@ -1673,8 +1711,22 @@
       const fill = slideEl.querySelector('[data-bern-fill]');
       const pOut = slideEl.querySelector('[data-bern-p]');
       if (!grid) return;
-      const p = 0.74; // tasa simulada de aprobación
-      const n = 100;
+      // Distribución simulada del avance del grupo (100 alumnos) sobre 4 cohortes de créditos.
+      // bk0: 0–90, bk1: 90–180, bk2: 180–270, bk3: 270–360
+      const mix = [
+        { cls: 'bk0', count: 22, mid: 45  },
+        { cls: 'bk1', count: 33, mid: 135 },
+        { cls: 'bk2', count: 30, mid: 225 },
+        { cls: 'bk3', count: 15, mid: 315 },
+      ];
+      const n = mix.reduce((a, b) => a + b.count, 0);
+      const assignments = [];
+      mix.forEach(m => { for (let k = 0; k < m.count; k++) assignments.push(m); });
+      // Barajar el orden de llenado para que "aparezca" animado
+      const order = assignments
+        .map((m, i) => ({ m, i, r: Math.random() }))
+        .sort((a, b) => a.r - b.r);
+
       grid.innerHTML = '';
       const cells = [];
       for (let i = 0; i < n; i++) {
@@ -1683,14 +1735,25 @@
         grid.appendChild(c);
         cells.push(c);
       }
+
+      function computeP50() {
+        const vals = cells
+          .map(c => {
+            for (const m of mix) if (c.classList.contains(m.cls)) return m.mid;
+            return null;
+          })
+          .filter(v => v !== null)
+          .sort((a, b) => a - b);
+        if (!vals.length) return 0;
+        return vals[Math.floor(vals.length / 2)];
+      }
+
       let done = 0;
-      const order = [...Array(n).keys()].sort(() => Math.random() - 0.5);
-      order.forEach((k, step) => {
+      order.forEach((o, step) => {
         setTimeout(() => {
-          const ok = Math.random() < p;
-          cells[k].classList.add('filled', ok ? 'ok' : 'fail');
+          cells[o.i].classList.add('filled', o.m.cls);
           done++;
-          if (pOut) pOut.textContent = (Array.from(cells).filter(x => x.classList.contains('ok')).length / n).toFixed(2);
+          if (pOut) pOut.textContent = computeP50();
           if (fill) fill.style.width = (done) + '%';
         }, step * 24);
       });
@@ -1702,43 +1765,47 @@
       if (seriesCharts.has(canvas)) {
         seriesCharts.get(canvas).destroy();
       }
-      const labels = ['2022-1','2022-2','2023-1','2023-2','2024-1','2024-2','2025-1','2025-2'];
-      const base  = [7.1, 7.4, 7.0, 6.8, 7.3, 7.6, 7.2, 7.5];
-      // media móvil MA_3
-      const ma = base.map((_, i, arr) => {
-        const k = 3;
-        const from = Math.max(0, i - k + 1);
-        const slice = arr.slice(from, i + 1);
-        return +(slice.reduce((a,b)=>a+b,0)/slice.length).toFixed(2);
-      });
+      // Materias del plan con su tasa simulada de reprobación (ordenadas de mayor a menor).
+      const labels = ['Cálculo 2', 'Ecs. Diferenciales', 'Prob. Avanzada', 'Modelos Act.', 'Cálculo 1', 'Estadística', 'Álgebra'];
+      const rates  = [0.42, 0.36, 0.31, 0.27, 0.22, 0.18, 0.12];
+      const colorFor = r => r > 0.33 ? 'rgba(248,113,113,0.85)'
+                         : r > 0.22 ? 'rgba(251,191,36,0.85)'
+                         :            'rgba(52,211,153,0.85)';
       const chart = new Chart(canvas, {
-        type: 'line',
+        type: 'bar',
         data: {
           labels,
-          datasets: [
-            {
-              label: 'Promedio',
-              data: base,
-              borderColor: 'rgba(96,165,250,0.9)',
-              backgroundColor: 'rgba(96,165,250,0.15)',
-              tension: 0.35, fill: true, pointRadius: 3,
-            },
-            {
-              label: 'MA₃',
-              data: ma,
-              borderColor: 'rgba(249,115,22,1)',
-              borderDash: [6, 4],
-              tension: 0.35, fill: false, pointRadius: 0,
-            },
-          ],
+          datasets: [{
+            label: 'Tasa de reprobación',
+            data: rates,
+            backgroundColor: rates.map(colorFor),
+            borderRadius: 6,
+            borderSkipped: false,
+          }],
         },
         options: {
+          indexAxis: 'y',
           responsive: true, maintainAspectRatio: false,
           animation: { duration: 1500, easing: 'easeOutCubic' },
-          plugins: { legend: { labels: { color: '#cfc9c4', font: { size: 10 } } } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: { label: (ctx) => (ctx.parsed.x * 100).toFixed(1) + ' % reprobación' },
+            },
+          },
           scales: {
-            y: { min: 6, max: 8, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#a39d98' } },
-            x: { grid: { display: false }, ticks: { color: '#a39d98', font: { size: 10 } } },
+            x: {
+              min: 0, max: 0.5,
+              grid: { color: 'rgba(255,255,255,0.06)' },
+              ticks: {
+                color: '#a39d98', font: { size: 10 },
+                callback: v => (v * 100).toFixed(0) + '%',
+              },
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: '#cfc9c4', font: { size: 10 } },
+            },
           },
         },
       });
@@ -2429,11 +2496,13 @@
         decimals: parseInt(el.dataset.decimals || '0', 10),
         min: 0, max: 100,
       }));
-      // configurar rangos por posición
-      if (kpiSt[0]) { kpiSt[0].min = 20; kpiSt[0].max = 40; kpiSt[0].step = 1; kpiSt[0].rate = 0.18; }
-      if (kpiSt[1]) { kpiSt[1].min = 6.5; kpiSt[1].max = 8.2; kpiSt[1].step = 0.06; kpiSt[1].rate = 1; }
-      if (kpiSt[2]) { kpiSt[2].min = 68; kpiSt[2].max = 90; kpiSt[2].step = 0.9; kpiSt[2].rate = 1; }
-      if (kpiSt[3]) { kpiSt[3].min = 2;  kpiSt[3].max = 8;  kpiSt[3].step = 1; kpiSt[3].rate = 0.22; }
+      // configurar rangos por posición (KPIs enfocados a avance hacia 360 créditos)
+      // tile 0: alumnos en seguimiento · tile 1: avance medio (% de 360)
+      // tile 2: % cerca de titularse  · tile 3: casos con rezago alto
+      if (kpiSt[0]) { kpiSt[0].min = 20;   kpiSt[0].max = 40;   kpiSt[0].step = 1;    kpiSt[0].rate = 0.18; }
+      if (kpiSt[1]) { kpiSt[1].min = 60;   kpiSt[1].max = 72;   kpiSt[1].step = 0.35; kpiSt[1].rate = 1;    }
+      if (kpiSt[2]) { kpiSt[2].min = 22;   kpiSt[2].max = 36;   kpiSt[2].step = 0.7;  kpiSt[2].rate = 1;    }
+      if (kpiSt[3]) { kpiSt[3].min = 2;    kpiSt[3].max = 8;    kpiSt[3].step = 1;    kpiSt[3].rate = 0.22; }
       if (kpiSt.length) {
         // El `activateKpis` del engine anima el contador hasta `data-counter`
         // al activar la slide; después de ese tiempo entramos a "vida propia".
@@ -2472,52 +2541,64 @@
         }, 3600);
       }
 
-      // --- Slide "series": gráfico Chart.js dentro de la slide ---
+      // --- Slide "series" (materias críticas): las tasas de reprobación oscilan ---
+      // Pequeño jitter por materia + reasignación del color si la barra cruza umbrales.
       setInterval(() => {
         if (hidden()) return;
         if (typeof Chart === 'undefined' || !Chart.getChart) return;
         document.querySelectorAll('[data-series]').forEach(canvas => {
           const chart = Chart.getChart(canvas);
           if (!chart) return;
-          const base = chart.data.datasets[0].data;
-          const n = base.length;
-          // jitter en los últimos 3 puntos, visible pero controlado
-          for (let i = Math.max(0, n - 3); i < n; i++) {
-            base[i] = +clamp(base[i] + (Math.random() - 0.5) * 0.18, 6.2, 7.9).toFixed(2);
+          const ds = chart.data.datasets[0];
+          const data = ds.data;
+          for (let i = 0; i < data.length; i++) {
+            data[i] = +clamp(data[i] + (Math.random() - 0.5) * 0.02, 0.05, 0.48).toFixed(3);
           }
-          // recomputar MA₃
-          chart.data.datasets[1].data = base.map((_, i, a) => {
-            const f = Math.max(0, i - 2);
-            const s = a.slice(f, i + 1);
-            return +(s.reduce((x, y) => x + y, 0) / s.length).toFixed(2);
-          });
+          ds.backgroundColor = data.map(r =>
+            r > 0.33 ? 'rgba(248,113,113,0.85)' :
+            r > 0.22 ? 'rgba(251,191,36,0.85)' : 'rgba(52,211,153,0.85)'
+          );
           chart.update();
         });
       }, 3700);
 
-      // --- Slide "bernoulli": después de la animación inicial, sigue "tomando muestras" ---
-      // Cada ~2.5s, alternar ~2 celdas entre ok/fail para que el p̂ oscile ligeramente
+      // --- Slide "bernoulli" (avance curricular): el grupo sigue "respirando" ---
+      // Cada ~2.5s, varias celdas cambian de bucket (simula alumnos que aprueban/acumulan
+      // créditos y cruzan al siguiente rango). El P50 del grupo se recalcula al vuelo.
+      const BK_MIDS = { bk0: 45, bk1: 135, bk2: 225, bk3: 315 };
+      const BK_ORDER = ['bk0', 'bk1', 'bk2', 'bk3'];
       setInterval(() => {
         if (hidden()) return;
         document.querySelectorAll('[data-bern]').forEach(grid => {
           const cells = grid.querySelectorAll('.bern-cell.filled');
           if (cells.length < 10) return; // esperar a que haya muestras
-          // cambia 2 celdas de estado
-          for (let k = 0; k < 2; k++) {
+          // Mueve ~3 celdas ±1 bucket (sesgo leve a subir: avance)
+          for (let k = 0; k < 3; k++) {
             const c = cells[Math.floor(Math.random() * cells.length)];
-            if (c.classList.contains('ok')) {
-              c.classList.remove('ok'); c.classList.add('fail');
-            } else {
-              c.classList.remove('fail'); c.classList.add('ok');
-            }
+            const cur = BK_ORDER.findIndex(b => c.classList.contains(b));
+            if (cur === -1) continue;
+            // 60% sube, 40% baja (si es posible)
+            const dir = Math.random() < 0.6 ? 1 : -1;
+            let next = cur + dir;
+            if (next < 0 || next > 3) next = cur - dir;
+            c.classList.remove(BK_ORDER[cur]);
+            c.classList.add(BK_ORDER[next]);
           }
-          const grid2 = grid;
-          const all = grid2.querySelectorAll('.bern-cell');
-          const oks = grid2.querySelectorAll('.bern-cell.ok').length;
-          const pOut = grid2.parentElement.querySelector('[data-bern-p]');
-          if (pOut && all.length) pOut.textContent = (oks / all.length).toFixed(2);
-          const meter = grid2.parentElement.querySelector('[data-bern-fill]');
-          if (meter) meter.style.width = (oks / all.length * 100).toFixed(0) + '%';
+          const all = grid.querySelectorAll('.bern-cell.filled');
+          const vals = [];
+          all.forEach(c => {
+            for (const b of BK_ORDER) if (c.classList.contains(b)) { vals.push(BK_MIDS[b]); break; }
+          });
+          vals.sort((a, b) => a - b);
+          const p50 = vals.length ? vals[Math.floor(vals.length / 2)] : 0;
+          const pOut = grid.parentElement.querySelector('[data-bern-p]');
+          if (pOut) pOut.textContent = p50;
+          const meter = grid.parentElement.querySelector('[data-bern-fill]');
+          // El "medidor" ahora refleja el % del grupo con créditos ≥ 180 (mitad del plan)
+          if (meter && all.length) {
+            const mitad = Array.from(all).filter(c => c.classList.contains('bk2') || c.classList.contains('bk3')).length;
+            meter.style.width = (mitad / all.length * 100).toFixed(0) + '%';
+          }
         });
       }, 2500);
     })();
