@@ -335,13 +335,58 @@
       .stage { min-height: 720px; }
     }
 
-    /* stagger animation on active slide children */
+    /* ---- Cinemática de entrada ----
+       Paso 1 (0 → 55%): la mini-demo aparece grande y cerca, con glow naranja.
+       Paso 2 (55% → 100%): retrocede a su celda del grid.
+       Paso 3 (desde ~0.75s): el texto entra en stagger y toma protagonismo. */
+    .slide.active .mini-demo {
+      animation: demoIntro 1.15s cubic-bezier(.2,.8,.2,1) both;
+      transform-origin: 50% 50%;
+    }
+    @keyframes demoIntro {
+      0% {
+        opacity: 0;
+        transform: scale(1.42) translate(-30%, 6%);
+        filter: blur(14px) brightness(1.25) saturate(1.15);
+        box-shadow:
+          0 35px 110px -20px rgba(249,115,22,0.75),
+          0 0 70px -5px rgba(249,115,22,0.5),
+          inset 0 0 0 1px rgba(249,115,22,0.55);
+      }
+      22% {
+        opacity: 1;
+        transform: scale(1.42) translate(-30%, 6%);
+        filter: blur(0) brightness(1.25) saturate(1.15);
+        box-shadow:
+          0 35px 110px -20px rgba(249,115,22,0.75),
+          0 0 70px -5px rgba(249,115,22,0.5),
+          inset 0 0 0 1px rgba(249,115,22,0.55);
+      }
+      55% {
+        opacity: 1;
+        transform: scale(1.35) translate(-26%, 4%);
+        filter: blur(0) brightness(1.18) saturate(1.1);
+        box-shadow:
+          0 28px 90px -18px rgba(249,115,22,0.6),
+          0 0 50px -6px rgba(249,115,22,0.4),
+          inset 0 0 0 1px rgba(249,115,22,0.4);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translate(0, 0);
+        filter: blur(0) brightness(1) saturate(1);
+        box-shadow:
+          0 0 0 rgba(249,115,22,0);
+      }
+    }
+
+    /* Texto: stagger que empieza cuando la demo ya está retrocediendo */
     .slide.active .anim { animation: riseIn 0.7s cubic-bezier(.2,.8,.2,1) both; }
-    .slide.active .anim:nth-child(1) { animation-delay: 0.05s; }
-    .slide.active .anim:nth-child(2) { animation-delay: 0.15s; }
-    .slide.active .anim:nth-child(3) { animation-delay: 0.25s; }
-    .slide.active .anim:nth-child(4) { animation-delay: 0.35s; }
-    .slide.active .anim:nth-child(5) { animation-delay: 0.45s; }
+    .slide.active .anim:nth-child(1) { animation-delay: 0.72s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 0.82s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 0.92s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 1.02s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 1.12s; }
     @keyframes riseIn {
       from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
       to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
@@ -698,7 +743,7 @@
               </ul>
             </div>
 
-            <div class="mini-demo anim">
+            <div class="mini-demo">
               <div class="demo-head">
                 <span><i class="bi bi-window-stack me-1"></i>Fragmento simulado de la plataforma</span>
                 <span class="dots3"><span></span><span></span><span></span></span>
