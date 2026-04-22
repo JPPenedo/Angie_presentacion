@@ -756,6 +756,23 @@
         border-color 0.35s ease;
       will-change: transform;
     }
+    /* Hint "Pasa el cursor para expandir": sólo aparece después de que el
+       usuario ya vio el modal una vez (data-sim-seen) y el modal está
+       cerrado, así no confunde en el primer render. */
+    .slide[data-demo="simulador"] .mini-demo[data-sim-seen="1"]:not(.sim-open)::after {
+      content: "Pasa el cursor para volver a expandir";
+      position: absolute;
+      right: 0.75rem; bottom: 0.55rem;
+      font-size: 0.62rem;
+      color: var(--accent-soft);
+      background: rgba(249,115,22,0.12);
+      border: 1px solid rgba(249,115,22,0.35);
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      opacity: 0.9;
+    }
 
     /* Modal centrado: el simulador "despega" al viewport y queda por encima
        de todo con su propio tamaño cómodo para interactuar. Ojo: la .slide
@@ -936,6 +953,108 @@
       font-family: "Consolas","Courier New", monospace;
       letter-spacing: 0.04em;
     }
+
+    /* Selector de rol (Alumno / Maestro) en el login */
+    .sim-role-select {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.15rem;
+    }
+    .sim-role {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      padding: 0.7rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      color: var(--muted);
+      text-align: center;
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.25s ease,
+        transform 0.15s ease;
+    }
+    .sim-role i { font-size: 1.25rem; line-height: 1; }
+    .sim-role .rt { font-size: 0.85rem; font-weight: 700; color: #ece6df; }
+    .sim-role .rd { font-size: 0.66rem; line-height: 1.25; color: var(--muted); }
+    .sim-role:hover {
+      border-color: rgba(249,115,22,0.45);
+      transform: translateY(-1px);
+    }
+    .sim-role.on {
+      border-color: rgba(249,115,22,0.75);
+      background: rgba(249,115,22,0.13);
+      color: var(--accent-soft);
+      box-shadow: 0 0 22px -8px rgba(249,115,22,0.6), inset 0 0 0 1px rgba(249,115,22,0.35);
+    }
+    .sim-role.on i,
+    .sim-role.on .rt { color: var(--accent-soft); }
+
+    /* Vistas por rol en el paso de Análisis: sólo una visible a la vez */
+    .sim-role-view { display: none; flex-direction: column; gap: 0.55rem; }
+    .sim-role-view.on { display: flex; }
+
+    /* Elementos visibles sólo para un rol específico (login / upload). El
+       JS alterna el atributo data-role en el .sim-wrap padre y estas
+       reglas se encargan del resto. */
+    .sim-wrap[data-role="alumno"]  [data-role-only="maestro"],
+    .sim-wrap[data-role="maestro"] [data-role-only="alumno"] { display: none !important; }
+
+    /* Chip indicador del rol activo encima del dashboard */
+    .sim-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      align-self: flex-start;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(249,115,22,0.12);
+      border: 1px solid rgba(249,115,22,0.35);
+      color: var(--accent-soft);
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* Bottleneck list (vista maestro) */
+    .sim-bottle-list {
+      display: flex; flex-direction: column; gap: 0.3rem;
+      flex: 1; min-height: 0;
+      overflow: hidden;
+    }
+    .sim-bottle-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      color: #d9d3ce;
+    }
+    .sim-bottle-row .bar {
+      grid-column: 1 / -1;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      position: relative;
+    }
+    .sim-bottle-row .bar > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(248,113,113,0.85), rgba(251,146,60,0.9));
+      width: 0%;
+      transition: width 1s cubic-bezier(.2,.8,.2,1);
+      border-radius: 999px;
+    }
+    .sim-bottle-row .pct { color: var(--accent-soft); font-weight: 700; }
 
     /* Upload zone */
     .sim-drop {
@@ -1747,7 +1866,7 @@
               <button type="button" class="sim-close" aria-label="Cerrar simulador" data-sim-close>
                 <i class="bi bi-x-lg"></i>
               </button>
-              <div class="sim-wrap" data-sim>
+              <div class="sim-wrap" data-sim data-role="alumno">
                 <!-- Barra de pasos -->
                 <div class="sim-steps">
                   <div class="sim-step active" data-sim-dot="0"><span>1</span>Inicio de sesión</div>
@@ -1757,12 +1876,31 @@
 
                 <!-- Paneles -->
                 <div class="sim-stage">
-                  <!-- Paso 0: Login (simulado) -->
+                  <!-- Paso 0: Login (simulado) + selector de rol -->
                   <section class="sim-panel active" data-sim-step="0">
                     <div class="sim-title"><i class="bi bi-person-badge me-2"></i>Acceso a la plataforma</div>
                     <div class="sim-field">
+                      <label>Ingresar como</label>
+                      <div class="sim-role-select">
+                        <button type="button" class="sim-role on" data-sim-role="alumno">
+                          <i class="bi bi-mortarboard-fill"></i>
+                          <span class="rt">Alumno</span>
+                          <span class="rd">Diagnóstico de tu CAP</span>
+                        </button>
+                        <button type="button" class="sim-role" data-sim-role="maestro">
+                          <i class="bi bi-easel2-fill"></i>
+                          <span class="rt">Maestro</span>
+                          <span class="rd">Visión grupal del curso</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sim-field" data-role-only="alumno">
                       <label>Matrícula</label>
                       <div class="sim-input">00412345</div>
+                    </div>
+                    <div class="sim-field" data-role-only="maestro">
+                      <label>Usuario docente</label>
+                      <div class="sim-input">prof.martinez</div>
                     </div>
                     <div class="sim-field">
                       <label>Contraseña</label>
@@ -1775,51 +1913,121 @@
                     </div>
                   </section>
 
-                  <!-- Paso 1: Subir CAP -->
+                  <!-- Paso 1: Subir CAP (alumno) / Cargar CAPs del grupo (maestro) -->
                   <section class="sim-panel" data-sim-step="1">
-                    <div class="sim-title"><i class="bi bi-file-earmark-text me-2"></i>Sube tu CAP</div>
-                    <div class="sim-drop">
+                    <div class="sim-title" data-role-only="alumno">
+                      <i class="bi bi-file-earmark-text me-2"></i>Sube tu CAP
+                    </div>
+                    <div class="sim-title" data-role-only="maestro">
+                      <i class="bi bi-files me-2"></i>Carga los CAPs del grupo
+                    </div>
+                    <div class="sim-drop" data-role-only="alumno">
                       <i class="bi bi-cloud-arrow-up"></i>
-                      <div class="sim-drop-l1">Arrastra el documento académico aquí</div>
+                      <div class="sim-drop-l1">Arrastra tu documento académico aquí</div>
                       <div class="sim-drop-l2">formatos aceptados: PDF · CSV · XLSX</div>
+                    </div>
+                    <div class="sim-drop" data-role-only="maestro">
+                      <i class="bi bi-cloud-arrow-up"></i>
+                      <div class="sim-drop-l1">Arrastra el lote de CAPs del grupo</div>
+                      <div class="sim-drop-l2">28 archivos detectados · consolidación automática</div>
                     </div>
                     <div class="sim-actions">
                       <button type="button" class="sim-btn ghost" data-sim-prev>
                         <i class="bi bi-arrow-left me-1"></i>Atrás
                       </button>
                       <button type="button" class="sim-btn primary" data-sim-next>
-                        <i class="bi bi-upload me-1"></i>Procesar CAP
+                        <i class="bi bi-upload me-1"></i><span data-role-only="alumno">Procesar CAP</span><span data-role-only="maestro">Consolidar grupo</span>
                       </button>
                     </div>
                   </section>
 
-                  <!-- Paso 2: Análisis -->
+                  <!-- Paso 2: Análisis (dos vistas por rol) -->
                   <section class="sim-panel" data-sim-step="2">
-                    <div class="sim-title"><i class="bi bi-graph-up-arrow me-2"></i>Diagnóstico de tu CAP</div>
-                    <div class="sim-kpis">
-                      <div class="sim-kpi">
-                        <div class="v" data-sim-kpi="62" data-decimals="0" data-suffix="%">0%</div>
-                        <div class="l">avance 360 cr.</div>
+                    <!-- Vista Alumno -->
+                    <div class="sim-role-view on" data-role="alumno">
+                      <div class="sim-title">
+                        <i class="bi bi-graph-up-arrow me-2"></i>Diagnóstico de tu CAP
                       </div>
-                      <div class="sim-kpi">
-                        <div class="v" data-sim-kpi="42" data-decimals="0">0</div>
-                        <div class="l">materias aprobadas</div>
+                      <div class="sim-role-badge"><i class="bi bi-mortarboard-fill"></i>Perspectiva del alumno</div>
+                      <div class="sim-kpis">
+                        <div class="sim-kpi">
+                          <div class="v" data-sim-kpi="62" data-decimals="0" data-suffix="%">0%</div>
+                          <div class="l">avance 360 cr.</div>
+                        </div>
+                        <div class="sim-kpi">
+                          <div class="v" data-sim-kpi="42" data-decimals="0">0</div>
+                          <div class="l">materias aprobadas</div>
+                        </div>
+                        <div class="sim-kpi">
+                          <div class="v" data-sim-kpi="7" data-decimals="0">0</div>
+                          <div class="l">desbloqueadas</div>
+                        </div>
                       </div>
-                      <div class="sim-kpi">
-                        <div class="v" data-sim-kpi="7" data-decimals="0">0</div>
-                        <div class="l">desbloqueadas</div>
+                      <div class="sim-charts">
+                        <div class="sim-chart-box">
+                          <div class="sim-chart-t">Avance vs. esperado</div>
+                          <canvas data-sim-chart="progress"></canvas>
+                        </div>
+                        <div class="sim-chart-box">
+                          <div class="sim-chart-t">Materias por estado</div>
+                          <canvas data-sim-chart="subjects"></canvas>
+                        </div>
                       </div>
                     </div>
-                    <div class="sim-charts">
-                      <div class="sim-chart-box">
-                        <div class="sim-chart-t">Avance vs. esperado</div>
-                        <canvas data-sim-chart="progress"></canvas>
+
+                    <!-- Vista Maestro -->
+                    <div class="sim-role-view" data-role="maestro">
+                      <div class="sim-title">
+                        <i class="bi bi-columns-gap me-2"></i>Panel docente · visión grupal
                       </div>
-                      <div class="sim-chart-box">
-                        <div class="sim-chart-t">Materias por estado</div>
-                        <canvas data-sim-chart="subjects"></canvas>
+                      <div class="sim-role-badge"><i class="bi bi-easel2-fill"></i>Perspectiva del maestro</div>
+                      <div class="sim-kpis">
+                        <div class="sim-kpi">
+                          <div class="v" data-sim-kpi="28" data-decimals="0">0</div>
+                          <div class="l">CAPs cargados</div>
+                        </div>
+                        <div class="sim-kpi">
+                          <div class="v" data-sim-kpi="58" data-decimals="0" data-suffix="%">0%</div>
+                          <div class="l">avance grupal</div>
+                        </div>
+                        <div class="sim-kpi">
+                          <div class="v" data-sim-kpi="6" data-decimals="0">0</div>
+                          <div class="l">rezago alto</div>
+                        </div>
+                      </div>
+                      <div class="sim-charts">
+                        <div class="sim-chart-box">
+                          <div class="sim-chart-t">Distribución de avance del grupo</div>
+                          <canvas data-sim-chart="group"></canvas>
+                        </div>
+                        <div class="sim-chart-box">
+                          <div class="sim-chart-t">Cuellos de botella (% reprobación)</div>
+                          <div class="sim-bottle-list">
+                            <div class="sim-bottle-row" data-bottle="38">
+                              <span>Cálculo III</span><span class="pct">38%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="32">
+                              <span>Probabilidad I</span><span class="pct">32%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="28">
+                              <span>Estadística Mat.</span><span class="pct">28%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="22">
+                              <span>Álgebra Lineal</span><span class="pct">22%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="18">
+                              <span>Análisis Real</span><span class="pct">18%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
                     <div class="sim-actions">
                       <button type="button" class="sim-btn ghost" data-sim-reset>
                         <i class="bi bi-arrow-counterclockwise me-1"></i>Reiniciar simulación
@@ -2316,11 +2524,19 @@
     function activateSimulador(slideEl) {
       const wrap = slideEl.querySelector('[data-sim]');
       if (!wrap) return;
-      const panels = Array.from(wrap.querySelectorAll('.sim-panel'));
-      const dots   = Array.from(wrap.querySelectorAll('.sim-step'));
-      const nextBs = wrap.querySelectorAll('[data-sim-next]');
-      const prevBs = wrap.querySelectorAll('[data-sim-prev]');
-      const resetB = wrap.querySelectorAll('[data-sim-reset]');
+      const panels   = Array.from(wrap.querySelectorAll('.sim-panel'));
+      const dots     = Array.from(wrap.querySelectorAll('.sim-step'));
+      const nextBs   = wrap.querySelectorAll('[data-sim-next]');
+      const prevBs   = wrap.querySelectorAll('[data-sim-prev]');
+      const resetB   = wrap.querySelectorAll('[data-sim-reset]');
+      const roleBs   = wrap.querySelectorAll('[data-sim-role]');
+      const views    = wrap.querySelectorAll('.sim-role-view');
+
+      function applyRole(role) {
+        wrap.dataset.role = role;
+        roleBs.forEach(b => b.classList.toggle('on', b.dataset.simRole === role));
+        views.forEach(v  => v.classList.toggle('on', v.dataset.role === role));
+      }
 
       function show(i) {
         panels.forEach((p, idx) => p.classList.toggle('active', idx === i));
@@ -2343,8 +2559,15 @@
           show(Math.max(0, cur - 1));
         }));
         resetB.forEach(b => b.addEventListener('click', () => show(0)));
+        roleBs.forEach(b => b.addEventListener('click', () => {
+          applyRole(b.dataset.simRole);
+          // Si ya estábamos en el dashboard, re-renderizamos para que las
+          // cifras del nuevo rol se animen sin tener que volver a "Ingresar".
+          if ((+wrap.dataset.step || 0) === 2) renderSimAnalytics(wrap);
+        }));
         wrap.dataset.simBound = '1';
       }
+      applyRole(wrap.dataset.role || 'alumno');
       show(0);
 
       // El simulador se promueve automáticamente a un modal centrado cuando
@@ -2365,6 +2588,20 @@
         if (!slideEl.classList.contains('active')) return;
         if (mini._simOpen) mini._simOpen();
       }, 2250);
+
+      // Reapertura por hover: una vez que el usuario cerró el modal
+      // (con la X, ESC o click en backdrop), al volver a pasar el cursor
+      // sobre el mini-demo lo agrandamos de nuevo. Sólo si la slide sigue
+      // activa para no dispararlo si estamos navegando a otra.
+      if (!mini.dataset.hoverBound) {
+        mini.addEventListener('mouseenter', () => {
+          if (mini.classList.contains('sim-open')) return;
+          const slide = mini.closest('.slide');
+          if (!slide || !slide.classList.contains('active')) return;
+          if (mini._simOpen) mini._simOpen();
+        });
+        mini.dataset.hoverBound = '1';
+      }
     }
 
     /* Portal + FLIP modal zoom: la .slide padre tiene transform, filter y
@@ -2396,6 +2633,7 @@
           // del padre y que position:fixed sea relativo al viewport.
           document.body.appendChild(mini);
           mini.classList.add('sim-open');
+          mini.dataset.simSeen = '1';
         } else {
           mini.classList.remove('sim-open');
           // Al re-insertarlo en la slide volvería a matchear la regla
@@ -2451,8 +2689,14 @@
     }
 
     function renderSimAnalytics(wrap) {
+      // Sólo renderizamos la vista del rol activo (la otra está oculta
+      // con display:none, así evitamos animar KPIs o montar Charts que
+      // el usuario no está viendo).
+      const role = wrap.dataset.role || 'alumno';
+      const view = wrap.querySelector(`.sim-role-view[data-role="${role}"]`) || wrap;
+
       // KPIs animados
-      wrap.querySelectorAll('[data-sim-kpi]').forEach(el => {
+      view.querySelectorAll('[data-sim-kpi]').forEach(el => {
         const target   = parseFloat(el.dataset.simKpi);
         const decimals = parseInt(el.dataset.decimals || '0', 10);
         const suffix   = el.dataset.suffix || '';
@@ -2465,12 +2709,22 @@
           if (t < 1) requestAnimationFrame(tick);
         })(start);
       });
+
+      // Barras de cuellos de botella (vista maestro): animamos el width.
+      view.querySelectorAll('.sim-bottle-row').forEach((row, i) => {
+        const pct  = parseFloat(row.dataset.bottle || '0');
+        const bar  = row.querySelector('.bar > span');
+        if (!bar) return;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = pct + '%'; }, 120 + i * 90);
+      });
+
       // Gráficos
       const gridColor = 'rgba(255,255,255,0.06)';
       const tickColor = '#a39d98';
 
-      // Avance vs. esperado por semestre (línea doble)
-      const cvProg = wrap.querySelector('[data-sim-chart="progress"]');
+      // Avance vs. esperado por semestre (línea doble) — ALUMNO
+      const cvProg = view.querySelector('[data-sim-chart="progress"]');
       if (cvProg) {
         if (simCharts.has(cvProg)) simCharts.get(cvProg).destroy();
         const labels = ['S1','S2','S3','S4','S5','S6','S7','S8'];
@@ -2508,8 +2762,8 @@
         simCharts.set(cvProg, ch);
       }
 
-      // Distribución de materias por estado (doughnut)
-      const cvSubj = wrap.querySelector('[data-sim-chart="subjects"]');
+      // Distribución de materias por estado (doughnut) — ALUMNO
+      const cvSubj = view.querySelector('[data-sim-chart="subjects"]');
       if (cvSubj) {
         if (simCharts.has(cvSubj)) simCharts.get(cvSubj).destroy();
         const ch = new Chart(cvSubj, {
@@ -2531,6 +2785,43 @@
           },
         });
         simCharts.set(cvSubj, ch);
+      }
+
+      // Distribución de avance del grupo (histograma por rangos) — MAESTRO
+      const cvGroup = view.querySelector('[data-sim-chart="group"]');
+      if (cvGroup) {
+        if (simCharts.has(cvGroup)) simCharts.get(cvGroup).destroy();
+        const labels = ['0–90', '90–180', '180–270', '270–360'];
+        const counts = [4, 9, 10, 5];
+        const colors = [
+          'rgba(248,113,113,0.85)',
+          'rgba(251,191,36,0.85)',
+          'rgba(96,165,250,0.85)',
+          'rgba(52,211,153,0.88)',
+        ];
+        const ch = new Chart(cvGroup, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Alumnos',
+              data: counts,
+              backgroundColor: colors,
+              borderRadius: 6,
+              borderSkipped: false,
+            }],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 1100, easing: 'easeOutCubic' },
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 9 }, stepSize: 2 } },
+              x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 9 } } },
+            },
+          },
+        });
+        simCharts.set(cvGroup, ch);
       }
     }
 
