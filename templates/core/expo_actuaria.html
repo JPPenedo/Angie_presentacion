@@ -325,6 +325,27 @@
       clip-path: inset(0 0% 0 0 round 0.85rem);
       z-index: 2;
     }
+    /* Hover sutil: la slide activa se agranda un pelín al pasar el cursor
+       (mucho menos que el zoom del demo) + un brillo naranja apenas
+       insinuado, sólo como hint de interactividad. Se desactiva mientras
+       el mini-demo del simulador está abierto como modal, para que la
+       tarjeta de la slide no compita visualmente con el modal.            */
+    .slide.active:hover {
+      transform: scale(1.012) translateY(-1px);
+      box-shadow:
+        0 18px 45px -18px rgba(249,115,22,0.35),
+        0 0 0 1px rgba(249,115,22,0.18);
+      transition:
+        opacity 0.9s ease,
+        transform 0.45s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.45s ease,
+        filter 0.9s ease,
+        clip-path 1.35s cubic-bezier(.65,.05,.15,1);
+    }
+    body.sim-modal-open .slide.active:hover {
+      transform: scale(1) translateY(0);
+      box-shadow: none;
+    }
     .slide.exit-left {
       opacity: 0;
       transform: scale(0.97) translateX(-4%) translateY(-4px);
@@ -808,7 +829,18 @@
     .mini-demo.sim-open .sim-stage {
       min-height: 420px;
       flex: 1;
+      /* En modo modal el contenido del paso 3 (kpis + 3 charts) supera la
+         altura absoluta; dejamos que el mini-demo siga teniendo scroll
+         vertical y los paneles fluyen en altura natural en lugar de estar
+         pegados con position:absolute. */
+      overflow: visible;
     }
+    .mini-demo.sim-open .sim-panel {
+      position: relative;
+      inset: auto;
+    }
+    .mini-demo.sim-open .sim-panel:not(.active) { display: none; }
+    .mini-demo.sim-open .sim-panel.active { display: flex; }
     .slide[data-demo="simulador"] .sim-stage,
     .mini-demo.sim-open .sim-stage {
       transition: min-height 0.55s cubic-bezier(.2,.8,.2,1);
@@ -1147,6 +1179,11 @@
       height: 125px;
       position: relative;
     }
+    /* Chart que ocupa el ancho completo del grid (usado por la gráfica
+       de calificaciones del alumno, que tiene muchos labels en X y
+       respira mejor con espacio extra). */
+    .sim-chart-box.sim-chart-full { grid-column: 1 / -1; }
+    .mini-demo.sim-open .sim-chart-box.sim-chart-full { height: 170px; }
     .sim-chart-t {
       font-size: 0.68rem;
       color: var(--muted);
@@ -1972,6 +2009,10 @@
                           <div class="sim-chart-t">Materias por estado</div>
                           <canvas data-sim-chart="subjects"></canvas>
                         </div>
+                        <div class="sim-chart-box sim-chart-full">
+                          <div class="sim-chart-t">Calificaciones por materia</div>
+                          <canvas data-sim-chart="grades"></canvas>
+                        </div>
                       </div>
                     </div>
 
@@ -1991,7 +2032,7 @@
                           <div class="l">avance grupal</div>
                         </div>
                         <div class="sim-kpi">
-                          <div class="v" data-sim-kpi="6" data-decimals="0">0</div>
+                          <div class="v" data-sim-kpi="3" data-decimals="0">0</div>
                           <div class="l">rezago alto</div>
                         </div>
                       </div>
@@ -2003,24 +2044,24 @@
                         <div class="sim-chart-box">
                           <div class="sim-chart-t">Cuellos de botella (% reprobación)</div>
                           <div class="sim-bottle-list">
-                            <div class="sim-bottle-row" data-bottle="38">
-                              <span>Cálculo III</span><span class="pct">38%</span>
-                              <div class="bar"><span></span></div>
-                            </div>
-                            <div class="sim-bottle-row" data-bottle="32">
-                              <span>Probabilidad I</span><span class="pct">32%</span>
-                              <div class="bar"><span></span></div>
-                            </div>
-                            <div class="sim-bottle-row" data-bottle="28">
-                              <span>Estadística Mat.</span><span class="pct">28%</span>
-                              <div class="bar"><span></span></div>
-                            </div>
                             <div class="sim-bottle-row" data-bottle="22">
-                              <span>Álgebra Lineal</span><span class="pct">22%</span>
+                              <span>Cálculo III</span><span class="pct">22%</span>
                               <div class="bar"><span></span></div>
                             </div>
                             <div class="sim-bottle-row" data-bottle="18">
-                              <span>Análisis Real</span><span class="pct">18%</span>
+                              <span>Probabilidad I</span><span class="pct">18%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="15">
+                              <span>Estadística Mat.</span><span class="pct">15%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="11">
+                              <span>Álgebra Lineal</span><span class="pct">11%</span>
+                              <div class="bar"><span></span></div>
+                            </div>
+                            <div class="sim-bottle-row" data-bottle="8">
+                              <span>Análisis Real</span><span class="pct">8%</span>
                               <div class="bar"><span></span></div>
                             </div>
                           </div>
@@ -2348,6 +2389,7 @@
         el.style.transition = 'none';
         el.style.transform = '';
       });
+      document.body.classList.remove('sim-modal-open');
       const bd = document.querySelector('.sim-backdrop');
       if (bd) bd.classList.remove('on');
 
@@ -2590,14 +2632,17 @@
       }, 2250);
 
       // Reapertura por hover: una vez que el usuario cerró el modal
-      // (con la X, ESC o click en backdrop), al volver a pasar el cursor
-      // sobre el mini-demo lo agrandamos de nuevo. Sólo si la slide sigue
-      // activa para no dispararlo si estamos navegando a otra.
+      // (con la X, ESC, click en backdrop o mouseleave), al volver a
+      // pasar el cursor sobre el mini-demo lo agrandamos de nuevo. Sólo
+      // si la slide sigue activa. El guard de 650 ms evita que, justo
+      // tras cerrar, el propio FLIP de colapso deje al cursor encima del
+      // mini-demo reducido y reabra al instante.
       if (!mini.dataset.hoverBound) {
         mini.addEventListener('mouseenter', () => {
           if (mini.classList.contains('sim-open')) return;
           const slide = mini.closest('.slide');
           if (!slide || !slide.classList.contains('active')) return;
+          if (mini._sinceClose && mini._sinceClose() < 650) return;
           if (mini._simOpen) mini._simOpen();
         });
         mini.dataset.hoverBound = '1';
@@ -2613,6 +2658,14 @@
        de forma suave.                                                      */
     function bindSimulatorZoom(mini, wrap) {
       const DUR = 550;
+      // Guardas temporales: justo después de un open/close el cursor
+      // puede terminar dentro/fuera del elemento simplemente porque éste
+      // se movió bajo él (FLIP), y eso dispararía mouseenter/mouseleave
+      // "falsos" que reabrirían o recerrarían el modal al instante. El
+      // timestamp de la última transición bloquea el evento opuesto
+      // durante un pequeño margen.
+      let lastOpenAt  = 0;
+      let lastCloseAt = 0;
 
       // Ancla para volver al lugar exacto dentro de la slide.
       const anchor = document.createComment('mini-demo-anchor');
@@ -2634,8 +2687,10 @@
           document.body.appendChild(mini);
           mini.classList.add('sim-open');
           mini.dataset.simSeen = '1';
+          document.body.classList.add('sim-modal-open');
         } else {
           mini.classList.remove('sim-open');
+          document.body.classList.remove('sim-modal-open');
           // Al re-insertarlo en la slide volvería a matchear la regla
           // `.slide.active[data-demo="simulador"] .mini-demo { animation }`
           // y re-dispararía el intro; lo evitamos anclando animation:none.
@@ -2664,20 +2719,51 @@
         }
       }
 
-      function open()  { if (!mini.classList.contains('sim-open')) flip(true);  }
-      function close() { if ( mini.classList.contains('sim-open')) flip(false); }
+      function open() {
+        if (mini.classList.contains('sim-open')) return;
+        lastOpenAt = performance.now();
+        flip(true);
+      }
+      function close() {
+        if (!mini.classList.contains('sim-open')) return;
+        lastCloseAt = performance.now();
+        flip(false);
+      }
 
-      mini._simOpen  = open;
-      mini._simClose = close;
+      mini._simOpen   = open;
+      mini._simClose  = close;
       mini._simAnchor = anchor;
+      // Expuestos para que los guards los compartan con los listeners de
+      // hover en `activateSimulador`.
+      mini._sinceOpen  = () => performance.now() - lastOpenAt;
+      mini._sinceClose = () => performance.now() - lastCloseAt;
 
-      // Botón de cierre visible dentro del modal.
+      // Botón de cierre visible dentro del modal. stopPropagation para
+      // que el click en la X no burbujee al mini-demo (que también tiene
+      // listeners) y no se interprete como una interacción que reabra.
       const closeBtn = mini.querySelector('[data-sim-close]');
-      if (closeBtn) closeBtn.addEventListener('click', close);
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          close();
+        });
+      }
 
       // Click en el backdrop también cierra.
       backdrop.addEventListener('click', () => {
         if (mini.classList.contains('sim-open')) close();
+      });
+
+      // Cerrar al mover el cursor fuera del modal (mouseleave fiable
+      // porque el modal está portalado a <body>, no hay descendientes
+      // que rompan la semántica). El guard evita que el propio FLIP de
+      // apertura (que mueve el elemento bajo el cursor) dispare el
+      // mouseleave y cierre de inmediato.
+      mini.addEventListener('mouseleave', () => {
+        if (!mini.classList.contains('sim-open')) return;
+        if (performance.now() - lastOpenAt < DUR + 250) return;
+        close();
       });
 
       // Escape hatch: ESC cierra el modal.
@@ -2762,6 +2848,51 @@
         simCharts.set(cvProg, ch);
       }
 
+      // Calificaciones por materia (barras horizontales) — ALUMNO
+      const cvGrades = view.querySelector('[data-sim-chart="grades"]');
+      if (cvGrades) {
+        if (simCharts.has(cvGrades)) simCharts.get(cvGrades).destroy();
+        const subjects = [
+          'Cálc. I', 'Álgebra', 'Prob. I', 'Cálc. II',
+          'Ed. Dif.', 'Estadística', 'Prob. II', 'Proc. Estoc.'
+        ];
+        const grades   = [8.4, 9.1, 7.2, 7.8, 6.9, 8.5, 7.4, 7.9];
+        // Color según rango: rojo <6, ámbar 6–8, verde 8–10.
+        const colorFor = g => g < 6  ? 'rgba(248,113,113,0.88)'
+                            : g < 8  ? 'rgba(251,191,36,0.88)'
+                            :          'rgba(52,211,153,0.9)';
+        const ch = new Chart(cvGrades, {
+          type: 'bar',
+          data: {
+            labels: subjects,
+            datasets: [{
+              label: 'Calificación',
+              data: grades,
+              backgroundColor: grades.map(colorFor),
+              borderRadius: 6,
+              borderSkipped: false,
+            }],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 1200, easing: 'easeOutCubic' },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.parsed.y.toFixed(1)} / 10`,
+                },
+              },
+            },
+            scales: {
+              y: { min: 0, max: 10, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 9 }, stepSize: 2 } },
+              x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 9 } } },
+            },
+          },
+        });
+        simCharts.set(cvGrades, ch);
+      }
+
       // Distribución de materias por estado (doughnut) — ALUMNO
       const cvSubj = view.querySelector('[data-sim-chart="subjects"]');
       if (cvSubj) {
@@ -2792,7 +2923,7 @@
       if (cvGroup) {
         if (simCharts.has(cvGroup)) simCharts.get(cvGroup).destroy();
         const labels = ['0–90', '90–180', '180–270', '270–360'];
-        const counts = [4, 9, 10, 5];
+        const counts = [3, 8, 11, 6];
         const colors = [
           'rgba(248,113,113,0.85)',
           'rgba(251,191,36,0.85)',
