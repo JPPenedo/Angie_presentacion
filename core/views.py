@@ -859,9 +859,9 @@ def expo_actuaria_view(request):
                 'que frenan el camino a la titulación.'
             ),
             'modelo': (
-                'F̂(c) = (1/n) Σ 1{Cᵢ ≤ c},   '
-                'P50 = inf{ c : F̂(c) ≥ 0.5 },   '
-                'S(c) = 1 − F(c)'
+                r'\hat F(c) \;=\; \frac{1}{n}\sum_{i=1}^{n} \mathbb{1}\{C_i \le c\}'
+                r'\qquad P_{50} \;=\; \inf\!\bigl\{c : \hat F(c) \ge 0.5\bigr\}'
+                r'\qquad S(c) \;=\; 1 - F(c)'
             ),
             'enfoque': (
                 'Función de distribución empírica y función de supervivencia S(c): '
@@ -878,14 +878,15 @@ def expo_actuaria_view(request):
         {
             'titulo': 'Red de Prerrequisitos y Desbloqueo',
             'idea': (
-                'El plan de estudios no es lineal: muchas materias exigen haber '
-                'aprobado otras antes (Cálculo 1 → Cálculo 2, Probabilidad → '
-                'Estadística). La plataforma modela esa red y abre automáticamente '
-                'las materias que el alumno ya puede cursar.'
+                'El plan no es lineal: muchas materias exigen haber aprobado otras '
+                'antes. Dos concatenaciones típicas del plan son '
+                'Cálculo I → II → Ecs. Diferenciales y '
+                'Probabilidad I → II → Procesos Estocásticos; ambas convergen '
+                'en las Matemáticas Actuariales.'
             ),
             'modelo': (
-                'G = (V, E) DAG,   abierto(i) ⇔ ∀ j ∈ prereq(i): aprobado(j),   '
-                'P(avanza a i) = ∏_{j ∈ prereq(i)} P(aprobar j)'
+                r'\text{abierto}(i) \iff \forall\, j \in \text{pre}(i): \text{aprobado}(j)'
+                r'\qquad P(\text{avanza a } i) \;=\; \prod_{j \in \text{pre}(i)} P\!\bigl(\text{aprobar}\ j\bigr)'
             ),
             'enfoque': (
                 'Teoría de grafos y modelos multi-estado tipo Markov — la misma '
@@ -908,8 +909,8 @@ def expo_actuaria_view(request):
                 'alcanzar los 360 créditos.'
             ),
             'modelo': (
-                'reprobaciónₘ = (1/nₘ) Σ 1{Xᵢ,ₘ < 6},   '
-                'criticidadₘ = reprobaciónₘ · out-deg(m)'
+                r'\hat p_m \;=\; \frac{1}{n_m}\sum_{i=1}^{n_m} \mathbb{1}\{X_{i,m} < 6\}'
+                r'\qquad \text{criticidad}_m \;=\; \hat p_m \cdot \deg^{+}(m)'
             ),
             'enfoque': (
                 'Análisis de severidad y pruebas de proporciones — el mismo '
@@ -932,8 +933,9 @@ def expo_actuaria_view(request):
                 'y desempeño.'
             ),
             'modelo': (
-                'rezagoᵢ = esperadoₜ − realesᵢ,   '
-                'scoreᵢ = σ( α·rezagoᵢ + β·reprobacionesᵢ + γ·prom̄ᵢ )'
+                r'\text{rezago}_i \;=\; C^{\text{esp}}_t - C^{\text{real}}_i'
+                r'\qquad \text{score}_i \;=\; \sigma\!\Bigl(\alpha\, \text{rezago}_i '
+                r'+ \beta\, \text{reprob}_i + \gamma\, \overline{\text{prom}}_i\Bigr)'
             ),
             'enfoque': (
                 'Clasificación supervisada y scoring: la misma idea que usa un '
@@ -956,8 +958,8 @@ def expo_actuaria_view(request):
                 'con los recursos disponibles.'
             ),
             'modelo': (
-                'Prioridadᵢ = P( no llegar a 360 en T semestres ) · impactoᵢ,   '
-                'E[ L(d) ] = Σ P(θ)·c(d, θ)'
+                r'\text{Prioridad}_i \;=\; P(\text{rezago} > \tau \mid X_i) \cdot \text{impacto}_i'
+                r'\qquad \mathbb{E}[L(d)] \;=\; \sum_{\theta} P(\theta)\, c(d, \theta)'
             ),
             'enfoque': (
                 'Teoría de decisión bajo incertidumbre y optimización: un '
@@ -971,6 +973,33 @@ def expo_actuaria_view(request):
                 'Asignación óptima de asesorías y tutorías',
             ],
             'demo': 'kpis',
+        },
+        {
+            'titulo': 'Simulador: de tu CAP a la decisión',
+            'idea': (
+                'Así viviría un alumno la plataforma: inicia sesión, sube su '
+                'CAP — el documento oficial con su avance académico — y en '
+                'segundos obtiene un diagnóstico de su situación, qué materias '
+                'se le desbloquean y una proyección hacia los 360 créditos.'
+            ),
+            'modelo': (
+                r'\text{Impacto} \;=\; \Delta\text{retención} '
+                r'\;+\; \Delta\text{tiempo}_{\text{titulación}} '
+                r'\;+\; \Delta\text{calidad docente}'
+            ),
+            'enfoque': (
+                '¿Por qué importa? La información ya existe en el CAP, pero sirve '
+                'poco si no se analiza. Este prototipo convierte ese documento '
+                'en decisiones concretas para tres actores: el alumno (qué cursar '
+                'y dónde enfocarse), coordinación (a quién apoyar primero) y la '
+                'facultad (qué materias revisar o reforzar).'
+            ),
+            'conceptos': [
+                'Alumno: diagnóstico inmediato y materias desbloqueadas',
+                'Coordinación: detección temprana de rezago y cuellos de botella',
+                'Facultad: evidencia para ajustar el plan y asignar recursos',
+            ],
+            'demo': 'simulador',
         },
     ]
 

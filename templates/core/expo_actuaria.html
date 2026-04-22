@@ -6,7 +6,17 @@
   <title>Exposición Actuaría | Plataforma Académica</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '\\[', right: '\\]', display: true},
+              {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+          });"></script>
   <style>
     :root {
       --bg: #0e0c0b;
@@ -362,6 +372,7 @@
     .slide.active[data-demo="series"]    .mini-demo { animation: introSeries    2.6s cubic-bezier(.22,.1,.25,1) both; }
     .slide.active[data-demo="kpis"]      .mini-demo { animation: introKpis      2.1s cubic-bezier(.5,0,.1,1)   both; }
     .slide.active[data-demo="curriculo"] .mini-demo { animation: introCurriculo 2.5s cubic-bezier(.2,.8,.2,1)  both; }
+    .slide.active[data-demo="simulador"] .mini-demo { animation: introSimulador 2.2s cubic-bezier(.2,.8,.2,1)   both; }
 
     /* Glow naranja reutilizable para el hold (usado en todas) */
     /* (se aplica inline por keyframe para que cada animación module su intensidad) */
@@ -445,6 +456,25 @@
              box-shadow: 0 0 0 rgba(249,115,22,0); }
     }
 
+    /* 6) SIMULADOR — aterrizaje tipo "ventana de app" con leve tilt */
+    @keyframes introSimulador {
+      0%   { opacity: 0;
+             transform: perspective(900px) scale(1.2) translate(-26%, 8%) rotateX(10deg);
+             filter: blur(18px) brightness(1.2);
+             box-shadow: 0 35px 110px -20px rgba(249,115,22,0.7), 0 0 65px -5px rgba(249,115,22,0.45), inset 0 0 0 1px rgba(249,115,22,0.5); }
+      22%  { opacity: 1;
+             transform: perspective(900px) scale(1.42) translate(-30%, 6%) rotateX(3deg);
+             filter: blur(0) brightness(1.2); }
+      45%  { transform: perspective(900px) scale(1.4) translate(-30%, 6%) rotateX(0deg); }
+      68%  { transform: perspective(900px) scale(1.32) translate(-26%, 4%) rotateX(0deg);
+             filter: blur(0) brightness(1.08);
+             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.5), 0 0 50px -6px rgba(249,115,22,0.35), inset 0 0 0 1px rgba(249,115,22,0.35); }
+      100% { opacity: 1;
+             transform: perspective(900px) scale(1) translate(0,0) rotateX(0);
+             filter: blur(0) brightness(1);
+             box-shadow: 0 0 0 rgba(249,115,22,0); }
+    }
+
     /* 5) CURRICULO — rotación 3D con perspectiva (grafo que se abre) */
     @keyframes introCurriculo {
       0%   { opacity: 0;
@@ -477,7 +507,7 @@
     }
 
     .math-chip {
-      display: inline-block;
+      display: block;
       background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(253,186,116,0.08));
       border: 1px solid rgba(249,115,22,0.3);
       border-radius: 0.6rem;
@@ -488,7 +518,17 @@
       letter-spacing: 0.01em;
       margin-top: 0.4rem;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      overflow-x: auto;
+      overflow-y: hidden;
     }
+    /* KaTeX: que las fórmulas renderizadas queden alineadas a la izquierda y sin márgenes extra */
+    .math-chip .katex-display {
+      margin: 0;
+      text-align: left;
+      color: #f6efe8;
+    }
+    .math-chip .katex-display > .katex { text-align: left; white-space: nowrap; }
+    .math-chip .katex { font-size: 1.02em; color: #f6efe8; }
 
     .concept-list {
       margin: 0.6rem 0 0; padding: 0; list-style: none;
@@ -685,6 +725,8 @@
     .dag .edge.e2 { animation-delay: 0.25s; }
     .dag .edge.e3 { animation-delay: 0.5s; }
     .dag .edge.e4 { animation-delay: 0.75s; }
+    .dag .edge.e5 { animation-delay: 1.0s; }
+    .dag .edge.e6 { animation-delay: 1.25s; }
     @keyframes drawEdge { to { stroke-dashoffset: 0; } }
     .dag .node rect {
       fill: rgba(249,115,22,0.08);
@@ -698,6 +740,193 @@
       filter: drop-shadow(0 0 6px rgba(249,115,22,0.45));
     }
     .dag .node.final text { fill: #ffe7cf; }
+
+    /* ---------- demo-simulador ---------- */
+    .sim-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .sim-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem;
+      margin-bottom: 0.15rem;
+    }
+    .sim-step {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      padding: 0.32rem 0.5rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      border-radius: 0.45rem;
+      transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+      letter-spacing: 0.02em;
+    }
+    .sim-step > span {
+      width: 18px; height: 18px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; font-weight: 700;
+      background: rgba(255,255,255,0.08);
+      color: #d9d3ce;
+    }
+    .sim-step.active {
+      color: var(--accent);
+      border-color: rgba(249,115,22,0.5);
+      background: rgba(249,115,22,0.1);
+    }
+    .sim-step.active > span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #1a1714;
+    }
+    .sim-step.done > span {
+      background: rgba(52,211,153,0.25); color: #34d399;
+    }
+
+    .sim-stage {
+      position: relative;
+      min-height: 250px;
+    }
+    .sim-panel {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transform: translateY(8px) scale(0.985);
+      transition:
+        opacity 0.35s ease,
+        transform 0.45s cubic-bezier(.2,.8,.2,1);
+      display: flex; flex-direction: column; gap: 0.55rem;
+    }
+    .sim-panel.active {
+      opacity: 1; pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    .sim-title {
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--accent-soft);
+      display: flex; align-items: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* Login fields */
+    .sim-field { display: flex; flex-direction: column; gap: 0.2rem; }
+    .sim-field label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .sim-input {
+      padding: 0.48rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.035);
+      font-size: 0.82rem;
+      color: #ece6df;
+      font-family: "Consolas","Courier New", monospace;
+      letter-spacing: 0.04em;
+    }
+
+    /* Upload zone */
+    .sim-drop {
+      border: 1.4px dashed rgba(249,115,22,0.4);
+      border-radius: 0.65rem;
+      padding: 1rem 0.8rem;
+      text-align: center;
+      background: rgba(249,115,22,0.06);
+      color: #d9d3ce;
+      animation: simDropPulse 2.4s ease-in-out infinite;
+    }
+    .sim-drop i {
+      font-size: 1.55rem;
+      color: var(--accent-soft);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .sim-drop-l1 { font-size: 0.82rem; color: #ece6df; font-weight: 600; }
+    .sim-drop-l2 { font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
+    @keyframes simDropPulse {
+      0%, 100% { box-shadow: 0 0 0 rgba(249,115,22,0); }
+      50%      { box-shadow: 0 0 22px -6px rgba(249,115,22,0.5); }
+    }
+
+    /* Buttons */
+    .sim-actions {
+      margin-top: auto;
+      display: flex; gap: 0.4rem; flex-wrap: wrap;
+    }
+    .sim-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.55rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.2s, background 0.2s;
+    }
+    .sim-btn.primary {
+      background: linear-gradient(135deg, rgba(249,115,22,0.95), rgba(251,146,60,0.95));
+      color: #1a1714;
+      border-color: rgba(249,115,22,0.55);
+      box-shadow: 0 6px 18px -8px rgba(249,115,22,0.55);
+    }
+    .sim-btn.primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      box-shadow: 0 10px 28px -10px rgba(249,115,22,0.75);
+    }
+    .sim-btn.ghost {
+      background: rgba(255,255,255,0.035);
+      color: #e6ded6;
+      border-color: var(--border);
+    }
+    .sim-btn.ghost:hover {
+      background: rgba(255,255,255,0.07);
+    }
+    .sim-btn:active { transform: translateY(0); }
+
+    /* Analytics (mini) */
+    .sim-kpis {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem;
+    }
+    .sim-kpi {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.45rem 0.4rem;
+      text-align: center;
+    }
+    .sim-kpi .v {
+      font-size: 1.05rem; font-weight: 800;
+      color: var(--accent-soft);
+      letter-spacing: -0.01em;
+    }
+    .sim-kpi .l {
+      font-size: 0.62rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .sim-charts {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;
+    }
+    .sim-chart-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.45rem 0.3rem;
+      display: flex; flex-direction: column;
+      height: 125px;
+      position: relative;
+    }
+    .sim-chart-t {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.15rem;
+    }
+    .sim-chart-box canvas {
+      flex: 1; min-height: 0;
+    }
 
     /* ---------- CONTROLS ---------- */
     .controls {
@@ -1218,7 +1447,7 @@
           <div class="grid-2">
             <div>
               <p class="anim"><strong>Idea en el sistema.</strong> {{ s.idea }}</p>
-              <div class="math-chip anim">{{ s.modelo }}</div>
+              <div class="math-chip anim">\[ {{ s.modelo|safe }} \]</div>
               <p class="anim" style="margin-top:0.6rem;"><strong>Relación con Actuaría.</strong> {{ s.enfoque }}</p>
               <ul class="concept-list anim">
                 {% for c in s.conceptos %}<li>{{ c }}</li>{% endfor %}
@@ -1343,42 +1572,151 @@
               <svg class="dag" viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(249,115,22,0.7)" />
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(249,115,22,0.75)" />
                   </marker>
                 </defs>
+
+                <!-- CADENA CÁLCULO (arriba) -->
                 <g class="node">
-                  <rect x="10"  y="95"  width="100" height="50"/>
-                  <text x="60"  y="118" text-anchor="middle">Cálculo 1</text>
-                  <text x="60"  y="132" text-anchor="middle" font-size="9" fill="#a39d98">aprobado</text>
+                  <rect x="8"   y="26" width="100" height="44"/>
+                  <text x="58"  y="47" text-anchor="middle">Cálculo I</text>
+                  <text x="58"  y="60" text-anchor="middle" font-size="9" fill="#a39d98">Ciclo 2</text>
                 </g>
                 <g class="node">
-                  <rect x="140" y="30"  width="100" height="50"/>
-                  <text x="190" y="53"  text-anchor="middle">Cálculo 2</text>
-                  <text x="190" y="67"  text-anchor="middle" font-size="9" fill="#a39d98">requiere Cálc 1</text>
+                  <rect x="128" y="26" width="100" height="44"/>
+                  <text x="178" y="47" text-anchor="middle">Cálculo II</text>
+                  <text x="178" y="60" text-anchor="middle" font-size="9" fill="#a39d98">Ciclo 3 · req. Cálc I</text>
                 </g>
                 <g class="node">
-                  <rect x="140" y="160" width="100" height="50"/>
-                  <text x="190" y="183" text-anchor="middle">Probabilidad</text>
-                  <text x="190" y="197" text-anchor="middle" font-size="9" fill="#a39d98">requiere Cálc 1</text>
+                  <rect x="248" y="26" width="110" height="44"/>
+                  <text x="303" y="47" text-anchor="middle">Ecs. Diferenciales</text>
+                  <text x="303" y="60" text-anchor="middle" font-size="9" fill="#a39d98">Ciclo 5 · req. Cálc II</text>
+                </g>
+
+                <!-- CADENA PROBABILIDAD (abajo) -->
+                <g class="node">
+                  <rect x="8"   y="170" width="100" height="44"/>
+                  <text x="58"  y="191" text-anchor="middle">Probabilidad I</text>
+                  <text x="58"  y="204" text-anchor="middle" font-size="9" fill="#a39d98">Ciclo 3</text>
                 </g>
                 <g class="node">
-                  <rect x="275" y="95"  width="110" height="50"/>
-                  <text x="330" y="118" text-anchor="middle">Procesos Estoc.</text>
-                  <text x="330" y="132" text-anchor="middle" font-size="9" fill="#a39d98">Cálc 2 + Prob</text>
+                  <rect x="128" y="170" width="100" height="44"/>
+                  <text x="178" y="191" text-anchor="middle">Probabilidad II</text>
+                  <text x="178" y="204" text-anchor="middle" font-size="9" fill="#a39d98">Ciclo 4 · req. Prob I</text>
                 </g>
+                <g class="node">
+                  <rect x="248" y="170" width="120" height="44"/>
+                  <text x="308" y="191" text-anchor="middle">Procesos Estoc.</text>
+                  <text x="308" y="204" text-anchor="middle" font-size="9" fill="#a39d98">Ciclo 6 · req. Prob II</text>
+                </g>
+
+                <!-- NODO FINAL (convergencia) -->
                 <g class="node final">
-                  <rect x="410" y="95"  width="100" height="50"/>
-                  <text x="460" y="118" text-anchor="middle">Teoría del</text>
-                  <text x="460" y="132" text-anchor="middle" font-size="9" fill="#ffe7cf">Riesgo</text>
+                  <rect x="398" y="98" width="114" height="44"/>
+                  <text x="455" y="119" text-anchor="middle">Mat. Actuariales</text>
+                  <text x="455" y="132" text-anchor="middle" font-size="9" fill="#ffe7cf">Ciclos 7–8</text>
                 </g>
-                <path class="edge"    d="M110,115 C130,80 130,55 140,55"  marker-end="url(#arrow)"/>
-                <path class="edge e2" d="M110,125 C130,165 130,185 140,185" marker-end="url(#arrow)"/>
-                <path class="edge e3" d="M240,55  C260,85 265,115 275,115"  marker-end="url(#arrow)"/>
-                <path class="edge e4" d="M240,185 C260,155 265,130 275,130" marker-end="url(#arrow)"/>
-                <path class="edge e4" d="M385,120 C400,120 405,120 410,120" marker-end="url(#arrow)"/>
+
+                <!-- Aristas: cadena cálculo -->
+                <path class="edge"    d="M108,48   L128,48"   marker-end="url(#arrow)"/>
+                <path class="edge e2" d="M228,48   L248,48"   marker-end="url(#arrow)"/>
+                <!-- Aristas: cadena probabilidad -->
+                <path class="edge e3" d="M108,192  L128,192"  marker-end="url(#arrow)"/>
+                <path class="edge e4" d="M228,192  L248,192"  marker-end="url(#arrow)"/>
+                <!-- Convergencia hacia Mat. Actuariales -->
+                <path class="edge e5" d="M358,48   C378,48 388,95 398,112"  marker-end="url(#arrow)"/>
+                <path class="edge e6" d="M368,192  C382,192 390,145 398,128" marker-end="url(#arrow)"/>
               </svg>
               <div style="font-size:0.72rem;color:var(--muted);">
-                DAG de prerrequisitos · aprobar un nodo "abre" los que dependen de él.
+                Dos concatenaciones del plan (Cálculo I→II→EDO · Prob I→II→Procesos) convergen en Matemáticas Actuariales.
+              </div>
+              {% endif %}
+
+              {% if s.demo == 'simulador' %}
+              <div class="sim-wrap" data-sim>
+                <!-- Barra de pasos -->
+                <div class="sim-steps">
+                  <div class="sim-step active" data-sim-dot="0"><span>1</span>Inicio de sesión</div>
+                  <div class="sim-step" data-sim-dot="1"><span>2</span>Subir CAP</div>
+                  <div class="sim-step" data-sim-dot="2"><span>3</span>Análisis</div>
+                </div>
+
+                <!-- Paneles -->
+                <div class="sim-stage">
+                  <!-- Paso 0: Login (simulado) -->
+                  <section class="sim-panel active" data-sim-step="0">
+                    <div class="sim-title"><i class="bi bi-person-badge me-2"></i>Acceso a la plataforma</div>
+                    <div class="sim-field">
+                      <label>Matrícula</label>
+                      <div class="sim-input">00412345</div>
+                    </div>
+                    <div class="sim-field">
+                      <label>Contraseña</label>
+                      <div class="sim-input">••••••••••</div>
+                    </div>
+                    <div class="sim-actions">
+                      <button type="button" class="sim-btn primary" data-sim-next>
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Ingresar
+                      </button>
+                    </div>
+                  </section>
+
+                  <!-- Paso 1: Subir CAP -->
+                  <section class="sim-panel" data-sim-step="1">
+                    <div class="sim-title"><i class="bi bi-file-earmark-text me-2"></i>Sube tu CAP</div>
+                    <div class="sim-drop">
+                      <i class="bi bi-cloud-arrow-up"></i>
+                      <div class="sim-drop-l1">Arrastra el documento académico aquí</div>
+                      <div class="sim-drop-l2">formatos aceptados: PDF · CSV · XLSX</div>
+                    </div>
+                    <div class="sim-actions">
+                      <button type="button" class="sim-btn ghost" data-sim-prev>
+                        <i class="bi bi-arrow-left me-1"></i>Atrás
+                      </button>
+                      <button type="button" class="sim-btn primary" data-sim-next>
+                        <i class="bi bi-upload me-1"></i>Procesar CAP
+                      </button>
+                    </div>
+                  </section>
+
+                  <!-- Paso 2: Análisis -->
+                  <section class="sim-panel" data-sim-step="2">
+                    <div class="sim-title"><i class="bi bi-graph-up-arrow me-2"></i>Diagnóstico de tu CAP</div>
+                    <div class="sim-kpis">
+                      <div class="sim-kpi">
+                        <div class="v" data-sim-kpi="62" data-decimals="0" data-suffix="%">0%</div>
+                        <div class="l">avance 360 cr.</div>
+                      </div>
+                      <div class="sim-kpi">
+                        <div class="v" data-sim-kpi="42" data-decimals="0">0</div>
+                        <div class="l">materias aprobadas</div>
+                      </div>
+                      <div class="sim-kpi">
+                        <div class="v" data-sim-kpi="7" data-decimals="0">0</div>
+                        <div class="l">desbloqueadas</div>
+                      </div>
+                    </div>
+                    <div class="sim-charts">
+                      <div class="sim-chart-box">
+                        <div class="sim-chart-t">Avance vs. esperado</div>
+                        <canvas data-sim-chart="progress"></canvas>
+                      </div>
+                      <div class="sim-chart-box">
+                        <div class="sim-chart-t">Materias por estado</div>
+                        <canvas data-sim-chart="subjects"></canvas>
+                      </div>
+                    </div>
+                    <div class="sim-actions">
+                      <button type="button" class="sim-btn ghost" data-sim-reset>
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reiniciar simulación
+                      </button>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
+              <div style="margin-top:0.5rem;font-size:0.72rem;color:var(--muted);">
+                Prototipo demostrativo · conecta el documento académico con decisiones para alumno, coordinación y facultad.
               </div>
               {% endif %}
             </div>
@@ -1696,6 +2034,7 @@
       if (demo === 'series')     activateSeries(slideEl);
       if (demo === 'kpis')       activateKpis(slideEl);
       if (demo === 'curriculo')  activateCurriculo(slideEl);
+      if (demo === 'simulador')  activateSimulador(slideEl);
     }
 
     function activateRiesgo(slideEl) {
@@ -1837,6 +2176,127 @@
         void e.getBoundingClientRect();
         e.style.animation = '';
       });
+    }
+
+    /* ---- Simulador (login → subir CAP → análisis) ---- */
+    const simCharts = new WeakMap();
+    function activateSimulador(slideEl) {
+      const wrap = slideEl.querySelector('[data-sim]');
+      if (!wrap) return;
+      const panels = Array.from(wrap.querySelectorAll('.sim-panel'));
+      const dots   = Array.from(wrap.querySelectorAll('.sim-step'));
+      const nextBs = wrap.querySelectorAll('[data-sim-next]');
+      const prevBs = wrap.querySelectorAll('[data-sim-prev]');
+      const resetB = wrap.querySelectorAll('[data-sim-reset]');
+
+      function show(i) {
+        panels.forEach((p, idx) => p.classList.toggle('active', idx === i));
+        dots.forEach((d, idx) => {
+          d.classList.toggle('active', idx === i);
+          d.classList.toggle('done',   idx <  i);
+        });
+        wrap.dataset.step = String(i);
+        if (i === 2) renderSimAnalytics(wrap);
+      }
+
+      // Evitar re-enganchar listeners si ya fue inicializado
+      if (!wrap.dataset.simBound) {
+        nextBs.forEach(b => b.addEventListener('click', () => {
+          const cur = +wrap.dataset.step || 0;
+          show(Math.min(panels.length - 1, cur + 1));
+        }));
+        prevBs.forEach(b => b.addEventListener('click', () => {
+          const cur = +wrap.dataset.step || 0;
+          show(Math.max(0, cur - 1));
+        }));
+        resetB.forEach(b => b.addEventListener('click', () => show(0)));
+        wrap.dataset.simBound = '1';
+      }
+      show(0);
+    }
+
+    function renderSimAnalytics(wrap) {
+      // KPIs animados
+      wrap.querySelectorAll('[data-sim-kpi]').forEach(el => {
+        const target   = parseFloat(el.dataset.simKpi);
+        const decimals = parseInt(el.dataset.decimals || '0', 10);
+        const suffix   = el.dataset.suffix || '';
+        const duration = 1100;
+        const start = performance.now();
+        (function tick(now) {
+          const t = Math.min(1, (now - start) / duration);
+          const e = 1 - Math.pow(1 - t, 3);
+          el.textContent = (target * e).toFixed(decimals) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        })(start);
+      });
+      // Gráficos
+      const gridColor = 'rgba(255,255,255,0.06)';
+      const tickColor = '#a39d98';
+
+      // Avance vs. esperado por semestre (línea doble)
+      const cvProg = wrap.querySelector('[data-sim-chart="progress"]');
+      if (cvProg) {
+        if (simCharts.has(cvProg)) simCharts.get(cvProg).destroy();
+        const labels = ['S1','S2','S3','S4','S5','S6','S7','S8'];
+        const esperado = [45, 90, 135, 180, 225, 270, 315, 360];
+        const real     = [42, 84, 118, 150, 186, 220, 244, null];
+        const ch = new Chart(cvProg, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              { label: 'Esperado',
+                data: esperado,
+                borderColor: 'rgba(249,115,22,0.85)',
+                borderDash: [5,4], pointRadius: 0,
+                tension: 0.35, fill: false },
+              { label: 'Real',
+                data: real,
+                borderColor: 'rgba(96,165,250,1)',
+                backgroundColor: 'rgba(96,165,250,0.15)',
+                tension: 0.35, fill: true, pointRadius: 2.5 },
+            ],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            animation: { duration: 1100, easing: 'easeOutCubic' },
+            plugins: {
+              legend: { labels: { color: '#cfc9c4', font: { size: 9 }, boxWidth: 10 }, position: 'bottom' },
+            },
+            scales: {
+              y: { min: 0, max: 360, grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 9 }, stepSize: 90 } },
+              x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 9 } } },
+            },
+          },
+        });
+        simCharts.set(cvProg, ch);
+      }
+
+      // Distribución de materias por estado (doughnut)
+      const cvSubj = wrap.querySelector('[data-sim-chart="subjects"]');
+      if (cvSubj) {
+        if (simCharts.has(cvSubj)) simCharts.get(cvSubj).destroy();
+        const ch = new Chart(cvSubj, {
+          type: 'doughnut',
+          data: {
+            labels: ['Aprobadas', 'En curso', 'Pendientes'],
+            datasets: [{
+              data: [42, 5, 17],
+              backgroundColor: ['rgba(52,211,153,0.88)', 'rgba(251,191,36,0.88)', 'rgba(248,113,113,0.75)'],
+              borderColor: 'rgba(0,0,0,0)', borderWidth: 2,
+              hoverOffset: 8,
+            }],
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            cutout: '60%',
+            animation: { duration: 1100, easing: 'easeOutCubic' },
+            plugins: { legend: { labels: { color: '#cfc9c4', font: { size: 9 }, boxWidth: 10 }, position: 'bottom' } },
+          },
+        });
+        simCharts.set(cvSubj, ch);
+      }
     }
 
     // Activate first demo on load
@@ -2480,12 +2940,12 @@
           if (hidden()) return;
           riskState.forEach(s => {
             if (!s.fill) return;
-            // ±3 pp por tick — se nota en el ancho pero sin saltos bruscos
-            s.value = clamp(s.value + (Math.random() - 0.5) * 6, 5, 95);
+            // ±7 pp por tick — movimiento claramente visible
+            s.value = clamp(s.value + (Math.random() - 0.5) * 14, 5, 95);
             s.fill.style.width = s.value.toFixed(1) + '%';
             if (s.label) s.label.textContent = (s.value / 100).toFixed(2);
           });
-        }, 3200);
+        }, 1800);
       }
 
       // --- Slide "kpis": 4 tiles + 2 barras de prioridad ---
@@ -2499,13 +2959,15 @@
       // configurar rangos por posición (KPIs enfocados a avance hacia 360 créditos)
       // tile 0: alumnos en seguimiento · tile 1: avance medio (% de 360)
       // tile 2: % cerca de titularse  · tile 3: casos con rezago alto
-      if (kpiSt[0]) { kpiSt[0].min = 20;   kpiSt[0].max = 40;   kpiSt[0].step = 1;    kpiSt[0].rate = 0.18; }
-      if (kpiSt[1]) { kpiSt[1].min = 60;   kpiSt[1].max = 72;   kpiSt[1].step = 0.35; kpiSt[1].rate = 1;    }
-      if (kpiSt[2]) { kpiSt[2].min = 22;   kpiSt[2].max = 36;   kpiSt[2].step = 0.7;  kpiSt[2].rate = 1;    }
-      if (kpiSt[3]) { kpiSt[3].min = 2;    kpiSt[3].max = 8;    kpiSt[3].step = 1;    kpiSt[3].rate = 0.22; }
+      // Pasos (step) ampliados para que el movimiento sea claramente visible.
+      if (kpiSt[0]) { kpiSt[0].min = 20;   kpiSt[0].max = 40;   kpiSt[0].step = 2;    kpiSt[0].rate = 0.55; }
+      if (kpiSt[1]) { kpiSt[1].min = 58;   kpiSt[1].max = 74;   kpiSt[1].step = 1.0;  kpiSt[1].rate = 1;    }
+      if (kpiSt[2]) { kpiSt[2].min = 20;   kpiSt[2].max = 40;   kpiSt[2].step = 1.8;  kpiSt[2].rate = 1;    }
+      if (kpiSt[3]) { kpiSt[3].min = 2;    kpiSt[3].max = 9;    kpiSt[3].step = 1;    kpiSt[3].rate = 0.7;  }
       if (kpiSt.length) {
         // El `activateKpis` del engine anima el contador hasta `data-counter`
         // al activar la slide; después de ese tiempo entramos a "vida propia".
+        // Intervalo más corto + pasos más grandes = movimiento claramente perceptible.
         setTimeout(() => {
           setInterval(() => {
             if (hidden()) return;
@@ -2517,8 +2979,8 @@
               s.value = clamp(next, s.min, s.max);
               s.el.textContent = s.value.toFixed(s.decimals);
             });
-          }, 3000);
-        }, 2600);
+          }, 1700);
+        }, 2400);
       }
 
       // Priority bars en el slide kpis
@@ -2529,7 +2991,8 @@
           if (hidden()) return;
           pBars.forEach((bar, i) => {
             const cur = parseFloat(bar.style.width) || 50;
-            const next = clamp(cur + (Math.random() - 0.5) * 4.5, 30, 95);
+            // ±10 pp por tick: el recorrido de la barra es claramente visible
+            const next = clamp(cur + (Math.random() - 0.5) * 20, 25, 95);
             bar.style.width = next.toFixed(1) + '%';
             const txt = pLabels[i];
             if (txt) {
@@ -2538,11 +3001,11 @@
               txt.style.color = cls;
             }
           });
-        }, 3600);
+        }, 1900);
       }
 
       // --- Slide "series" (materias críticas): las tasas de reprobación oscilan ---
-      // Pequeño jitter por materia + reasignación del color si la barra cruza umbrales.
+      // Jitter más amplio + reasignación del color si la barra cruza umbrales.
       setInterval(() => {
         if (hidden()) return;
         if (typeof Chart === 'undefined' || !Chart.getChart) return;
@@ -2552,7 +3015,8 @@
           const ds = chart.data.datasets[0];
           const data = ds.data;
           for (let i = 0; i < data.length; i++) {
-            data[i] = +clamp(data[i] + (Math.random() - 0.5) * 0.02, 0.05, 0.48).toFixed(3);
+            // ±0.04 por tick (era 0.02): el movimiento de cada barra se nota
+            data[i] = +clamp(data[i] + (Math.random() - 0.5) * 0.08, 0.05, 0.48).toFixed(3);
           }
           ds.backgroundColor = data.map(r =>
             r > 0.33 ? 'rgba(248,113,113,0.85)' :
@@ -2560,7 +3024,7 @@
           );
           chart.update();
         });
-      }, 3700);
+      }, 2200);
 
       // --- Slide "bernoulli" (avance curricular): el grupo sigue "respirando" ---
       // Cada ~2.5s, varias celdas cambian de bucket (simula alumnos que aprueban/acumulan
@@ -2572,8 +3036,8 @@
         document.querySelectorAll('[data-bern]').forEach(grid => {
           const cells = grid.querySelectorAll('.bern-cell.filled');
           if (cells.length < 10) return; // esperar a que haya muestras
-          // Mueve ~3 celdas ±1 bucket (sesgo leve a subir: avance)
-          for (let k = 0; k < 3; k++) {
+          // Mueve ~6 celdas ±1 bucket (sesgo leve a subir: avance) — el P50 salta más
+          for (let k = 0; k < 6; k++) {
             const c = cells[Math.floor(Math.random() * cells.length)];
             const cur = BK_ORDER.findIndex(b => c.classList.contains(b));
             if (cur === -1) continue;
@@ -2600,7 +3064,7 @@
             meter.style.width = (mitad / all.length * 100).toFixed(0) + '%';
           }
         });
-      }, 2500);
+      }, 1500);
     })();
   </script>
 </body>
