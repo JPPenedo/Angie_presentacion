@@ -901,78 +901,84 @@ def expo_actuaria_view(request):
             'demo': 'curriculo',
         },
         {
-            'titulo': 'Cuellos de Botella: Materias Críticas',
+            'titulo': 'Aprobación como Ensayo Bernoulli',
             'idea': (
-                'Algunas materias concentran la mayor tasa de reprobación y frenan '
-                'el avance de cohortes enteras. Detectarlas a tiempo permite '
-                'focalizar esfuerzos antes de que se vuelvan una barrera para '
-                'alcanzar los 360 créditos.'
+                'Cada evaluación final es un ensayo Bernoulli: el alumno '
+                'aprueba o no aprueba. Al agregar los n alumnos que cursan '
+                'una materia obtenemos una Binomial, y con ella una '
+                'estimación limpia de la tasa de aprobación y su '
+                'incertidumbre.'
             ),
             'modelo': (
-                r'\hat p_m \;=\; \frac{1}{n_m}\sum_{i=1}^{n_m} \mathbb{1}\{X_{i,m} < 6\}'
-                r'\qquad \text{criticidad}_m \;=\; \hat p_m \cdot \deg^{+}(m)'
+                r'X_i \sim \operatorname{Bernoulli}(p)'
+                r'\qquad S_n = \sum_{i=1}^{n} X_i \sim \operatorname{Binomial}(n,p)'
+                r'\qquad \mathbb{E}[S_n] = np,\ \ \operatorname{Var}(S_n) = np(1-p)'
             ),
             'enfoque': (
-                'Análisis de severidad y pruebas de proporciones — el mismo '
-                'razonamiento con el que un actuario identifica los ramos con '
-                'mayor siniestralidad para asignar reservas y reforzar control.'
+                'Misma estructura con la que un actuario mide la frecuencia '
+                'siniestral en una cartera: número de éxitos sobre expuestos, '
+                'con su varianza binomial — base del Exam P de la SOA.'
             ),
             'conceptos': [
-                'Proporciones por estrato y prueba z de igualdad',
-                'Severidad condicional: materias aguas arriba del DAG',
-                'Semaforización para priorizar intervención docente',
+                'Bernoulli/Binomial: éxito = aprobación, fracaso = reprobación',
+                'Estimador p̂ = A/n y su error estándar √(p̂(1−p̂)/n)',
+                'Banda de 1σ sobre p̂ por materia para priorizar revisión',
             ],
-            'demo': 'series',
+            'demo': 'binomial',
         },
         {
-            'titulo': 'Perfil de Rezago por Alumno',
+            'titulo': 'Z-score bajo el Modelo Normal',
             'idea': (
-                'Comparar los créditos reales de cada alumno contra los créditos '
-                'esperados a su semestre detecta rezago — un diagnóstico más rico '
-                'que la sola calificación, porque combina avance, prerrequisitos '
-                'y desempeño.'
+                'Si suponemos que las calificaciones del grupo se '
+                'distribuyen aproximadamente Normal, estandarizar con Z '
+                'nos dice — en desviaciones estándar — qué tan arriba o '
+                'abajo del promedio está cada alumno y en qué percentil '
+                'queda del grupo.'
             ),
             'modelo': (
-                r'\text{rezago}_i \;=\; C^{\text{esp}}_t - C^{\text{real}}_i'
-                r'\qquad \text{score}_i \;=\; \sigma\!\Bigl(\alpha\, \text{rezago}_i '
-                r'+ \beta\, \text{reprob}_i + \gamma\, \overline{\text{prom}}_i\Bigr)'
+                r'X \sim \mathcal{N}(\mu,\sigma^{2})'
+                r'\qquad Z = \frac{X-\mu}{\sigma} \sim \mathcal{N}(0,1)'
+                r'\qquad P(X \le x) = \Phi\!\left(\tfrac{x-\mu}{\sigma}\right)'
             ),
             'enfoque': (
-                'Clasificación supervisada y scoring: la misma idea que usa un '
-                'actuario para asignar primas según perfil de riesgo, aplicada '
-                'a un "score de rezago académico" sobre el alumnado.'
+                'El mismo score estandarizado con el que la actuaría '
+                'clasifica riesgos — cuántos σ por encima/abajo del '
+                'promedio cae el caso — sobre la distribución Normal y la '
+                'FDA Φ, pilares del Exam P.'
             ),
             'conceptos': [
-                'Score logístico multivariable (avance + desempeño)',
-                'Segmentación en clases (bajo / medio / alto rezago)',
-                'Validación con AUC y matriz de confusión',
+                'Ajuste (μ, σ) por momentos sobre calificaciones del grupo',
+                'Estandarización Z y percentil vía Φ(Z)',
+                'Colas: alumnos en |Z| > 1 marcados para seguimiento',
             ],
-            'demo': 'riesgo',
+            'demo': 'zscore',
         },
         {
-            'titulo': 'Priorización de Intervención y Recursos',
+            'titulo': 'Tiempo hasta los 360 Créditos',
             'idea': (
-                'Una vez identificado el rezago y las materias críticas, la '
-                'plataforma ordena a quiénes conviene apoyar primero: la '
-                'intervención que más acerca al alumnado a los 360 créditos '
-                'con los recursos disponibles.'
+                'Si los créditos se acumulan a una tasa λ por semestre, '
+                'el tiempo para cubrir los créditos que faltan hasta los '
+                '360 se modela como Gamma (suma de ciclos Exponenciales). '
+                'De ahí sale una proyección concreta: cuántos semestres '
+                'faltan para titular al ritmo actual.'
             ),
             'modelo': (
-                r'\text{Prioridad}_i \;=\; P(\text{rezago} > \tau \mid X_i) \cdot \text{impacto}_i'
-                r'\qquad \mathbb{E}[L(d)] \;=\; \sum_{\theta} P(\theta)\, c(d, \theta)'
+                r'T = \tfrac{360 - C}{\lambda}'
+                r'\qquad \lambda = \bar r\ \text{cr/sem}'
+                r'\qquad T \sim \operatorname{Gamma}\!\left(\tfrac{360-C}{45},\, \tfrac{1}{\lambda}\right)'
             ),
             'enfoque': (
-                'Teoría de decisión bajo incertidumbre y optimización: un '
-                'actuario elige la acción d* que minimiza la pérdida esperada; '
-                'aquí se traduce en asignar asesorías y tutorías a quienes más '
-                'las necesitan.'
+                'Mismas distribuciones Exponencial y Gamma del Exam P que '
+                'usa la actuaría para tiempos entre siniestros; trasladadas '
+                'al "tiempo restante" hasta terminar la carrera: una '
+                'esperanza de vida académica residual eₓ.'
             ),
             'conceptos': [
-                'Función de pérdida y utilidad esperada',
-                'KPIs como estadísticos de decisión',
-                'Asignación óptima de asesorías y tutorías',
+                'λ̂ = créditos promedio ganados por semestre',
+                'E[T] = (360 − C)/λ̂ como proyección al ritmo actual',
+                'Banda de incertidumbre usando √Var(T) de la Gamma',
             ],
-            'demo': 'kpis',
+            'demo': 'titulacion',
         },
         {
             'titulo': 'Simulador: de tu CAP a la decisión',
