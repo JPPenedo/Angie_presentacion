@@ -23,9 +23,9 @@
       --card: #1a1714;
       --card-alt: #211e1b;
       --border: rgba(255,255,255,0.08);
-      --accent: #f97316;
-      --accent-2: #fb923c;
-      --accent-soft: #fdba74;
+      --accent: #22c55e;
+      --accent-2: #4ade80;
+      --accent-soft: #86efac;
       --gold: #fbbf24;
       --text: #f0ede9;
       --muted: #7a7470;
@@ -81,12 +81,12 @@
     }
     .ambient.a1 {
       width: 620px; height: 540px; left: -10%; top: 8%;
-      background: radial-gradient(closest-side, rgba(249,115,22,0.35), transparent 70%);
+      background: radial-gradient(closest-side, rgba(34,197,94,0.35), transparent 70%);
       animation: ambDrift1 38s ease-in-out infinite alternate;
     }
     .ambient.a2 {
       width: 480px; height: 440px; right: -8%; bottom: -4%;
-      background: radial-gradient(closest-side, rgba(251,146,60,0.28), transparent 70%);
+      background: radial-gradient(closest-side, rgba(74,222,128,0.28), transparent 70%);
       animation: ambDrift2 44s ease-in-out infinite alternate;
     }
     @keyframes ambDrift1 {
@@ -104,14 +104,14 @@
       left: -80vw;
       border-radius: 999px;
       background: linear-gradient(90deg,
-        rgba(249,115,22,0) 0%,
-        rgba(249,115,22,0.55) 18%,
-        rgba(253,186,116,1) 50%,
-        rgba(249,115,22,0.55) 82%,
-        rgba(249,115,22,0) 100%);
+        rgba(34,197,94,0) 0%,
+        rgba(34,197,94,0.55) 18%,
+        rgba(134,239,172,1) 50%,
+        rgba(34,197,94,0.55) 82%,
+        rgba(34,197,94,0) 100%);
       box-shadow:
-        0 0 18px 2px rgba(249,115,22,0.55),
-        0 0 55px 10px rgba(249,115,22,0.28);
+        0 0 18px 2px rgba(34,197,94,0.55),
+        0 0 55px 10px rgba(34,197,94,0.28);
       mix-blend-mode: screen;
       opacity: 0;
       will-change: transform, opacity;
@@ -153,10 +153,10 @@
       width: 7px; height: 7px;
       left: -10vw;
       border-radius: 50%;
-      background: #ffe1bd;
+      background: #d1fadf;
       box-shadow:
-        0 0 10px 2px rgba(253,186,116,0.95),
-        0 0 28px 6px rgba(249,115,22,0.55);
+        0 0 10px 2px rgba(134,239,172,0.95),
+        0 0 28px 6px rgba(34,197,94,0.55);
       mix-blend-mode: screen;
       opacity: 0;
       will-change: transform, opacity;
@@ -196,17 +196,17 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(249,115,22,0.22), rgba(251,146,60,0.08));
-      border: 1px solid rgba(249,115,22,0.3);
+      background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(74,222,128,0.08));
+      border: 1px solid rgba(34,197,94,0.3);
       border-radius: 1rem;
       padding: 1.2rem 1.3rem;
       margin-bottom: 1rem;
-      box-shadow: 0 0 60px -10px rgba(249,115,22,0.25);
+      box-shadow: 0 0 60px -10px rgba(34,197,94,0.25);
     }
     .hero::after{
       content:"";
       position:absolute; inset:-40% -20% auto auto; width:60%; height:180%;
-      background: conic-gradient(from 90deg, rgba(249,115,22,0.22), rgba(253,186,116,0.08), transparent 45%);
+      background: conic-gradient(from 90deg, rgba(34,197,94,0.22), rgba(134,239,172,0.08), transparent 45%);
       filter: blur(40px); pointer-events:none;
       animation: spin 22s linear infinite;
     }
@@ -219,8 +219,8 @@
       margin: 1.2rem 0 0.7rem; font-weight: 700;
     }
     .badge-pill {
-      border: 1px solid rgba(249,115,22,0.25);
-      background: rgba(249,115,22,0.12);
+      border: 1px solid rgba(34,197,94,0.25);
+      background: rgba(34,197,94,0.12);
       color: var(--accent);
       border-radius: 999px; font-size: 0.7rem;
       padding: 0.2rem 0.6rem;
@@ -238,7 +238,7 @@
       height: 240px;
       pointer-events: none;
       opacity: 0.55;
-      filter: drop-shadow(0 0 8px rgba(249,115,22,0.35));
+      filter: drop-shadow(0 0 8px rgba(34,197,94,0.35));
     }
     .circuit-decor.left  { left: -135px; }
     .circuit-decor.right { right: -135px; transform: scaleX(-1); }
@@ -249,18 +249,18 @@
     .slides-shell {
       position: relative;
       background:
-        radial-gradient(600px 320px at var(--gx, 30%) var(--gy, 20%), rgba(249,115,22,0.22), transparent 62%),
-        radial-gradient(500px 280px at 80% 90%, rgba(253,186,116,0.12), transparent 60%),
+        radial-gradient(600px 320px at var(--gx, 30%) var(--gy, 20%), rgba(34,197,94,0.22), transparent 62%),
+        radial-gradient(500px 280px at 80% 90%, rgba(134,239,172,0.12), transparent 60%),
         linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 40%),
         var(--card);
-      border: 1px solid rgba(249,115,22,0.22);
+      border: 1px solid rgba(34,197,94,0.22);
       border-radius: 1rem;
       padding: 0.9rem 0.9rem 0.9rem;
       overflow: hidden;
       box-shadow:
         inset 0 0 1px rgba(255,255,255,0.05),
         0 10px 40px -12px rgba(0,0,0,0.55),
-        0 0 80px -30px rgba(249,115,22,0.55);
+        0 0 80px -30px rgba(34,197,94,0.55);
     }
     /* Halo interno que orbita lentamente dentro del shell */
     .slides-shell::before {
@@ -270,7 +270,7 @@
       height: 120%;
       left: -15%;
       top: -20%;
-      background: radial-gradient(closest-side, rgba(249,115,22,0.25), transparent 70%);
+      background: radial-gradient(closest-side, rgba(34,197,94,0.25), transparent 70%);
       filter: blur(28px);
       pointer-events: none;
       z-index: 0;
@@ -293,7 +293,7 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-soft));
       border-radius: 999px;
       transition: width 0.7s cubic-bezier(.2,.8,.2,1);
-      box-shadow: 0 0 14px rgba(249,115,22,0.55);
+      box-shadow: 0 0 14px rgba(34,197,94,0.55);
     }
 
     .stage {
@@ -326,15 +326,15 @@
       z-index: 2;
     }
     /* Hover sutil: la slide activa se agranda un pelín al pasar el cursor
-       (mucho menos que el zoom del demo) + un brillo naranja apenas
+       (mucho menos que el zoom del demo) + un brillo verde apenas
        insinuado, sólo como hint de interactividad. Se desactiva mientras
        el mini-demo del simulador está abierto como modal, para que la
        tarjeta de la slide no compita visualmente con el modal.            */
     .slide.active:hover {
       transform: scale(1.012) translateY(-1px);
       box-shadow:
-        0 18px 45px -18px rgba(249,115,22,0.35),
-        0 0 0 1px rgba(249,115,22,0.18);
+        0 18px 45px -18px rgba(34,197,94,0.35),
+        0 0 0 1px rgba(34,197,94,0.18);
       transition:
         opacity 0.9s ease,
         transform 0.45s cubic-bezier(.2,.8,.2,1),
@@ -398,7 +398,7 @@
     .slide.active[data-demo="zscore"]    .mini-demo { animation: introRiesgo    2.4s cubic-bezier(.2,.8,.2,1)  both; }
     .slide.active[data-demo="titulacion"] .mini-demo { animation: introKpis     2.1s cubic-bezier(.5,0,.1,1)   both; }
 
-    /* Glow naranja reutilizable para el hold (usado en todas) */
+    /* Glow verde reutilizable para el hold (usado en todas) */
     /* (se aplica inline por keyframe para que cada animación module su intensidad) */
 
     /* 1) RIESGO — entra girada, se endereza (escáner) */
@@ -406,18 +406,18 @@
       0%   { opacity: 0;
              transform: scale(1.32) translate(18%, -8%) rotate(-5deg);
              filter: blur(18px) brightness(1.2);
-             box-shadow: 0 35px 110px -20px rgba(249,115,22,0.75), 0 0 70px -5px rgba(249,115,22,0.5), inset 0 0 0 1px rgba(249,115,22,0.55); }
+             box-shadow: 0 35px 110px -20px rgba(34,197,94,0.75), 0 0 70px -5px rgba(34,197,94,0.5), inset 0 0 0 1px rgba(34,197,94,0.55); }
       20%  { opacity: 1;
              transform: scale(1.42) translate(-28%, 6%) rotate(-2deg);
              filter: blur(0) brightness(1.22); }
       38%  { transform: scale(1.42) translate(-28%, 6%) rotate(-1deg); }
       62%  { transform: scale(1.34) translate(-24%, 4%) rotate(0deg);
              filter: blur(0) brightness(1.1);
-             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.5), 0 0 45px -6px rgba(249,115,22,0.35), inset 0 0 0 1px rgba(249,115,22,0.35); }
+             box-shadow: 0 22px 80px -18px rgba(34,197,94,0.5), 0 0 45px -6px rgba(34,197,94,0.35), inset 0 0 0 1px rgba(34,197,94,0.35); }
       100% { opacity: 1;
              transform: scale(1) translate(0,0) rotate(0deg);
              filter: blur(0) brightness(1);
-             box-shadow: 0 0 0 rgba(249,115,22,0); }
+             box-shadow: 0 0 0 rgba(34,197,94,0); }
     }
 
     /* 2) BERNOULLI — cae desde arriba con overshoot y mini-rebote (dado) */
@@ -425,7 +425,7 @@
       0%   { opacity: 0;
              transform: scale(1.22) translate(-28%, -42%) rotate(2deg);
              filter: blur(20px) brightness(1.3);
-             box-shadow: 0 40px 120px -20px rgba(249,115,22,0.8), 0 0 80px -4px rgba(249,115,22,0.55), inset 0 0 0 1px rgba(249,115,22,0.6); }
+             box-shadow: 0 40px 120px -20px rgba(34,197,94,0.8), 0 0 80px -4px rgba(34,197,94,0.55), inset 0 0 0 1px rgba(34,197,94,0.6); }
       18%  { opacity: 1;
              transform: scale(1.46) translate(-30%, 10%) rotate(0deg);
              filter: blur(0) brightness(1.25); }
@@ -434,11 +434,11 @@
       52%  { transform: scale(1.42) translate(-30%, 6%); }
       66%  { transform: scale(1.38) translate(-28%, 5%);
              filter: blur(0) brightness(1.15);
-             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.55), 0 0 50px -6px rgba(249,115,22,0.4), inset 0 0 0 1px rgba(249,115,22,0.4); }
+             box-shadow: 0 22px 80px -18px rgba(34,197,94,0.55), 0 0 50px -6px rgba(34,197,94,0.4), inset 0 0 0 1px rgba(34,197,94,0.4); }
       100% { opacity: 1;
              transform: scale(1) translate(0,0) rotate(0);
              filter: blur(0) brightness(1);
-             box-shadow: 0 0 0 rgba(249,115,22,0); }
+             box-shadow: 0 0 0 rgba(34,197,94,0); }
     }
 
     /* 3) SERIES — flyby horizontal desde la izquierda con skew */
@@ -446,18 +446,18 @@
       0%   { opacity: 0;
              transform: scale(1.5) translate(-55%, 14%) skewX(7deg);
              filter: blur(22px) saturate(1.4) brightness(1.2);
-             box-shadow: 0 40px 120px -20px rgba(249,115,22,0.75), 0 0 70px -5px rgba(249,115,22,0.5), inset 0 0 0 1px rgba(249,115,22,0.5); }
+             box-shadow: 0 40px 120px -20px rgba(34,197,94,0.75), 0 0 70px -5px rgba(34,197,94,0.5), inset 0 0 0 1px rgba(34,197,94,0.5); }
       22%  { opacity: 1;
              transform: scale(1.44) translate(-30%, 6%) skewX(0);
              filter: blur(0) saturate(1.2) brightness(1.22); }
       40%  { transform: scale(1.42) translate(-30%, 6%); }
       65%  { transform: scale(1.34) translate(-26%, 4%);
              filter: blur(0) saturate(1.05) brightness(1.1);
-             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.55), 0 0 50px -6px rgba(249,115,22,0.4), inset 0 0 0 1px rgba(249,115,22,0.4); }
+             box-shadow: 0 22px 80px -18px rgba(34,197,94,0.55), 0 0 50px -6px rgba(34,197,94,0.4), inset 0 0 0 1px rgba(34,197,94,0.4); }
       100% { opacity: 1;
              transform: scale(1) translate(0,0) skewX(0);
              filter: blur(0) saturate(1) brightness(1);
-             box-shadow: 0 0 0 rgba(249,115,22,0); }
+             box-shadow: 0 0 0 rgba(34,197,94,0); }
     }
 
     /* 4) KPIS — zoom fuerte + flash de brillo, retroceso en pasos */
@@ -465,7 +465,7 @@
       0%   { opacity: 0;
              transform: scale(1.72) translate(-28%, 6%);
              filter: blur(26px) brightness(1.45);
-             box-shadow: 0 45px 140px -20px rgba(249,115,22,0.85), 0 0 90px -4px rgba(249,115,22,0.6), inset 0 0 0 1px rgba(249,115,22,0.7); }
+             box-shadow: 0 45px 140px -20px rgba(34,197,94,0.85), 0 0 90px -4px rgba(34,197,94,0.6), inset 0 0 0 1px rgba(34,197,94,0.7); }
       14%  { opacity: 1;
              transform: scale(1.56) translate(-30%, 7%);
              filter: blur(0) brightness(1.35); }
@@ -473,11 +473,11 @@
              filter: blur(0) brightness(1.25); }
       55%  { transform: scale(1.38) translate(-28%, 5%);
              filter: blur(0) brightness(1.1);
-             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.5), 0 0 50px -6px rgba(249,115,22,0.35), inset 0 0 0 1px rgba(249,115,22,0.35); }
+             box-shadow: 0 22px 80px -18px rgba(34,197,94,0.5), 0 0 50px -6px rgba(34,197,94,0.35), inset 0 0 0 1px rgba(34,197,94,0.35); }
       100% { opacity: 1;
              transform: scale(1) translate(0,0);
              filter: blur(0) brightness(1);
-             box-shadow: 0 0 0 rgba(249,115,22,0); }
+             box-shadow: 0 0 0 rgba(34,197,94,0); }
     }
 
     /* 6) SIMULADOR — aterrizaje tipo "ventana de app" con leve tilt */
@@ -485,18 +485,18 @@
       0%   { opacity: 0;
              transform: perspective(900px) scale(1.2) translate(-26%, 8%) rotateX(10deg);
              filter: blur(18px) brightness(1.2);
-             box-shadow: 0 35px 110px -20px rgba(249,115,22,0.7), 0 0 65px -5px rgba(249,115,22,0.45), inset 0 0 0 1px rgba(249,115,22,0.5); }
+             box-shadow: 0 35px 110px -20px rgba(34,197,94,0.7), 0 0 65px -5px rgba(34,197,94,0.45), inset 0 0 0 1px rgba(34,197,94,0.5); }
       22%  { opacity: 1;
              transform: perspective(900px) scale(1.42) translate(-30%, 6%) rotateX(3deg);
              filter: blur(0) brightness(1.2); }
       45%  { transform: perspective(900px) scale(1.4) translate(-30%, 6%) rotateX(0deg); }
       68%  { transform: perspective(900px) scale(1.32) translate(-26%, 4%) rotateX(0deg);
              filter: blur(0) brightness(1.08);
-             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.5), 0 0 50px -6px rgba(249,115,22,0.35), inset 0 0 0 1px rgba(249,115,22,0.35); }
+             box-shadow: 0 22px 80px -18px rgba(34,197,94,0.5), 0 0 50px -6px rgba(34,197,94,0.35), inset 0 0 0 1px rgba(34,197,94,0.35); }
       100% { opacity: 1;
              transform: perspective(900px) scale(1) translate(0,0) rotateX(0);
              filter: blur(0) brightness(1);
-             box-shadow: 0 0 0 rgba(249,115,22,0); }
+             box-shadow: 0 0 0 rgba(34,197,94,0); }
     }
 
     /* 5) CURRICULO — rotación 3D con perspectiva (grafo que se abre) */
@@ -504,18 +504,18 @@
       0%   { opacity: 0;
              transform: perspective(900px) scale(1.4) translate(-28%, 6%) rotateY(-36deg);
              filter: blur(18px) brightness(1.2);
-             box-shadow: 0 40px 120px -20px rgba(249,115,22,0.75), 0 0 70px -5px rgba(249,115,22,0.5), inset 0 0 0 1px rgba(249,115,22,0.55); }
+             box-shadow: 0 40px 120px -20px rgba(34,197,94,0.75), 0 0 70px -5px rgba(34,197,94,0.5), inset 0 0 0 1px rgba(34,197,94,0.55); }
       22%  { opacity: 1;
              transform: perspective(900px) scale(1.44) translate(-30%, 6%) rotateY(-8deg);
              filter: blur(0) brightness(1.22); }
       36%  { transform: perspective(900px) scale(1.42) translate(-30%, 6%) rotateY(0deg); }
       62%  { transform: perspective(900px) scale(1.35) translate(-28%, 5%) rotateY(0deg);
              filter: blur(0) brightness(1.1);
-             box-shadow: 0 22px 80px -18px rgba(249,115,22,0.55), 0 0 50px -6px rgba(249,115,22,0.4), inset 0 0 0 1px rgba(249,115,22,0.4); }
+             box-shadow: 0 22px 80px -18px rgba(34,197,94,0.55), 0 0 50px -6px rgba(34,197,94,0.4), inset 0 0 0 1px rgba(34,197,94,0.4); }
       100% { opacity: 1;
              transform: perspective(900px) scale(1) translate(0,0) rotateY(0);
              filter: blur(0) brightness(1);
-             box-shadow: 0 0 0 rgba(249,115,22,0); }
+             box-shadow: 0 0 0 rgba(34,197,94,0); }
     }
 
     /* Texto: stagger más lento y con más espera (aprox 1.2s → 2s) */
@@ -532,8 +532,8 @@
 
     .math-chip {
       display: block;
-      background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(253,186,116,0.08));
-      border: 1px solid rgba(249,115,22,0.3);
+      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(134,239,172,0.08));
+      border: 1px solid rgba(34,197,94,0.3);
       border-radius: 0.6rem;
       padding: 0.55rem 0.75rem;
       color: #e6f7ec;
@@ -652,7 +652,7 @@
     /* Buckets de avance en créditos (0-90, 90-180, 180-270, 270-360) */
     .bern-cell.bk0 { background: linear-gradient(135deg, #3f3a34, #524a41); }
     .bern-cell.bk1 { background: linear-gradient(135deg, #b45309, #d97706); }
-    .bern-cell.bk2 { background: linear-gradient(135deg, #f97316, #fb923c); }
+    .bern-cell.bk2 { background: linear-gradient(135deg, #22c55e, #4ade80); }
     .bern-cell.bk3 { background: linear-gradient(135deg, #15803d, #4ade80); }
     .bern-meter {
       margin-top: 0.7rem;
@@ -661,7 +661,7 @@
     }
     .bern-fill {
       height: 100%; width: 0%;
-      background: linear-gradient(90deg, #f97316, #fdba74);
+      background: linear-gradient(90deg, #22c55e, #86efac);
       transition: width 1.2s cubic-bezier(.2,.8,.2,1);
     }
     .bern-legend {
@@ -688,7 +688,7 @@
     }
     .bk-dot.bk0 { background: #524a41; }
     .bk-dot.bk1 { background: #d97706; }
-    .bk-dot.bk2 { background: #fb923c; }
+    .bk-dot.bk2 { background: #4ade80; }
     .bk-dot.bk3 { background: #4ade80; }
 
     /* demo-series canvas wrapper */
@@ -860,7 +860,7 @@
       height: 240px;
     }
     .dag .edge {
-      stroke: rgba(249,115,22,0.55);
+      stroke: rgba(34,197,94,0.55);
       stroke-width: 1.4;
       fill: none;
       stroke-dasharray: 200;
@@ -874,17 +874,17 @@
     .dag .edge.e6 { animation-delay: 1.25s; }
     @keyframes drawEdge { to { stroke-dashoffset: 0; } }
     .dag .node rect {
-      fill: rgba(249,115,22,0.08);
-      stroke: rgba(249,115,22,0.35);
+      fill: rgba(34,197,94,0.08);
+      stroke: rgba(34,197,94,0.35);
       rx: 10; ry: 10;
     }
     .dag .node text { fill: #e6f7ec; font-size: 11px; font-weight: 600; }
     .dag .node.final rect {
-      fill: rgba(249,115,22,0.15);
-      stroke: rgba(249,115,22,0.55);
-      filter: drop-shadow(0 0 6px rgba(249,115,22,0.45));
+      fill: rgba(34,197,94,0.15);
+      stroke: rgba(34,197,94,0.55);
+      filter: drop-shadow(0 0 6px rgba(34,197,94,0.45));
     }
-    .dag .node.final text { fill: #ffe7cf; }
+    .dag .node.final text { fill: #d6f5df; }
 
     /* ---------- demo-simulador ---------- */
     /* Estado normal: el simulador vive en su columna y sólo muestra la parte
@@ -910,8 +910,8 @@
       right: 0.75rem; bottom: 0.55rem;
       font-size: 0.62rem;
       color: var(--accent-soft);
-      background: rgba(249,115,22,0.12);
-      border: 1px solid rgba(249,115,22,0.35);
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
       border-radius: 999px;
       padding: 0.15rem 0.55rem;
       letter-spacing: 0.04em;
@@ -936,14 +936,14 @@
       overflow-y: auto;
       overflow-x: hidden;
       background: var(--card-alt, #1a1411);
-      border: 1px solid rgba(249,115,22,0.6);
+      border: 1px solid rgba(34,197,94,0.6);
       border-radius: 0.9rem;
       padding: 1rem 1.1rem;
       color: var(--text, #efe6dc);
       box-shadow:
-        0 45px 120px -18px rgba(249,115,22,0.6),
-        0 0 90px -12px rgba(249,115,22,0.4),
-        inset 0 0 0 1.5px rgba(249,115,22,0.55);
+        0 45px 120px -18px rgba(34,197,94,0.6),
+        0 0 90px -12px rgba(34,197,94,0.4),
+        inset 0 0 0 1.5px rgba(34,197,94,0.55);
       /* Neutralizamos cualquier filter/animación heredada por si quedó
          residuo del intro de la slide. */
       filter: none !important;
@@ -989,16 +989,16 @@
       width: 2rem;
       height: 2rem;
       border-radius: 999px;
-      border: 1px solid rgba(249,115,22,0.45);
-      background: rgba(249,115,22,0.12);
-      color: var(--accent, #f97316);
+      border: 1px solid rgba(34,197,94,0.45);
+      background: rgba(34,197,94,0.12);
+      color: var(--accent, #22c55e);
       font-size: 1rem;
       cursor: pointer;
       z-index: 2;
       transition: background 0.2s ease, transform 0.2s ease;
     }
     .mini-demo.sim-open .sim-close:hover {
-      background: rgba(249,115,22,0.25);
+      background: rgba(34,197,94,0.25);
       transform: scale(1.05);
     }
 
@@ -1056,8 +1056,8 @@
     }
     .sim-step.active {
       color: var(--accent);
-      border-color: rgba(249,115,22,0.5);
-      background: rgba(249,115,22,0.1);
+      border-color: rgba(34,197,94,0.5);
+      background: rgba(34,197,94,0.1);
     }
     .sim-step.active > span {
       background: linear-gradient(135deg, var(--accent), var(--accent-soft));
@@ -1141,14 +1141,14 @@
     .sim-role .rt { font-size: 0.85rem; font-weight: 700; color: #ece6df; }
     .sim-role .rd { font-size: 0.66rem; line-height: 1.25; color: var(--muted); }
     .sim-role:hover {
-      border-color: rgba(249,115,22,0.45);
+      border-color: rgba(34,197,94,0.45);
       transform: translateY(-1px);
     }
     .sim-role.on {
-      border-color: rgba(249,115,22,0.75);
-      background: rgba(249,115,22,0.13);
+      border-color: rgba(34,197,94,0.75);
+      background: rgba(34,197,94,0.13);
       color: var(--accent-soft);
-      box-shadow: 0 0 22px -8px rgba(249,115,22,0.6), inset 0 0 0 1px rgba(249,115,22,0.35);
+      box-shadow: 0 0 22px -8px rgba(34,197,94,0.6), inset 0 0 0 1px rgba(34,197,94,0.35);
     }
     .sim-role.on i,
     .sim-role.on .rt { color: var(--accent-soft); }
@@ -1171,8 +1171,8 @@
       align-self: flex-start;
       padding: 0.15rem 0.6rem;
       border-radius: 999px;
-      background: rgba(249,115,22,0.12);
-      border: 1px solid rgba(249,115,22,0.35);
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
       color: var(--accent-soft);
       font-size: 0.66rem;
       letter-spacing: 0.06em;
@@ -1205,7 +1205,7 @@
     .sim-bottle-row .bar > span {
       display: block;
       height: 100%;
-      background: linear-gradient(90deg, rgba(248,113,113,0.85), rgba(251,146,60,0.9));
+      background: linear-gradient(90deg, rgba(248,113,113,0.85), rgba(74,222,128,0.9));
       width: 0%;
       transition: width 1s cubic-bezier(.2,.8,.2,1);
       border-radius: 999px;
@@ -1214,11 +1214,11 @@
 
     /* Upload zone */
     .sim-drop {
-      border: 1.4px dashed rgba(249,115,22,0.4);
+      border: 1.4px dashed rgba(34,197,94,0.4);
       border-radius: 0.65rem;
       padding: 1rem 0.8rem;
       text-align: center;
-      background: rgba(249,115,22,0.06);
+      background: rgba(34,197,94,0.06);
       color: #d9d3ce;
       animation: simDropPulse 2.4s ease-in-out infinite;
     }
@@ -1231,8 +1231,8 @@
     .sim-drop-l1 { font-size: 0.82rem; color: #ece6df; font-weight: 600; }
     .sim-drop-l2 { font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
     @keyframes simDropPulse {
-      0%, 100% { box-shadow: 0 0 0 rgba(249,115,22,0); }
-      50%      { box-shadow: 0 0 22px -6px rgba(249,115,22,0.5); }
+      0%, 100% { box-shadow: 0 0 0 rgba(34,197,94,0); }
+      50%      { box-shadow: 0 0 22px -6px rgba(34,197,94,0.5); }
     }
 
     /* Buttons */
@@ -1251,15 +1251,15 @@
       transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.2s, background 0.2s;
     }
     .sim-btn.primary {
-      background: linear-gradient(135deg, rgba(249,115,22,0.95), rgba(251,146,60,0.95));
+      background: linear-gradient(135deg, rgba(34,197,94,0.95), rgba(74,222,128,0.95));
       color: #1a1714;
-      border-color: rgba(249,115,22,0.55);
-      box-shadow: 0 6px 18px -8px rgba(249,115,22,0.55);
+      border-color: rgba(34,197,94,0.55);
+      box-shadow: 0 6px 18px -8px rgba(34,197,94,0.55);
     }
     .sim-btn.primary:hover {
       transform: translateY(-1px);
       filter: brightness(1.06);
-      box-shadow: 0 10px 28px -10px rgba(249,115,22,0.75);
+      box-shadow: 0 10px 28px -10px rgba(34,197,94,0.75);
     }
     .sim-btn.ghost {
       background: rgba(255,255,255,0.035);
@@ -1336,9 +1336,9 @@
       transition: all 0.25s ease;
     }
     .btn-darkx:hover {
-      border-color: rgba(249,115,22,0.4);
+      border-color: rgba(34,197,94,0.4);
       color: var(--accent);
-      background: rgba(249,115,22,0.06);
+      background: rgba(34,197,94,0.06);
       transform: translateY(-1px);
     }
     .dots { display: flex; gap: 0.4rem; }
@@ -1351,7 +1351,7 @@
     .dot.active {
       background: linear-gradient(90deg, var(--accent), var(--accent-soft));
       width: 42px;
-      box-shadow: 0 0 12px rgba(249,115,22,0.55);
+      box-shadow: 0 0 12px rgba(34,197,94,0.55);
     }
 
     /* ---------- DEMO SHELL (kept) ---------- */
@@ -1399,11 +1399,11 @@
       position: relative;
       overflow: hidden;
       background:
-        radial-gradient(600px 340px at 20% 0%, rgba(249,115,22,0.1), transparent 60%),
-        radial-gradient(500px 300px at 100% 100%, rgba(253,186,116,0.07), transparent 60%),
+        radial-gradient(600px 340px at 20% 0%, rgba(34,197,94,0.1), transparent 60%),
+        radial-gradient(500px 300px at 100% 100%, rgba(134,239,172,0.07), transparent 60%),
         var(--card);
-      border: 1px solid rgba(249,115,22,0.18);
-      box-shadow: 0 10px 40px -15px rgba(0,0,0,0.55), 0 0 60px -30px rgba(249,115,22,0.4);
+      border: 1px solid rgba(34,197,94,0.18);
+      box-shadow: 0 10px 40px -15px rgba(0,0,0,0.55), 0 0 60px -30px rgba(34,197,94,0.4);
     }
     .dash-kpis {
       display: grid;
@@ -1433,7 +1433,7 @@
     .dash-kpi .dk-ic {
       width: 30px; height: 30px; display: grid; place-items: center;
       border-radius: 0.45rem;
-      background: rgba(249,115,22,0.08);
+      background: rgba(34,197,94,0.08);
       color: var(--accent);
       font-size: 1rem;
     }
@@ -1451,8 +1451,8 @@
     .dsh-title { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 0.95rem; }
     .dsh-badge {
       font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
-      border: 1px solid rgba(249,115,22,0.3);
-      background: rgba(249,115,22,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.1);
       color: var(--accent);
       border-radius: 999px; padding: 0.15rem 0.5rem;
     }
@@ -1607,8 +1607,8 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem;
     }
     .clf-m {
-      background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(255,255,255,0.02));
-      border: 1px solid rgba(249,115,22,0.22);
+      background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(34,197,94,0.22);
       border-radius: 0.55rem;
       padding: 0.55rem 0.6rem;
     }
@@ -1629,7 +1629,7 @@
     .ddot.active {
       width: 36px;
       background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      box-shadow: 0 0 10px rgba(249,115,22,0.55);
+      box-shadow: 0 0 10px rgba(34,197,94,0.55);
     }
 
     /* ============== BRILLO SUTIL EN BARRAS ==============
@@ -1689,8 +1689,8 @@
     #scRadar   { animation-delay: 2.4s; }
     #scScatter { animation-delay: 3.2s; }
     @keyframes canvasGlow {
-      0%, 100% { filter: drop-shadow(0 0 0 rgba(249,115,22,0)); }
-      50%      { filter: drop-shadow(0 0 6px rgba(249,115,22,0.35)); }
+      0%, 100% { filter: drop-shadow(0 0 0 rgba(34,197,94,0)); }
+      50%      { filter: drop-shadow(0 0 6px rgba(34,197,94,0.35)); }
     }
 
     /* ============== TOAST "NUEVO ALUMNO" ============== */
@@ -1701,11 +1701,11 @@
       display: flex; gap: 0.55rem; align-items: center;
       padding: 0.5rem 0.7rem;
       border-radius: 0.65rem;
-      background: linear-gradient(135deg, rgba(249,115,22,0.26), rgba(253,186,116,0.08));
-      border: 1px solid rgba(249,115,22,0.5);
+      background: linear-gradient(135deg, rgba(34,197,94,0.26), rgba(134,239,172,0.08));
+      border: 1px solid rgba(34,197,94,0.5);
       box-shadow:
         0 10px 30px -6px rgba(0,0,0,0.4),
-        0 0 30px -2px rgba(249,115,22,0.55);
+        0 0 30px -2px rgba(34,197,94,0.55);
       opacity: 0;
       transform: translateY(-12px) scale(0.94);
       transition:
@@ -1721,15 +1721,15 @@
     .ns-toast .ns-ic {
       width: 30px; height: 30px;
       border-radius: 50%;
-      background: rgba(249,115,22,0.28);
-      color: #ffe1bd;
+      background: rgba(34,197,94,0.28);
+      color: #d1fadf;
       display: grid; place-items: center;
       font-size: 0.95rem;
-      box-shadow: 0 0 12px rgba(249,115,22,0.55);
+      box-shadow: 0 0 12px rgba(34,197,94,0.55);
     }
     .ns-toast .ns-label {
       font-size: 0.64rem;
-      color: #ffcc99;
+      color: #a7f3d0;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-weight: 700;
@@ -1746,7 +1746,7 @@
     .dash-kpi.kpi-bump { animation: kpiBump 0.8s ease; }
     @keyframes kpiBump {
       0%, 100% { transform: scale(1); box-shadow: none; border-color: var(--border); }
-      40%      { transform: scale(1.04); box-shadow: 0 0 22px rgba(249,115,22,0.55); border-color: rgba(249,115,22,0.55); }
+      40%      { transform: scale(1.04); box-shadow: 0 0 22px rgba(34,197,94,0.55); border-color: rgba(34,197,94,0.55); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1791,9 +1791,9 @@
       <svg class="circuit-decor left" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <linearGradient id="circL" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"   stop-color="rgba(249,115,22,0.0)"/>
-            <stop offset="60%"  stop-color="rgba(249,115,22,0.75)"/>
-            <stop offset="100%" stop-color="rgba(253,186,116,1)"/>
+            <stop offset="0%"   stop-color="rgba(34,197,94,0.0)"/>
+            <stop offset="60%"  stop-color="rgba(34,197,94,0.75)"/>
+            <stop offset="100%" stop-color="rgba(134,239,172,1)"/>
           </linearGradient>
         </defs>
         <g fill="none" stroke="url(#circL)" stroke-width="1.1">
@@ -1801,12 +1801,12 @@
           <path d="M0 120 H40  L60 140  V180 L110 200 H130"/>
           <path d="M0 70  H30  L50 90   V110 L80 130  H130"/>
         </g>
-        <g fill="rgba(253,186,116,1)">
+        <g fill="rgba(134,239,172,1)">
           <circle cx="2"  cy="20"  r="2.5"/>
           <circle cx="2"  cy="70"  r="2.5"/>
           <circle cx="2"  cy="120" r="2.5"/>
         </g>
-        <g fill="rgba(249,115,22,0.9)">
+        <g fill="rgba(34,197,94,0.9)">
           <circle cx="90" cy="40"  r="2"/>
           <circle cx="60" cy="140" r="2"/>
           <circle cx="50" cy="90"  r="2"/>
@@ -1818,7 +1818,7 @@
           <path d="M0 130 H35  L55 150  V185 L100 205 H130"/>
           <path d="M0 85  H25  L45 100  V120 L75 140  H130"/>
         </g>
-        <g fill="rgba(253,186,116,1)">
+        <g fill="rgba(134,239,172,1)">
           <circle cx="2"  cy="30"  r="2.5"/>
           <circle cx="2"  cy="85"  r="2.5"/>
           <circle cx="2"  cy="130" r="2.5"/>
@@ -1995,7 +1995,7 @@
                 <span class="zs-pill zs-me">Alumno <b data-zs-x>—</b> → Z <b data-zs-z>—</b> (P<b data-zs-p>—</b>)</span>
               </div>
               <div style="margin-top:0.35rem;font-size:0.72rem;color:var(--muted);">
-                Barras = histograma del grupo · curva = N(μ̂, σ̂²) · marca naranja = calificación del alumno.
+                Barras = histograma del grupo · curva = N(μ̂, σ̂²) · marca verde = calificación del alumno.
               </div>
               {% endif %}
 
@@ -2058,7 +2058,7 @@
               <svg class="dag" viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(249,115,22,0.75)" />
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(34,197,94,0.75)" />
                   </marker>
                 </defs>
 
@@ -2100,7 +2100,7 @@
                 <g class="node final">
                   <rect x="398" y="98" width="114" height="44"/>
                   <text x="455" y="119" text-anchor="middle">Mat. Actuariales</text>
-                  <text x="455" y="132" text-anchor="middle" font-size="9" fill="#ffe7cf">Ciclos 7–8</text>
+                  <text x="455" y="132" text-anchor="middle" font-size="9" fill="#d6f5df">Ciclos 7–8</text>
                 </g>
 
                 <!-- Aristas: cadena cálculo -->
@@ -3314,7 +3314,7 @@
             datasets: [
               { label: 'Esperado',
                 data: esperado,
-                borderColor: 'rgba(249,115,22,0.85)',
+                borderColor: 'rgba(34,197,94,0.85)',
                 borderDash: [5,4], pointRadius: 0,
                 tension: 0.35, fill: false },
               { label: 'Real',
@@ -3516,7 +3516,7 @@
             borderColor: 'rgba(96,165,250,1)', backgroundColor: 'rgba(96,165,250,0.14)',
             tension: 0.35, fill: true, pointRadius: 3 },
           { label: 'MA₃', data: trendMA,
-            borderColor: 'rgba(249,115,22,1)', borderDash: [6, 4],
+            borderColor: 'rgba(34,197,94,1)', borderDash: [6, 4],
             tension: 0.35, fill: false, pointRadius: 0 },
         ]},
         options: { ...baseOpts, scales: { y: { ...baseScales.y, min: 6, max: 8 }, x: baseScales.x } },
@@ -3535,8 +3535,8 @@
               borderColor: 'rgba(248,113,113,1)', backgroundColor: 'rgba(248,113,113,0.22)',
               pointBackgroundColor: 'rgba(248,113,113,1)' },
             { label: 'Promedio',    data: [7.3, 7.1, 7.4, 7.0, 7.5],
-              borderColor: 'rgba(249,115,22,1)', backgroundColor: 'rgba(249,115,22,0.15)',
-              pointBackgroundColor: 'rgba(249,115,22,1)', borderDash: [5, 4] },
+              borderColor: 'rgba(34,197,94,1)', backgroundColor: 'rgba(34,197,94,0.15)',
+              pointBackgroundColor: 'rgba(34,197,94,1)', borderDash: [5, 4] },
           ],
         },
         options: { ...baseOpts,
@@ -3942,7 +3942,7 @@
         const c = document.getElementById(id);
         if (!c) return;
         c.style.transition = 'filter 1.2s ease-out';
-        c.style.filter = 'drop-shadow(0 0 18px rgba(249,115,22,0.9))';
+        c.style.filter = 'drop-shadow(0 0 18px rgba(34,197,94,0.9))';
         clearTimeout(c._pulseT);
         c._pulseT = setTimeout(() => { c.style.filter = ''; }, 1200);
       }
