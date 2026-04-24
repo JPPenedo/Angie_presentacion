@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ proyecto.nombre }} · ODS 16 · Proyecto de transformación social</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <title>{{ proyecto.nombre }} · Plataforma comunitaria contra la corrupción ambiental</title>
+  <meta name="description" content="Canal seguro de denuncia ciudadana sobre corrupción ambiental en Querétaro. Educación socioambiental y derechos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
@@ -18,938 +20,1212 @@
           });"></script>
   <style>
     :root {
-      --bg: #070a0f;
-      --card: #0f1720;
-      --card-alt: #121c27;
-      --border: rgba(255,255,255,0.08);
-      --accent: #00689D;        /* Azul oficial ODS 16 */
-      --accent-2: #2a90c9;
-      --accent-soft: #7dc4e8;
-      --accent-ink: #cfe7f5;
-      --gold: #fbbf24;
-      --green-ods13: #48773C;
-      --green-ods15: #56C02B;
-      --text: #eef3f7;
-      --muted: #8a94a0;
-      --success: #34d399;
-      --warning: #fbbf24;
-      --danger: #f87171;
+      --cream:      #f7f4ec;
+      --cream-2:    #efeadd;
+      --paper:      #ffffff;
+      --ink:        #1d2a22;
+      --ink-soft:   #2f3c35;
+      --muted:      #5c6b62;
+      --line:       #e3ddd0;
+      --line-2:     #d9d1bf;
+      --moss:       #2f6b3b;
+      --moss-deep:  #234d2c;
+      --moss-soft:  #4c8a58;
+      --sage:       #89a98a;
+      --leaf:       #d6e4cc;
+      --leaf-soft:  #e9f0e0;
+      --earth:      #a47148;
+      --bark:       #6b4a2b;
+      --danger:     #b04747;
+      --warn:       #c48a3e;
+      --shadow-sm:  0 1px 2px rgba(29,42,34,0.04), 0 1px 3px rgba(29,42,34,0.03);
+      --shadow-md:  0 4px 12px rgba(29,42,34,0.06), 0 2px 4px rgba(29,42,34,0.04);
+      --shadow-lg:  0 20px 40px -12px rgba(29,42,34,0.12);
+      --radius-sm:  8px;
+      --radius:     14px;
+      --radius-lg:  22px;
     }
+
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      font-family: "Segoe UI", system-ui, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-      position: relative;
-      background-color: var(--bg);
-      background-image:
-        linear-gradient(rgba(255,255,255,0.030) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.030) 1px, transparent 1px);
-      background-size: 44px 44px, 44px 44px;
-      background-attachment: fixed;
-      overflow-x: hidden;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ===== LUCES DE FONDO ===== */
-    .lights {
-      position: fixed; inset: 0; z-index: 0;
-      pointer-events: none; overflow: hidden;
-    }
-    .lights::after {
-      content: ""; position: absolute; inset: 0;
-      background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
-      pointer-events: none;
-    }
-    .ambient {
-      position: absolute; border-radius: 50%;
-      filter: blur(100px);
-      mix-blend-mode: screen;
-      will-change: transform;
-    }
-    .ambient.a1 {
-      width: 620px; height: 540px; left: -10%; top: 4%;
-      background: radial-gradient(closest-side, rgba(0,104,157,0.42), transparent 70%);
-      animation: amb1 38s ease-in-out infinite alternate;
-    }
-    .ambient.a2 {
-      width: 520px; height: 460px; right: -8%; top: 40%;
-      background: radial-gradient(closest-side, rgba(42,144,201,0.28), transparent 70%);
-      animation: amb2 44s ease-in-out infinite alternate;
-    }
-    .ambient.a3 {
-      width: 460px; height: 420px; left: 20%; bottom: -10%;
-      background: radial-gradient(closest-side, rgba(86,192,43,0.18), transparent 70%);
-      animation: amb3 50s ease-in-out infinite alternate;
-    }
-    @keyframes amb1 { 0%{transform:translate3d(0,0,0) scale(1);} 100%{transform:translate3d(22%,14%,0) scale(1.1);} }
-    @keyframes amb2 { 0%{transform:translate3d(0,0,0) scale(1.05);} 100%{transform:translate3d(-18%,-12%,0) scale(0.95);} }
-    @keyframes amb3 { 0%{transform:translate3d(0,0,0) scale(1);} 100%{transform:translate3d(10%,-10%,0) scale(1.1);} }
-
-    .wrap {
-      position: relative; z-index: 1;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 1.2rem 1.2rem 3rem;
-    }
-
-    /* ---------- NAVBAR INTERNO ---------- */
-    .navbar-local {
-      position: sticky; top: 0; z-index: 10;
-      backdrop-filter: blur(10px);
-      background: rgba(7,10,15,0.72);
-      border-bottom: 1px solid var(--border);
-      padding: 0.5rem 0.8rem;
-      display: flex; align-items: center; gap: 0.7rem;
-      margin: -1.2rem -1.2rem 1.2rem;
-      border-radius: 0 0 0.8rem 0.8rem;
-      overflow-x: auto;
-    }
-    .nav-brand {
-      display: flex; align-items: center; gap: 0.45rem;
-      font-size: 0.85rem; font-weight: 700;
-      color: var(--accent-soft);
-      white-space: nowrap;
-    }
-    .nav-brand .nav-badge {
-      font-size: 0.66rem; font-weight: 800; letter-spacing: 0.06em;
-      padding: 0.2rem 0.5rem; border-radius: 999px;
-      background: var(--accent); color: #fff;
-    }
-    .nav-links {
-      display: flex; gap: 0.3rem; flex: 1;
-      justify-content: flex-end;
-    }
-    .nav-link-x {
-      font-size: 0.76rem;
-      color: var(--muted); text-decoration: none;
-      padding: 0.35rem 0.65rem;
-      border-radius: 0.45rem;
-      border: 1px solid transparent;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    .nav-link-x:hover {
-      color: var(--accent-soft);
-      border-color: rgba(0,104,157,0.4);
-      background: rgba(0,104,157,0.08);
-    }
-
-    /* ---------- HERO ---------- */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, rgba(0,104,157,0.28), rgba(42,144,201,0.1));
-      border: 1px solid rgba(0,104,157,0.35);
-      border-radius: 1rem;
-      padding: 1.6rem 1.5rem;
-      margin-bottom: 1.4rem;
-      box-shadow: 0 0 60px -10px rgba(0,104,157,0.3);
-    }
-    .hero::after{
-      content:""; position:absolute;
-      inset:-40% -20% auto auto; width:60%; height:180%;
-      background: conic-gradient(from 90deg, rgba(0,104,157,0.3), rgba(125,196,232,0.1), transparent 45%);
-      filter: blur(42px); pointer-events:none;
-      animation: spin 24s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .hero-main {
-      display: grid; grid-template-columns: 1fr auto;
-      gap: 1rem; align-items: end;
-      position: relative; z-index: 1;
-    }
-    @media (max-width: 720px) { .hero-main { grid-template-columns: 1fr; } }
-    .hero h1 {
-      margin: 0.25rem 0 0.2rem; font-size: 2rem;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-    .hero .hero-sub {
-      margin: 0; color: var(--accent-soft);
-      font-size: 1rem; font-weight: 500;
-    }
-    .hero .hero-meta {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-      margin-top: 0.8rem;
-    }
-    .hero .hero-chip {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      font-size: 0.72rem;
-      padding: 0.3rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.05);
-      color: var(--accent-ink);
-    }
-    .hero .hero-chip i { color: var(--accent-soft); }
-
-    /* Gran "badge" ODS 16 en el hero */
-    .ods-main-badge {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      width: 150px; height: 150px;
-      border-radius: 1rem;
-      background: var(--accent);
-      color: #fff;
-      text-align: center;
-      position: relative; overflow: hidden;
-      box-shadow: 0 10px 40px -10px rgba(0,104,157,0.6);
-    }
-    .ods-main-badge::before {
+    /* ---------- Texturas y decoraciones ambientales sutiles ---------- */
+    body::before {
       content: "";
-      position: absolute; inset: 0;
-      background: linear-gradient(145deg, rgba(255,255,255,0.2), transparent 60%);
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(circle at 12% 6%, rgba(137,169,138,.18), transparent 38%),
+        radial-gradient(circle at 88% 92%, rgba(164,113,72,.08), transparent 45%),
+        radial-gradient(circle at 78% 12%, rgba(47,107,59,.05), transparent 40%);
+      pointer-events: none;
+      z-index: 0;
     }
-    .ods-main-badge .obig {
-      font-size: 3rem; font-weight: 900; line-height: 1;
-      letter-spacing: -0.04em;
-    }
-    .ods-main-badge .osm  {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-top: 0.2rem;
-    }
-    .ods-main-badge .otag {
-      font-size: 0.72rem; font-weight: 600;
-      margin-top: 0.3rem; padding: 0 0.3rem;
-      line-height: 1.15;
-    }
+    main, header, footer { position: relative; z-index: 1; }
 
-    /* ---------- SECCIONES ---------- */
-    .section {
-      margin-top: 2rem;
-      scroll-margin-top: 80px;
-    }
-    .section-head {
-      display: flex; align-items: baseline; gap: 0.6rem;
-      margin-bottom: 0.9rem;
-      flex-wrap: wrap;
-    }
-    .section-kicker {
-      font-size: 0.65rem; letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent-soft);
-      padding: 0.22rem 0.6rem;
-      border-radius: 999px;
-      border: 1px solid rgba(0,104,157,0.35);
-      background: rgba(0,104,157,0.12);
-      font-weight: 700;
-      line-height: 1;
-    }
-    .section-head h2 {
-      margin: 0; font-size: 1.3rem;
-      letter-spacing: -0.01em;
-    }
-    .section-head .section-sub {
-      margin: 0; color: var(--muted); font-size: 0.88rem;
-      flex-basis: 100%;
-    }
+    h1, h2, h3, h4 { font-family: 'Fraunces', Georgia, serif; color: var(--ink); font-weight: 500; letter-spacing: -0.01em; margin: 0; }
+    h1 { font-size: clamp(2.4rem, 5.2vw, 4rem); line-height: 1.05; font-weight: 400; }
+    h2 { font-size: clamp(1.9rem, 3.2vw, 2.5rem); line-height: 1.15; }
+    h3 { font-size: 1.35rem; line-height: 1.3; font-weight: 500; }
+    h4 { font-size: 1.05rem; font-weight: 600; }
+    p  { margin: 0 0 0.9em; color: var(--ink-soft); }
+    a  { color: var(--moss-deep); text-decoration: none; border-bottom: 1px solid rgba(47,107,59,0.22); transition: all .2s; }
+    a:hover { border-bottom-color: var(--moss); color: var(--moss); }
 
-    .card-x {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 1rem 1.1rem;
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+    /* ---------- Header / navegación ---------- */
+    header.site {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(247,244,236,0.85);
+      backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 0;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem; font-weight: 500; color: var(--ink);
+      border: none;
+    }
+    .brand:hover { color: var(--moss); }
+    .brand .leaf-mark {
+      width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+      color: var(--moss);
+    }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-links a {
+      font-size: 0.92rem; font-weight: 500; color: var(--muted);
+      border: none; padding: 8px 14px; border-radius: 999px;
+      transition: color .2s, background .2s;
+    }
+    .nav-links a:hover { color: var(--moss); background: var(--leaf-soft); }
+    .nav-links a.primary {
+      color: var(--cream); background: var(--moss);
+    }
+    .nav-links a.primary:hover { background: var(--moss-deep); color: var(--cream); }
+    .nav-toggle { display: none; background: none; border: none; color: var(--ink); font-size: 1.4rem; cursor: pointer; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      padding: 84px 0 96px;
       position: relative;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
-    .card-x:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0,104,157,0.35);
-      box-shadow: 0 10px 30px -14px rgba(0,104,157,0.45);
+    .hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .78rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--moss); background: var(--leaf-soft);
+      padding: 6px 14px; border-radius: 999px;
+      margin-bottom: 22px;
+    }
+    .hero .eyebrow::before {
+      content: ""; display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--moss);
+    }
+    .hero h1 span.accent {
+      font-style: italic; color: var(--moss-deep);
+    }
+    .hero .lede {
+      font-size: 1.2rem; color: var(--ink-soft); line-height: 1.55;
+      max-width: 640px; margin: 24px 0 32px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: 999px;
+      font-size: .95rem; font-weight: 600;
+      border: 1px solid transparent; cursor: pointer;
+      transition: all .2s ease;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--moss); color: var(--cream); border-color: var(--moss); }
+    .btn-primary:hover { background: var(--moss-deep); border-color: var(--moss-deep); color: var(--cream); border-bottom: 1px solid var(--moss-deep); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-2); }
+    .btn-ghost:hover { background: var(--paper); border-color: var(--moss); color: var(--moss); }
+    .btn-soft { background: var(--leaf); color: var(--moss-deep); }
+    .btn-soft:hover { background: var(--sage); color: var(--cream); }
+
+    .hero-meta {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 22px;
+      padding-top: 32px; border-top: 1px solid var(--line);
+      max-width: 820px;
+    }
+    .hero-meta .item { }
+    .hero-meta .label {
+      font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); font-weight: 600; margin-bottom: 6px;
+    }
+    .hero-meta .value { font-size: 1rem; color: var(--ink); font-weight: 500; font-family: 'Fraunces', serif; }
+
+    /* Decorative leaf */
+    .hero .deco-leaf {
+      position: absolute; right: -40px; top: 40px;
+      width: 420px; height: 420px; opacity: .22;
+      pointer-events: none;
+      color: var(--sage);
     }
 
-    /* Problema + propuesta */
-    .problem-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    /* ---------- Sections ---------- */
+    section.block {
+      padding: 88px 0;
+      border-top: 1px solid var(--line);
     }
-    @media (max-width: 820px) { .problem-grid { grid-template-columns: 1fr; } }
-    .card-x .ct-title {
-      display: flex; align-items: center; gap: 0.45rem;
-      font-size: 1.02rem; font-weight: 700;
-      color: var(--accent-soft);
-      margin-bottom: 0.5rem;
+    section.block.alt { background: var(--cream-2); }
+    .section-head { margin-bottom: 48px; max-width: 780px; }
+    .section-head .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: .75rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--earth); font-weight: 700;
+      margin-bottom: 14px;
     }
-    .card-x .ct-title i { font-size: 1.15rem; }
-    .card-x p {
-      margin: 0.3rem 0; color: #c6cfda;
-      font-size: 0.9rem; line-height: 1.5;
+    .section-head .eyebrow::before {
+      content: ""; width: 24px; height: 1px; background: var(--earth);
+    }
+    .section-head p.sub { font-size: 1.08rem; color: var(--muted); margin: 14px 0 0; max-width: 620px; }
+
+    /* ---------- Denunciar ---------- */
+    .denuncia-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    @media (max-width: 900px) { .denuncia-wrap { grid-template-columns: 1fr; } }
+
+    .form-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: var(--shadow-md);
+    }
+    .form-card h3 { margin-bottom: 4px; }
+    .form-card .hint { font-size: .9rem; color: var(--muted); margin-bottom: 24px; }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: .82rem; font-weight: 600; color: var(--ink);
+      margin-bottom: 8px; letter-spacing: .02em;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      font-family: inherit; font-size: .95rem; color: var(--ink);
+      background: var(--cream);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      transition: border-color .15s, background .15s;
+    }
+    .field textarea { resize: vertical; min-height: 110px; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--moss); background: var(--paper);
+      box-shadow: 0 0 0 3px rgba(47,107,59,0.12);
+    }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+
+    .check {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: .9rem; color: var(--ink-soft);
+      padding: 12px 14px;
+      background: var(--leaf-soft);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(137,169,138,0.3);
+      cursor: pointer;
+    }
+    .check input { accent-color: var(--moss); margin-top: 2px; }
+    .check span { flex: 1; line-height: 1.45; }
+
+    .form-success {
+      display: none;
+      padding: 14px 16px; border-radius: var(--radius-sm);
+      background: var(--leaf); color: var(--moss-deep);
+      border: 1px solid var(--sage);
+      font-size: .92rem; margin-bottom: 16px;
+    }
+    .form-success.show { display: block; }
+
+    /* Lista de denuncias */
+    .denuncias-panel .list-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .list-head h3 { font-size: 1.25rem; }
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+    .pill {
+      font-size: .78rem; padding: 6px 12px; border-radius: 999px;
+      background: transparent; color: var(--muted); cursor: pointer;
+      border: 1px solid var(--line-2); transition: all .15s;
+      font-family: inherit; font-weight: 500;
+    }
+    .pill:hover { border-color: var(--moss); color: var(--moss); }
+    .pill.active { background: var(--moss); color: var(--cream); border-color: var(--moss); }
+
+    .denuncia-item {
+      padding: 20px 22px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      transition: border-color .15s, transform .15s;
+    }
+    .denuncia-item:hover { border-color: var(--sage); transform: translateX(2px); }
+    .denuncia-item.user-submitted {
+      border-left: 3px solid var(--moss);
+    }
+    .den-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .den-tipo {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-weight: 600; color: var(--ink); font-size: .95rem;
+    }
+    .den-meta { display: flex; gap: 14px; font-size: .82rem; color: var(--muted); }
+    .den-meta span { display: inline-flex; align-items: center; gap: 5px; }
+    .den-desc { font-size: .92rem; color: var(--ink-soft); margin: 0 0 10px; line-height: 1.55; }
+    .den-estado {
+      display: inline-block; font-size: .72rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .estado-recibida    { background: #fef6e6; color: #8a6417; }
+    .estado-seguimiento { background: var(--leaf); color: var(--moss-deep); }
+    .estado-enviada     { background: #e7eef9; color: #2a4b7c; }
+
+    .empty-state {
+      padding: 40px 20px; text-align: center;
+      color: var(--muted); font-size: .92rem;
+      border: 1px dashed var(--line-2); border-radius: var(--radius);
     }
 
-    /* Dimensiones RS (3 tarjetas) */
-    .dims-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem;
-      margin-top: 0.85rem;
+    /* ---------- Aprende / módulos ---------- */
+    .modulos-grid {
+      display: grid; gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     }
-    @media (max-width: 820px) { .dims-grid { grid-template-columns: 1fr; } }
-    .dim-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.95rem 1rem;
+    .modulo {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .modulo:hover { border-color: var(--sage); box-shadow: var(--shadow-md); }
+    .modulo-header {
+      padding: 26px 26px 22px;
+      cursor: pointer;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .modulo-icon { font-size: 2rem; line-height: 1; }
+    .modulo h4 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.2rem; color: var(--ink); }
+    .modulo p { font-size: .9rem; color: var(--muted); margin: 0; }
+    .modulo-meta {
+      display: flex; gap: 14px; font-size: .74rem; color: var(--muted);
+      letter-spacing: .05em; text-transform: uppercase; font-weight: 600;
+    }
+    .modulo-meta span { display: inline-flex; align-items: center; gap: 6px; }
+    .modulo-meta .dot { width: 4px; height: 4px; background: var(--sage); border-radius: 50%; }
+
+    .modulo-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s ease;
+      border-top: 0px solid transparent;
+    }
+    .modulo.open .modulo-body {
+      max-height: 1600px;
+      border-top: 1px solid var(--line);
+    }
+    .modulo-body-inner { padding: 22px 26px 26px; background: var(--cream); }
+    .modulo-body h5 {
+      font-family: 'Inter', sans-serif;
+      font-size: .85rem; font-weight: 600;
+      color: var(--moss-deep); margin: 16px 0 6px;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .modulo-body h5:first-child { margin-top: 0; }
+    .modulo-body p { font-size: .92rem; color: var(--ink-soft); margin: 0 0 8px; }
+
+    .modulo-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 4px; font-size: .85rem; font-weight: 600; color: var(--moss);
+    }
+    .modulo-toggle .arrow { transition: transform .3s; display: inline-block; }
+    .modulo.open .modulo-toggle .arrow { transform: rotate(90deg); }
+
+    /* ---------- Derechos ---------- */
+    .derechos-grid {
+      display: grid; gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .derecho-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px;
       position: relative;
       overflow: hidden;
     }
-    .dim-card::before {
-      content: ""; position: absolute; left: 0; top: 0;
-      width: 4px; height: 100%;
+    .derecho-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--moss), var(--sage));
     }
-    .dim-card.blue::before  { background: var(--accent); }
-    .dim-card.green::before { background: var(--success); }
-    .dim-card.gold::before  { background: var(--gold); }
-    .dim-card .dim-title {
-      display: flex; align-items: center; gap: 0.4rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-      font-size: 0.95rem;
+    .derecho-card .icon-big {
+      font-size: 2rem; margin-bottom: 14px;
     }
-    .dim-card.blue  .dim-title { color: var(--accent-soft); }
-    .dim-card.green .dim-title { color: var(--success); }
-    .dim-card.gold  .dim-title { color: var(--gold); }
-    .dim-card p { margin: 0; color: #c6cfda; font-size: 0.85rem; line-height: 1.5; }
+    .derecho-card h4 {
+      font-family: 'Fraunces', serif; font-size: 1.25rem; font-weight: 500;
+      margin-bottom: 10px; color: var(--ink);
+    }
+    .derecho-card .fuente {
+      font-size: .74rem; color: var(--earth); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px;
+    }
+    .derecho-card p { font-size: .92rem; margin: 0; color: var(--ink-soft); }
 
-    /* Marco teórico · fórmula de Klitgaard */
-    .theory-grid {
-      display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem;
+    .canales {
+      margin-top: 40px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 30px;
     }
-    @media (max-width: 820px) { .theory-grid { grid-template-columns: 1fr; } }
+    .canales h4 {
+      font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+    .canales p.sub { font-size: .88rem; color: var(--muted); margin-bottom: 20px; }
+    .canal-lista {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .canal {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 14px 16px;
+      background: var(--cream);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--earth);
+    }
+    .canal .nombre { font-weight: 600; color: var(--ink); font-size: .95rem; }
+    .canal .dato { font-size: .82rem; color: var(--muted); }
+
+    /* ---------- Proyecto (tabs) ---------- */
+    .tabs-nav {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-bottom: 32px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab-btn {
+      background: transparent; border: none; cursor: pointer;
+      font-family: inherit; font-size: .9rem; font-weight: 500;
+      color: var(--muted); padding: 10px 16px;
+      border-radius: 999px; transition: all .15s;
+    }
+    .tab-btn:hover { color: var(--moss); }
+    .tab-btn.active { background: var(--moss); color: var(--cream); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .two-col { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; }
+    @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+    .prose h3 { margin-bottom: 12px; }
+    .prose h4 { margin: 18px 0 8px; color: var(--ink); }
+    .prose ul { padding-left: 20px; margin: 8px 0 16px; }
+    .prose ul li { margin-bottom: 6px; color: var(--ink-soft); font-size: .95rem; }
+    .prose blockquote {
+      border-left: 3px solid var(--sage);
+      margin: 20px 0; padding: 6px 0 6px 20px;
+      font-style: italic; color: var(--ink-soft);
+      font-family: 'Fraunces', serif;
+    }
+
     .formula-box {
-      background: linear-gradient(135deg, rgba(0,104,157,0.18), rgba(125,196,232,0.06));
-      border: 1px solid rgba(0,104,157,0.35);
-      border-radius: 0.85rem;
-      padding: 1rem 1.1rem;
-      text-align: center;
-      min-height: 160px;
-      display: flex; flex-direction: column;
-      justify-content: center; gap: 0.5rem;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--moss);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin: 16px 0;
     }
-    .formula-box .formula-label {
-      font-size: 0.7rem; letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-soft);
-      font-weight: 700;
-    }
-    .formula-box .formula-cite {
-      font-size: 0.74rem; color: var(--muted);
-    }
-    .formula-box .katex { font-size: 1.15em; color: #eaf3fa; }
-
-    /* ODS grid */
-    .ods-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem;
-    }
-    @media (max-width: 820px) { .ods-grid { grid-template-columns: 1fr; } }
-    .ods-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 1rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .ods-card.principal { border-color: rgba(0,104,157,0.5); }
-    .ods-card.principal::after {
-      content: "principal"; position: absolute; top: 0.6rem; right: 0.6rem;
-      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: rgba(0,104,157,0.3); color: var(--accent-soft);
-      padding: 0.18rem 0.45rem; border-radius: 999px;
-      border: 1px solid rgba(0,104,157,0.45);
-    }
-    .ods-card .ods-head {
-      display: flex; align-items: center; gap: 0.6rem;
-      margin-bottom: 0.5rem;
-    }
-    .ods-card .ods-num {
-      width: 46px; height: 46px; border-radius: 0.5rem;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; font-weight: 900; color: #fff;
-      flex-shrink: 0;
-    }
-    .ods-card .ods-meta .ods-n {
-      font-size: 0.68rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted); font-weight: 700;
-    }
-    .ods-card .ods-meta .ods-t {
-      font-size: 0.95rem; font-weight: 700; line-height: 1.2;
-    }
-    .ods-card .ods-goal {
-      font-size: 0.76rem; color: var(--accent-soft);
-      padding: 0.35rem 0.5rem;
-      background: rgba(255,255,255,0.03);
-      border-left: 3px solid var(--accent);
-      border-radius: 0.3rem;
-      margin: 0.55rem 0;
-      line-height: 1.3;
-    }
-    .ods-card .ods-aporte {
-      margin: 0; color: #c6cfda; font-size: 0.84rem;
-      line-height: 1.5;
+    .formula-box .caption {
+      font-size: .76rem; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .1em; font-weight: 600; margin-bottom: 8px;
     }
 
-    /* ISO 26000 */
-    .iso-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    .info-grid {
+      display: grid; gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
-    @media (max-width: 820px) { .iso-grid { grid-template-columns: 1fr; } }
-    .iso-block .iso-title {
-      font-size: 0.75rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--accent-soft);
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      display: flex; align-items: center; gap: 0.4rem;
+    .info-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
     }
-    .iso-list {
-      display: flex; flex-direction: column; gap: 0.4rem;
+    .info-card .num {
+      display: inline-block; font-family: 'Fraunces', serif;
+      font-size: 2rem; color: var(--moss); line-height: 1; margin-bottom: 6px;
+      font-weight: 500;
     }
+    .info-card h4 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.1rem; margin-bottom: 8px; }
+    .info-card p { font-size: .88rem; color: var(--ink-soft); margin: 0; }
+
+    /* ISO materias grid */
+    .iso-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
     .iso-item {
-      display: flex; align-items: center; gap: 0.55rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 0.55rem;
-      padding: 0.5rem 0.65rem;
-      font-size: 0.85rem;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      font-size: .88rem;
+      color: var(--ink-soft);
+      display: flex; align-items: center; gap: 8px;
     }
-    .iso-item:hover {
-      border-color: rgba(0,104,157,0.4);
-      transform: translateX(3px);
+    .iso-item.activa {
+      background: var(--leaf-soft); border-color: var(--sage); color: var(--moss-deep); font-weight: 500;
     }
-    .iso-item .iso-n {
-      font-size: 0.7rem; font-weight: 800;
-      color: var(--accent-soft);
-      background: rgba(0,104,157,0.18);
-      width: 24px; height: 24px; border-radius: 0.35rem;
-      display: inline-flex; align-items: center; justify-content: center;
-    }
-    .iso-item i {
-      color: var(--accent-soft);
-      font-size: 1rem;
-    }
-    .iso-item.active {
-      border-color: rgba(0,104,157,0.55);
-      background: linear-gradient(90deg, rgba(0,104,157,0.15), transparent 70%);
-    }
-    .iso-item.active::after {
-      content: "aplica"; margin-left: auto;
-      font-size: 0.6rem; letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent-soft); font-weight: 700;
-      padding: 0.12rem 0.4rem;
-      border-radius: 999px;
-      background: rgba(0,104,157,0.22);
-      border: 1px solid rgba(0,104,157,0.35);
-    }
+    .iso-item.activa::before { content: "✓"; color: var(--moss); font-weight: 700; }
+    .iso-item:not(.activa)::before { content: "·"; color: var(--muted); font-weight: 700; font-size: 1.1rem; }
 
-    /* DSI + derechos humanos */
-    .dsi-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-    }
-    @media (max-width: 820px) { .dsi-grid { grid-template-columns: 1fr; } }
-    .dsi-card .dsi-principio {
-      font-weight: 700; font-size: 1.02rem;
-      color: var(--accent-soft);
-      display: flex; align-items: center; gap: 0.45rem;
-    }
-    .dsi-card .dsi-label {
-      font-size: 0.64rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted);
-      font-weight: 700;
-      margin-top: 0.6rem;
-    }
-    .dsi-card p { margin: 0.2rem 0 0; color: #c6cfda; font-size: 0.85rem; line-height: 1.5; }
-
-    .dh-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem;
-      margin-top: 0.85rem;
-    }
-    @media (max-width: 820px) { .dh-grid { grid-template-columns: 1fr; } }
-    .dh-card .dh-name {
-      display: flex; align-items: center; gap: 0.45rem;
-      font-weight: 700; font-size: 0.94rem;
-      color: var(--accent-soft);
-    }
-    .dh-card .dh-fuente {
-      font-size: 0.68rem; letter-spacing: 0.06em;
-      color: var(--muted); margin-top: 0.2rem; margin-bottom: 0.5rem;
-    }
-    .dh-card p { margin: 0; color: #c6cfda; font-size: 0.82rem; line-height: 1.5; }
-
-    /* Stakeholders */
-    .sh-table {
-      width: 100%; border-collapse: collapse;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      overflow: hidden;
-    }
-    .sh-table thead th {
-      background: rgba(0,104,157,0.14);
-      color: var(--accent-soft);
-      text-align: left;
-      font-size: 0.7rem; letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.65rem 0.85rem;
-      font-weight: 700;
-      border-bottom: 1px solid rgba(0,104,157,0.3);
-    }
-    .sh-table tbody td {
-      padding: 0.7rem 0.85rem;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.85rem;
-      color: #c6cfda;
+    /* Stakeholders table */
+    .sh-table { width: 100%; border-collapse: collapse; background: var(--paper); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+    .sh-table th, .sh-table td {
+      text-align: left; padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
       vertical-align: top;
     }
-    .sh-table tbody tr:last-child td { border-bottom: none; }
-    .sh-table tbody tr:hover td { background: rgba(0,104,157,0.06); }
-    .sh-name {
-      display: flex; align-items: center; gap: 0.5rem;
-      color: var(--text); font-weight: 600;
-      white-space: nowrap;
+    .sh-table th {
+      font-size: .75rem; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--muted); font-weight: 600; background: var(--cream);
     }
-    .sh-name i { color: var(--accent-soft); font-size: 1.1rem; }
+    .sh-table td { font-size: .9rem; color: var(--ink-soft); }
+    .sh-table td strong { color: var(--ink); font-weight: 600; }
+    .sh-table tr:last-child td { border-bottom: none; }
 
-    /* Timeline fases */
-    .tl {
-      position: relative;
-      padding-left: 2rem;
+    /* Fases timeline */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: linear-gradient(to bottom, var(--moss), var(--sage));
     }
-    .tl::before {
-      content: ""; position: absolute;
-      left: 0.65rem; top: 0.4rem; bottom: 0.4rem;
-      width: 2px;
-      background: linear-gradient(180deg,
-        rgba(0,104,157,0.6), rgba(125,196,232,0.3), rgba(0,104,157,0.1));
+    .fase {
+      position: relative; margin-bottom: 28px;
+      padding: 22px 26px;
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
     }
-    .tl-item { position: relative; margin-bottom: 1.1rem; }
-    .tl-item::before {
-      content: ""; position: absolute;
-      left: -1.43rem; top: 0.45rem;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--accent);
-      border: 3px solid var(--bg);
-      box-shadow: 0 0 0 2px rgba(0,104,157,0.55);
+    .fase::before {
+      content: ""; position: absolute; left: -27px; top: 24px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--moss); border: 3px solid var(--cream);
     }
-    .tl-item .tl-head {
-      display: flex; align-items: center; gap: 0.5rem;
-      font-weight: 700; font-size: 1rem;
-      margin-bottom: 0.35rem;
-    }
-    .tl-item .tl-num {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(0,104,157,0.22);
-      color: var(--accent-soft);
-      font-size: 0.72rem; font-weight: 800;
-    }
-    .tl-item .tl-dur {
-      font-size: 0.7rem; letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted); font-weight: 700;
-      padding: 0.18rem 0.5rem; border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-    }
-    .tl-item ul {
-      margin: 0.35rem 0 0.35rem 0; padding-left: 1.1rem;
-      display: flex; flex-direction: column; gap: 0.2rem;
-    }
-    .tl-item ul li { color: #c6cfda; font-size: 0.85rem; line-height: 1.45; }
-    .tl-item .tl-recursos {
-      font-size: 0.76rem; color: var(--muted);
-      margin-top: 0.4rem;
-      padding-left: 0.1rem;
-    }
-    .tl-item .tl-recursos i { color: var(--accent-soft); margin-right: 0.3rem; }
+    .fase h4 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.2rem; margin-bottom: 6px; }
+    .fase .dur { font-size: .75rem; color: var(--earth); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+    .fase ul { padding-left: 18px; margin: 8px 0; }
+    .fase ul li { font-size: .9rem; color: var(--ink-soft); margin-bottom: 4px; }
+    .fase .recursos { font-size: .82rem; color: var(--muted); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 
     /* Equipo */
-    .team-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem;
+    .equipo-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .persona {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px; text-align: center;
+      transition: border-color .2s, transform .2s;
     }
-    @media (max-width: 980px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 520px) { .team-grid { grid-template-columns: 1fr; } }
-    .person-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      padding: 0.9rem;
-      text-align: center;
-      transition: transform 0.25s ease, border-color 0.25s ease;
-    }
-    .person-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0,104,157,0.4);
-    }
-    .person-avatar {
-      width: 54px; height: 54px; border-radius: 50%;
-      background: linear-gradient(145deg, rgba(0,104,157,0.35), rgba(125,196,232,0.18));
-      color: var(--accent-soft);
+    .persona:hover { border-color: var(--sage); transform: translateY(-2px); }
+    .avatar {
+      width: 64px; height: 64px; margin: 0 auto 14px;
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 0.5rem;
-      font-weight: 800;
-      font-size: 1.1rem;
-      border: 1px solid rgba(0,104,157,0.35);
+      font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 500;
+      background: var(--leaf); color: var(--moss-deep);
     }
-    .person-name {
-      font-size: 0.85rem; font-weight: 600;
-      line-height: 1.25;
-    }
-    .person-mail {
-      font-size: 0.7rem; color: var(--muted);
-      margin-top: 0.25rem;
-      word-break: break-all;
-    }
-    .person-mail a { color: var(--muted); text-decoration: none; }
-    .person-mail a:hover { color: var(--accent-soft); }
+    .persona h4 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.05rem; line-height: 1.3; margin-bottom: 4px; }
+    .persona .correo { font-size: .82rem; color: var(--muted); word-break: break-all; }
 
     /* Footer */
-    .footer {
-      margin-top: 2.5rem;
-      padding: 1rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.75rem;
-      border-top: 1px solid var(--border);
+    footer.site {
+      padding: 50px 0 40px;
+      border-top: 1px solid var(--line);
+      background: var(--ink);
+      color: rgba(247,244,236,0.72);
+    }
+    footer.site .row {
+      display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap;
+    }
+    footer.site a { color: var(--leaf); border-bottom-color: rgba(214,228,204,0.3); }
+    footer.site a:hover { color: var(--cream); border-bottom-color: var(--cream); }
+    footer.site .brand-ft { color: var(--cream); font-family: 'Fraunces', serif; font-size: 1.1rem; }
+    footer.site small { font-size: .78rem; opacity: .7; }
+
+    /* Utilities */
+    .hidden { display: none !important; }
+    @media (max-width: 740px) {
+      .nav-links a:not(.primary) { display: none; }
+      .nav-toggle { display: inline-flex; }
+      .nav-links.open { position: absolute; top: 62px; left: 20px; right: 20px; flex-direction: column; background: var(--paper); padding: 12px; border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--line); }
+      .nav-links.open a { display: block; width: 100%; text-align: left; }
+      .hero { padding: 56px 0 68px; }
+      .hero .deco-leaf { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="lights" aria-hidden="true">
-    <div class="ambient a1"></div>
-    <div class="ambient a2"></div>
-    <div class="ambient a3"></div>
-  </div>
 
-  <div class="wrap">
-    <!-- NAVBAR LOCAL -->
-    <nav class="navbar-local">
-      <div class="nav-brand">
-        <span class="nav-badge">ODS 16</span>
-        <span>{{ proyecto.nombre }}</span>
+<header class="site">
+  <div class="container">
+    <nav class="nav">
+      <a href="#inicio" class="brand">
+        <span class="leaf-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20C4 12 8 4 20 4C20 16 12 20 4 20Z"/>
+            <path d="M4 20L14 10"/>
+          </svg>
+        </span>
+        {{ proyecto.nombre }}
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#denunciar">Denunciar</a>
+        <a href="#aprender">Aprende</a>
+        <a href="#derechos">Derechos</a>
+        <a href="#proyecto">Proyecto</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#denunciar" class="primary">Hacer denuncia</a>
       </div>
-      <div class="nav-links">
-        <a class="nav-link-x" href="#problema">Problema</a>
-        <a class="nav-link-x" href="#propuesta">Propuesta</a>
-        <a class="nav-link-x" href="#teoria">Teoría</a>
-        <a class="nav-link-x" href="#ods">ODS</a>
-        <a class="nav-link-x" href="#iso">ISO 26000</a>
-        <a class="nav-link-x" href="#dsi">DSI &amp; DH</a>
-        <a class="nav-link-x" href="#stakeholders">Stakeholders</a>
-        <a class="nav-link-x" href="#fases">Fases</a>
-        <a class="nav-link-x" href="#equipo">Equipo</a>
-      </div>
+      <button class="nav-toggle" aria-label="Abrir menú" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
     </nav>
+  </div>
+</header>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-main">
-        <div>
-          <p class="hero-sub">Proyecto de transformación social · Equipo 3</p>
-          <h1>{{ proyecto.nombre }}</h1>
-          <p class="hero-sub">{{ proyecto.subtitulo }}</p>
-          <div class="hero-meta">
-            <span class="hero-chip"><i class="bi bi-geo-alt"></i>{{ proyecto.ubicacion }}</span>
-            <span class="hero-chip"><i class="bi bi-mortarboard"></i>{{ proyecto.materia }}</span>
-            <span class="hero-chip"><i class="bi bi-person-workspace"></i>{{ proyecto.docente }}</span>
-          </div>
-        </div>
-        <div class="ods-main-badge" aria-label="ODS 16">
-          <div class="obig">16</div>
-          <div class="osm">ODS</div>
-          <div class="otag">Paz, justicia e instituciones sólidas</div>
-        </div>
+<main>
+  <!-- HERO -->
+  <section id="inicio" class="hero">
+    <!-- Hoja decorativa -->
+    <svg class="deco-leaf" viewBox="0 0 200 200" aria-hidden="true">
+      <path d="M20 180 C 20 80, 80 20, 180 20 C 180 120, 120 180, 20 180 Z" fill="currentColor" opacity=".35"/>
+      <path d="M20 180 L180 20" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".6"/>
+      <path d="M60 140 L100 100 M80 150 L130 100 M100 160 L150 110" stroke="currentColor" stroke-width="1" fill="none" opacity=".45"/>
+    </svg>
+
+    <div class="container">
+      <span class="eyebrow">ODS 16 · Meta 16.5</span>
+      <h1>Vigila lo que <span class="accent">pertenece a todos</span>.<br/>Denuncia sin miedo.</h1>
+      <p class="lede">
+        {{ proyecto.nombre }} es una plataforma comunitaria para reportar corrupción
+        ambiental —tala ilegal, uso indebido del agua, contaminación— de forma
+        <strong>anónima y segura</strong>. Aprende tus derechos, reporta lo que ves
+        y suma tu voz a una red de vigilancia ciudadana en {{ proyecto.ubicacion }}.
+      </p>
+      <div class="hero-actions">
+        <a href="#denunciar" class="btn btn-primary" style="border-bottom: 1px solid var(--moss);">
+          Hacer una denuncia
+          <span>→</span>
+        </a>
+        <a href="#aprender" class="btn btn-ghost" style="border-bottom: 1px solid var(--line-2);">
+          Explorar módulos
+        </a>
       </div>
-    </section>
+      <div class="hero-meta">
+        <div class="item"><div class="label">Enfoque</div><div class="value">Responsabilidad Social · ISO 26000</div></div>
+        <div class="item"><div class="label">Territorio</div><div class="value">{{ proyecto.ubicacion }}</div></div>
+        <div class="item"><div class="label">Modalidad</div><div class="value">Anónima · gratuita</div></div>
+        <div class="item"><div class="label">Aliados</div><div class="value">Universidad Anáhuac · comunidad</div></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- PROBLEMA -->
-    <section class="section" id="problema">
+  <!-- DENUNCIAR -->
+  <section id="denunciar" class="block">
+    <div class="container">
       <div class="section-head">
-        <span class="section-kicker">01 · Contexto</span>
-        <h2>El problema que queremos atender</h2>
-        <p class="section-sub">Corrupción en la gestión de recursos naturales · Querétaro, México</p>
-      </div>
-      <div class="problem-grid">
-        <div class="card-x">
-          <div class="ct-title"><i class="bi bi-exclamation-diamond-fill"></i>Causas estructurales</div>
-          <p>
-            La corrupción en México tiene causas multifactoriales: <strong>debilidad
-            institucional e impunidad</strong>, <strong>falta de transparencia y
-            rendición de cuentas</strong> y <strong>desigualdad social y económica</strong>
-            que empuja al soborno como mecanismo para acceder a servicios o evitar sanciones
-            (Transparencia Internacional, 2023; Banco Mundial, 2020).
-          </p>
-          <p>
-            En Querétaro, el crecimiento urbano acelerado presiona el agua y las áreas
-            forestales, y existe desconfianza hacia las instituciones públicas en temas
-            de denuncia ambiental.
-          </p>
-        </div>
-        <div class="card-x">
-          <div class="ct-title"><i class="bi bi-tree-fill"></i>Consecuencias socioambientales</div>
-          <p>
-            En lo <strong>ambiental</strong>: tala ilegal, sobreexplotación del agua y
-            proyectos industriales sin evaluaciones ambientales adecuadas generan daños
-            irreversibles a los ecosistemas.
-          </p>
-          <p>
-            En lo <strong>social</strong>: los beneficios se concentran en grupos
-            reducidos mientras las comunidades más vulnerables enfrentan contaminación
-            y escasez. La corrupción debilita la confianza ciudadana y limita la
-            implementación de políticas públicas sostenibles.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROPUESTA -->
-    <section class="section" id="propuesta">
-      <div class="section-head">
-        <span class="section-kicker">02 · Propuesta</span>
-        <h2>Una plataforma comunitaria de denuncia y educación</h2>
-        <p class="section-sub">Tecnología + participación social + educación socioambiental</p>
-      </div>
-      <div class="card-x" style="margin-bottom: 0.5rem;">
-        <div class="ct-title"><i class="bi bi-window-stack"></i>¿Qué construimos?</div>
-        <p>
-          Una plataforma digital donde las personas de la comunidad pueden
-          <strong>denunciar de forma anónima y segura</strong> prácticas como la tala
-          ilegal, el uso indebido del agua o el suelo. Al mismo tiempo, ofrece
-          <strong>contenidos y talleres de educación socioambiental</strong>: derechos
-          ambientales, mecanismos de denuncia y rendición de cuentas, explicados en
-          lenguaje accesible.
-        </p>
-        <p>
-          El objetivo: reducir la impunidad, fortalecer la participación ciudadana y
-          fomentar una cultura de legalidad que contribuya a la protección del entorno.
+        <div class="eyebrow">Canal seguro</div>
+        <h2>Reporta una irregularidad ambiental</h2>
+        <p class="sub">
+          Describe lo que observaste con claridad. Puedes hacerlo de forma
+          totalmente anónima; tu denuncia se registra en el panel público y,
+          si aceptas, puede canalizarse a las autoridades ambientales.
         </p>
       </div>
-      <div class="section-head" style="margin-top: 1.2rem; margin-bottom: 0.5rem;">
-        <span class="section-kicker">Triple impacto</span>
-        <h2 style="font-size: 1rem; color: var(--accent-soft);">Contribución a las 3 dimensiones de la RS</h2>
-      </div>
-      <div class="dims-grid">
-        {% for d in dimensiones %}
-        <div class="dim-card {{ d.color }}">
-          <div class="dim-title"><i class="bi {{ d.icono }}"></i>{{ d.nombre }}</div>
-          <p>{{ d.texto }}</p>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
 
-    <!-- MARCO TEÓRICO -->
-    <section class="section" id="teoria">
-      <div class="section-head">
-        <span class="section-kicker">03 · Marco teórico</span>
-        <h2>Klitgaard + Sen: por qué la plataforma funciona</h2>
-        <p class="section-sub">Dos marcos que justifican el mecanismo de transparencia y participación</p>
-      </div>
-      <div class="theory-grid">
-        <div class="card-x">
-          <div class="ct-title"><i class="bi bi-calculator"></i>Fórmula de Klitgaard (1988)</div>
-          <p>
-            Robert Klitgaard plantea que la corrupción surge cuando se combinan tres
-            variables: <strong>monopolio de poder</strong>, <strong>discrecionalidad</strong>
-            y <strong>ausencia de rendición de cuentas</strong>. Su ecuación clásica lo
-            resume así:
-          </p>
-          <div class="formula-box">
-            <div class="formula-label">Fórmula de la corrupción</div>
-            <div>\[ \text{Corrupción} \;=\; \text{Monopolio} \;+\; \text{Discrecionalidad} \;-\; \text{Transparencia} \]</div>
-            <div class="formula-cite">Klitgaard, R. (1988). <em>Controlling corruption</em>. UC Press.</div>
+      <div class="denuncia-wrap">
+        <!-- FORM -->
+        <div class="form-card">
+          <h3>Formulario de denuncia</h3>
+          <p class="hint">Datos mínimos obligatorios marcados con *</p>
+
+          <div id="formSuccess" class="form-success">
+            <strong>✓ Denuncia registrada.</strong> Gracias por sumar. Aparece ya en el panel público con el folio indicado.
           </div>
-          <p style="margin-top:0.7rem;">
-            Nuestra plataforma <strong>aumenta la transparencia</strong> (canal público de
-            denuncia + información accesible) y <strong>reduce la discrecionalidad</strong>
-            (supervisión ciudadana sobre el uso de recursos). Por construcción,
-            contrarresta los dos sumandos positivos de la ecuación.
-          </p>
-        </div>
-        <div class="card-x">
-          <div class="ct-title"><i class="bi bi-lightbulb"></i>Desarrollo como libertad · Sen (1999)</div>
-          <p>
-            Para Amartya Sen, el desarrollo no es solo crecimiento económico, sino
-            <strong>expansión de libertades reales y capacidades humanas</strong>.
-            La corrupción limita esa expansión: restringe el acceso equitativo a
-            recursos, servicios y oportunidades.
-          </p>
-          <p>
-            La educación cívico-ambiental de la plataforma <strong>amplía las
-            capacidades ciudadanas</strong>: la comunidad pasa de ser beneficiaria
-            pasiva a agente activo que exige rendición de cuentas y participa en la
-            protección de su entorno.
-          </p>
-          <p style="color: var(--muted); font-size: 0.8rem; margin-top: 0.5rem;">
-            <i class="bi bi-book"></i> Sen, A. (1999). <em>Development as freedom</em>. Alfred A. Knopf.
-          </p>
-        </div>
-      </div>
-    </section>
 
-    <!-- ODS -->
-    <section class="section" id="ods">
-      <div class="section-head">
-        <span class="section-kicker">04 · Agenda 2030</span>
-        <h2>ODS a los que contribuye el proyecto</h2>
-        <p class="section-sub">Un ODS principal (16) y dos transversales (13 y 15)</p>
-      </div>
-      <div class="ods-grid">
-        {% for o in ods %}
-        <div class="ods-card {% if o.principal %}principal{% endif %}">
-          <div class="ods-head">
-            <div class="ods-num" style="background: {{ o.color }};">{{ o.num }}</div>
-            <div class="ods-meta">
-              <div class="ods-n">ODS {{ o.num }}</div>
-              <div class="ods-t">{{ o.nombre }}</div>
+          <form id="denunciaForm" autocomplete="off">
+            <div class="field">
+              <label for="tipo">Tipo de irregularidad *</label>
+              <select id="tipo" name="tipo" required>
+                <option value="">Selecciona…</option>
+                {% for t in tipos_denuncia %}
+                  <option value="{{ t.valor }}" data-etiqueta="{{ t.etiqueta }}" data-icono="{{ t.icono }}">{{ t.icono }} {{ t.etiqueta }}</option>
+                {% endfor %}
+              </select>
             </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="lugar">Lugar u observación *</label>
+                <input id="lugar" name="lugar" type="text" placeholder="Ej. Arroyo de San Pedrito" required />
+              </div>
+              <div class="field">
+                <label for="fecha">Fecha observada *</label>
+                <input id="fecha" name="fecha" type="date" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="descripcion">Descripción de los hechos *</label>
+              <textarea id="descripcion" name="descripcion" placeholder="Qué ocurrió, cómo lo observaste y qué impacto tiene. Mantente en hechos." required></textarea>
+            </div>
+            <div class="field">
+              <label for="contacto">Contacto (opcional)</label>
+              <input id="contacto" name="contacto" type="text" placeholder="Sólo si quieres que te contactemos; puedes dejarlo vacío." />
+            </div>
+            <div class="field">
+              <label class="check" for="anonimo">
+                <input type="checkbox" id="anonimo" name="anonimo" checked />
+                <span><strong>Mantener mi identidad oculta</strong> — tu denuncia se publica sin nombre ni contacto; sólo tú guardas tu folio.</span>
+              </label>
+            </div>
+            <div class="field">
+              <label class="check" for="canalizar">
+                <input type="checkbox" id="canalizar" name="canalizar" />
+                <span>Autorizo que la denuncia se <strong>canalice a autoridades</strong> (PROFEPA, CONAGUA, SEDESU) si procede.</span>
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; border-bottom: 1px solid var(--moss);">
+              Enviar denuncia
+            </button>
+          </form>
+        </div>
+
+        <!-- LISTA -->
+        <div class="denuncias-panel">
+          <div class="list-head">
+            <h3>Panel público de denuncias</h3>
+            <small style="color: var(--muted); font-size: .8rem;"><span id="denuncias-count">0</span> reportes</small>
           </div>
-          <div class="ods-goal"><i class="bi bi-flag-fill"></i> {{ o.meta }}</div>
-          <p class="ods-aporte"><i class="bi {{ o.icono }}"></i> {{ o.aporte }}</p>
-        </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <!-- ISO 26000 -->
-    <section class="section" id="iso">
-      <div class="section-head">
-        <span class="section-kicker">05 · Estándar internacional</span>
-        <h2>ISO 26000 · Principios y materias fundamentales</h2>
-        <p class="section-sub">Los 7 principios orientadores y las 7 materias; destacamos en azul las que aplican directamente al proyecto.</p>
-      </div>
-      <div class="iso-grid">
-        <div class="iso-block">
-          <div class="iso-title"><i class="bi bi-list-check"></i>7 Principios de responsabilidad social</div>
-          <div class="iso-list">
-            {% for p in iso_principios %}
-            <div class="iso-item">
-              <span class="iso-n">{{ p.n }}</span>
-              <i class="bi {{ p.icono }}"></i>
-              <span>{{ p.nombre }}</span>
-            </div>
+          <div class="filter-pills" id="filterPills">
+            <button class="pill active" data-filter="todas">Todas</button>
+            {% for t in tipos_denuncia %}
+              <button class="pill" data-filter="{{ t.valor }}">{{ t.icono }} {{ t.etiqueta }}</button>
             {% endfor %}
+            <button class="pill" data-filter="mias" id="pill-mias">Mis denuncias</button>
           </div>
-        </div>
-        <div class="iso-block">
-          <div class="iso-title"><i class="bi bi-grid-3x3-gap"></i>7 Materias fundamentales</div>
-          <div class="iso-list">
-            {% for m in iso_materias %}
-            <div class="iso-item {% if m.activa %}active{% endif %}">
-              <i class="bi {{ m.icono }}"></i>
-              <span>{{ m.nombre }}</span>
-            </div>
-            {% endfor %}
-          </div>
+          <div id="denunciasLista"></div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- DSI + DERECHOS HUMANOS -->
-    <section class="section" id="dsi">
+  <!-- APRENDE -->
+  <section id="aprender" class="block alt">
+    <div class="container">
       <div class="section-head">
-        <span class="section-kicker">06 · Fundamento ético</span>
-        <h2>Doctrina Social de la Iglesia &amp; Derechos Humanos</h2>
-        <p class="section-sub">Los principios éticos que dan sustento al proyecto y los derechos que protege</p>
+        <div class="eyebrow">Educación socioambiental · ODS 13.3</div>
+        <h2>Aprende para exigir con información</h2>
+        <p class="sub">
+          Micro-módulos cortos, lenguaje claro y sin jerga. Puedes abrir el que
+          quieras sin orden obligado; cada uno toma menos de 15 minutos.
+        </p>
       </div>
-      <div class="dsi-grid">
-        {% for d in dsi %}
-        <div class="card-x dsi-card">
-          <div class="dsi-principio"><i class="bi {{ d.icono }}"></i>{{ d.principio }}</div>
-          <div class="dsi-label">Principio</div>
-          <p>{{ d.idea }}</p>
-          <div class="dsi-label">Aplicación en el proyecto</div>
-          <p>{{ d.aplicacion }}</p>
-        </div>
+
+      <div class="modulos-grid">
+        {% for m in modulos %}
+          <article class="modulo" data-id="{{ m.id }}">
+            <div class="modulo-header" onclick="toggleModulo(this)">
+              <div class="modulo-icon">{{ m.icono }}</div>
+              <h4>{{ m.titulo }}</h4>
+              <p>{{ m.resumen }}</p>
+              <div class="modulo-meta">
+                <span><span class="dot"></span>{{ m.duracion }}</span>
+                <span><span class="dot"></span>{{ m.nivel }}</span>
+              </div>
+              <span class="modulo-toggle"><span class="arrow">›</span> Abrir módulo</span>
+            </div>
+            <div class="modulo-body">
+              <div class="modulo-body-inner">
+                {% for seccion in m.contenido %}
+                  <h5>{{ seccion.0 }}</h5>
+                  <p>{{ seccion.1 }}</p>
+                {% endfor %}
+              </div>
+            </div>
+          </article>
         {% endfor %}
       </div>
-      <div class="dh-grid">
+    </div>
+  </section>
+
+  <!-- DERECHOS -->
+  <section id="derechos" class="block">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Tus derechos</div>
+        <h2>Tres derechos que todas las personas tenemos</h2>
+        <p class="sub">
+          No necesitas ser experto ni tener recursos. Si vives en México, estos
+          derechos te pertenecen. Aquí los traducimos y te decimos cómo ejercerlos.
+        </p>
+      </div>
+
+      <div class="derechos-grid">
         {% for d in derechos %}
-        <div class="card-x dh-card">
-          <div class="dh-name"><i class="bi {{ d.icono }}"></i>Derecho {{ d.nombre }}</div>
-          <div class="dh-fuente">{{ d.fuente }}</div>
-          <p>{{ d.como }}</p>
-        </div>
+          <article class="derecho-card">
+            <div class="icon-big">
+              {% if forloop.counter == 1 %}🌿{% elif forloop.counter == 2 %}🗣️{% else %}📖{% endif %}
+            </div>
+            <h4>{{ d.nombre }}</h4>
+            <div class="fuente">Fuente · {{ d.fuente }}</div>
+            <p>{{ d.como }}</p>
+          </article>
         {% endfor %}
       </div>
-    </section>
 
-    <!-- STAKEHOLDERS -->
-    <section class="section" id="stakeholders">
-      <div class="section-head">
-        <span class="section-kicker">07 · Partes interesadas</span>
-        <h2>Matriz de grupos de interés</h2>
-        <p class="section-sub">Actores clave, su relación con el proyecto y el valor que pueden aportar</p>
-      </div>
-      <table class="sh-table">
-        <thead>
-          <tr>
-            <th>Grupo de interés</th>
-            <th>Relación con el proyecto</th>
-            <th>Contribución</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for s in stakeholders %}
-          <tr>
-            <td><div class="sh-name"><i class="bi {{ s.icono }}"></i>{{ s.nombre }}</div></td>
-            <td>{{ s.relacion }}</td>
-            <td>{{ s.contribucion }}</td>
-          </tr>
+      <div class="canales">
+        <h4>Canales oficiales complementarios</h4>
+        <p class="sub">Si tu denuncia necesita respuesta institucional, acude directamente aquí.</p>
+        <div class="canal-lista">
+          {% for c in canales_oficiales %}
+            <div class="canal">
+              <div class="nombre">{{ c.nombre }}</div>
+              <div class="dato">☎ {{ c.telefono }}</div>
+              <div class="dato">✉ {{ c.correo }}</div>
+            </div>
           {% endfor %}
-        </tbody>
-      </table>
-    </section>
-
-    <!-- FASES -->
-    <section class="section" id="fases">
-      <div class="section-head">
-        <span class="section-kicker">08 · Ejecución</span>
-        <h2>Plan del piloto · 6 meses</h2>
-        <p class="section-sub">Tres fases: diseño, implementación y evaluación</p>
+        </div>
       </div>
-      <div class="tl">
-        {% for f in fases %}
-        <div class="tl-item">
-          <div class="tl-head">
-            <span class="tl-num">{{ f.numero }}</span>
-            <span>{{ f.titulo }}</span>
-            <span class="tl-dur">{{ f.duracion }}</span>
+    </div>
+  </section>
+
+  <!-- PROYECTO (tabs) -->
+  <section id="proyecto" class="block alt">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Sobre {{ proyecto.nombre }}</div>
+        <h2>El marco detrás de la plataforma</h2>
+        <p class="sub">
+          Este proyecto se construye sobre cuatro cimientos: un diagnóstico del
+          problema, la Responsabilidad Social (ISO 26000), la Doctrina Social de
+          la Iglesia y una matriz viva de grupos de interés.
+        </p>
+      </div>
+
+      <div class="tabs-nav" role="tablist">
+        <button class="tab-btn active" data-tab="marco">Marco teórico</button>
+        <button class="tab-btn" data-tab="iso">ISO 26000</button>
+        <button class="tab-btn" data-tab="dsi">Doctrina Social e.I.</button>
+        <button class="tab-btn" data-tab="stakeholders">Grupos de interés</button>
+        <button class="tab-btn" data-tab="fases">Fases</button>
+        <button class="tab-btn" data-tab="ods">ODS</button>
+      </div>
+
+      <!-- Marco -->
+      <div class="tab-panel active" id="tab-marco">
+        <div class="two-col">
+          <div class="prose">
+            <h3>El problema: corrupción que se come al entorno</h3>
+            <p>
+              En Querétaro —como en gran parte de México— la corrupción ambiental
+              se expresa en decisiones discrecionales sobre bienes comunes:
+              permisos irregulares, tolerancia a la tala, concesiones de agua
+              poco transparentes. Entre 2019 y 2024 la PROFEPA documentó más
+              de 3,000 irregularidades sólo en la zona centro del país.
+            </p>
+            <p>
+              El síntoma es visible (daño ecológico); la causa es estructural
+              (falta de rendición de cuentas). Sin un canal ciudadano eficaz,
+              la denuncia se pierde o el denunciante queda expuesto.
+            </p>
+            <blockquote>
+              "El desarrollo es libertad: implica la eliminación sistemática
+              de las fuentes de privación de libertad." — Amartya Sen
+            </blockquote>
           </div>
+
+          <div>
+            <div class="formula-box">
+              <div class="caption">Klitgaard, 1998 · Fórmula de la corrupción</div>
+              \[ C = M + D - A \]
+              <p style="margin: 12px 0 0; font-size: .88rem;">
+                Donde <em>C</em> = corrupción, <em>M</em> = monopolio,
+                <em>D</em> = discrecionalidad y <em>A</em> = rendición de cuentas.
+                La plataforma actúa sobre <em>A</em>: cada denuncia suma vigilancia
+                ciudadana al sistema.
+              </p>
+            </div>
+
+            <div class="info-grid" style="margin-top: 24px;">
+              {% for dim in dimensiones %}
+              <div class="info-card">
+                <span class="num">{{ forloop.counter }}</span>
+                <h4>Dimensión {{ dim.nombre }}</h4>
+                <p>{{ dim.texto }}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ISO -->
+      <div class="tab-panel" id="tab-iso">
+        <div class="prose">
+          <h3>Responsabilidad Social (no filantropía)</h3>
+          <p>
+            La ISO 26000 distingue entre <strong>filantropía</strong> (donar,
+            ayudar puntualmente) y <strong>responsabilidad social</strong>
+            (asumir que nuestras decisiones impactan a la sociedad y al ambiente,
+            y actuar en consecuencia). {{ proyecto.nombre }} es lo segundo: no
+            da dinero, construye cultura cívica y transparencia.
+          </p>
+          <h4>Las 7 materias fundamentales</h4>
+          <p style="font-size: .9rem; color: var(--muted);">Las marcadas con ✓ se integran explícitamente en el proyecto.</p>
+          <div class="iso-grid">
+            {% for m in iso_materias %}
+              <div class="iso-item {% if m.activa %}activa{% endif %}">{{ m.nombre }}</div>
+            {% endfor %}
+          </div>
+          <h4 style="margin-top: 28px;">Los 7 principios y cómo se aplican</h4>
           <ul>
-            {% for a in f.actividades %}<li>{{ a }}</li>{% endfor %}
+            <li><strong>Rendición de cuentas:</strong> panel público de denuncias visible para cualquiera.</li>
+            <li><strong>Transparencia:</strong> módulos educativos abiertos y fuentes explícitas.</li>
+            <li><strong>Comportamiento ético:</strong> anonimato por defecto; cero explotación de datos personales.</li>
+            <li><strong>Respeto a partes interesadas:</strong> comunidad, gobierno, universidades y empresas (ver matriz).</li>
+            <li><strong>Principio de legalidad:</strong> articulación con PROFEPA, CONAGUA y autoridades locales.</li>
+            <li><strong>Normativa internacional:</strong> alineación con la ONU y metas ODS 13, 15, 16.</li>
+            <li><strong>Derechos humanos:</strong> el derecho a un medio ambiente sano como columna vertebral.</li>
           </ul>
-          <div class="tl-recursos"><i class="bi bi-people-fill"></i>{{ f.recursos }}</div>
         </div>
-        {% endfor %}
       </div>
-    </section>
 
-    <!-- EQUIPO -->
-    <section class="section" id="equipo">
-      <div class="section-head">
-        <span class="section-kicker">09 · Equipo 3</span>
-        <h2>Integrantes</h2>
-        <p class="section-sub">Universidad Anáhuac · Responsabilidad Social y Sustentabilidad</p>
-      </div>
-      <div class="team-grid">
-        {% for p in equipo %}
-        <div class="person-card">
-          <div class="person-avatar">
-            {% with p.nombre|slice:":1" as inicial1 %}{{ inicial1 }}{% endwith %}
+      <!-- DSI -->
+      <div class="tab-panel" id="tab-dsi">
+        <div class="prose">
+          <h3>Dos principios de la Doctrina Social de la Iglesia</h3>
+          <p>La DSI ofrece un horizonte ético complementario a la ISO 26000. Seleccionamos dos principios particularmente pertinentes:</p>
+          <div class="info-grid">
+            {% for d in dsi %}
+              <div class="info-card">
+                <h4 style="color: var(--moss-deep); margin-bottom: 10px;">{{ d.principio }}</h4>
+                <p style="font-size: .92rem;"><strong>Idea.</strong> {{ d.idea }}</p>
+                <p style="font-size: .92rem; margin-top: 10px;"><strong>En el proyecto.</strong> {{ d.aplicacion }}</p>
+              </div>
+            {% endfor %}
           </div>
-          <div class="person-name">{{ p.nombre }}</div>
-          <div class="person-mail"><a href="mailto:{{ p.correo }}">{{ p.correo }}</a></div>
+          <h4 style="margin-top: 24px;">Tres derechos humanos atendidos</h4>
+          <ul>
+            {% for d in derechos %}
+              <li><strong>{{ d.nombre }}</strong> ({{ d.fuente }}). {{ d.como }}</li>
+            {% endfor %}
+          </ul>
         </div>
+      </div>
+
+      <!-- Stakeholders -->
+      <div class="tab-panel" id="tab-stakeholders">
+        <div class="prose">
+          <h3>Matriz de grupos de interés</h3>
+          <p>Cada grupo aporta y recibe impacto distinto. La sostenibilidad del proyecto depende de esta red.</p>
+          <div style="overflow-x: auto;">
+            <table class="sh-table">
+              <thead>
+                <tr><th>Grupo</th><th>Relación</th><th>Contribución / impacto</th></tr>
+              </thead>
+              <tbody>
+                {% for s in stakeholders %}
+                  <tr>
+                    <td><strong>{{ s.nombre }}</strong></td>
+                    <td>{{ s.relacion }}</td>
+                    <td>{{ s.contribucion }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fases -->
+      <div class="tab-panel" id="tab-fases">
+        <div class="prose">
+          <h3>Plan piloto en seis meses</h3>
+          <p>Un alcance acotado para probar el modelo antes de escalar.</p>
+        </div>
+        <div class="timeline">
+          {% for f in fases %}
+            <article class="fase">
+              <div class="dur">Fase {{ f.numero }} · {{ f.duracion }}</div>
+              <h4>{{ f.titulo }}</h4>
+              <ul>
+                {% for a in f.actividades %}<li>{{ a }}</li>{% endfor %}
+              </ul>
+              <div class="recursos"><strong>Recursos:</strong> {{ f.recursos }}</div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ODS -->
+      <div class="tab-panel" id="tab-ods">
+        <div class="prose">
+          <h3>Tres Objetivos de Desarrollo Sostenible</h3>
+          <p>La plataforma se alinea de forma estratégica con estas metas.</p>
+          <div class="info-grid">
+            {% for o in ods %}
+              <div class="info-card" style="{% if o.principal %}border-left: 3px solid var(--moss);{% endif %}">
+                <span class="num">{{ o.num }}</span>
+                <h4>{{ o.nombre }}</h4>
+                <p style="font-size: .82rem; color: var(--earth); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin: 4px 0 8px;">{{ o.meta }}</p>
+                <p style="font-size: .9rem;">{{ o.aporte }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EQUIPO -->
+  <section id="equipo" class="block">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Quienes la construimos</div>
+        <h2>Un equipo, un proyecto compartido</h2>
+        <p class="sub">
+          Estudiantes de la {{ proyecto.materia|default:"Universidad Anáhuac" }},
+          convocados por el reto de que la transparencia ambiental sea una práctica cotidiana.
+        </p>
+      </div>
+      <div class="equipo-grid">
+        {% for p in equipo %}
+          <div class="persona">
+            <div class="avatar">{{ p.nombre|slice:":1" }}</div>
+            <h4>{{ p.nombre }}</h4>
+            <div class="correo">{{ p.correo }}</div>
+          </div>
         {% endfor %}
       </div>
-    </section>
+      <p style="text-align: center; margin-top: 40px; font-size: .9rem; color: var(--muted);">
+        Docente: <strong style="color: var(--ink);">{{ proyecto.docente }}</strong>
+      </p>
+    </div>
+  </section>
+</main>
 
-    <div class="footer">
-      Proyecto de transformación social · ODS 16 · Universidad Anáhuac · Equipo 3
+<footer class="site">
+  <div class="container row">
+    <div>
+      <div class="brand-ft">{{ proyecto.nombre }}</div>
+      <small>Proyecto académico · {{ proyecto.materia }}</small>
+    </div>
+    <div style="text-align: right;">
+      <small>Plataforma sin fines de lucro · Datos locales en tu navegador (sin servidor externo)</small><br/>
+      <small>{{ proyecto.ubicacion }} · 2026</small>
     </div>
   </div>
+</footer>
+
+<script>
+/* =========================================================
+   Tabs (Proyecto)
+   ========================================================= */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+  });
+});
+
+/* =========================================================
+   Módulos (acordeón)
+   ========================================================= */
+function toggleModulo(headerEl) {
+  const mod = headerEl.closest('.modulo');
+  mod.classList.toggle('open');
+  const toggle = mod.querySelector('.modulo-toggle');
+  toggle.firstChild.nextSibling; // noop
+  toggle.innerHTML = (mod.classList.contains('open')
+    ? '<span class="arrow">›</span> Cerrar módulo'
+    : '<span class="arrow">›</span> Abrir módulo');
+}
+
+/* =========================================================
+   Denuncias: almacenamiento local y renderizado
+   ========================================================= */
+const LS_KEY = 'denuncia_verde_reportes_v1';
+const MY_KEY = 'denuncia_verde_mios_v1';
+
+const denunciasDemo = [
+  {% for d in denuncias_demo %}
+  {
+    id: "{{ d.id }}",
+    tipo: "{{ d.tipo }}",
+    tipoValor: "{{ d.tipo_valor }}",
+    lugar: "{{ d.lugar|escapejs }}",
+    fecha: "{{ d.fecha }}",
+    descripcion: "{{ d.descripcion|escapejs }}",
+    estado: "{{ d.estado }}",
+    demo: true,
+  },
+  {% endfor %}
+];
+
+function getStored() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
+  catch { return []; }
+}
+function setStored(list) { localStorage.setItem(LS_KEY, JSON.stringify(list)); }
+function getMyIds() {
+  try { return JSON.parse(localStorage.getItem(MY_KEY)) || []; }
+  catch { return []; }
+}
+function addMyId(id) {
+  const curr = getMyIds();
+  if (!curr.includes(id)) { curr.push(id); localStorage.setItem(MY_KEY, JSON.stringify(curr)); }
+}
+
+function formatFecha(s) {
+  if (!s) return '';
+  const d = new Date(s);
+  if (isNaN(d)) return s;
+  return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function estadoClass(estado) {
+  const e = (estado || '').toLowerCase();
+  if (e.includes('seguimiento')) return 'estado-seguimiento';
+  if (e.includes('enviada'))     return 'estado-enviada';
+  return 'estado-recibida';
+}
+
+let filtroActual = 'todas';
+
+function renderLista() {
+  const userList = getStored();
+  const myIds = getMyIds();
+  const combined = [...userList, ...denunciasDemo];
+
+  let filtered = combined;
+  if (filtroActual === 'mias') {
+    filtered = userList.filter(d => myIds.includes(d.id));
+  } else if (filtroActual !== 'todas') {
+    filtered = combined.filter(d => d.tipoValor === filtroActual);
+  }
+
+  const cont = document.getElementById('denunciasLista');
+  document.getElementById('denuncias-count').textContent = combined.length;
+
+  if (!filtered.length) {
+    cont.innerHTML = `<div class="empty-state">Sin reportes para este filtro. ${filtroActual === 'mias' ? 'Aún no has enviado denuncias desde este dispositivo.' : 'Sé el primero en reportar.'}</div>`;
+    return;
+  }
+
+  cont.innerHTML = filtered.map(d => {
+    const isMine = myIds.includes(d.id);
+    const tipoIcono = (document.querySelector(`#tipo option[value="${d.tipoValor}"]`)?.dataset.icono) || '•';
+    return `
+      <article class="denuncia-item ${isMine ? 'user-submitted' : ''}">
+        <div class="den-head">
+          <div class="den-tipo">${tipoIcono} ${d.tipo}</div>
+          <span class="den-estado ${estadoClass(d.estado)}">${d.estado || 'Recibida'}</span>
+        </div>
+        <div class="den-meta">
+          <span>📍 ${escapeHtml(d.lugar)}</span>
+          <span>📅 ${formatFecha(d.fecha)}</span>
+          ${isMine ? '<span style="color: var(--moss);">· tuya</span>' : ''}
+        </div>
+        <p class="den-desc">${escapeHtml(d.descripcion)}</p>
+        <small style="color: var(--muted); font-size: .72rem; letter-spacing: .05em;">Folio: ${d.id}</small>
+      </article>
+    `;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]);
+}
+
+/* Filtros */
+document.getElementById('filterPills').addEventListener('click', (e) => {
+  if (e.target.classList.contains('pill')) {
+    document.querySelectorAll('#filterPills .pill').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    filtroActual = e.target.dataset.filter;
+    renderLista();
+  }
+});
+
+/* Form submit */
+document.getElementById('denunciaForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const tipoSel = document.getElementById('tipo');
+  const opt = tipoSel.options[tipoSel.selectedIndex];
+  const folio = 'DV-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+  const nueva = {
+    id: folio,
+    tipo: opt.dataset.etiqueta,
+    tipoValor: fd.get('tipo'),
+    lugar: fd.get('lugar').trim(),
+    fecha: fd.get('fecha'),
+    descripcion: fd.get('descripcion').trim(),
+    contacto: fd.get('anonimo') ? '' : (fd.get('contacto') || '').trim(),
+    canalizar: !!fd.get('canalizar'),
+    estado: fd.get('canalizar') ? 'Enviada a autoridad' : 'Recibida',
+    demo: false,
+  };
+
+  const curr = getStored();
+  curr.unshift(nueva);
+  setStored(curr);
+  addMyId(folio);
+
+  const ok = document.getElementById('formSuccess');
+  ok.innerHTML = `<strong>✓ Denuncia registrada</strong> con folio <code style="background: var(--paper); padding: 2px 6px; border-radius: 4px;">${folio}</code>. Ya aparece en el panel público${nueva.canalizar ? ' y será canalizada a la autoridad competente' : ''}.`;
+  ok.classList.add('show');
+
+  e.target.reset();
+  document.getElementById('anonimo').checked = true;
+  renderLista();
+  setTimeout(() => {
+    document.getElementById('denunciasLista').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
+});
+
+/* Inicializa fecha por defecto y primer render */
+(function initDefaults() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('fecha').value = today;
+  renderLista();
+})();
+
+/* Cierra menú móvil al click en enlace */
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+</script>
+
 </body>
 </html>

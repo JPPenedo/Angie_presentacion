@@ -1220,10 +1220,14 @@ def expo_opciones_view(request):
 
 def proyecto_ods16_view(request):
     """
-    Vista pública del proyecto de transformación social (ODS 16).
-    Página única con el contenido de las actividades 1b, 2a, 3a y 3b
-    de Responsabilidad Social y Sustentabilidad.
-    No usa base de datos: todo el contenido se pasa hardcodeado al template.
+    Plataforma funcional 'Denuncia Verde' (ODS 16 · Paz, justicia e instituciones
+    sólidas). Implementa literalmente lo que describen las actividades 1b, 2a, 3a
+    y 3b: canal seguro de denuncia ciudadana sobre corrupción ambiental,
+    contenidos educativos socioambientales y difusión de derechos.
+
+    Sin base de datos: las denuncias de usuarios se persisten en localStorage.
+    La vista sólo provee los datos de apoyo (módulos, denuncias de ejemplo,
+    marco conceptual) al template.
     """
     equipo = [
         {'nombre': 'Juan Pablo Penedo Antúnez',      'correo': 'juan.penedo@anahuac.mx'},
@@ -1465,6 +1469,244 @@ def proyecto_ods16_view(request):
         },
     ]
 
+    # Tipos de irregularidades que la plataforma permite reportar (formulario).
+    tipos_denuncia = [
+        {'valor': 'tala_ilegal',       'etiqueta': 'Tala ilegal',                 'icono': '🌲'},
+        {'valor': 'uso_agua',          'etiqueta': 'Uso indebido del agua',       'icono': '💧'},
+        {'valor': 'uso_suelo',         'etiqueta': 'Uso indebido del suelo',      'icono': '🌱'},
+        {'valor': 'contaminacion',     'etiqueta': 'Contaminación / residuos',    'icono': '🏭'},
+        {'valor': 'fauna',             'etiqueta': 'Daño a fauna o flora',        'icono': '🦋'},
+        {'valor': 'otro',              'etiqueta': 'Otra irregularidad ambiental','icono': '⚠️'},
+    ]
+
+    # Denuncias "semilla" visibles desde el primer momento para que la plataforma
+    # no se vea vacía. No son reales: son ejemplos representativos.
+    denuncias_demo = [
+        {
+            'id': 'demo-1', 'tipo': 'Tala ilegal', 'tipo_valor': 'tala_ilegal',
+            'lugar': 'Sierra de El Zamorano, Colón', 'fecha': '2026-03-18',
+            'descripcion': (
+                'Se observan cortes recientes de encino en una ladera protegida. '
+                'Presencia de camionetas sin identificación cargando madera al '
+                'anochecer.'
+            ),
+            'estado': 'En seguimiento',
+        },
+        {
+            'id': 'demo-2', 'tipo': 'Uso indebido del agua', 'tipo_valor': 'uso_agua',
+            'lugar': 'Huimilpan', 'fecha': '2026-03-22',
+            'descripcion': (
+                'Extracción aparentemente no autorizada desde un pozo hacia pipas '
+                'particulares en horario nocturno. Vecinos reportan baja presión '
+                'en la red comunitaria.'
+            ),
+            'estado': 'Recibida',
+        },
+        {
+            'id': 'demo-3', 'tipo': 'Contaminación / residuos', 'tipo_valor': 'contaminacion',
+            'lugar': 'Arroyo de San Pedrito, Querétaro', 'fecha': '2026-04-04',
+            'descripcion': (
+                'Descarga de líquidos con coloración oscura y olor fuerte desde '
+                'una nave industrial. Mancha visible en el cauce durante 200 m.'
+            ),
+            'estado': 'Enviada a autoridad',
+        },
+    ]
+
+    # Módulos educativos de la plataforma (Meta ODS 13.3). Cada módulo se abre
+    # como acordeón en el template y muestra su contenido completo.
+    modulos = [
+        {
+            'id': 'mod-corrupcion',
+            'titulo': '¿Qué es la corrupción ambiental?',
+            'duracion': '8 min',
+            'nivel': 'Básico',
+            'icono': '🌳',
+            'resumen': (
+                'Entiende cómo el abuso del poder se traduce en daño a los '
+                'ecosistemas que compartimos.'
+            ),
+            'contenido': [
+                ('Concepto', (
+                    'La corrupción ambiental ocurre cuando alguien con poder '
+                    'público o privado desvía decisiones o recursos que debían '
+                    'proteger el medio ambiente para obtener un beneficio '
+                    'particular: permisos irregulares, tolerancia a la '
+                    'contaminación, tala consentida o concesiones ilegales de agua.'
+                )),
+                ('Fórmula de Klitgaard', (
+                    'C = M + D − A. La corrupción (C) aparece cuando hay '
+                    'monopolio de decisión (M) y discrecionalidad (D) sin '
+                    'rendición de cuentas (A). La plataforma busca aumentar A '
+                    'acercando la vigilancia a la comunidad.'
+                )),
+                ('Ejemplos concretos en Querétaro', (
+                    'Tala tolerada en áreas naturales protegidas; concesiones '
+                    'de agua que benefician a pocos; permisos de cambio de uso '
+                    'de suelo sin consulta pública; contaminación industrial '
+                    'no sancionada.'
+                )),
+            ],
+        },
+        {
+            'id': 'mod-derechos',
+            'titulo': 'Tus derechos ambientales',
+            'duracion': '6 min',
+            'nivel': 'Básico',
+            'icono': '🪶',
+            'resumen': (
+                'Toda persona en México tiene derecho a un medio ambiente sano, '
+                'a participar y a informarse.'
+            ),
+            'contenido': [
+                ('Medio ambiente sano', (
+                    'Reconocido por la ONU en 2022 y por el artículo 4º de la '
+                    'Constitución mexicana. Obliga al Estado a proteger la '
+                    'salud ecológica y a las personas a cuidarla.'
+                )),
+                ('Participación ciudadana', (
+                    'La DUDH y la Ley General del Equilibrio Ecológico '
+                    'garantizan tu derecho a involucrarte en las decisiones '
+                    'ambientales de tu comunidad.'
+                )),
+                ('Acceso a la información', (
+                    'Puedes consultar permisos, manifestaciones de impacto '
+                    'ambiental y sanciones ante la PROFEPA, la SEMARNAT y la '
+                    'CONAGUA. La información pública es una herramienta clave '
+                    'para denunciar.'
+                )),
+            ],
+        },
+        {
+            'id': 'mod-como-denunciar',
+            'titulo': 'Cómo denunciar sin riesgo',
+            'duracion': '10 min',
+            'nivel': 'Intermedio',
+            'icono': '🛡️',
+            'resumen': (
+                'Guía paso a paso para hacer una denuncia efectiva, anónima y '
+                'que deje huella verificable.'
+            ),
+            'contenido': [
+                ('1. Observa y documenta', (
+                    'Registra fecha, hora y lugar exacto (referencia conocida '
+                    'o coordenadas). Si puedes, toma fotografías o video desde '
+                    'una distancia segura. No confrontes a los responsables.'
+                )),
+                ('2. Describe hechos, no suposiciones', (
+                    'Escribe lo que viste con claridad: qué, dónde, cuándo, '
+                    'quiénes (si los conoces) y cómo afecta al entorno. '
+                    'Evita juicios y quédate con los hechos verificables.'
+                )),
+                ('3. Usa esta plataforma o canales oficiales', (
+                    'Aquí tu denuncia llega al expediente comunitario y, si '
+                    'aceptas, puede canalizarse a la PROFEPA (línea gratuita '
+                    '800 770 3372, denuncias@profepa.gob.mx) o a la CEDH de '
+                    'Querétaro.'
+                )),
+                ('4. Protégete', (
+                    'Puedes denunciar de forma 100% anónima. No compartas tu '
+                    'identidad en redes sociales ni hagas pública la denuncia '
+                    'antes de que se le dé seguimiento formal.'
+                )),
+            ],
+        },
+        {
+            'id': 'mod-queretaro',
+            'titulo': 'Recursos naturales de Querétaro',
+            'duracion': '7 min',
+            'nivel': 'Básico',
+            'icono': '🏞️',
+            'resumen': (
+                'Conoce qué proteges cuando denuncias: ecosistemas, fauna y '
+                'acuíferos locales.'
+            ),
+            'contenido': [
+                ('Sierra Gorda', (
+                    'Reserva de la Biosfera con una de las mayores '
+                    'biodiversidades del país. Bosques de niebla, selvas bajas '
+                    'y cientos de especies endémicas en riesgo por tala y '
+                    'cambio de uso de suelo.'
+                )),
+                ('Acuífero Valle de Querétaro', (
+                    'Fuente principal de agua para la zona metropolitana. '
+                    'Clasificado como sobreexplotado. Vigilar su uso es '
+                    'crítico para la sostenibilidad de la ciudad.'
+                )),
+                ('Peña de Bernal y El Zamorano', (
+                    'Zonas protegidas con especies de fauna como el águila '
+                    'real y el puma. Presionadas por tala ilegal y desarrollo '
+                    'inmobiliario irregular.'
+                )),
+            ],
+        },
+        {
+            'id': 'mod-participacion',
+            'titulo': 'Participación ciudadana efectiva',
+            'duracion': '9 min',
+            'nivel': 'Intermedio',
+            'icono': '🤝',
+            'resumen': (
+                'Más allá de denunciar: cómo organizarte con tu comunidad para '
+                'dar seguimiento y proponer soluciones.'
+            ),
+            'contenido': [
+                ('Comités comunitarios', (
+                    'Son grupos vecinales que dan seguimiento continuo a '
+                    'problemas ambientales locales. Funcionan mejor cuando '
+                    'tienen un enlace con autoridades y una ONG ambiental.'
+                )),
+                ('Herramientas públicas', (
+                    'Plataforma Nacional de Transparencia, INFOMEX y portales '
+                    'estatales permiten pedir información pública sobre '
+                    'permisos ambientales.'
+                )),
+                ('Alianzas útiles', (
+                    'Universidad Anáhuac, Colectivo Pro Bosques y asesores '
+                    'jurídicos ambientales voluntarios aportan soporte técnico '
+                    'y legal cuando hace falta.'
+                )),
+            ],
+        },
+        {
+            'id': 'mod-iso',
+            'titulo': 'Responsabilidad Social (ISO 26000)',
+            'duracion': '12 min',
+            'nivel': 'Avanzado',
+            'icono': '🧭',
+            'resumen': (
+                'Conoce el marco internacional que guía la ética, transparencia '
+                'y sostenibilidad de organizaciones como ésta.'
+            ),
+            'contenido': [
+                ('Siete principios', (
+                    'Rendición de cuentas, transparencia, comportamiento '
+                    'ético, respeto a los intereses de las partes interesadas, '
+                    'legalidad, normativa internacional y derechos humanos.'
+                )),
+                ('Siete materias fundamentales', (
+                    'Gobernanza organizacional, derechos humanos, prácticas '
+                    'laborales, medio ambiente, prácticas justas de operación, '
+                    'asuntos de consumidores y participación activa con la '
+                    'comunidad.'
+                )),
+                ('No es filantropía', (
+                    'La Responsabilidad Social busca cambios estructurales '
+                    '(transparencia, cultura, institucionalidad), no donativos '
+                    'aislados.'
+                )),
+            ],
+        },
+    ]
+
+    # Canales oficiales que complementan la plataforma.
+    canales_oficiales = [
+        {'nombre': 'PROFEPA',             'telefono': '800 770 3372', 'correo': 'denuncias@profepa.gob.mx'},
+        {'nombre': 'CONAGUA',             'telefono': '55 5174 4000', 'correo': 'atencion.usuarios@conagua.gob.mx'},
+        {'nombre': 'SEDESU Querétaro',    'telefono': '442 238 7700', 'correo': 'sedesu@queretaro.gob.mx'},
+        {'nombre': 'CEDH Querétaro',      'telefono': '442 214 0837', 'correo': 'quejas@cedhqueretaro.org.mx'},
+    ]
+
     context = {
         'proyecto': {
             'nombre': 'Denuncia Verde',
@@ -1482,5 +1724,9 @@ def proyecto_ods16_view(request):
         'derechos': derechos,
         'stakeholders': stakeholders,
         'fases': fases,
+        'tipos_denuncia': tipos_denuncia,
+        'denuncias_demo': denuncias_demo,
+        'modulos': modulos,
+        'canales_oficiales': canales_oficiales,
     }
     return render(request, 'core/proyecto_ods16.html', context)
