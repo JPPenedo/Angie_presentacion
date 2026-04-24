@@ -1469,14 +1469,15 @@ def proyecto_ods16_view(request):
         },
     ]
 
-    # Tipos de irregularidades que la plataforma permite reportar (formulario).
+    # Tipos de irregularidades que la plataforma permite reportar.
+    # `icon` referencia una clave del catálogo de iconos SVG en el template.
     tipos_denuncia = [
-        {'valor': 'tala_ilegal',       'etiqueta': 'Tala ilegal',                 'icono': '🌲'},
-        {'valor': 'uso_agua',          'etiqueta': 'Uso indebido del agua',       'icono': '💧'},
-        {'valor': 'uso_suelo',         'etiqueta': 'Uso indebido del suelo',      'icono': '🌱'},
-        {'valor': 'contaminacion',     'etiqueta': 'Contaminación / residuos',    'icono': '🏭'},
-        {'valor': 'fauna',             'etiqueta': 'Daño a fauna o flora',        'icono': '🦋'},
-        {'valor': 'otro',              'etiqueta': 'Otra irregularidad ambiental','icono': '⚠️'},
+        {'valor': 'tala_ilegal',       'etiqueta': 'Tala ilegal',                   'icon': 'tree'},
+        {'valor': 'uso_agua',          'etiqueta': 'Uso indebido del agua',         'icon': 'drop'},
+        {'valor': 'uso_suelo',         'etiqueta': 'Uso indebido del suelo',        'icon': 'soil'},
+        {'valor': 'contaminacion',     'etiqueta': 'Contaminación o residuos',      'icon': 'factory'},
+        {'valor': 'fauna',             'etiqueta': 'Daño a fauna o flora',          'icon': 'leaf'},
+        {'valor': 'otro',              'etiqueta': 'Otra irregularidad ambiental',  'icon': 'warning'},
     ]
 
     # Denuncias "semilla" visibles desde el primer momento para que la plataforma
@@ -1513,188 +1514,509 @@ def proyecto_ods16_view(request):
         },
     ]
 
-    # Módulos educativos de la plataforma (Meta ODS 13.3). Cada módulo se abre
-    # como acordeón en el template y muestra su contenido completo.
+    # Módulos educativos de la plataforma (Meta ODS 13.3).
+    # Cada módulo contiene: resumen, contenido estructurado por secciones
+    # (cada sección con párrafos + bullets opcionales), un video de YouTube
+    # embebido (cuando está disponible) y enlaces externos verificados.
+    # `icon` hace referencia a un catálogo de iconos SVG en el template.
     modulos = [
         {
             'id': 'mod-corrupcion',
-            'titulo': '¿Qué es la corrupción ambiental?',
-            'duracion': '8 min',
+            'titulo': 'Qué es la corrupción ambiental',
+            'duracion': '12 min',
             'nivel': 'Básico',
-            'icono': '🌳',
+            'icon': 'book',
             'resumen': (
-                'Entiende cómo el abuso del poder se traduce en daño a los '
-                'ecosistemas que compartimos.'
+                'Cómo el abuso del poder se traduce en daño directo a los '
+                'ecosistemas que compartimos. Marco de Klitgaard, tipologías '
+                'y panorama mexicano.'
             ),
+            'video_id': 'TPdBE_zPt-s',
+            'video_title': 'La corrupción: análisis desde el poder político',
+            'video_credit': 'Contexto sobre cómo la corrupción estructural habilita delitos ambientales.',
+            'objetivos': [
+                'Distinguir corrupción administrativa, política y ambiental.',
+                'Aplicar la ecuación de Klitgaard a casos locales.',
+                'Reconocer señales de corrupción ambiental en tu entorno.',
+            ],
             'contenido': [
-                ('Concepto', (
-                    'La corrupción ambiental ocurre cuando alguien con poder '
-                    'público o privado desvía decisiones o recursos que debían '
-                    'proteger el medio ambiente para obtener un beneficio '
-                    'particular: permisos irregulares, tolerancia a la '
-                    'contaminación, tala consentida o concesiones ilegales de agua.'
-                )),
-                ('Fórmula de Klitgaard', (
-                    'C = M + D − A. La corrupción (C) aparece cuando hay '
-                    'monopolio de decisión (M) y discrecionalidad (D) sin '
-                    'rendición de cuentas (A). La plataforma busca aumentar A '
-                    'acercando la vigilancia a la comunidad.'
-                )),
-                ('Ejemplos concretos en Querétaro', (
-                    'Tala tolerada en áreas naturales protegidas; concesiones '
-                    'de agua que benefician a pocos; permisos de cambio de uso '
-                    'de suelo sin consulta pública; contaminación industrial '
-                    'no sancionada.'
-                )),
+                {
+                    'titulo': 'Definición operativa',
+                    'parrafos': [
+                        'Hablamos de corrupción ambiental cuando una persona '
+                        'con poder público o privado desvía decisiones, '
+                        'permisos o recursos que debían proteger el medio '
+                        'ambiente para obtener un beneficio particular. No es '
+                        'sólo un soborno aislado: es el sistema el que se '
+                        'descompone.',
+                        'Transparencia Internacional documentó en 2024 que la '
+                        'debilidad institucional en América Latina facilita '
+                        'tala ilegal, minería clandestina y tráfico de fauna '
+                        'silvestre, y que cerca del 80 % de los asesinatos de '
+                        'defensores ambientales en el mundo ocurren en esta '
+                        'región.',
+                    ],
+                },
+                {
+                    'titulo': 'La ecuación de Klitgaard',
+                    'parrafos': [
+                        'Robert Klitgaard resume cuarenta años de '
+                        'investigación en una fórmula sencilla: '
+                        'C = M + D − A. La corrupción aumenta con el monopolio '
+                        'de decisión (M) y la discrecionalidad (D), y '
+                        'disminuye con la rendición de cuentas (A).',
+                        'Esta plataforma actúa justamente sobre A: '
+                        'distribuye la vigilancia entre toda la comunidad, '
+                        'reduce la discrecionalidad al documentar los casos y '
+                        'rompe monopolios informativos.',
+                    ],
+                    'bullets': [
+                        'Monopolio: una sola persona u oficina decide sobre un recurso natural.',
+                        'Discrecionalidad: no hay criterios claros, públicos y verificables.',
+                        'Rendición de cuentas: nadie supervisa de forma independiente.',
+                    ],
+                },
+                {
+                    'titulo': 'Tipologías más frecuentes en México',
+                    'parrafos': [
+                        'Conocer la tipología ayuda a identificar la '
+                        'irregularidad cuando la encuentras:'
+                    ],
+                    'bullets': [
+                        'Permisos irregulares de cambio de uso de suelo forestal.',
+                        'Concesiones de agua que benefician a unas pocas manos.',
+                        'Tolerancia pactada a descargas industriales y residuos peligrosos.',
+                        'Contratos de obra pública en áreas naturales protegidas.',
+                        'Tráfico de flora y fauna silvestre listadas en la NOM-059.',
+                    ],
+                },
+                {
+                    'titulo': 'Señales locales de alerta en Querétaro',
+                    'parrafos': [
+                        'Observar sin juzgar es el primer paso. Estos patrones '
+                        'repetidos en una misma zona suelen coincidir con '
+                        'corrupción ambiental activa:'
+                    ],
+                    'bullets': [
+                        'Camiones cargando madera o tierra en horarios nocturnos.',
+                        'Pipas de agua extrayendo de pozos sin rotulación.',
+                        'Obras que avanzan sin mostrar manifestación de impacto ambiental.',
+                        'Descargas visibles en ríos o arroyos sin señalamientos oficiales.',
+                    ],
+                },
+            ],
+            'enlaces': [
+                {'label': 'Índice de Percepción de la Corrupción · Transparency International', 'url': 'https://www.transparency.org/en/cpi'},
+                {'label': 'UNODC: Delitos contra el medio ambiente', 'url': 'https://www.unodc.org/unodc/es/wildlife-and-forest-crime/index.html'},
+                {'label': 'Instituto Nacional de Transparencia (INAI)', 'url': 'https://home.inai.org.mx/'},
             ],
         },
         {
             'id': 'mod-derechos',
             'titulo': 'Tus derechos ambientales',
-            'duracion': '6 min',
+            'duracion': '10 min',
             'nivel': 'Básico',
-            'icono': '🪶',
+            'icon': 'leaf',
             'resumen': (
-                'Toda persona en México tiene derecho a un medio ambiente sano, '
-                'a participar y a informarse.'
+                'Toda persona en México tiene derecho a un medio ambiente '
+                'sano, a participar y a informarse. Aquí se explica cada '
+                'derecho con su fundamento legal.'
             ),
+            'video_id': 'oykGxLQaNXs',
+            'video_title': 'ONU · El medio ambiente saludable como derecho humano',
+            'video_credit': 'Programa de las Naciones Unidas para el Medio Ambiente (PNUMA), 2022.',
+            'objetivos': [
+                'Identificar los derechos ambientales reconocidos en México.',
+                'Saber dónde encontrar el fundamento legal de cada uno.',
+                'Entender cómo se traducen en herramientas concretas de defensa.',
+            ],
             'contenido': [
-                ('Medio ambiente sano', (
-                    'Reconocido por la ONU en 2022 y por el artículo 4º de la '
-                    'Constitución mexicana. Obliga al Estado a proteger la '
-                    'salud ecológica y a las personas a cuidarla.'
-                )),
-                ('Participación ciudadana', (
-                    'La DUDH y la Ley General del Equilibrio Ecológico '
-                    'garantizan tu derecho a involucrarte en las decisiones '
-                    'ambientales de tu comunidad.'
-                )),
-                ('Acceso a la información', (
-                    'Puedes consultar permisos, manifestaciones de impacto '
-                    'ambiental y sanciones ante la PROFEPA, la SEMARNAT y la '
-                    'CONAGUA. La información pública es una herramienta clave '
-                    'para denunciar.'
-                )),
+                {
+                    'titulo': 'Derecho a un medio ambiente sano',
+                    'parrafos': [
+                        'Reconocido por la Asamblea General de la ONU en su '
+                        'resolución del 28 de julio de 2022 (161 votos a favor, '
+                        'ninguno en contra). Este derecho obliga al Estado a '
+                        'prevenir la degradación y a proteger la salud '
+                        'ecológica de las personas.',
+                        'En México está consagrado en el artículo 4º de la '
+                        'Constitución: «Toda persona tiene derecho a un medio '
+                        'ambiente sano para su desarrollo y bienestar».',
+                    ],
+                },
+                {
+                    'titulo': 'Derecho a la participación ciudadana',
+                    'parrafos': [
+                        'La Declaración Universal de Derechos Humanos (1948) y '
+                        'el Principio 10 de la Declaración de Río (1992) '
+                        'garantizan tu derecho a intervenir en las decisiones '
+                        'ambientales que te afectan.',
+                        'La Ley General del Equilibrio Ecológico y la '
+                        'Protección al Ambiente (LGEEPA) reconoce la denuncia '
+                        'popular como mecanismo para ejercer este derecho, '
+                        'incluso de forma anónima.',
+                    ],
+                },
+                {
+                    'titulo': 'Derecho de acceso a la información',
+                    'parrafos': [
+                        'Puedes solicitar a cualquier autoridad información '
+                        'sobre permisos, manifestaciones de impacto ambiental, '
+                        'concesiones de agua, sanciones y procesos '
+                        'administrativos.',
+                    ],
+                    'bullets': [
+                        'Plataforma Nacional de Transparencia: solicitudes en línea y gratuitas.',
+                        'Sistema Nacional de Información Ambiental (SNIARN) — SEMARNAT.',
+                        'Registro Público de Derechos de Agua (REPDA) — CONAGUA.',
+                    ],
+                },
+                {
+                    'titulo': 'Acuerdo de Escazú',
+                    'parrafos': [
+                        'México ratificó en 2021 este acuerdo regional que '
+                        'refuerza los derechos de acceso a la información, '
+                        'participación y justicia en asuntos ambientales, y '
+                        'protege especialmente a quienes defienden el '
+                        'territorio.',
+                    ],
+                },
+            ],
+            'enlaces': [
+                {'label': 'Resolución ONU A/RES/76/300 (medio ambiente sano)', 'url': 'https://documents.un.org/doc/undoc/gen/n22/442/77/pdf/n2244277.pdf'},
+                {'label': 'LGEEPA · Cámara de Diputados', 'url': 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LGEEPA.pdf'},
+                {'label': 'Acuerdo de Escazú · CEPAL', 'url': 'https://www.cepal.org/es/acuerdodeescazu'},
+                {'label': 'Constitución Política de los Estados Unidos Mexicanos', 'url': 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf'},
             ],
         },
         {
             'id': 'mod-como-denunciar',
             'titulo': 'Cómo denunciar sin riesgo',
-            'duracion': '10 min',
+            'duracion': '15 min',
             'nivel': 'Intermedio',
-            'icono': '🛡️',
+            'icon': 'shield',
             'resumen': (
-                'Guía paso a paso para hacer una denuncia efectiva, anónima y '
-                'que deje huella verificable.'
+                'Guía paso a paso para hacer una denuncia efectiva, segura, '
+                'anónima si así lo decides, y con evidencia que deje huella '
+                'verificable.'
             ),
+            'video_id': '',
+            'video_title': '',
+            'video_credit': '',
+            'objetivos': [
+                'Documentar correctamente una irregularidad ambiental.',
+                'Elegir el canal adecuado (local, federal o internacional).',
+                'Proteger tu identidad y tu integridad mientras denuncias.',
+            ],
             'contenido': [
-                ('1. Observa y documenta', (
-                    'Registra fecha, hora y lugar exacto (referencia conocida '
-                    'o coordenadas). Si puedes, toma fotografías o video desde '
-                    'una distancia segura. No confrontes a los responsables.'
-                )),
-                ('2. Describe hechos, no suposiciones', (
-                    'Escribe lo que viste con claridad: qué, dónde, cuándo, '
-                    'quiénes (si los conoces) y cómo afecta al entorno. '
-                    'Evita juicios y quédate con los hechos verificables.'
-                )),
-                ('3. Usa esta plataforma o canales oficiales', (
-                    'Aquí tu denuncia llega al expediente comunitario y, si '
-                    'aceptas, puede canalizarse a la PROFEPA (línea gratuita '
-                    '800 770 3372, denuncias@profepa.gob.mx) o a la CEDH de '
-                    'Querétaro.'
-                )),
-                ('4. Protégete', (
-                    'Puedes denunciar de forma 100% anónima. No compartas tu '
-                    'identidad en redes sociales ni hagas pública la denuncia '
-                    'antes de que se le dé seguimiento formal.'
-                )),
+                {
+                    'titulo': '1. Observa y documenta desde un lugar seguro',
+                    'parrafos': [
+                        'Registra fecha, hora y lugar exacto (una referencia '
+                        'reconocible o, mejor, coordenadas de tu mapa). '
+                        'Fotografía o graba video desde distancia; no '
+                        'confrontes ni persigas a los responsables.',
+                    ],
+                    'bullets': [
+                        'Anota matrículas de vehículos si son visibles.',
+                        'Registra varias tomas del mismo evento: plano general y detalle.',
+                        'Guarda los archivos originales (no los edites ni recortes).',
+                    ],
+                },
+                {
+                    'titulo': '2. Describe hechos verificables, no suposiciones',
+                    'parrafos': [
+                        'Tu relato pesa más cuando separa claramente qué viste, '
+                        'qué inferiste y qué te dijeron. Escribe: «observé X», '
+                        '«escuché Y», «no sé Z».',
+                    ],
+                    'bullets': [
+                        'Qué sucedió (descripción sobria, sin calificativos).',
+                        'Dónde sucedió (referencia y, si puedes, coordenadas).',
+                        'Cuándo (fecha, hora aproximada, duración).',
+                        'Quiénes (personas, empresas, vehículos identificables).',
+                        'Qué daño observable se provocó.',
+                    ],
+                },
+                {
+                    'titulo': '3. Elige el canal adecuado',
+                    'parrafos': [
+                        'Cada autoridad cubre materias distintas. Usa el canal '
+                        'que mejor encaje con tu caso; si lo autorizas, esta '
+                        'plataforma canalizará tu reporte por ti.',
+                    ],
+                    'bullets': [
+                        'Esta plataforma (comunitaria, anónima, con expediente abierto).',
+                        'PROFEPA · 800 770 3372, denuncias@profepa.gob.mx (forestal, impacto, fauna).',
+                        'CONAGUA · 55 5174 4000 (agua y cuerpos de agua nacionales).',
+                        'SEDESU Querétaro · 442 238 7700 (impacto ambiental estatal).',
+                        'CEDH Querétaro · 442 214 0837 (cuando se vulnera un derecho humano).',
+                    ],
+                },
+                {
+                    'titulo': '4. Protégete al denunciar',
+                    'parrafos': [
+                        'Puedes denunciar 100 % en anonimato. En temas de alto '
+                        'riesgo conviene además una rutina de seguridad '
+                        'digital y personal.',
+                    ],
+                    'bullets': [
+                        'No publiques la denuncia en redes antes del seguimiento formal.',
+                        'Guarda copia cifrada de tus evidencias en otro dispositivo.',
+                        'Si recibes amenazas, reporta inmediatamente a la CEDH o a la FEMDO.',
+                        'Acude a una organización de defensa de defensores ambientales (Serapaz, CEMDA).',
+                    ],
+                },
+            ],
+            'enlaces': [
+                {'label': 'PROFEPA · Cómo puedes denunciar', 'url': 'https://www.profepa.gob.mx/innovaportal/v/4991/1/mx/31_como_puedes_denunciar.html'},
+                {'label': 'PROFEPA · Haz tu denuncia (formulario en línea)', 'url': 'https://www.profepa.gob.mx/innovaportal/v/1156/1/mx/haz_tu_denuncia.html'},
+                {'label': 'CONAGUA · Denuncias en materia de agua', 'url': 'https://www.gob.mx/conagua/acciones-y-programas/denuncias'},
+                {'label': 'CEMDA · Defensa ambiental', 'url': 'https://www.cemda.org.mx/'},
             ],
         },
         {
             'id': 'mod-queretaro',
             'titulo': 'Recursos naturales de Querétaro',
-            'duracion': '7 min',
+            'duracion': '11 min',
             'nivel': 'Básico',
-            'icono': '🏞️',
+            'icon': 'tree',
             'resumen': (
-                'Conoce qué proteges cuando denuncias: ecosistemas, fauna y '
-                'acuíferos locales.'
+                'Conoce qué estás protegiendo cuando denuncias: ecosistemas, '
+                'fauna y acuíferos locales de gran valor y en situación '
+                'delicada.'
             ),
+            'video_id': '',
+            'video_title': '',
+            'video_credit': '',
+            'objetivos': [
+                'Ubicar los principales ecosistemas del estado.',
+                'Conocer las presiones ambientales específicas de cada zona.',
+                'Relacionar cada recurso con el tipo de denuncia que lo protege.',
+            ],
             'contenido': [
-                ('Sierra Gorda', (
-                    'Reserva de la Biosfera con una de las mayores '
-                    'biodiversidades del país. Bosques de niebla, selvas bajas '
-                    'y cientos de especies endémicas en riesgo por tala y '
-                    'cambio de uso de suelo.'
-                )),
-                ('Acuífero Valle de Querétaro', (
-                    'Fuente principal de agua para la zona metropolitana. '
-                    'Clasificado como sobreexplotado. Vigilar su uso es '
-                    'crítico para la sostenibilidad de la ciudad.'
-                )),
-                ('Peña de Bernal y El Zamorano', (
-                    'Zonas protegidas con especies de fauna como el águila '
-                    'real y el puma. Presionadas por tala ilegal y desarrollo '
-                    'inmobiliario irregular.'
-                )),
+                {
+                    'titulo': 'Reserva de la Biosfera Sierra Gorda',
+                    'parrafos': [
+                        'Decretada en 1997, cubre 383 567 hectáreas (un tercio '
+                        'del estado). Es la reserva más diversa en ecosistemas '
+                        'de México: bosques de niebla, selvas, matorrales y '
+                        'pinares en un mismo territorio. Alberga jaguar, '
+                        'guacamaya verde y el ajolote serrano.',
+                        'Nació por iniciativa ciudadana —caso único en México— '
+                        'impulsada por el Grupo Ecológico Sierra Gorda. Hoy '
+                        'enfrenta presión por tala ilegal, cambio de uso de '
+                        'suelo y desarrollo inmobiliario irregular.',
+                    ],
+                },
+                {
+                    'titulo': 'Acuífero Valle de Querétaro',
+                    'parrafos': [
+                        'Es la fuente principal de agua de la zona '
+                        'metropolitana. Desde hace más de una década está '
+                        'clasificado por CONAGUA como «sobreexplotado»: se '
+                        'extrae más de lo que recarga la lluvia cada año.',
+                        'Vigilar pozos sin concesión, descargas industriales y '
+                        'uso de pipas no autorizadas es crítico para la '
+                        'sostenibilidad del crecimiento urbano del estado.',
+                    ],
+                },
+                {
+                    'titulo': 'Semidesierto queretano',
+                    'parrafos': [
+                        'Cadereyta, Peñamiller y Tolimán conservan vegetación '
+                        'xerófila única —cactáceas endémicas, biznagas '
+                        'milenarias— muy vulnerable al saqueo ilegal y al '
+                        'cambio climático.',
+                    ],
+                },
+                {
+                    'titulo': 'Peña de Bernal y El Zamorano',
+                    'parrafos': [
+                        'Parte del Área Natural Protegida Cerro El Zamorano, '
+                        'con especies de fauna como águila real y puma. '
+                        'Presionadas por tala, incendios provocados y '
+                        'desarrollo inmobiliario irregular.',
+                    ],
+                },
+            ],
+            'enlaces': [
+                {'label': 'CONANP · Reserva de la Biosfera Sierra Gorda', 'url': 'https://conanp.gob.mx/conanp/dominios/sierragorda/index.php'},
+                {'label': 'Grupo Ecológico Sierra Gorda (ONG)', 'url': 'https://sierragorda.net/'},
+                {'label': 'SEDESU Querétaro · Medio Ambiente', 'url': 'https://www.queretaro.gob.mx/sedesu/'},
+                {'label': 'CONAGUA · Acuíferos del país', 'url': 'https://www.gob.mx/conagua/acciones-y-programas/disponibilidad-de-acuiferos'},
             ],
         },
         {
             'id': 'mod-participacion',
-            'titulo': 'Participación ciudadana efectiva',
-            'duracion': '9 min',
+            'titulo': 'Participación ciudadana y subsidiariedad',
+            'duracion': '13 min',
             'nivel': 'Intermedio',
-            'icono': '🤝',
+            'icon': 'people',
             'resumen': (
-                'Más allá de denunciar: cómo organizarte con tu comunidad para '
-                'dar seguimiento y proponer soluciones.'
+                'Más allá de denunciar: cómo organizarte con tu comunidad '
+                'para dar seguimiento y proponer soluciones. Fundamento '
+                'ético en la Doctrina Social de la Iglesia.'
             ),
+            'video_id': 'Ts4a9ARPunU',
+            'video_title': 'DSI · El principio de subsidiariedad',
+            'video_credit': 'Colección 5Panes: Doctrina Social de la Iglesia explicada.',
+            'objetivos': [
+                'Entender qué es el principio de subsidiariedad y cómo aplicarlo.',
+                'Formar un comité comunitario efectivo.',
+                'Usar herramientas públicas para vigilar decisiones ambientales.',
+            ],
             'contenido': [
-                ('Comités comunitarios', (
-                    'Son grupos vecinales que dan seguimiento continuo a '
-                    'problemas ambientales locales. Funcionan mejor cuando '
-                    'tienen un enlace con autoridades y una ONG ambiental.'
-                )),
-                ('Herramientas públicas', (
-                    'Plataforma Nacional de Transparencia, INFOMEX y portales '
-                    'estatales permiten pedir información pública sobre '
-                    'permisos ambientales.'
-                )),
-                ('Alianzas útiles', (
-                    'Universidad Anáhuac, Colectivo Pro Bosques y asesores '
-                    'jurídicos ambientales voluntarios aportan soporte técnico '
-                    'y legal cuando hace falta.'
-                )),
+                {
+                    'titulo': 'Bien común y subsidiariedad',
+                    'parrafos': [
+                        'La Doctrina Social de la Iglesia aporta dos '
+                        'principios clave para entender la participación '
+                        'ciudadana ambiental: bien común (los ecosistemas '
+                        'son de todos) y subsidiariedad (las decisiones deben '
+                        'tomarse en el nivel más cercano a las personas '
+                        'afectadas).',
+                        'Esto significa que la comunidad local no es un '
+                        'espectador: es protagonista. El Estado interviene '
+                        'para apoyar, no para sustituir su iniciativa.',
+                    ],
+                },
+                {
+                    'titulo': 'Comités comunitarios de vigilancia',
+                    'parrafos': [
+                        'Son grupos vecinales que dan seguimiento continuo a '
+                        'problemas ambientales locales. Funcionan mejor '
+                        'cuando tienen estructura mínima y un enlace con '
+                        'autoridades y ONG.',
+                    ],
+                    'bullets': [
+                        'Entre 5 y 12 personas, con roles claros (enlace, documentación, comunicación).',
+                        'Reunión mensual fija, aunque sea breve.',
+                        'Bitácora simple de hechos observados y denuncias hechas.',
+                        'Un aliado jurídico que oriente sobre procedimientos.',
+                    ],
+                },
+                {
+                    'titulo': 'Herramientas públicas de vigilancia',
+                    'parrafos': [
+                        'Existen sistemas gratuitos para pedir información '
+                        'pública y rastrear lo que hacen las autoridades:'
+                    ],
+                    'bullets': [
+                        'Plataforma Nacional de Transparencia (solicitudes de información).',
+                        'INFOMEX Querétaro (información pública estatal).',
+                        'Sistema de Manifestaciones de Impacto Ambiental (SEMARNAT).',
+                        'Registro Público de Derechos de Agua (CONAGUA).',
+                    ],
+                },
+                {
+                    'titulo': 'Alianzas que multiplican impacto',
+                    'parrafos': [
+                        'Ningún ciudadano aislado puede sostener una lucha '
+                        'ambiental prolongada. Estas alianzas aportan soporte '
+                        'técnico, legal y de comunicación:'
+                    ],
+                    'bullets': [
+                        'Universidades (investigación y asesoría técnica).',
+                        'ONG ambientales (CEMDA, Serapaz, Grupo Ecológico Sierra Gorda).',
+                        'Medios locales independientes para dar visibilidad.',
+                        'Redes de defensores del Acuerdo de Escazú.',
+                    ],
+                },
+            ],
+            'enlaces': [
+                {'label': 'Plataforma Nacional de Transparencia', 'url': 'https://www.plataformadetransparencia.org.mx/'},
+                {'label': 'Compendio de la Doctrina Social de la Iglesia', 'url': 'https://www.vatican.va/roman_curia/pontifical_councils/justpeace/documents/rc_pc_justpeace_doc_20060526_compendio-dott-soc_sp.html'},
+                {'label': 'CEMDA · Guía del defensor ambiental', 'url': 'https://www.cemda.org.mx/'},
+                {'label': 'Escazú · Guía para personas defensoras', 'url': 'https://www.cepal.org/es/acuerdodeescazu'},
             ],
         },
         {
             'id': 'mod-iso',
-            'titulo': 'Responsabilidad Social (ISO 26000)',
-            'duracion': '12 min',
+            'titulo': 'Responsabilidad Social · ISO 26000',
+            'duracion': '16 min',
             'nivel': 'Avanzado',
-            'icono': '🧭',
+            'icon': 'compass',
             'resumen': (
-                'Conoce el marco internacional que guía la ética, transparencia '
-                'y sostenibilidad de organizaciones como ésta.'
+                'Marco internacional que guía la ética, transparencia y '
+                'sostenibilidad de organizaciones. Es la norma que da '
+                'sustento al diseño de esta plataforma.'
             ),
+            'video_id': 'Gd_3gB_PgiM',
+            'video_title': 'Norma ISO 26000 · Responsabilidad Social',
+            'video_credit': 'Explicación de los principios y materias fundamentales de la norma.',
+            'objetivos': [
+                'Conocer los 7 principios y las 7 materias fundamentales.',
+                'Diferenciar responsabilidad social de filantropía.',
+                'Aplicar la norma al diseño de un proyecto comunitario.',
+            ],
             'contenido': [
-                ('Siete principios', (
-                    'Rendición de cuentas, transparencia, comportamiento '
-                    'ético, respeto a los intereses de las partes interesadas, '
-                    'legalidad, normativa internacional y derechos humanos.'
-                )),
-                ('Siete materias fundamentales', (
-                    'Gobernanza organizacional, derechos humanos, prácticas '
-                    'laborales, medio ambiente, prácticas justas de operación, '
-                    'asuntos de consumidores y participación activa con la '
-                    'comunidad.'
-                )),
-                ('No es filantropía', (
-                    'La Responsabilidad Social busca cambios estructurales '
-                    '(transparencia, cultura, institucionalidad), no donativos '
-                    'aislados.'
-                )),
+                {
+                    'titulo': 'Qué es y qué no es ISO 26000',
+                    'parrafos': [
+                        'Publicada el 1 de noviembre de 2010 tras un proceso '
+                        'participativo que involucró a 450 expertos de 99 '
+                        'países, ISO 26000 es una guía internacional para '
+                        'integrar la responsabilidad social en organizaciones '
+                        'de todo tamaño y sector.',
+                        'No es una norma certificable ni un sistema de '
+                        'gestión. Es una orientación para contribuir al '
+                        'desarrollo sostenible mediante comportamiento ético '
+                        'y transparente.',
+                    ],
+                },
+                {
+                    'titulo': 'Los 7 principios',
+                    'parrafos': [
+                        'Son la brújula ética que debe atravesar cada decisión '
+                        'organizacional:'
+                    ],
+                    'bullets': [
+                        'Rendición de cuentas sobre los impactos.',
+                        'Transparencia en decisiones y actividades.',
+                        'Comportamiento ético coherente con derechos humanos.',
+                        'Respeto a los intereses de las partes interesadas.',
+                        'Respeto al principio de legalidad.',
+                        'Respeto a la normativa internacional de comportamiento.',
+                        'Respeto a los derechos humanos.',
+                    ],
+                },
+                {
+                    'titulo': 'Las 7 materias fundamentales',
+                    'parrafos': [
+                        'Cada organización debe identificar qué materias son '
+                        'pertinentes para su actividad y para sus grupos de '
+                        'interés:'
+                    ],
+                    'bullets': [
+                        'Gobernanza organizacional (eje que articula a las demás).',
+                        'Derechos humanos.',
+                        'Prácticas laborales.',
+                        'Medio ambiente.',
+                        'Prácticas justas de operación.',
+                        'Asuntos de consumidores.',
+                        'Participación activa y desarrollo de la comunidad.',
+                    ],
+                },
+                {
+                    'titulo': 'No confundir con filantropía',
+                    'parrafos': [
+                        'La responsabilidad social busca cambios '
+                        'estructurales: cultura, procesos y transparencia. '
+                        'La filantropía es un gesto puntual (y loable), pero '
+                        'no sustituye la obligación de evitar daños en la '
+                        'operación cotidiana.',
+                        'Denuncia Verde aplica las materias 1, 2, 4 y 7 de '
+                        'la norma y hace de la gobernanza, los derechos '
+                        'humanos, el medio ambiente y la participación '
+                        'comunitaria sus ejes.',
+                    ],
+                },
+            ],
+            'enlaces': [
+                {'label': 'ISO 26000 · Página oficial (ISO)', 'url': 'https://www.iso.org/iso-26000-social-responsibility.html'},
+                {'label': 'Guía ISO 26000 · Descubre la norma (ISO, PDF)', 'url': 'https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100258.pdf'},
+                {'label': 'ONU · Objetivos de Desarrollo Sostenible', 'url': 'https://www.un.org/sustainabledevelopment/es/'},
             ],
         },
     ]

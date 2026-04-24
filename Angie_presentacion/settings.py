@@ -39,10 +39,26 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 # Protege contra cabeceras Host maliciosas.
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
+# Siempre permitimos subdominios de cloudflare y ngrok para exponer el servidor
+# local en una URL HTTPS pública sin tener que editar el .env cada vez.
+for extra_host in ('.trycloudflare.com', '.ngrok-free.app', '.ngrok.io', '.ngrok.app', '.lhr.life', '.localhost.run'):
+    if extra_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(extra_host)
+
 # CSRF_TRUSTED_ORIGINS: dominios permitidos para solicitudes CSRF
 # En producción, incluir el dominio completo con https:// (p. ej. Railway)
 csrf_trusted_origins_env = config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv())
 CSRF_TRUSTED_ORIGINS = list(csrf_trusted_origins_env) if csrf_trusted_origins_env else []
+for extra_origin in (
+    'https://*.trycloudflare.com',
+    'https://*.ngrok-free.app',
+    'https://*.ngrok.io',
+    'https://*.ngrok.app',
+    'https://*.lhr.life',
+    'https://*.localhost.run',
+):
+    if extra_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(extra_origin)
 
 
 # Application definition
