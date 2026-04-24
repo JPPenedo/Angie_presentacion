@@ -25,6 +25,8 @@ urlpatterns = [
     path('reset-password/<str:token>/', views.reset_password_view, name='reset_password'),
     # Página de exposición con slides actuariales y demo simplificada.
     path('expo-actuaria/', views.expo_actuaria_view, name='expo_actuaria'),
+    # Página pedagógica sobre opciones: Bull Call Spread y Bear Put Spread.
+    path('expo-opciones/', views.expo_opciones_view, name='expo_opciones'),
     # Cierre de sesión y limpieza de datos de autenticación.
     path('logout/',              views.logout_view,    name='logout'),
     # Vista principal del alumno (perfil académico).

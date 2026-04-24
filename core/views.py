@@ -1024,3 +1024,195 @@ def expo_actuaria_view(request):
         'demo_riesgo_alto': sum(1 for a in demo_alumnos if a['riesgo'] == 'Alto'),
     }
     return render(request, 'core/expo_actuaria.html', context)
+
+
+def expo_opciones_view(request):
+    """
+    Vista pública pedagógica:
+    - Slides que explican Bull Call Spread y Bear Put Spread.
+    - Reutiliza el formato visual de `expo_actuaria`, pero con demos propias
+      (diagramas de payoff al vencimiento y escenarios numéricos).
+    """
+    slides = [
+        {
+            'titulo': '¿Qué es una opción? Intuición y payoffs base',
+            'idea': (
+                'Una opción es un contrato que otorga el derecho —no la obligación— '
+                'de comprar (call) o vender (put) un activo a un precio de ejercicio K '
+                'antes o en el vencimiento T, a cambio de pagar una prima hoy. '
+                'Antes de armar un spread, conviene tener presente cómo se ve el '
+                'payoff al vencimiento de los bloques básicos.'
+            ),
+            'modelo': (
+                r'\text{Call largo: } \Pi_C(S_T) \;=\; \max(S_T-K,\,0) - c'
+                r'\qquad \text{Put largo: } \Pi_P(S_T) \;=\; \max(K-S_T,\,0) - p'
+            ),
+            'enfoque': (
+                'La call larga gana cuando el subyacente sube por encima de K+c; '
+                'la put larga gana cuando cae por debajo de K−p. En ambas, la '
+                'pérdida máxima está acotada a la prima pagada. Es el ladrillo con '
+                'el que luego construimos los spreads.'
+            ),
+            'conceptos': [
+                'Prima (c, p) = costo del derecho; se paga hoy',
+                'Strike K = precio de ejercicio fijado en el contrato',
+                'Pérdida máxima acotada = prima pagada',
+                'Ganancia en call es teóricamente ilimitada; en put acotada a K − p',
+            ],
+            'demo': 'intro',
+        },
+        {
+            'titulo': 'Bull Call Spread · mecánica y fórmulas',
+            'idea': (
+                'Si esperamos una subida moderada del subyacente y queremos abaratar '
+                'una call larga, vendemos simultáneamente otra call con strike más '
+                'alto. El resultado es el Bull Call Spread: una posición alcista con '
+                'débito neto, ganancia tope y pérdida tope ya conocidas desde el día 0.'
+            ),
+            'modelo': (
+                r'\Pi(S_T) = \max(S_T-K_1,0) - \max(S_T-K_2,0) - (c_1 - c_2),\ \ K_1 < K_2'
+                r'\qquad \text{BEP} = K_1 + (c_1 - c_2)'
+                r'\qquad \Pi_{\max} = (K_2 - K_1) - (c_1 - c_2)'
+                r'\qquad \Pi_{\min} = -(c_1 - c_2)'
+            ),
+            'enfoque': (
+                'La estrategia es equivalente a "comprar un tramo [K1, K2]" del '
+                'recorrido alcista: pagas un débito pequeño a cambio de capturar '
+                'exactamente el movimiento entre ambos strikes. Arriba de K2 ya no '
+                'ganas más; abajo de K1 sólo pierdes lo pagado.'
+            ),
+            'conceptos': [
+                'Compras call K1 (más cara) y vendes call K2 (más barata) · mismo vencimiento',
+                'Débito neto = c1 − c2  →  esto es lo máximo que puedes perder',
+                'Breakeven = K1 + débito neto',
+                'Ganancia tope = (K2 − K1) − débito neto, alcanzada si ST ≥ K2',
+            ],
+            'demo': 'bull_payoff',
+        },
+        {
+            'titulo': 'Bull Call Spread · ejemplo numérico',
+            'idea': (
+                'Acción cotizando en $100. Compramos la call K1 = $100 pagando '
+                'c1 = $5 y vendemos la call K2 = $110 cobrando c2 = $2. '
+                'Débito neto = $3 por acción. Veamos qué pasa al vencimiento para '
+                'distintos precios ST del subyacente.'
+            ),
+            'modelo': (
+                r'c_1 - c_2 = 5 - 2 = 3'
+                r'\qquad \text{BEP} = 100 + 3 = 103'
+                r'\qquad \Pi_{\max} = (110-100) - 3 = 7'
+                r'\qquad \Pi_{\min} = -3'
+            ),
+            'enfoque': (
+                'Relación riesgo–beneficio 7 : 3 ≈ 2.3 a favor. Para "ganar" hay '
+                'que creer que ST superará $103 al vencimiento; la estrategia '
+                'funciona mejor cuando esperamos un alza controlada hasta $110, '
+                'no una explosión alcista (ahí conviene más una call simple).'
+            ),
+            'conceptos': [
+                'ST ≤ 100 → ambas calls vencen sin valor · pierdes $3 (el débito)',
+                'ST = 103 → breakeven: lo ganado en la call K1 cubre exactamente el débito',
+                'ST = 107 → ganas 7 − 3 = 4 por acción',
+                'ST ≥ 110 → ganancia tope de 7; más subida no aporta nada adicional',
+            ],
+            'demo': 'bull_ejemplo',
+        },
+        {
+            'titulo': 'Bear Put Spread · mecánica y fórmulas',
+            'idea': (
+                'La versión bajista del mismo razonamiento: si esperamos una caída '
+                'moderada y queremos abaratar una put larga, vendemos otra put con '
+                'strike más bajo. El resultado es el Bear Put Spread: débito neto, '
+                'pérdida tope y ganancia tope acotadas desde el inicio.'
+            ),
+            'modelo': (
+                r'\Pi(S_T) = \max(K_2-S_T,0) - \max(K_1-S_T,0) - (p_2 - p_1),\ \ K_1 < K_2'
+                r'\qquad \text{BEP} = K_2 - (p_2 - p_1)'
+                r'\qquad \Pi_{\max} = (K_2 - K_1) - (p_2 - p_1)'
+                r'\qquad \Pi_{\min} = -(p_2 - p_1)'
+            ),
+            'enfoque': (
+                'Funciona como el "espejo" del Bull Call Spread: esta vez compras '
+                'la put con strike más alto (K2, más cara) y vendes la put con '
+                'strike más bajo (K1, más barata). Captas exactamente el tramo '
+                'bajista entre K2 y K1, con pérdida tope conocida.'
+            ),
+            'conceptos': [
+                'Compras put K2 (más alta) y vendes put K1 (más baja) · mismo vencimiento',
+                'Débito neto = p2 − p1  →  esto es lo máximo que puedes perder',
+                'Breakeven = K2 − débito neto',
+                'Ganancia tope = (K2 − K1) − débito neto, alcanzada si ST ≤ K1',
+            ],
+            'demo': 'bear_payoff',
+        },
+        {
+            'titulo': 'Bear Put Spread · ejemplo numérico',
+            'idea': (
+                'Misma acción cotizando en $100. Compramos la put K2 = $100 '
+                'pagando p2 = $5 y vendemos la put K1 = $90 cobrando p1 = $2. '
+                'Débito neto = $3 por acción. Al vencimiento, veamos qué ocurre '
+                'para distintos precios ST.'
+            ),
+            'modelo': (
+                r'p_2 - p_1 = 5 - 2 = 3'
+                r'\qquad \text{BEP} = 100 - 3 = 97'
+                r'\qquad \Pi_{\max} = (100-90) - 3 = 7'
+                r'\qquad \Pi_{\min} = -3'
+            ),
+            'enfoque': (
+                'Relación riesgo–beneficio idéntica 7 : 3, pero apostando a que '
+                'ST caerá por debajo de $97. La estrategia rinde al máximo si el '
+                'precio cae hasta $90 o menos; si cae más, ya no capturas ganancia '
+                'adicional (ahí convendría una put simple).'
+            ),
+            'conceptos': [
+                'ST ≥ 100 → ambas puts vencen sin valor · pierdes $3 (el débito)',
+                'ST = 97 → breakeven: lo ganado en la put K2 cubre exactamente el débito',
+                'ST = 93 → ganas 7 − 3 = 4 por acción',
+                'ST ≤ 90 → ganancia tope de 7; más caída no aporta nada adicional',
+            ],
+            'demo': 'bear_ejemplo',
+        },
+        {
+            'titulo': 'Comparativa · ¿Cuándo usar cada uno?',
+            'idea': (
+                'Bull Call Spread y Bear Put Spread son estrategias espejo: misma '
+                'estructura (debit vertical spread), mismo perfil de riesgo 7:3 en '
+                'nuestro ejemplo, pero cada una apunta a una dirección del mercado. '
+                'La decisión se reduce a la visión direccional y al costo relativo '
+                'de las primas.'
+            ),
+            'modelo': (
+                r'\text{Ambos: } \Pi_{\min}=-D,\ \ \Pi_{\max}=(K_2-K_1)-D'
+                r'\qquad \text{Bull: BEP}=K_1+D'
+                r'\qquad \text{Bear: BEP}=K_2-D'
+            ),
+            'enfoque': (
+                'Usa Bull Call Spread cuando tu tesis es moderadamente alcista y '
+                'quieres pagar menos que una call simple sacrificando la cola alta. '
+                'Usa Bear Put Spread cuando tu tesis es moderadamente bajista y '
+                'quieres protegerte de cabeza abajo con un costo acotado, '
+                'sacrificando la cola baja.'
+            ),
+            'conceptos': [
+                'Ambas son posiciones de débito con pérdida máxima = prima neta',
+                'Ambas aprovechan paridad put-call: son equivalentes ante subyacente y strikes',
+                'Bull = alcista moderado · Bear = bajista moderado',
+                'Si esperas un movimiento extremo, una opción simple (call o put) domina',
+            ],
+            'demo': 'comparativa',
+        },
+    ]
+
+    # Parámetros del ejemplo numérico usados para los payoff diagrams y tablas.
+    ejemplo = {
+        'spot': 100,
+        'bull': {'K1': 100, 'K2': 110, 'c1': 5, 'c2': 2},
+        'bear': {'K1': 90,  'K2': 100, 'p1': 2, 'p2': 5},
+    }
+
+    context = {
+        'slides': slides,
+        'ejemplo': ejemplo,
+    }
+    return render(request, 'core/expo_opciones.html', context)
