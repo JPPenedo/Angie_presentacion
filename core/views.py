@@ -1216,3 +1216,271 @@ def expo_opciones_view(request):
         'ejemplo': ejemplo,
     }
     return render(request, 'core/expo_opciones.html', context)
+
+
+def proyecto_ods16_view(request):
+    """
+    Vista pública del proyecto de transformación social (ODS 16).
+    Página única con el contenido de las actividades 1b, 2a, 3a y 3b
+    de Responsabilidad Social y Sustentabilidad.
+    No usa base de datos: todo el contenido se pasa hardcodeado al template.
+    """
+    equipo = [
+        {'nombre': 'Juan Pablo Penedo Antúnez',      'correo': 'juan.penedo@anahuac.mx'},
+        {'nombre': 'David Manuel Ruiz Pérez',        'correo': 'david.ruiz11@anahuac.mx'},
+        {'nombre': 'Leonardo Mayoral García',        'correo': 'leonardo.mayoral@anahuac.mx'},
+        {'nombre': 'Pablo Andrés Pacheco Colmenares','correo': 'pablo.pacheco@anahuac.mx'},
+    ]
+
+    # ODS que atiende el proyecto (principal + secundarios).
+    ods = [
+        {
+            'num': 16, 'color': '#00689D',
+            'nombre': 'Paz, justicia e instituciones sólidas',
+            'meta': 'Meta 16.5 · Reducir considerablemente la corrupción y el soborno en todas sus formas',
+            'icono': 'bi-shield-check',
+            'aporte': (
+                'Creamos un canal seguro de denuncia ciudadana de prácticas corruptas '
+                'que afectan el medio ambiente, fortaleciendo la transparencia y la '
+                'rendición de cuentas en la gestión de recursos naturales.'
+            ),
+            'principal': True,
+        },
+        {
+            'num': 13, 'color': '#48773C',
+            'nombre': 'Acción por el clima',
+            'meta': 'Meta 13.3 · Educación, sensibilización y capacidad humana frente al cambio climático',
+            'icono': 'bi-globe-americas',
+            'aporte': (
+                'Talleres de educación socioambiental y contenidos en la plataforma '
+                'que ayudan a la comunidad a entender el impacto de prácticas '
+                'irresponsables sobre el clima y los ecosistemas.'
+            ),
+            'principal': False,
+        },
+        {
+            'num': 15, 'color': '#56C02B',
+            'nombre': 'Vida de ecosistemas terrestres',
+            'meta': 'Meta 15.1 · Conservación y uso sostenible de los ecosistemas terrestres',
+            'icono': 'bi-tree',
+            'aporte': (
+                'Denuncias específicas de tala ilegal, uso indebido del agua o del '
+                'suelo; vigilancia ciudadana sobre los ecosistemas locales de Querétaro.'
+            ),
+            'principal': False,
+        },
+    ]
+
+    # 3 dimensiones de la responsabilidad social.
+    dimensiones = [
+        {
+            'nombre': 'Social', 'icono': 'bi-people-fill', 'color': 'blue',
+            'texto': (
+                'Participación activa de la comunidad vía plataforma de denuncias '
+                'seguras y talleres formativos. Fortalecer la cultura de legalidad '
+                'y recuperar la confianza en las instituciones públicas.'
+            ),
+        },
+        {
+            'nombre': 'Ambiental', 'icono': 'bi-tree-fill', 'color': 'green',
+            'texto': (
+                'Reducción de la impunidad ambiental: supervisión social sobre '
+                'tala ilegal, uso indebido del agua y sobreexplotación de recursos. '
+                'Aumentar la vigilancia y reducir la discrecionalidad (Klitgaard).'
+            ),
+        },
+        {
+            'nombre': 'Económica', 'icono': 'bi-cash-coin', 'color': 'gold',
+            'texto': (
+                'Condiciones más equitativas en la gestión de recursos naturales, '
+                'menos costos por deterioro ambiental y un desarrollo local más '
+                'transparente y sostenible.'
+            ),
+        },
+    ]
+
+    # ISO 26000 · los 7 principios.
+    iso_principios = [
+        {'n': 1, 'nombre': 'Rendición de cuentas',         'icono': 'bi-clipboard-check'},
+        {'n': 2, 'nombre': 'Transparencia',                'icono': 'bi-eye'},
+        {'n': 3, 'nombre': 'Comportamiento ético',         'icono': 'bi-award'},
+        {'n': 4, 'nombre': 'Respeto a partes interesadas', 'icono': 'bi-people'},
+        {'n': 5, 'nombre': 'Respeto al principio de legalidad',          'icono': 'bi-journal-check'},
+        {'n': 6, 'nombre': 'Respeto a la normativa internacional',        'icono': 'bi-globe2'},
+        {'n': 7, 'nombre': 'Respeto a los derechos humanos','icono': 'bi-heart'},
+    ]
+
+    # ISO 26000 · las 7 materias fundamentales.
+    iso_materias = [
+        {'nombre': 'Gobernanza organizacional',           'icono': 'bi-building',    'activa': True},
+        {'nombre': 'Derechos humanos',                    'icono': 'bi-person-heart','activa': True},
+        {'nombre': 'Prácticas laborales',                 'icono': 'bi-briefcase',   'activa': False},
+        {'nombre': 'Medio ambiente',                      'icono': 'bi-tree',        'activa': True},
+        {'nombre': 'Prácticas justas de operación',       'icono': 'bi-scale',       'activa': True},
+        {'nombre': 'Asuntos de consumidores',             'icono': 'bi-shield-lock', 'activa': False},
+        {'nombre': 'Participación activa y desarrollo de la comunidad',
+         'icono': 'bi-hand-thumbs-up','activa': True},
+    ]
+
+    # Doctrina Social de la Iglesia · 2 principios aplicados.
+    dsi = [
+        {
+            'principio': 'Bien común',
+            'idea': (
+                'La sociedad debe orientarse a crear condiciones que permitan a '
+                'todas las personas desarrollarse con dignidad. El agua, los '
+                'ecosistemas y los espacios naturales son bienes que pertenecen a '
+                'toda la sociedad.'
+            ),
+            'aplicacion': (
+                'La plataforma permite que los ciudadanos vigilen activamente el '
+                'uso de esos bienes compartidos, promoviendo transparencia y '
+                'corresponsabilidad colectiva en el cuidado del entorno.'
+            ),
+            'icono': 'bi-people-fill',
+        },
+        {
+            'principio': 'Subsidiariedad',
+            'idea': (
+                'Las decisiones deben tomarse en el nivel más cercano posible a '
+                'las personas afectadas. Las comunidades locales tienen un papel '
+                'fundamental en la solución de sus propios problemas.'
+            ),
+            'aplicacion': (
+                'La comunidad se convierte en actor central: denuncia, recibe '
+                'educación cívica ambiental y se organiza. Las instituciones '
+                'apoyan sin sustituir la iniciativa ciudadana.'
+            ),
+            'icono': 'bi-diagram-3-fill',
+        },
+    ]
+
+    # Derechos humanos relacionados.
+    derechos = [
+        {
+            'nombre': 'A un medio ambiente sano',
+            'fuente': 'ONU, 2022',
+            'icono': 'bi-tree-fill',
+            'como': (
+                'Denuncia de tala ilegal, uso indebido del agua y actividades que '
+                'degradan los ecosistemas. Vinculación con autoridades ambientales '
+                'para dar seguimiento a los reportes.'
+            ),
+        },
+        {
+            'nombre': 'A la participación ciudadana',
+            'fuente': 'DUDH, 1948',
+            'icono': 'bi-megaphone-fill',
+            'como': (
+                'Espacio para expresar preocupaciones, denunciar irregularidades '
+                'de forma anónima y segura, e involucrarse en procesos de '
+                'educación cívica y ambiental.'
+            ),
+        },
+        {
+            'nombre': 'De acceso a la información',
+            'fuente': 'DUDH, 1948',
+            'icono': 'bi-info-circle-fill',
+            'como': (
+                'Difusión de información clara sobre derechos ambientales, '
+                'mecanismos de denuncia y educación cívica. Materiales '
+                'confiables basados en fuentes oficiales.'
+            ),
+        },
+    ]
+
+    # Matriz de grupos de interés.
+    stakeholders = [
+        {
+            'nombre': 'Comunidad Local', 'icono': 'bi-people',
+            'relacion': 'Beneficiarios y usuarios directos de la plataforma y los talleres.',
+            'contribucion': (
+                'Reportar prácticas corruptas, participar en actividades '
+                'socioambientales, reforzar la vigilancia ciudadana y la cultura '
+                'de legalidad.'
+            ),
+        },
+        {
+            'nombre': 'Universidades', 'icono': 'bi-mortarboard',
+            'relacion': 'Colaboradores en desarrollo tecnológico y apoyo educativo.',
+            'contribucion': (
+                'Investigación, voluntariado, asistencia técnica en talleres y '
+                'desarrollo de la plataforma.'
+            ),
+        },
+        {
+            'nombre': 'Gobierno y autoridades', 'icono': 'bi-bank',
+            'relacion': 'Receptores de denuncias; responsables del seguimiento.',
+            'contribucion': (
+                'Que las denuncias tengan efecto real: transparencia, rendición '
+                'de cuentas y protección efectiva de los recursos naturales.'
+            ),
+        },
+        {
+            'nombre': 'Organizaciones medioambientales', 'icono': 'bi-globe-americas',
+            'relacion': 'Aliados estratégicos en capacitación, asesoría y difusión.',
+            'contribucion': (
+                'Experiencia en participación ciudadana, transparencia y '
+                'protección del medio ambiente que refuerza el impacto social.'
+            ),
+        },
+        {
+            'nombre': 'Empresas', 'icono': 'bi-buildings',
+            'relacion': 'Actores que dependen o utilizan recursos naturales.',
+            'contribucion': (
+                'Adoptar prácticas sostenibles y transparentes; participar en '
+                'un desarrollo económico responsable.'
+            ),
+        },
+    ]
+
+    # Fases del proyecto piloto (6 meses).
+    fases = [
+        {
+            'numero': 1, 'titulo': 'Diseño de la plataforma', 'duracion': '2 meses',
+            'actividades': [
+                'Desarrollo de la plataforma web y el sistema de denuncia segura',
+                'Creación de contenidos educativos (talleres, videos y clases)',
+                'Vinculación con instituciones (preparatorias, secundarias, etc.)',
+            ],
+            'recursos': '1 coordinador · 1 programador · 1 asesor jurídico ambiental · 1 especialista educativo',
+        },
+        {
+            'numero': 2, 'titulo': 'Implementación del piloto', 'duracion': '3 meses',
+            'actividades': [
+                'Lanzamiento de la plataforma en una comunidad o institución educativa',
+                'Talleres formativos con alumnos, vecinos y organizaciones',
+                'Activación del sistema de denuncia anónima + vínculo con autoridades',
+            ],
+            'recursos': '2 facilitadores + voluntarios',
+        },
+        {
+            'numero': 3, 'titulo': 'Evaluación y ajustes', 'duracion': '1 mes',
+            'actividades': [
+                'Medición de indicadores (denuncias recibidas, asistencia, usuarios)',
+                'Ajustes tecnológicos en la plataforma con base en retroalimentación',
+                'Cierre del piloto y documentación del caso para escalamiento',
+            ],
+            'recursos': 'Equipo completo + voluntarios · presupuesto piloto $40K–$45K MXN',
+        },
+    ]
+
+    context = {
+        'proyecto': {
+            'nombre': 'Denuncia Verde',
+            'subtitulo': 'Plataforma comunitaria contra la corrupción ambiental',
+            'ubicacion': 'Querétaro, México',
+            'materia': 'Responsabilidad Social y Sustentabilidad · Universidad Anáhuac',
+            'docente': 'Prof. Clemente Sánchez Uribe',
+        },
+        'equipo': equipo,
+        'ods': ods,
+        'dimensiones': dimensiones,
+        'iso_principios': iso_principios,
+        'iso_materias': iso_materias,
+        'dsi': dsi,
+        'derechos': derechos,
+        'stakeholders': stakeholders,
+        'fases': fases,
+    }
+    return render(request, 'core/proyecto_ods16.html', context)

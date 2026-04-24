@@ -27,6 +27,8 @@ urlpatterns = [
     path('expo-actuaria/', views.expo_actuaria_view, name='expo_actuaria'),
     # Página pedagógica sobre opciones: Bull Call Spread y Bear Put Spread.
     path('expo-opciones/', views.expo_opciones_view, name='expo_opciones'),
+    # Proyecto de transformación social (ODS 16): landing page informativa.
+    path('proyecto-ods16/', views.proyecto_ods16_view, name='proyecto_ods16'),
     # Cierre de sesión y limpieza de datos de autenticación.
     path('logout/',              views.logout_view,    name='logout'),
     # Vista principal del alumno (perfil académico).

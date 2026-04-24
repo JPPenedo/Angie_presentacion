@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ proyecto.nombre }} · ODS 16 · Proyecto de transformación social</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '\\[', right: '\\]', display: true},
+              {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+          });"></script>
+  <style>
+    :root {
+      --bg: #070a0f;
+      --card: #0f1720;
+      --card-alt: #121c27;
+      --border: rgba(255,255,255,0.08);
+      --accent: #00689D;        /* Azul oficial ODS 16 */
+      --accent-2: #2a90c9;
+      --accent-soft: #7dc4e8;
+      --accent-ink: #cfe7f5;
+      --gold: #fbbf24;
+      --green-ods13: #48773C;
+      --green-ods15: #56C02B;
+      --text: #eef3f7;
+      --muted: #8a94a0;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(255,255,255,0.030) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.030) 1px, transparent 1px);
+      background-size: 44px 44px, 44px 44px;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* ===== LUCES DE FONDO ===== */
+    .lights {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .lights::after {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+    }
+    .ambient {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px);
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    .ambient.a1 {
+      width: 620px; height: 540px; left: -10%; top: 4%;
+      background: radial-gradient(closest-side, rgba(0,104,157,0.42), transparent 70%);
+      animation: amb1 38s ease-in-out infinite alternate;
+    }
+    .ambient.a2 {
+      width: 520px; height: 460px; right: -8%; top: 40%;
+      background: radial-gradient(closest-side, rgba(42,144,201,0.28), transparent 70%);
+      animation: amb2 44s ease-in-out infinite alternate;
+    }
+    .ambient.a3 {
+      width: 460px; height: 420px; left: 20%; bottom: -10%;
+      background: radial-gradient(closest-side, rgba(86,192,43,0.18), transparent 70%);
+      animation: amb3 50s ease-in-out infinite alternate;
+    }
+    @keyframes amb1 { 0%{transform:translate3d(0,0,0) scale(1);} 100%{transform:translate3d(22%,14%,0) scale(1.1);} }
+    @keyframes amb2 { 0%{transform:translate3d(0,0,0) scale(1.05);} 100%{transform:translate3d(-18%,-12%,0) scale(0.95);} }
+    @keyframes amb3 { 0%{transform:translate3d(0,0,0) scale(1);} 100%{transform:translate3d(10%,-10%,0) scale(1.1);} }
+
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.2rem 1.2rem 3rem;
+    }
+
+    /* ---------- NAVBAR INTERNO ---------- */
+    .navbar-local {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(7,10,15,0.72);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0.8rem;
+      display: flex; align-items: center; gap: 0.7rem;
+      margin: -1.2rem -1.2rem 1.2rem;
+      border-radius: 0 0 0.8rem 0.8rem;
+      overflow-x: auto;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--accent-soft);
+      white-space: nowrap;
+    }
+    .nav-brand .nav-badge {
+      font-size: 0.66rem; font-weight: 800; letter-spacing: 0.06em;
+      padding: 0.2rem 0.5rem; border-radius: 999px;
+      background: var(--accent); color: #fff;
+    }
+    .nav-links {
+      display: flex; gap: 0.3rem; flex: 1;
+      justify-content: flex-end;
+    }
+    .nav-link-x {
+      font-size: 0.76rem;
+      color: var(--muted); text-decoration: none;
+      padding: 0.35rem 0.65rem;
+      border-radius: 0.45rem;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .nav-link-x:hover {
+      color: var(--accent-soft);
+      border-color: rgba(0,104,157,0.4);
+      background: rgba(0,104,157,0.08);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(0,104,157,0.28), rgba(42,144,201,0.1));
+      border: 1px solid rgba(0,104,157,0.35);
+      border-radius: 1rem;
+      padding: 1.6rem 1.5rem;
+      margin-bottom: 1.4rem;
+      box-shadow: 0 0 60px -10px rgba(0,104,157,0.3);
+    }
+    .hero::after{
+      content:""; position:absolute;
+      inset:-40% -20% auto auto; width:60%; height:180%;
+      background: conic-gradient(from 90deg, rgba(0,104,157,0.3), rgba(125,196,232,0.1), transparent 45%);
+      filter: blur(42px); pointer-events:none;
+      animation: spin 24s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-main {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 1rem; align-items: end;
+      position: relative; z-index: 1;
+    }
+    @media (max-width: 720px) { .hero-main { grid-template-columns: 1fr; } }
+    .hero h1 {
+      margin: 0.25rem 0 0.2rem; font-size: 2rem;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .hero .hero-sub {
+      margin: 0; color: var(--accent-soft);
+      font-size: 1rem; font-weight: 500;
+    }
+    .hero .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .hero .hero-chip {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      color: var(--accent-ink);
+    }
+    .hero .hero-chip i { color: var(--accent-soft); }
+
+    /* Gran "badge" ODS 16 en el hero */
+    .ods-main-badge {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      width: 150px; height: 150px;
+      border-radius: 1rem;
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 10px 40px -10px rgba(0,104,157,0.6);
+    }
+    .ods-main-badge::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(145deg, rgba(255,255,255,0.2), transparent 60%);
+    }
+    .ods-main-badge .obig {
+      font-size: 3rem; font-weight: 900; line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .ods-main-badge .osm  {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+    .ods-main-badge .otag {
+      font-size: 0.72rem; font-weight: 600;
+      margin-top: 0.3rem; padding: 0 0.3rem;
+      line-height: 1.15;
+    }
+
+    /* ---------- SECCIONES ---------- */
+    .section {
+      margin-top: 2rem;
+      scroll-margin-top: 80px;
+    }
+    .section-head {
+      display: flex; align-items: baseline; gap: 0.6rem;
+      margin-bottom: 0.9rem;
+      flex-wrap: wrap;
+    }
+    .section-kicker {
+      font-size: 0.65rem; letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      padding: 0.22rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,104,157,0.35);
+      background: rgba(0,104,157,0.12);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .section-head h2 {
+      margin: 0; font-size: 1.3rem;
+      letter-spacing: -0.01em;
+    }
+    .section-head .section-sub {
+      margin: 0; color: var(--muted); font-size: 0.88rem;
+      flex-basis: 100%;
+    }
+
+    .card-x {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1rem 1.1rem;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .card-x:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,104,157,0.35);
+      box-shadow: 0 10px 30px -14px rgba(0,104,157,0.45);
+    }
+
+    /* Problema + propuesta */
+    .problem-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 820px) { .problem-grid { grid-template-columns: 1fr; } }
+    .card-x .ct-title {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 1.02rem; font-weight: 700;
+      color: var(--accent-soft);
+      margin-bottom: 0.5rem;
+    }
+    .card-x .ct-title i { font-size: 1.15rem; }
+    .card-x p {
+      margin: 0.3rem 0; color: #c6cfda;
+      font-size: 0.9rem; line-height: 1.5;
+    }
+
+    /* Dimensiones RS (3 tarjetas) */
+    .dims-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem;
+      margin-top: 0.85rem;
+    }
+    @media (max-width: 820px) { .dims-grid { grid-template-columns: 1fr; } }
+    .dim-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 0.95rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .dim-card::before {
+      content: ""; position: absolute; left: 0; top: 0;
+      width: 4px; height: 100%;
+    }
+    .dim-card.blue::before  { background: var(--accent); }
+    .dim-card.green::before { background: var(--success); }
+    .dim-card.gold::before  { background: var(--gold); }
+    .dim-card .dim-title {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+    .dim-card.blue  .dim-title { color: var(--accent-soft); }
+    .dim-card.green .dim-title { color: var(--success); }
+    .dim-card.gold  .dim-title { color: var(--gold); }
+    .dim-card p { margin: 0; color: #c6cfda; font-size: 0.85rem; line-height: 1.5; }
+
+    /* Marco teórico · fórmula de Klitgaard */
+    .theory-grid {
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 820px) { .theory-grid { grid-template-columns: 1fr; } }
+    .formula-box {
+      background: linear-gradient(135deg, rgba(0,104,157,0.18), rgba(125,196,232,0.06));
+      border: 1px solid rgba(0,104,157,0.35);
+      border-radius: 0.85rem;
+      padding: 1rem 1.1rem;
+      text-align: center;
+      min-height: 160px;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 0.5rem;
+    }
+    .formula-box .formula-label {
+      font-size: 0.7rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      font-weight: 700;
+    }
+    .formula-box .formula-cite {
+      font-size: 0.74rem; color: var(--muted);
+    }
+    .formula-box .katex { font-size: 1.15em; color: #eaf3fa; }
+
+    /* ODS grid */
+    .ods-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem;
+    }
+    @media (max-width: 820px) { .ods-grid { grid-template-columns: 1fr; } }
+    .ods-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .ods-card.principal { border-color: rgba(0,104,157,0.5); }
+    .ods-card.principal::after {
+      content: "principal"; position: absolute; top: 0.6rem; right: 0.6rem;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: rgba(0,104,157,0.3); color: var(--accent-soft);
+      padding: 0.18rem 0.45rem; border-radius: 999px;
+      border: 1px solid rgba(0,104,157,0.45);
+    }
+    .ods-card .ods-head {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .ods-card .ods-num {
+      width: 46px; height: 46px; border-radius: 0.5rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .ods-card .ods-meta .ods-n {
+      font-size: 0.68rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); font-weight: 700;
+    }
+    .ods-card .ods-meta .ods-t {
+      font-size: 0.95rem; font-weight: 700; line-height: 1.2;
+    }
+    .ods-card .ods-goal {
+      font-size: 0.76rem; color: var(--accent-soft);
+      padding: 0.35rem 0.5rem;
+      background: rgba(255,255,255,0.03);
+      border-left: 3px solid var(--accent);
+      border-radius: 0.3rem;
+      margin: 0.55rem 0;
+      line-height: 1.3;
+    }
+    .ods-card .ods-aporte {
+      margin: 0; color: #c6cfda; font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    /* ISO 26000 */
+    .iso-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 820px) { .iso-grid { grid-template-columns: 1fr; } }
+    .iso-block .iso-title {
+      font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent-soft);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .iso-list {
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .iso-item {
+      display: flex; align-items: center; gap: 0.55rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.55rem;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.85rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .iso-item:hover {
+      border-color: rgba(0,104,157,0.4);
+      transform: translateX(3px);
+    }
+    .iso-item .iso-n {
+      font-size: 0.7rem; font-weight: 800;
+      color: var(--accent-soft);
+      background: rgba(0,104,157,0.18);
+      width: 24px; height: 24px; border-radius: 0.35rem;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .iso-item i {
+      color: var(--accent-soft);
+      font-size: 1rem;
+    }
+    .iso-item.active {
+      border-color: rgba(0,104,157,0.55);
+      background: linear-gradient(90deg, rgba(0,104,157,0.15), transparent 70%);
+    }
+    .iso-item.active::after {
+      content: "aplica"; margin-left: auto;
+      font-size: 0.6rem; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-soft); font-weight: 700;
+      padding: 0.12rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(0,104,157,0.22);
+      border: 1px solid rgba(0,104,157,0.35);
+    }
+
+    /* DSI + derechos humanos */
+    .dsi-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 820px) { .dsi-grid { grid-template-columns: 1fr; } }
+    .dsi-card .dsi-principio {
+      font-weight: 700; font-size: 1.02rem;
+      color: var(--accent-soft);
+      display: flex; align-items: center; gap: 0.45rem;
+    }
+    .dsi-card .dsi-label {
+      font-size: 0.64rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      font-weight: 700;
+      margin-top: 0.6rem;
+    }
+    .dsi-card p { margin: 0.2rem 0 0; color: #c6cfda; font-size: 0.85rem; line-height: 1.5; }
+
+    .dh-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem;
+      margin-top: 0.85rem;
+    }
+    @media (max-width: 820px) { .dh-grid { grid-template-columns: 1fr; } }
+    .dh-card .dh-name {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-weight: 700; font-size: 0.94rem;
+      color: var(--accent-soft);
+    }
+    .dh-card .dh-fuente {
+      font-size: 0.68rem; letter-spacing: 0.06em;
+      color: var(--muted); margin-top: 0.2rem; margin-bottom: 0.5rem;
+    }
+    .dh-card p { margin: 0; color: #c6cfda; font-size: 0.82rem; line-height: 1.5; }
+
+    /* Stakeholders */
+    .sh-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      overflow: hidden;
+    }
+    .sh-table thead th {
+      background: rgba(0,104,157,0.14);
+      color: var(--accent-soft);
+      text-align: left;
+      font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.65rem 0.85rem;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(0,104,157,0.3);
+    }
+    .sh-table tbody td {
+      padding: 0.7rem 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.85rem;
+      color: #c6cfda;
+      vertical-align: top;
+    }
+    .sh-table tbody tr:last-child td { border-bottom: none; }
+    .sh-table tbody tr:hover td { background: rgba(0,104,157,0.06); }
+    .sh-name {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text); font-weight: 600;
+      white-space: nowrap;
+    }
+    .sh-name i { color: var(--accent-soft); font-size: 1.1rem; }
+
+    /* Timeline fases */
+    .tl {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .tl::before {
+      content: ""; position: absolute;
+      left: 0.65rem; top: 0.4rem; bottom: 0.4rem;
+      width: 2px;
+      background: linear-gradient(180deg,
+        rgba(0,104,157,0.6), rgba(125,196,232,0.3), rgba(0,104,157,0.1));
+    }
+    .tl-item { position: relative; margin-bottom: 1.1rem; }
+    .tl-item::before {
+      content: ""; position: absolute;
+      left: -1.43rem; top: 0.45rem;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px rgba(0,104,157,0.55);
+    }
+    .tl-item .tl-head {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-weight: 700; font-size: 1rem;
+      margin-bottom: 0.35rem;
+    }
+    .tl-item .tl-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(0,104,157,0.22);
+      color: var(--accent-soft);
+      font-size: 0.72rem; font-weight: 800;
+    }
+    .tl-item .tl-dur {
+      font-size: 0.7rem; letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted); font-weight: 700;
+      padding: 0.18rem 0.5rem; border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+    .tl-item ul {
+      margin: 0.35rem 0 0.35rem 0; padding-left: 1.1rem;
+      display: flex; flex-direction: column; gap: 0.2rem;
+    }
+    .tl-item ul li { color: #c6cfda; font-size: 0.85rem; line-height: 1.45; }
+    .tl-item .tl-recursos {
+      font-size: 0.76rem; color: var(--muted);
+      margin-top: 0.4rem;
+      padding-left: 0.1rem;
+    }
+    .tl-item .tl-recursos i { color: var(--accent-soft); margin-right: 0.3rem; }
+
+    /* Equipo */
+    .team-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem;
+    }
+    @media (max-width: 980px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .team-grid { grid-template-columns: 1fr; } }
+    .person-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.9rem;
+      text-align: center;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .person-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,104,157,0.4);
+    }
+    .person-avatar {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: linear-gradient(145deg, rgba(0,104,157,0.35), rgba(125,196,232,0.18));
+      color: var(--accent-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.5rem;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: 1px solid rgba(0,104,157,0.35);
+    }
+    .person-name {
+      font-size: 0.85rem; font-weight: 600;
+      line-height: 1.25;
+    }
+    .person-mail {
+      font-size: 0.7rem; color: var(--muted);
+      margin-top: 0.25rem;
+      word-break: break-all;
+    }
+    .person-mail a { color: var(--muted); text-decoration: none; }
+    .person-mail a:hover { color: var(--accent-soft); }
+
+    /* Footer */
+    .footer {
+      margin-top: 2.5rem;
+      padding: 1rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="lights" aria-hidden="true">
+    <div class="ambient a1"></div>
+    <div class="ambient a2"></div>
+    <div class="ambient a3"></div>
+  </div>
+
+  <div class="wrap">
+    <!-- NAVBAR LOCAL -->
+    <nav class="navbar-local">
+      <div class="nav-brand">
+        <span class="nav-badge">ODS 16</span>
+        <span>{{ proyecto.nombre }}</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link-x" href="#problema">Problema</a>
+        <a class="nav-link-x" href="#propuesta">Propuesta</a>
+        <a class="nav-link-x" href="#teoria">Teoría</a>
+        <a class="nav-link-x" href="#ods">ODS</a>
+        <a class="nav-link-x" href="#iso">ISO 26000</a>
+        <a class="nav-link-x" href="#dsi">DSI &amp; DH</a>
+        <a class="nav-link-x" href="#stakeholders">Stakeholders</a>
+        <a class="nav-link-x" href="#fases">Fases</a>
+        <a class="nav-link-x" href="#equipo">Equipo</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <p class="hero-sub">Proyecto de transformación social · Equipo 3</p>
+          <h1>{{ proyecto.nombre }}</h1>
+          <p class="hero-sub">{{ proyecto.subtitulo }}</p>
+          <div class="hero-meta">
+            <span class="hero-chip"><i class="bi bi-geo-alt"></i>{{ proyecto.ubicacion }}</span>
+            <span class="hero-chip"><i class="bi bi-mortarboard"></i>{{ proyecto.materia }}</span>
+            <span class="hero-chip"><i class="bi bi-person-workspace"></i>{{ proyecto.docente }}</span>
+          </div>
+        </div>
+        <div class="ods-main-badge" aria-label="ODS 16">
+          <div class="obig">16</div>
+          <div class="osm">ODS</div>
+          <div class="otag">Paz, justicia e instituciones sólidas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEMA -->
+    <section class="section" id="problema">
+      <div class="section-head">
+        <span class="section-kicker">01 · Contexto</span>
+        <h2>El problema que queremos atender</h2>
+        <p class="section-sub">Corrupción en la gestión de recursos naturales · Querétaro, México</p>
+      </div>
+      <div class="problem-grid">
+        <div class="card-x">
+          <div class="ct-title"><i class="bi bi-exclamation-diamond-fill"></i>Causas estructurales</div>
+          <p>
+            La corrupción en México tiene causas multifactoriales: <strong>debilidad
+            institucional e impunidad</strong>, <strong>falta de transparencia y
+            rendición de cuentas</strong> y <strong>desigualdad social y económica</strong>
+            que empuja al soborno como mecanismo para acceder a servicios o evitar sanciones
+            (Transparencia Internacional, 2023; Banco Mundial, 2020).
+          </p>
+          <p>
+            En Querétaro, el crecimiento urbano acelerado presiona el agua y las áreas
+            forestales, y existe desconfianza hacia las instituciones públicas en temas
+            de denuncia ambiental.
+          </p>
+        </div>
+        <div class="card-x">
+          <div class="ct-title"><i class="bi bi-tree-fill"></i>Consecuencias socioambientales</div>
+          <p>
+            En lo <strong>ambiental</strong>: tala ilegal, sobreexplotación del agua y
+            proyectos industriales sin evaluaciones ambientales adecuadas generan daños
+            irreversibles a los ecosistemas.
+          </p>
+          <p>
+            En lo <strong>social</strong>: los beneficios se concentran en grupos
+            reducidos mientras las comunidades más vulnerables enfrentan contaminación
+            y escasez. La corrupción debilita la confianza ciudadana y limita la
+            implementación de políticas públicas sostenibles.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROPUESTA -->
+    <section class="section" id="propuesta">
+      <div class="section-head">
+        <span class="section-kicker">02 · Propuesta</span>
+        <h2>Una plataforma comunitaria de denuncia y educación</h2>
+        <p class="section-sub">Tecnología + participación social + educación socioambiental</p>
+      </div>
+      <div class="card-x" style="margin-bottom: 0.5rem;">
+        <div class="ct-title"><i class="bi bi-window-stack"></i>¿Qué construimos?</div>
+        <p>
+          Una plataforma digital donde las personas de la comunidad pueden
+          <strong>denunciar de forma anónima y segura</strong> prácticas como la tala
+          ilegal, el uso indebido del agua o el suelo. Al mismo tiempo, ofrece
+          <strong>contenidos y talleres de educación socioambiental</strong>: derechos
+          ambientales, mecanismos de denuncia y rendición de cuentas, explicados en
+          lenguaje accesible.
+        </p>
+        <p>
+          El objetivo: reducir la impunidad, fortalecer la participación ciudadana y
+          fomentar una cultura de legalidad que contribuya a la protección del entorno.
+        </p>
+      </div>
+      <div class="section-head" style="margin-top: 1.2rem; margin-bottom: 0.5rem;">
+        <span class="section-kicker">Triple impacto</span>
+        <h2 style="font-size: 1rem; color: var(--accent-soft);">Contribución a las 3 dimensiones de la RS</h2>
+      </div>
+      <div class="dims-grid">
+        {% for d in dimensiones %}
+        <div class="dim-card {{ d.color }}">
+          <div class="dim-title"><i class="bi {{ d.icono }}"></i>{{ d.nombre }}</div>
+          <p>{{ d.texto }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- MARCO TEÓRICO -->
+    <section class="section" id="teoria">
+      <div class="section-head">
+        <span class="section-kicker">03 · Marco teórico</span>
+        <h2>Klitgaard + Sen: por qué la plataforma funciona</h2>
+        <p class="section-sub">Dos marcos que justifican el mecanismo de transparencia y participación</p>
+      </div>
+      <div class="theory-grid">
+        <div class="card-x">
+          <div class="ct-title"><i class="bi bi-calculator"></i>Fórmula de Klitgaard (1988)</div>
+          <p>
+            Robert Klitgaard plantea que la corrupción surge cuando se combinan tres
+            variables: <strong>monopolio de poder</strong>, <strong>discrecionalidad</strong>
+            y <strong>ausencia de rendición de cuentas</strong>. Su ecuación clásica lo
+            resume así:
+          </p>
+          <div class="formula-box">
+            <div class="formula-label">Fórmula de la corrupción</div>
+            <div>\[ \text{Corrupción} \;=\; \text{Monopolio} \;+\; \text{Discrecionalidad} \;-\; \text{Transparencia} \]</div>
+            <div class="formula-cite">Klitgaard, R. (1988). <em>Controlling corruption</em>. UC Press.</div>
+          </div>
+          <p style="margin-top:0.7rem;">
+            Nuestra plataforma <strong>aumenta la transparencia</strong> (canal público de
+            denuncia + información accesible) y <strong>reduce la discrecionalidad</strong>
+            (supervisión ciudadana sobre el uso de recursos). Por construcción,
+            contrarresta los dos sumandos positivos de la ecuación.
+          </p>
+        </div>
+        <div class="card-x">
+          <div class="ct-title"><i class="bi bi-lightbulb"></i>Desarrollo como libertad · Sen (1999)</div>
+          <p>
+            Para Amartya Sen, el desarrollo no es solo crecimiento económico, sino
+            <strong>expansión de libertades reales y capacidades humanas</strong>.
+            La corrupción limita esa expansión: restringe el acceso equitativo a
+            recursos, servicios y oportunidades.
+          </p>
+          <p>
+            La educación cívico-ambiental de la plataforma <strong>amplía las
+            capacidades ciudadanas</strong>: la comunidad pasa de ser beneficiaria
+            pasiva a agente activo que exige rendición de cuentas y participa en la
+            protección de su entorno.
+          </p>
+          <p style="color: var(--muted); font-size: 0.8rem; margin-top: 0.5rem;">
+            <i class="bi bi-book"></i> Sen, A. (1999). <em>Development as freedom</em>. Alfred A. Knopf.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ODS -->
+    <section class="section" id="ods">
+      <div class="section-head">
+        <span class="section-kicker">04 · Agenda 2030</span>
+        <h2>ODS a los que contribuye el proyecto</h2>
+        <p class="section-sub">Un ODS principal (16) y dos transversales (13 y 15)</p>
+      </div>
+      <div class="ods-grid">
+        {% for o in ods %}
+        <div class="ods-card {% if o.principal %}principal{% endif %}">
+          <div class="ods-head">
+            <div class="ods-num" style="background: {{ o.color }};">{{ o.num }}</div>
+            <div class="ods-meta">
+              <div class="ods-n">ODS {{ o.num }}</div>
+              <div class="ods-t">{{ o.nombre }}</div>
+            </div>
+          </div>
+          <div class="ods-goal"><i class="bi bi-flag-fill"></i> {{ o.meta }}</div>
+          <p class="ods-aporte"><i class="bi {{ o.icono }}"></i> {{ o.aporte }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ISO 26000 -->
+    <section class="section" id="iso">
+      <div class="section-head">
+        <span class="section-kicker">05 · Estándar internacional</span>
+        <h2>ISO 26000 · Principios y materias fundamentales</h2>
+        <p class="section-sub">Los 7 principios orientadores y las 7 materias; destacamos en azul las que aplican directamente al proyecto.</p>
+      </div>
+      <div class="iso-grid">
+        <div class="iso-block">
+          <div class="iso-title"><i class="bi bi-list-check"></i>7 Principios de responsabilidad social</div>
+          <div class="iso-list">
+            {% for p in iso_principios %}
+            <div class="iso-item">
+              <span class="iso-n">{{ p.n }}</span>
+              <i class="bi {{ p.icono }}"></i>
+              <span>{{ p.nombre }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="iso-block">
+          <div class="iso-title"><i class="bi bi-grid-3x3-gap"></i>7 Materias fundamentales</div>
+          <div class="iso-list">
+            {% for m in iso_materias %}
+            <div class="iso-item {% if m.activa %}active{% endif %}">
+              <i class="bi {{ m.icono }}"></i>
+              <span>{{ m.nombre }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DSI + DERECHOS HUMANOS -->
+    <section class="section" id="dsi">
+      <div class="section-head">
+        <span class="section-kicker">06 · Fundamento ético</span>
+        <h2>Doctrina Social de la Iglesia &amp; Derechos Humanos</h2>
+        <p class="section-sub">Los principios éticos que dan sustento al proyecto y los derechos que protege</p>
+      </div>
+      <div class="dsi-grid">
+        {% for d in dsi %}
+        <div class="card-x dsi-card">
+          <div class="dsi-principio"><i class="bi {{ d.icono }}"></i>{{ d.principio }}</div>
+          <div class="dsi-label">Principio</div>
+          <p>{{ d.idea }}</p>
+          <div class="dsi-label">Aplicación en el proyecto</div>
+          <p>{{ d.aplicacion }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="dh-grid">
+        {% for d in derechos %}
+        <div class="card-x dh-card">
+          <div class="dh-name"><i class="bi {{ d.icono }}"></i>Derecho {{ d.nombre }}</div>
+          <div class="dh-fuente">{{ d.fuente }}</div>
+          <p>{{ d.como }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- STAKEHOLDERS -->
+    <section class="section" id="stakeholders">
+      <div class="section-head">
+        <span class="section-kicker">07 · Partes interesadas</span>
+        <h2>Matriz de grupos de interés</h2>
+        <p class="section-sub">Actores clave, su relación con el proyecto y el valor que pueden aportar</p>
+      </div>
+      <table class="sh-table">
+        <thead>
+          <tr>
+            <th>Grupo de interés</th>
+            <th>Relación con el proyecto</th>
+            <th>Contribución</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in stakeholders %}
+          <tr>
+            <td><div class="sh-name"><i class="bi {{ s.icono }}"></i>{{ s.nombre }}</div></td>
+            <td>{{ s.relacion }}</td>
+            <td>{{ s.contribucion }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- FASES -->
+    <section class="section" id="fases">
+      <div class="section-head">
+        <span class="section-kicker">08 · Ejecución</span>
+        <h2>Plan del piloto · 6 meses</h2>
+        <p class="section-sub">Tres fases: diseño, implementación y evaluación</p>
+      </div>
+      <div class="tl">
+        {% for f in fases %}
+        <div class="tl-item">
+          <div class="tl-head">
+            <span class="tl-num">{{ f.numero }}</span>
+            <span>{{ f.titulo }}</span>
+            <span class="tl-dur">{{ f.duracion }}</span>
+          </div>
+          <ul>
+            {% for a in f.actividades %}<li>{{ a }}</li>{% endfor %}
+          </ul>
+          <div class="tl-recursos"><i class="bi bi-people-fill"></i>{{ f.recursos }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- EQUIPO -->
+    <section class="section" id="equipo">
+      <div class="section-head">
+        <span class="section-kicker">09 · Equipo 3</span>
+        <h2>Integrantes</h2>
+        <p class="section-sub">Universidad Anáhuac · Responsabilidad Social y Sustentabilidad</p>
+      </div>
+      <div class="team-grid">
+        {% for p in equipo %}
+        <div class="person-card">
+          <div class="person-avatar">
+            {% with p.nombre|slice:":1" as inicial1 %}{{ inicial1 }}{% endwith %}
+          </div>
+          <div class="person-name">{{ p.nombre }}</div>
+          <div class="person-mail"><a href="mailto:{{ p.correo }}">{{ p.correo }}</a></div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="footer">
+      Proyecto de transformación social · ODS 16 · Universidad Anáhuac · Equipo 3
+    </div>
+  </div>
+</body>
+</html>
