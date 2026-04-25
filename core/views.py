@@ -1218,6 +1218,193 @@ def expo_opciones_view(request):
     return render(request, 'core/expo_opciones.html', context)
 
 
+def expo_sinteticos_view(request):
+    """
+    Vista pública pedagógica: posición sintética larga (bull) y corta (bear)
+    usando call y put al mismo strike — réplica del payoff de tenencia corta o
+    larga del subyacente, con desembolso neto de primas (c − p).
+    """
+    slides = [
+        {
+            'titulo': '¿Qué es una posición sintética?',
+            'idea': (
+                'Combinar derivados de forma que el payoff agregado al vencimiento '
+                'imita el de otra posición conocida —por ejemplo, una acción larga o '
+                'corta— sin operar el activo subyacente en ese momento. La pieza '
+                'clave es usar la misma K y el mismo vencimiento en la call y la put.'
+            ),
+            'modelo': (
+                r'\text{Larga sintética: call largo + put corto}'
+                r'\qquad \text{Corta sintética: call corto + put largo}'
+                r'\qquad \text{(mismo } K,\ T \text{ en ambas patas)}'
+            ),
+            'enfoque': (
+                'La intuición viene de la paridad put–call: si no hubiera costos de '
+                'transacción ni restricciones, el valor relativo de calls y puts al '
+                'mismo strike amarra el precio forward del subyacente. Las '
+                'sintéticas son la traducción operativa de esa relación en el libro de posiciones.'
+            ),
+            'conceptos': [
+                'Misma K y mismo vencimiento en call y put',
+                'El payoff combinado puede ser lineal en ST (como el subyacente)',
+                'El costo inicial es la diferencia de primas c − p (o su signo)',
+                'Útil para cobertura, arbitraje relativo y ajuste de exposición',
+            ],
+            'demo': 'intro',
+        },
+        {
+            'titulo': 'Sintética larga (bull) · call largo + put corto',
+            'idea': (
+                'Compramos la call K y vendemos la put K. Al vencimiento, el valor '
+                'intrínseco neto es max(ST−K,0) − max(K−ST,0) = ST − K: la misma '
+                'pendiente +1 que tener una acción larga desde el strike, desplazada '
+                'por el desembolso neto de primas pagado hoy (c − p).'
+            ),
+            'modelo': (
+                r'\Pi_{\text{bull}}(S_T) = \max(S_T-K,0) - \max(K-S_T,0) - (c-p)'
+                r' \;=\; S_T - K - (c-p)'
+                r'\qquad \text{BEP} = K + (c-p)'
+            ),
+            'enfoque': (
+                'Si ST sube un peso por encima del breakeven, ganas un peso (antes de '
+                'costos); si cae, pierdes en simetría —riesgo ilimitado a la baja al '
+                'igual que una posición larga en acciones. La prima del put vendido '
+                'financia en parte la call, pero te obliga a absorber caídas fuertes.'
+            ),
+            'conceptos': [
+                'Sesgo alcista con delta ≈ +1 cerca del dinero',
+                'Breakeven: ST = K + (c − p), no simplemente K',
+                'Put corto: obligación de comprar al K si ST < K',
+                'Replicación imperfecta si faltan dividendos, tipos o spread bid-ask',
+            ],
+            'demo': 'synth_bull_payoff',
+        },
+        {
+            'titulo': 'Sintética larga · ejemplo numérico',
+            'idea': (
+                'Spot de referencia $100. Call K = $100 con prima c = $5; put K = $100 '
+                'con prima p = $3. Pagas un neto c − p = $2 por acción al abrir. '
+                'El diagrama es una recta: cada dólar que suba ST por encima del '
+                'breakeven suma un dólar a la ganancia.'
+            ),
+            'modelo': (
+                r'c - p = 2'
+                r'\qquad \text{BEP} = 100 + 2 = 102'
+                r'\qquad \Pi(110) = 10 - 2 = 8'
+                r'\qquad \Pi(90) = -10 - 2 = -12'
+            ),
+            'enfoque': (
+                'Compara con comprar la acción a $100: la sintética cuesta $2 menos al '
+                'inicio en este ejemplo (por la estructura de primas), pero el riesgo '
+                'de cola baja es cualitativamente el mismo orden que una larga real: '
+                'no hay techo en la caída del subyacente.'
+            ),
+            'conceptos': [
+                'ST = 102 → breakeven respecto al desembolso inicial',
+                'ST < 100 → la put vendida está en el dinero (obligación cara)',
+                'ST > 100 → la call larga captura el alza; put expira sin valor',
+                'Relación lineal 1:1 con ST una vez fijado K y el neto de primas',
+            ],
+            'demo': 'synth_bull_ejemplo',
+        },
+        {
+            'titulo': 'Sintética corta (bear) · call corto + put largo',
+            'idea': (
+                'Vendemos la call K y compramos la put K. El payoff intrínseco neto es '
+                '−max(ST−K,0) + max(K−ST,0) = K − ST: pendiente −1 como una venta '
+                'en corto del subyacente desde K, ajustada por el flujo inicial c − p '
+                '(recibes c de la call, pagas p por la put).'
+            ),
+            'modelo': (
+                r'\Pi_{\text{bear}}(S_T) = -\max(S_T-K,0) + \max(K-S_T,0) + (c-p)'
+                r' \;=\; K - S_T + (c-p)'
+                r'\qquad \text{BEP} = K + (c-p)'
+            ),
+            'enfoque': (
+                'Ganas cuando ST cae por debajo del breakeven; pierdes cuando sube —'
+                'la call corta tiene cola de pérdida teóricamente ilimitada al alza, '
+                'igual que un short de acciones. El put largo acota parcialmente el '
+                'riesgo en la zona baja pero no elimina la asimetría alcista del short.'
+            ),
+            'conceptos': [
+                'Sesgo bajista con delta ≈ −1 cerca del dinero',
+                'Breakeven: ST = K + (c − p) (misma fórmula que la larga, signo opuesto del P&L)',
+                'Call corto: obligación de vender al K si ST > K',
+                'Requiere margen / garantías como cualquier posición corta en calls',
+            ],
+            'demo': 'synth_bear_payoff',
+        },
+        {
+            'titulo': 'Sintética corta · ejemplo numérico',
+            'idea': (
+                'Mismos K = $100, c = $5 y p = $3. Al abrir la corta sintética recibes '
+                'neto c − p = $2 (vendes la call más cara que el costo del put). '
+                'Al vencimiento Π = 100 − ST + 2; es el espejo de la larga sintética.'
+            ),
+            'modelo': (
+                r'c - p = 2'
+                r'\qquad \text{BEP} = 100 + 2 = 102'
+                r'\qquad \Pi(90) = 10 + 2 = 12'
+                r'\qquad \Pi(110) = -10 + 2 = -8'
+            ),
+            'enfoque': (
+                'La tabla muestra la simetría con la slide anterior: donde la larga '
+                'ganaba +8 con ST = 110, la corta pierde −8. Es la misma estructura '
+                'de primas aplicada a la dirección opuesta del mercado.'
+            ),
+            'conceptos': [
+                'ST = 102 → ambas sintéticas (larga y corta) en breakeven',
+                'ST = 90 → la put largo paga y la call corta expira sin ejercicio',
+                'ST = 110 → la call corto está en el dinero (pérdida)',
+                'Riesgo teórico al alza ilimitado por la call vendida',
+            ],
+            'demo': 'synth_bear_ejemplo',
+        },
+        {
+            'titulo': 'Comparativa · bull vs bear sintético',
+            'idea': (
+                'La larga y la corta sintética son posiciones espejo: una apuesta a '
+                'subidas con pendiente +1 y la otra a bajadas con pendiente −1, '
+                'ambas centradas en el mismo strike y el mismo ajuste por c − p. '
+                'Elegir una u otra es una decisión puramente direccional (y de '
+                'apetito por margen y colas).'
+            ),
+            'modelo': (
+                r'\Pi_{\text{bull}} + \Pi_{\text{bear}} = 0 \ \text{(mismos } c,p,K \text{)}'
+                r'\qquad \Delta \approx +1 \ \text{vs}\ \Delta \approx -1'
+            ),
+            'enfoque': (
+                'En la práctica se usan para cubrir exposiciones, convertir entre '
+                'delta de opciones y delta de cash, o explotar desalineaciones '
+                'respecto al subyaciente cuando las primas no reflejan la paridad. '
+                'No sustituyen el análisis de riesgo operativo ni el margen.'
+            ),
+            'conceptos': [
+                'Mismo breakeven ST* = K + (c − p) para ambas, con P&L opuesto',
+                'Bull: pierdes si el mercado se desploma · Bear: pierdes si se dispara',
+                'Costo de carry y dividendos rompen la equivalencia exacta con el spot',
+                'Siempre verificar requerimientos de margen en el corto',
+            ],
+            'demo': 'synth_comparativa',
+        },
+    ]
+
+    ejemplo = {
+        'spot': 100,
+        'K': 100,
+        'c': 5,
+        'p': 3,
+        'D': 2,
+        'BEP': 102,
+    }
+
+    context = {
+        'slides': slides,
+        'ejemplo': ejemplo,
+    }
+    return render(request, 'core/expo_sinteticos.html', context)
+
+
 def proyecto_ods16_view(request):
     """
     Plataforma funcional 'Denuncia Verde' (ODS 16 · Paz, justicia e instituciones

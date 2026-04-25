@@ -29,6 +29,8 @@ urlpatterns = [
     path('expo-actuaria/', views.expo_actuaria_view, name='expo_actuaria'),
     # Página pedagógica sobre opciones: Bull Call Spread y Bear Put Spread.
     path('expo-opciones/', views.expo_opciones_view, name='expo_opciones'),
+    # Posiciones sintéticas: larga (bull) y corta (bear) con call y put al mismo strike.
+    path('expo-sinteticos/', views.expo_sinteticos_view, name='expo_sinteticos'),
     # Proyecto de transformación social (ODS 16): landing page informativa.
     path('proyecto-ods16/', views.proyecto_ods16_view, name='proyecto_ods16'),
     # Misma vista; URL pensada para producción: dominio (Railway) + este segmento.

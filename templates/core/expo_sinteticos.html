@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Posiciones sintéticas (bull y bear) | Exposición Pedagógica</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '\\[', right: '\\]', display: true},
+              {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+          });"></script>
+  <style>
+    :root {
+      --bg: #090e0c;
+      --card: #111a16;
+      --card-alt: #172118;
+      --border: rgba(255,255,255,0.08);
+      --accent: #22c55e;
+      --accent-2: #4ade80;
+      --accent-soft: #86efac;
+      --gold: #fbbf24;
+      --text: #f0ede9;
+      --muted: #7a7470;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --blue: #60a5fa;
+      --violet: #a78bfa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 44px 44px, 44px 44px;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* ===== LUZ DINÁMICA DE FONDO ===== */
+    .lights {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .lights::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+    }
+    .ambient {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    .ambient.a1 {
+      width: 620px; height: 540px; left: -10%; top: 8%;
+      background: radial-gradient(closest-side, rgba(34,197,94,0.35), transparent 70%);
+      animation: ambDrift1 38s ease-in-out infinite alternate;
+    }
+    .ambient.a2 {
+      width: 480px; height: 440px; right: -8%; bottom: -4%;
+      background: radial-gradient(closest-side, rgba(74,222,128,0.28), transparent 70%);
+      animation: ambDrift2 44s ease-in-out infinite alternate;
+    }
+    @keyframes ambDrift1 {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      100% { transform: translate3d(22%, 14%, 0) scale(1.1); }
+    }
+    @keyframes ambDrift2 {
+      0%   { transform: translate3d(0,0,0) scale(1.05); }
+      100% { transform: translate3d(-18%, -12%, 0) scale(0.95); }
+    }
+    .streak {
+      position: absolute;
+      left: -80vw;
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        rgba(34,197,94,0) 0%,
+        rgba(34,197,94,0.55) 18%,
+        rgba(134,239,172,1) 50%,
+        rgba(34,197,94,0.55) 82%,
+        rgba(34,197,94,0) 100%);
+      box-shadow:
+        0 0 18px 2px rgba(34,197,94,0.55),
+        0 0 55px 10px rgba(34,197,94,0.28);
+      mix-blend-mode: screen;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .streak.reverse { left: auto; right: -80vw; }
+    .s1 { top:  8%; width: 48vw;  height: 2px; filter: blur(1.2px);
+          animation: streakLR 12s linear infinite; animation-delay:  0s;   }
+    .s2 { top: 22%; width: 80vw;  height: 4px; filter: blur(3px);
+          animation: streakLR  9s linear infinite; animation-delay: -3.2s; }
+    .s3 { top: 36%; width: 42vw;  height: 2px; filter: blur(1.4px);
+          animation: streakRL 13s linear infinite; animation-delay: -1.5s; }
+    .s4 { top: 52%; width: 95vw;  height: 5px; filter: blur(4px);
+          animation: streakLR  7s linear infinite; animation-delay: -5s;   }
+    .s5 { top: 64%; width: 55vw;  height: 2px; filter: blur(1.4px);
+          animation: streakRL 11s linear infinite; animation-delay: -4s;   }
+    .s6 { top: 78%; width: 70vw;  height: 3px; filter: blur(2.5px);
+          animation: streakLR  8s linear infinite; animation-delay: -2.3s; }
+    .s7 { top: 92%; width: 38vw;  height: 2px; filter: blur(1.2px);
+          animation: streakLR 14s linear infinite; animation-delay: -6s;   }
+    @keyframes streakLR {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      6%   { opacity: 0.95; }
+      94%  { opacity: 0.95; }
+      100% { transform: translate3d(180vw, 0, 0); opacity: 0; }
+    }
+    @keyframes streakRL {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      6%   { opacity: 0.95; }
+      94%  { opacity: 0.95; }
+      100% { transform: translate3d(-180vw, 0, 0); opacity: 0; }
+    }
+    .spark {
+      position: absolute;
+      width: 7px; height: 7px;
+      left: -10vw;
+      border-radius: 50%;
+      background: #d1fadf;
+      box-shadow:
+        0 0 10px 2px rgba(134,239,172,0.95),
+        0 0 28px 6px rgba(34,197,94,0.55);
+      mix-blend-mode: screen;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .spark.reverse { left: auto; right: -10vw; }
+    .sp1 { top: 30%; animation: sparkLR 5.5s linear infinite; animation-delay: -1s; }
+    .sp2 { top: 58%; animation: sparkRL 6.5s linear infinite; animation-delay: -3s; }
+    .sp3 { top: 14%; animation: sparkLR 7s   linear infinite; animation-delay: -4s; }
+    .sp4 { top: 82%; animation: sparkRL 5s   linear infinite; animation-delay: -2s; }
+    @keyframes sparkLR {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      12%  { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { transform: translate3d(120vw, 0, 0); opacity: 0; }
+    }
+    @keyframes sparkRL {
+      0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+      12%  { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { transform: translate3d(-120vw, 0, 0); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .streak, .spark, .ambient { animation: none; opacity: 0.35; }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.4rem 1.2rem 2.6rem;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(74,222,128,0.08));
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 1rem;
+      padding: 1.2rem 1.3rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 60px -10px rgba(34,197,94,0.25);
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:-40% -20% auto auto; width:60%; height:180%;
+      background: conic-gradient(from 90deg, rgba(34,197,94,0.22), rgba(134,239,172,0.08), transparent 45%);
+      filter: blur(40px); pointer-events:none;
+      animation: spin 22s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg);} }
+    .hero h1 { font-size: 1.55rem; margin: 0 0 0.35rem; letter-spacing:-0.01em;}
+    .hero p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .hero .hero-chips {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 0.7rem;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(34,197,94,0.35);
+      background: rgba(34,197,94,0.1);
+      color: var(--accent-soft);
+    }
+    .hero-chip.gold {
+      border-color: rgba(251,191,36,0.4);
+      background: rgba(251,191,36,0.1);
+      color: var(--gold);
+    }
+    .hero-chip.red {
+      border-color: rgba(248,113,113,0.4);
+      background: rgba(248,113,113,0.1);
+      color: var(--danger);
+    }
+
+    .section-title {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin: 1.2rem 0 0.7rem; font-weight: 700;
+    }
+    .badge-pill {
+      border: 1px solid rgba(34,197,94,0.25);
+      background: rgba(34,197,94,0.12);
+      color: var(--accent);
+      border-radius: 999px; font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+
+    /* ---------- SLIDES STAGE ---------- */
+    .slides-section { position: relative; }
+    .circuit-decor {
+      position: absolute;
+      top: 40px;
+      width: 130px;
+      height: 240px;
+      pointer-events: none;
+      opacity: 0.55;
+      filter: drop-shadow(0 0 8px rgba(34,197,94,0.35));
+    }
+    .circuit-decor.left  { left: -135px; }
+    .circuit-decor.right { right: -135px; transform: scaleX(-1); }
+    @media (max-width: 1280px) { .circuit-decor { display: none; } }
+
+    .slides-shell {
+      position: relative;
+      background:
+        radial-gradient(600px 320px at 30% 20%, rgba(34,197,94,0.22), transparent 62%),
+        radial-gradient(500px 280px at 80% 90%, rgba(134,239,172,0.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 40%),
+        var(--card);
+      border: 1px solid rgba(34,197,94,0.22);
+      border-radius: 1rem;
+      padding: 0.9rem;
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 1px rgba(255,255,255,0.05),
+        0 10px 40px -12px rgba(0,0,0,0.55),
+        0 0 80px -30px rgba(34,197,94,0.55);
+    }
+    .slides-shell::before {
+      content: "";
+      position: absolute;
+      width: 60%; height: 120%;
+      left: -15%; top: -20%;
+      background: radial-gradient(closest-side, rgba(34,197,94,0.25), transparent 70%);
+      filter: blur(28px);
+      pointer-events: none;
+      z-index: 0;
+      animation: shellOrbit 16s ease-in-out infinite alternate;
+    }
+    .slides-shell > * { position: relative; z-index: 1; }
+    @keyframes shellOrbit {
+      0%   { transform: translate(0%, 0%)   scale(1); }
+      50%  { transform: translate(40%, 10%) scale(1.15); }
+      100% { transform: translate(75%, -5%) scale(0.95); }
+    }
+
+    .progress-rail {
+      height: 3px; width:100%;
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px; overflow: hidden;
+      margin-bottom: 0.85rem;
+    }
+    .progress-bar-x {
+      height: 100%; width: 20%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      border-radius: 999px;
+      transition: width 0.7s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 0 14px rgba(34,197,94,0.55);
+    }
+
+    .stage {
+      position: relative;
+      min-height: 480px;
+    }
+    .slide {
+      position: absolute; inset: 0;
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1rem 1.1rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.985) translateY(12px);
+      filter: blur(12px) saturate(0.8);
+      clip-path: inset(0 100% 0 0 round 0.85rem);
+      transition:
+        opacity 0.9s ease,
+        transform 1.25s cubic-bezier(.2,.8,.2,1),
+        filter 0.9s ease,
+        clip-path 1.35s cubic-bezier(.65,.05,.15,1);
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+      filter: blur(0) saturate(1);
+      clip-path: inset(0 0% 0 0 round 0.85rem);
+      z-index: 2;
+    }
+    .slide.active:hover {
+      transform: scale(1.012) translateY(-1px);
+      box-shadow:
+        0 18px 45px -18px rgba(34,197,94,0.35),
+        0 0 0 1px rgba(34,197,94,0.18);
+      transition:
+        opacity 0.9s ease,
+        transform 0.45s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.45s ease,
+        filter 0.9s ease,
+        clip-path 1.35s cubic-bezier(.65,.05,.15,1);
+    }
+    .slide.exit-left {
+      opacity: 0;
+      transform: scale(0.97) translateX(-4%) translateY(-4px);
+      filter: blur(14px) saturate(0.6);
+      clip-path: inset(0 0 0 100% round 0.85rem);
+    }
+    .slide.exit-right {
+      opacity: 0;
+      transform: scale(0.97) translateX(4%) translateY(-4px);
+      filter: blur(14px) saturate(0.6);
+      clip-path: inset(0 100% 0 0 round 0.85rem);
+    }
+
+    .slide h3 {
+      margin: 0 0 0.25rem; font-size: 1.18rem; letter-spacing:-0.01em;
+    }
+    .slide .subtitle {
+      color: var(--accent); font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700;
+      margin-bottom: 0.55rem;
+    }
+    .slide p { margin: 0.35rem 0; color: #cfc9c4; font-size: 0.9rem; line-height: 1.45; }
+    .slide p strong { color: var(--text); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      margin-top: 0.6rem;
+    }
+    @media (max-width: 820px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .stage { min-height: 780px; }
+    }
+
+    /* --- Cinemática de entrada por demo --- */
+    .slide.active .mini-demo { transform-origin: 50% 50%; }
+    .slide.active[data-demo="intro"]                 .mini-demo { animation: introIntro       2.4s cubic-bezier(.2,.8,.2,1)   both; }
+    .slide.active[data-demo="synth_bull_payoff"]     .mini-demo { animation: introBull        2.2s cubic-bezier(.22,.1,.25,1) both; }
+    .slide.active[data-demo="synth_bull_ejemplo"]    .mini-demo { animation: introExample     2.1s cubic-bezier(.5,0,.1,1)    both; }
+    .slide.active[data-demo="synth_bear_payoff"]     .mini-demo { animation: introBear        2.2s cubic-bezier(.22,.1,.25,1) both; }
+    .slide.active[data-demo="synth_bear_ejemplo"]    .mini-demo { animation: introExample     2.1s cubic-bezier(.5,0,.1,1)    both; }
+    .slide.active[data-demo="synth_comparativa"]     .mini-demo { animation: introCompare     2.3s cubic-bezier(.2,.8,.2,1)   both; }
+
+    @keyframes introIntro {
+      0%   { opacity: 0; transform: scale(1.2) translateY(-6%); filter: blur(16px); }
+      60%  { opacity: 1; transform: scale(1.05) translateY(0);   filter: blur(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes introBull {
+      0%   { opacity: 0; transform: scale(1.4) translate(-35%, 18%) skewX(6deg);
+             filter: blur(14px); }
+      55%  { opacity: 1; transform: scale(1.12) translate(-4%, 2%)  skewX(0);
+             filter: blur(0); }
+      100% { opacity: 1; transform: scale(1)    translate(0, 0); }
+    }
+    @keyframes introBear {
+      0%   { opacity: 0; transform: scale(1.4) translate(35%, -18%) skewX(-6deg);
+             filter: blur(14px); }
+      55%  { opacity: 1; transform: scale(1.12) translate(4%, -2%)  skewX(0);
+             filter: blur(0); }
+      100% { opacity: 1; transform: scale(1)    translate(0, 0); }
+    }
+    @keyframes introExample {
+      0%   { opacity: 0; transform: scale(1.25) translateY(12%);
+             filter: blur(12px) brightness(1.2); }
+      60%  { opacity: 1; transform: scale(1.04) translateY(0);
+             filter: blur(0) brightness(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes introCompare {
+      0%   { opacity: 0; transform: scale(1.3) rotate(-2deg);
+             filter: blur(14px); }
+      55%  { opacity: 1; transform: scale(1.06) rotate(0);
+             filter: blur(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ---- Rise-in staggered animations ---- */
+    .slide .anim {
+      opacity: 0; transform: translateY(18px);
+      filter: blur(8px);
+    }
+    .slide.active .anim {
+      animation: riseIn 0.9s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .slide.active .anim:nth-child(1) { animation-delay: 1.20s; }
+    .slide.active .anim:nth-child(2) { animation-delay: 1.35s; }
+    .slide.active .anim:nth-child(3) { animation-delay: 1.50s; }
+    .slide.active .anim:nth-child(4) { animation-delay: 1.65s; }
+    .slide.active .anim:nth-child(5) { animation-delay: 1.80s; }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(18px); filter: blur(8px); }
+      to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+
+    .math-chip {
+      display: block;
+      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(134,239,172,0.08));
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 0.6rem;
+      padding: 0.55rem 0.75rem;
+      color: #e6f7ec;
+      font-family: "Cambria Math","Latin Modern Math", "Segoe UI", serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.01em;
+      margin-top: 0.4rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .math-chip .katex-display { margin: 0; text-align: left; color: #f6efe8; }
+    .math-chip .katex-display > .katex { text-align: left; white-space: nowrap; }
+    .math-chip .katex { font-size: 1.02em; color: #f6efe8; }
+
+    .concept-list {
+      margin: 0.6rem 0 0; padding: 0; list-style: none;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .concept-list li {
+      font-size: 0.82rem; color: #d9d3ce;
+      padding: 0.32rem 0.55rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 0.45rem;
+    }
+    .concept-list li::before {
+      content: "\2022"; color: var(--accent);
+      margin-right: 0.45rem; font-weight: 900;
+    }
+
+    /* ---------- MINI DEMO ---------- */
+    .mini-demo {
+      position: relative;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      min-height: 280px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .mini-demo .demo-head {
+      display:flex; justify-content:space-between; align-items:center;
+      font-size: 0.72rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      margin-bottom: 0.55rem;
+    }
+    .mini-demo .demo-head .dots3 { display:flex; gap:4px; }
+    .mini-demo .demo-head .dots3 span{
+      width:8px;height:8px;border-radius:50%;
+      background: rgba(255,255,255,0.15);
+    }
+    .mini-demo .demo-head .dots3 span:nth-child(1){ background:#f87171; }
+    .mini-demo .demo-head .dots3 span:nth-child(2){ background:#fbbf24; }
+    .mini-demo .demo-head .dots3 span:nth-child(3){ background:#34d399; }
+
+    /* ---------- PAYOFF CHARTS ---------- */
+    .payoff-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 200px;
+    }
+    .payoff-wrap canvas { width: 100% !important; height: 100% !important; }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .intro-card {
+      display: flex; flex-direction: column;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 0.55rem;
+      padding: 0.5rem;
+      min-height: 0;
+    }
+    .intro-card .ic-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .intro-card.call .ic-title { color: var(--accent-soft); }
+    .intro-card.put  .ic-title { color: var(--gold); }
+    .intro-card .ic-canvas { flex: 1; min-height: 140px; position: relative; }
+    @media (max-width: 520px) {
+      .intro-grid { grid-template-columns: 1fr; }
+    }
+
+    .payoff-legend {
+      display: flex; flex-wrap: wrap; gap: 0.35rem;
+      margin-top: 0.45rem;
+    }
+    .pl-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.68rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d4cdc6;
+    }
+    .pl-chip b { color: var(--text); font-weight: 600; }
+    .pl-chip.up   { border-color: rgba(52,211,153,0.35); color: var(--success); }
+    .pl-chip.down { border-color: rgba(248,113,113,0.35); color: var(--danger); }
+    .pl-chip.mid  { border-color: rgba(251,191,36,0.35);  color: var(--gold); }
+
+    /* KPIs del ejemplo */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.45rem;
+      margin-bottom: 0.55rem;
+    }
+    .kpi-tile {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      padding: 0.5rem 0.6rem;
+      display: flex; flex-direction: column; gap: 0.12rem;
+    }
+    .kpi-tile .kpi-l {
+      font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .kpi-tile .kpi-v {
+      font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums;
+      color: var(--accent-soft);
+    }
+    .kpi-tile.gold  .kpi-v { color: var(--gold); }
+    .kpi-tile.red   .kpi-v { color: var(--danger); }
+    .kpi-tile.green .kpi-v { color: var(--success); }
+    .kpi-tile.blue  .kpi-v { color: var(--blue); }
+
+    /* Tabla de escenarios */
+    .scn-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin-top: 0.35rem;
+    }
+    .scn-table th, .scn-table td {
+      padding: 0.3rem 0.45rem;
+      text-align: right;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .scn-table th {
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.62rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .scn-table td:first-child,
+    .scn-table th:first-child { text-align: left; color: #d9d3ce; }
+    .scn-table .gain { color: var(--success); font-weight: 600; }
+    .scn-table .loss { color: var(--danger);  font-weight: 600; }
+    .scn-table .zero { color: var(--gold);    font-weight: 600; }
+
+    /* Tabla comparativa */
+    .cmp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+      margin-top: 0.45rem;
+    }
+    .cmp-table th, .cmp-table td {
+      padding: 0.32rem 0.4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .cmp-table th {
+      text-transform: uppercase;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: left;
+    }
+    .cmp-table td:first-child,
+    .cmp-table th:first-child {
+      color: var(--muted);
+      font-weight: 600;
+      width: 34%;
+    }
+    .cmp-col-bull { color: var(--accent-soft); }
+    .cmp-col-bear { color: var(--gold); }
+
+    /* ---------- CONTROLS ---------- */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.8rem;
+    }
+    .btn-darkx {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-radius: 0.6rem;
+      font-size: 0.85rem;
+      padding: 0.45rem 0.9rem;
+      transition: all 0.25s ease;
+    }
+    .btn-darkx:hover {
+      border-color: rgba(34,197,94,0.4);
+      color: var(--accent);
+      background: rgba(34,197,94,0.06);
+      transform: translateY(-1px);
+    }
+    .dots { display: flex; gap: 0.4rem; }
+    .dot {
+      width: 22px; height: 6px; border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .dot.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      width: 42px;
+      box-shadow: 0 0 12px rgba(34,197,94,0.55);
+    }
+
+    .footer-note {
+      margin-top: 1.4rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="lights" aria-hidden="true">
+    <div class="ambient a1"></div>
+    <div class="ambient a2"></div>
+    <div class="streak s1"></div>
+    <div class="streak s2 reverse"></div>
+    <div class="streak s3"></div>
+    <div class="streak s4 reverse"></div>
+    <div class="streak s5"></div>
+    <div class="streak s6 reverse"></div>
+    <div class="streak s7"></div>
+    <div class="spark sp1"></div>
+    <div class="spark sp2 reverse"></div>
+    <div class="spark sp3"></div>
+    <div class="spark sp4 reverse"></div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero">
+      <h1><i class="bi bi-bezier2 me-2"></i>Sintéticos bull y bear</h1>
+      <p>
+        Call y put al mismo strike para replicar una exposición larga o corta al
+        subyaciente: payoff lineal, breakeven K + (c − p) y espejo entre ambas direcciones.
+      </p>
+      <div class="hero-chips">
+        <span class="hero-chip"><i class="bi bi-arrow-up-right"></i>Larga · call largo + put corto</span>
+        <span class="hero-chip gold"><i class="bi bi-arrow-down-right"></i>Corta · call corto + put largo</span>
+        <span class="hero-chip red"><i class="bi bi-lightning-charge"></i>Misma K · pendiente ±1 al vencimiento</span>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <span class="badge-pill">Slides</span>
+      <span>Recorrido conceptual en 6 pasos</span>
+    </div>
+
+    <div class="slides-section">
+      <svg class="circuit-decor left" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="circL" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="rgba(34,197,94,0.05)"/>
+            <stop offset="1" stop-color="rgba(134,239,172,0.85)"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#circL)" stroke-width="1.1">
+          <path d="M0 20  H70  L90 40   V90  L120 120 H130"/>
+          <path d="M0 120 H40  L60 140  V180 L110 200 H130"/>
+          <path d="M0 70  H30  L50 90   V110 L80 130  H130"/>
+        </g>
+        <g fill="rgba(134,239,172,1)">
+          <circle cx="2"  cy="20"  r="2.5"/>
+          <circle cx="2"  cy="70"  r="2.5"/>
+          <circle cx="2"  cy="120" r="2.5"/>
+        </g>
+      </svg>
+      <svg class="circuit-decor right" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="none" stroke="url(#circL)" stroke-width="1.1">
+          <path d="M0 30  H55  L75 55   V110 L110 135 H130"/>
+          <path d="M0 130 H35  L55 150  V185 L100 205 H130"/>
+          <path d="M0 85  H25  L45 100  V120 L75 140  H130"/>
+        </g>
+        <g fill="rgba(134,239,172,1)">
+          <circle cx="2"  cy="30"  r="2.5"/>
+          <circle cx="2"  cy="85"  r="2.5"/>
+          <circle cx="2"  cy="130" r="2.5"/>
+        </g>
+      </svg>
+
+      <div class="slides-shell">
+        <div class="progress-rail"><div class="progress-bar-x" id="progressBar"></div></div>
+
+        <div class="stage" id="stage">
+          {% for s in slides %}
+          <article class="slide {% if forloop.first %}active{% endif %}"
+                   data-slide-index="{{ forloop.counter0 }}"
+                   data-demo="{{ s.demo }}">
+            <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Sintéticos</div>
+            <h3 class="anim">{{ s.titulo }}</h3>
+
+            <div class="grid-2">
+              <div>
+                <p class="anim"><strong>Idea central.</strong> {{ s.idea }}</p>
+                <div class="math-chip anim">\[ {{ s.modelo|safe }} \]</div>
+                <p class="anim" style="margin-top:0.6rem;"><strong>Lectura práctica.</strong> {{ s.enfoque }}</p>
+                <ul class="concept-list anim">
+                  {% for c in s.conceptos %}<li>{{ c }}</li>{% endfor %}
+                </ul>
+              </div>
+
+              <div class="mini-demo">
+                <div class="demo-head">
+                  <span><i class="bi bi-bar-chart-line me-1"></i>Payoff al vencimiento</span>
+                  <span class="dots3"><span></span><span></span><span></span></span>
+                </div>
+
+                {% if s.demo == 'intro' %}
+                <div class="intro-grid">
+                  <div class="intro-card call">
+                    <div class="ic-title"><i class="bi bi-arrow-up"></i>Call largo</div>
+                    <div class="ic-canvas"><canvas data-mini-call></canvas></div>
+                  </div>
+                  <div class="intro-card put">
+                    <div class="ic-title"><i class="bi bi-arrow-down"></i>Put largo</div>
+                    <div class="ic-canvas"><canvas data-mini-put></canvas></div>
+                  </div>
+                </div>
+                <div class="payoff-legend">
+                  <span class="pl-chip"><b>K</b> = strike</span>
+                  <span class="pl-chip"><b>c, p</b> = prima</span>
+                  <span class="pl-chip mid">Sintética = misma K en ambas patas</span>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'synth_bull_payoff' %}
+                <div class="payoff-wrap"><canvas data-synth-bull-payoff></canvas></div>
+                <div class="payoff-legend">
+                  <span class="pl-chip">K = {{ ejemplo.K }}</span>
+                  <span class="pl-chip">c − p = {{ ejemplo.D }}</span>
+                  <span class="pl-chip mid">BEP = K + (c−p)</span>
+                  <span class="pl-chip up">Pendiente +1</span>
+                  <span class="pl-chip down">Cola baja</span>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'synth_bull_ejemplo' %}
+                <div class="kpi-grid">
+                  <div class="kpi-tile">
+                    <span class="kpi-l">Neto c − p (pago)</span>
+                    <span class="kpi-v">${{ ejemplo.D|floatformat:2 }}</span>
+                  </div>
+                  <div class="kpi-tile gold">
+                    <span class="kpi-l">Breakeven (ST)</span>
+                    <span class="kpi-v">${{ ejemplo.BEP|floatformat:0 }}</span>
+                  </div>
+                  <div class="kpi-tile green">
+                    <span class="kpi-l">Π si ST = 110</span>
+                    <span class="kpi-v">+$8.00</span>
+                  </div>
+                  <div class="kpi-tile red">
+                    <span class="kpi-l">Π si ST = 90</span>
+                    <span class="kpi-v">−$12.00</span>
+                  </div>
+                </div>
+                <div class="payoff-wrap" style="min-height:140px;"><canvas data-synth-bull-scenario></canvas></div>
+                <table class="scn-table">
+                  <thead>
+                    <tr><th>ST</th><th>Call largo</th><th>Put corto</th><th>Π larga</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>$90</td><td>−$5</td><td>−$7</td><td class="loss">−$12</td></tr>
+                    <tr><td>$100</td><td>−$5</td><td>+$3</td><td class="loss">−$2</td></tr>
+                    <tr><td>$102</td><td>−$3</td><td>+$3</td><td class="zero">$0</td></tr>
+                    <tr><td>$105</td><td>$0</td><td>+$3</td><td class="gain">+$3</td></tr>
+                    <tr><td>$110</td><td>+$5</td><td>+$3</td><td class="gain">+$8</td></tr>
+                  </tbody>
+                </table>
+                {% endif %}
+
+                {% if s.demo == 'synth_bear_payoff' %}
+                <div class="payoff-wrap"><canvas data-synth-bear-payoff></canvas></div>
+                <div class="payoff-legend">
+                  <span class="pl-chip">K = {{ ejemplo.K }}</span>
+                  <span class="pl-chip">c − p = {{ ejemplo.D }}</span>
+                  <span class="pl-chip mid">BEP = K + (c−p)</span>
+                  <span class="pl-chip up">Gana si ST cae</span>
+                  <span class="pl-chip down">Cola alta (call corto)</span>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'synth_bear_ejemplo' %}
+                <div class="kpi-grid">
+                  <div class="kpi-tile blue">
+                    <span class="kpi-l">Neto c − p (cobro)</span>
+                    <span class="kpi-v">+${{ ejemplo.D|floatformat:2 }}</span>
+                  </div>
+                  <div class="kpi-tile gold">
+                    <span class="kpi-l">Breakeven (ST)</span>
+                    <span class="kpi-v">${{ ejemplo.BEP|floatformat:0 }}</span>
+                  </div>
+                  <div class="kpi-tile green">
+                    <span class="kpi-l">Π si ST = 90</span>
+                    <span class="kpi-v">+$12.00</span>
+                  </div>
+                  <div class="kpi-tile red">
+                    <span class="kpi-l">Π si ST = 110</span>
+                    <span class="kpi-v">−$8.00</span>
+                  </div>
+                </div>
+                <div class="payoff-wrap" style="min-height:140px;"><canvas data-synth-bear-scenario></canvas></div>
+                <table class="scn-table">
+                  <thead>
+                    <tr><th>ST</th><th>Call corto</th><th>Put largo</th><th>Π corta</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>$90</td><td>+$5</td><td>+$7</td><td class="gain">+$12</td></tr>
+                    <tr><td>$100</td><td>+$5</td><td>−$3</td><td class="gain">+$2</td></tr>
+                    <tr><td>$102</td><td>+$3</td><td>−$3</td><td class="zero">$0</td></tr>
+                    <tr><td>$105</td><td>$0</td><td>−$3</td><td class="loss">−$3</td></tr>
+                    <tr><td>$110</td><td>−$5</td><td>−$3</td><td class="loss">−$8</td></tr>
+                  </tbody>
+                </table>
+                {% endif %}
+
+                {% if s.demo == 'synth_comparativa' %}
+                <div class="payoff-wrap"><canvas data-synth-compare></canvas></div>
+                <table class="cmp-table">
+                  <thead>
+                    <tr><th></th><th class="cmp-col-bull">Larga sintética (bull)</th><th class="cmp-col-bear">Corta sintética (bear)</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Patrones</td><td class="cmp-col-bull">Call largo + put corto</td><td class="cmp-col-bear">Call corto + put largo</td></tr>
+                    <tr><td>Payoff al vencimiento</td><td class="cmp-col-bull">ST − K − (c − p)</td><td class="cmp-col-bear">K − ST + (c − p)</td></tr>
+                    <tr><td>Pendiente en ST</td><td class="cmp-col-bull">+1</td><td class="cmp-col-bear">−1</td></tr>
+                    <tr><td>Breakeven</td><td class="cmp-col-bull">K + (c − p)</td><td class="cmp-col-bear">K + (c − p)</td></tr>
+                    <tr><td>Riesgo destacado</td><td class="cmp-col-bull">Caídas fuertes (put corto)</td><td class="cmp-col-bear">Rally (call corto)</td></tr>
+                  </tbody>
+                </table>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+
+        <div class="controls">
+          <button class="btn-darkx" id="prevSlide"><i class="bi bi-arrow-left me-1"></i>Anterior</button>
+          <div class="dots">
+            {% for s in slides %}
+            <span class="dot {% if forloop.first %}active{% endif %}" data-dot-index="{{ forloop.counter0 }}"></span>
+            {% endfor %}
+          </div>
+          <button class="btn-darkx" id="nextSlide">Siguiente<i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Material pedagógico · los números son ilustrativos (no recomendación de inversión).
+    </div>
+  </div>
+
+  <script>
+    /* =================== CONFIG DEL EJEMPLO =================== */
+    const SYN = {
+      K: {{ ejemplo.K }},
+      c: {{ ejemplo.c }},
+      p: {{ ejemplo.p }},
+    };
+    SYN.D = SYN.c - SYN.p;
+    SYN.BEP = SYN.K + SYN.D;
+
+    function synthBullPayoff(ST) { return ST - SYN.K - SYN.D; }
+    function synthBearPayoff(ST) { return SYN.K - ST + SYN.D; }
+
+    function longCallPayoff(ST, K, c) { return Math.max(ST - K, 0) - c; }
+    function longPutPayoff(ST, K, p)  { return Math.max(K - ST, 0) - p; }
+    function shortCallPL(ST, K, c)    { return c - Math.max(ST - K, 0); }
+    function shortPutPL(ST, K, p)     { return p - Math.max(K - ST, 0); }
+
+    function linspace(a, b, n) {
+      const arr = []; const step = (b - a) / (n - 1);
+      for (let i = 0; i < n; i++) arr.push(+(a + i * step).toFixed(2));
+      return arr;
+    }
+
+    /* =================== SLIDE ENGINE =================== */
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dots   = Array.from(document.querySelectorAll('.dot'));
+    const progressBar = document.getElementById('progressBar');
+    let idx = 0;
+    let animating = false;
+
+    function go(next) {
+      if (animating) return;
+      const target = (next + slides.length) % slides.length;
+      if (target === idx) return;
+      animating = true;
+      let direction = target > idx ? 1 : -1;
+      if (idx === slides.length - 1 && target === 0) direction = 1;
+      else if (idx === 0 && target === slides.length - 1) direction = -1;
+
+      const current  = slides[idx];
+      const incoming = slides[target];
+
+      current.classList.remove('active');
+      current.classList.add(direction === 1 ? 'exit-left' : 'exit-right');
+      incoming.classList.remove('exit-left','exit-right');
+      void incoming.offsetWidth;
+      requestAnimationFrame(() => incoming.classList.add('active'));
+
+      setTimeout(() => {
+        current.classList.remove('exit-left','exit-right');
+        animating = false;
+      }, 1400);
+
+      dots.forEach((d, i) => d.classList.toggle('active', i === target));
+      progressBar.style.width = ((target + 1) / slides.length * 100) + '%';
+      idx = target;
+
+      activateDemo(incoming);
+    }
+
+    document.getElementById('prevSlide').addEventListener('click', () => go(idx - 1));
+    document.getElementById('nextSlide').addEventListener('click', () => go(idx + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(idx + 1);
+      if (e.key === 'ArrowLeft')  go(idx - 1);
+    });
+
+    progressBar.style.width = (1 / slides.length * 100) + '%';
+
+    /* =================== DEMOS =================== */
+    const chartCache = new WeakMap();
+
+    function destroyIfAny(canvas) {
+      if (!canvas) return;
+      if (chartCache.has(canvas)) {
+        try { chartCache.get(canvas).destroy(); } catch (e) { /* noop */ }
+      }
+    }
+
+    function basePayoffOptions({ minX, maxX, minY, maxY, title }) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 1100, easing: 'easeOutCubic' },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: { color: '#cfc9c4', font: { size: 10 }, boxWidth: 12, padding: 8 },
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(2),
+              title: (items) => 'ST = $' + items[0].parsed.x.toFixed(2),
+            },
+          },
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            min: minX, max: maxX,
+            grid: { color: 'rgba(148, 163, 184, 0.08)' },
+            ticks: { color: '#a39d98', font: { size: 10 } },
+            title: { display: true, text: 'Precio del subyacente al vencimiento (ST)',
+                     color: '#a39d98', font: { size: 10 } },
+          },
+          y: {
+            min: minY, max: maxY,
+            grid: { color: (ctx) => (ctx.tick.value === 0 ? 'rgba(255,255,255,0.35)' : 'rgba(148, 163, 184, 0.08)') },
+            ticks: { color: '#a39d98', font: { size: 10 },
+                     callback: (v) => (v >= 0 ? '+' : '') + '$' + v },
+            title: { display: true, text: title || 'Payoff (Π)',
+                     color: '#a39d98', font: { size: 10 } },
+          },
+        },
+      };
+    }
+
+    /* ---- Demo: intro (call y put larga) ---- */
+    function activateIntro(slideEl) {
+      const cC = slideEl.querySelector('[data-mini-call]');
+      const cP = slideEl.querySelector('[data-mini-put]');
+      if (!cC || !cP || typeof Chart === 'undefined') return;
+
+      destroyIfAny(cC); destroyIfAny(cP);
+      const K = SYN.K, c = SYN.c, p = SYN.p;
+      const xs = linspace(70, 130, 61);
+
+      const callData = xs.map(st => ({ x: st, y: longCallPayoff(st, K, c) }));
+      const putData  = xs.map(st => ({ x: st, y: longPutPayoff(st,  K, p) }));
+
+      const chC = new Chart(cC, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Call largo',
+              data: callData,
+              borderColor: 'rgba(74,222,128,1)',
+              backgroundColor: 'rgba(74,222,128,0.18)',
+              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.12)' },
+              borderWidth: 2, pointRadius: 0, tension: 0.05,
+            },
+          ],
+        },
+        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -8, maxY: 28 }),
+      });
+      chartCache.set(cC, chC);
+
+      const chP = new Chart(cP, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Put largo',
+              data: putData,
+              borderColor: 'rgba(251,191,36,1)',
+              backgroundColor: 'rgba(251,191,36,0.15)',
+              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.12)' },
+              borderWidth: 2, pointRadius: 0, tension: 0.05,
+            },
+          ],
+        },
+        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -8, maxY: 28 }),
+      });
+      chartCache.set(cP, chP);
+    }
+
+    /* ---- Sintética larga: call largo + put corto ---- */
+    function activateSynthBullPayoff(slideEl) {
+      const canvas = slideEl.querySelector('[data-synth-bull-payoff]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = SYN.K - 20, hi = SYN.K + 20;
+      const xs = linspace(lo, hi, 121);
+      const comb = xs.map(st => ({ x: st, y: synthBullPayoff(st) }));
+      const legC = xs.map(st => ({ x: st, y: longCallPayoff(st, SYN.K, SYN.c) }));
+      const legP = xs.map(st => ({ x: st, y: shortPutPL(st, SYN.K, SYN.p) }));
+
+      const yMin = Math.min(synthBullPayoff(lo), synthBearPayoff(lo)) - 3;
+      const yMax = Math.max(synthBullPayoff(hi), synthBearPayoff(hi)) + 3;
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Call largo (K)',
+              data: legC,
+              borderColor: 'rgba(96,165,250,0.65)',
+              borderDash: [5,4], borderWidth: 1.4,
+              pointRadius: 0, tension: 0, fill: false,
+            },
+            {
+              label: 'Put corto (K)',
+              data: legP,
+              borderColor: 'rgba(251,191,36,0.65)',
+              borderDash: [5,4], borderWidth: 1.4,
+              pointRadius: 0, tension: 0, fill: false,
+            },
+            {
+              label: 'Larga sintética',
+              data: comb,
+              borderColor: 'rgba(74,222,128,1)',
+              backgroundColor: 'rgba(74,222,128,0.2)',
+              borderWidth: 2.6,
+              pointRadius: 0, tension: 0,
+              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.2)', below: 'rgba(248,113,113,0.18)' },
+            },
+            {
+              label: 'Breakeven',
+              data: [{ x: SYN.BEP, y: yMin }, { x: SYN.BEP, y: yMax }],
+              borderColor: 'rgba(251,191,36,0.9)',
+              borderDash: [3,3], borderWidth: 1.4,
+              pointRadius: 0, tension: 0, fill: false,
+            },
+          ],
+        },
+        options: basePayoffOptions({
+          minX: lo, maxX: hi, minY: yMin, maxY: yMax,
+          title: 'Payoff al vencimiento',
+        }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    /* ---- Sintética corta: call corto + put largo ---- */
+    function activateSynthBearPayoff(slideEl) {
+      const canvas = slideEl.querySelector('[data-synth-bear-payoff]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = SYN.K - 20, hi = SYN.K + 20;
+      const xs = linspace(lo, hi, 121);
+      const comb = xs.map(st => ({ x: st, y: synthBearPayoff(st) }));
+      const legC = xs.map(st => ({ x: st, y: shortCallPL(st, SYN.K, SYN.c) }));
+      const legP = xs.map(st => ({ x: st, y: longPutPayoff(st, SYN.K, SYN.p) }));
+
+      const yMin = Math.min(synthBullPayoff(lo), synthBearPayoff(hi)) - 3;
+      const yMax = Math.max(synthBullPayoff(hi), synthBearPayoff(lo)) + 3;
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Call corto (K)',
+              data: legC,
+              borderColor: 'rgba(96,165,250,0.65)',
+              borderDash: [5,4], borderWidth: 1.4,
+              pointRadius: 0, tension: 0, fill: false,
+            },
+            {
+              label: 'Put largo (K)',
+              data: legP,
+              borderColor: 'rgba(251,191,36,0.65)',
+              borderDash: [5,4], borderWidth: 1.4,
+              pointRadius: 0, tension: 0, fill: false,
+            },
+            {
+              label: 'Corta sintética',
+              data: comb,
+              borderColor: 'rgba(248,113,113,1)',
+              backgroundColor: 'rgba(248,113,113,0.18)',
+              borderWidth: 2.6,
+              pointRadius: 0, tension: 0,
+              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.2)', below: 'rgba(248,113,113,0.18)' },
+            },
+            {
+              label: 'Breakeven',
+              data: [{ x: SYN.BEP, y: yMin }, { x: SYN.BEP, y: yMax }],
+              borderColor: 'rgba(251,191,36,0.9)',
+              borderDash: [3,3], borderWidth: 1.4,
+              pointRadius: 0, tension: 0, fill: false,
+            },
+          ],
+        },
+        options: basePayoffOptions({
+          minX: lo, maxX: hi, minY: yMin, maxY: yMax,
+          title: 'Payoff al vencimiento',
+        }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    function activateSynthBullEjemplo(slideEl) {
+      const canvas = slideEl.querySelector('[data-synth-bull-scenario]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = SYN.K - 18, hi = SYN.K + 18;
+      const xs = linspace(lo, hi, 91);
+      const data = xs.map(st => ({ x: st, y: synthBullPayoff(st) }));
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Π larga sintética',
+            data,
+            borderColor: 'rgba(74,222,128,1)',
+            backgroundColor: 'rgba(74,222,128,0.18)',
+            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.22)', below: 'rgba(248,113,113,0.2)' },
+            borderWidth: 2.4, pointRadius: 0, tension: 0,
+          }],
+        },
+        options: basePayoffOptions({
+          minX: lo, maxX: hi,
+          minY: synthBullPayoff(lo) - 2,
+          maxY: synthBullPayoff(hi) + 2,
+        }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    function activateSynthBearEjemplo(slideEl) {
+      const canvas = slideEl.querySelector('[data-synth-bear-scenario]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = SYN.K - 18, hi = SYN.K + 18;
+      const xs = linspace(lo, hi, 91);
+      const data = xs.map(st => ({ x: st, y: synthBearPayoff(st) }));
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Π corta sintética',
+            data,
+            borderColor: 'rgba(248,113,113,1)',
+            backgroundColor: 'rgba(248,113,113,0.16)',
+            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.22)', below: 'rgba(248,113,113,0.2)' },
+            borderWidth: 2.4, pointRadius: 0, tension: 0,
+          }],
+        },
+        options: basePayoffOptions({
+          minX: lo, maxX: hi,
+          minY: synthBearPayoff(hi) - 2,
+          maxY: synthBearPayoff(lo) + 2,
+        }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    function activateSynthComparativa(slideEl) {
+      const canvas = slideEl.querySelector('[data-synth-compare]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = SYN.K - 20, hi = SYN.K + 20;
+      const xs = linspace(lo, hi, 121);
+      const bull = xs.map(st => ({ x: st, y: synthBullPayoff(st) }));
+      const bear = xs.map(st => ({ x: st, y: synthBearPayoff(st) }));
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Larga sintética (bull)',
+              data: bull,
+              borderColor: 'rgba(74,222,128,1)',
+              borderWidth: 2.4, pointRadius: 0, tension: 0,
+              fill: false,
+            },
+            {
+              label: 'Corta sintética (bear)',
+              data: bear,
+              borderColor: 'rgba(251,191,36,1)',
+              borderWidth: 2.4, pointRadius: 0, tension: 0,
+              fill: false,
+            },
+          ],
+        },
+        options: basePayoffOptions({
+          minX: lo, maxX: hi,
+          minY: Math.min(synthBullPayoff(lo), synthBearPayoff(hi)) - 3,
+          maxY: Math.max(synthBullPayoff(hi), synthBearPayoff(lo)) + 3,
+          title: 'Payoff al vencimiento',
+        }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    function activateDemo(slideEl) {
+      const demo = slideEl.dataset.demo;
+      if (demo === 'intro')                 activateIntro(slideEl);
+      if (demo === 'synth_bull_payoff')     activateSynthBullPayoff(slideEl);
+      if (demo === 'synth_bull_ejemplo')    activateSynthBullEjemplo(slideEl);
+      if (demo === 'synth_bear_payoff')     activateSynthBearPayoff(slideEl);
+      if (demo === 'synth_bear_ejemplo')    activateSynthBearEjemplo(slideEl);
+      if (demo === 'synth_comparativa')     activateSynthComparativa(slideEl);
+    }
+
+    window.addEventListener('load', () => {
+      activateDemo(slides[0]);
+    });
+  </script>
+</body>
+</html>
