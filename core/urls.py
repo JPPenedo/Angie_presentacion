@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.urls import path
+
 from . import views
 
 # Profesor: `app_name` crea un namespace para evitar conflictos de nombres entre apps.
@@ -29,6 +31,13 @@ urlpatterns = [
     path('expo-opciones/', views.expo_opciones_view, name='expo_opciones'),
     # Proyecto de transformación social (ODS 16): landing page informativa.
     path('proyecto-ods16/', views.proyecto_ods16_view, name='proyecto_ods16'),
+    # Misma vista; URL pensada para producción: dominio (Railway) + este segmento.
+    # Por defecto: /denuncia-verde/ (slug del nombre del proyecto en contexto de la vista).
+    path(
+        f'{settings.PROYECTO_RSOCIAL_URL_PATH}/',
+        views.proyecto_ods16_view,
+        name='denuncia_verde',
+    ),
     # Cierre de sesión y limpieza de datos de autenticación.
     path('logout/',              views.logout_view,    name='logout'),
     # Vista principal del alumno (perfil académico).

@@ -39,9 +39,18 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 # Protege contra cabeceras Host maliciosas.
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
-# Siempre permitimos subdominios de cloudflare y ngrok para exponer el servidor
-# local en una URL HTTPS pública sin tener que editar el .env cada vez.
-for extra_host in ('.trycloudflare.com', '.ngrok-free.app', '.ngrok.io', '.ngrok.app', '.lhr.life', '.localhost.run'):
+# Siempre permitimos subdominios de cloudflare, ngrok y Railway para exponer
+# el servidor (en local o producción) sin tener que editar el .env cada vez.
+for extra_host in (
+    '.trycloudflare.com',
+    '.ngrok-free.app',
+    '.ngrok.io',
+    '.ngrok.app',
+    '.lhr.life',
+    '.localhost.run',
+    '.up.railway.app',
+    '.railway.app',
+):
     if extra_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(extra_host)
 
@@ -56,9 +65,18 @@ for extra_origin in (
     'https://*.ngrok.app',
     'https://*.lhr.life',
     'https://*.localhost.run',
+    'https://*.up.railway.app',
+    'https://*.railway.app',
 ):
     if extra_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(extra_origin)
+
+# Ruta pública del proyecto de responsabilidad social (ODS 16, "Denuncia Verde"):
+#   https://<subdominio>.up.railway.app/<PROYECTO_RSOCIAL_URL_PATH>/
+# Un solo segmento, sin barra (p. ej. denuncia-verde). En Railway puedes
+# ajustar la variable PROYECTO_RSOCIAL_URL_PATH si el slug del proyecto cambia.
+_proyecto_rsocial_path = config('PROYECTO_RSOCIAL_URL_PATH', default='denuncia-verde').strip().strip('/')
+PROYECTO_RSOCIAL_URL_PATH = _proyecto_rsocial_path or 'denuncia-verde'
 
 
 # Application definition
@@ -211,6 +229,20 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 SESSION_COOKIE_AGE = 3600  # 1 hora (demo)
+
+
+# =====================
+# SEGURIDAD EN PRODUCCIÓN (Railway u otros PaaS detrás de proxy HTTPS)
+# =====================
+# Cuando DEBUG=False asumimos despliegue real: Railway termina el TLS en su
+# borde y reenvía la petición a la app por HTTP, por eso Django necesita leer
+# la cabecera X-Forwarded-Proto para reconocer que la conexión original era
+# HTTPS. Sin esto, las cookies seguras y los redirects fallarían.
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 
 
 # =====================
