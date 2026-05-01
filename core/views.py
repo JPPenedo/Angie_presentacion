@@ -1220,172 +1220,161 @@ def expo_opciones_view(request):
 
 def expo_sinteticos_view(request):
     """
-    Vista pública pedagógica: posición sintética larga (bull) y corta (bear)
-    usando call y put al mismo strike — réplica del payoff de tenencia corta o
-    larga del subyacente, con desembolso neto de primas (c − p).
+    Vista pública pedagógica: estrategia Buy Straddle (call larga + put larga
+    al mismo strike K) — apuesta a movimiento grande del subyaciente al vencimiento,
+    con prima total pagada c + p y dos breakevens K ± (c + p).
     """
     slides = [
         {
-            'titulo': '¿Qué es una posición sintética?',
+            'titulo': '¿Qué es un Buy Straddle?',
             'idea': (
-                'Combinar derivados de forma que el payoff agregado al vencimiento '
-                'imita el de otra posición conocida —por ejemplo, una acción larga o '
-                'corta— sin operar el activo subyacente en ese momento. La pieza '
-                'clave es usar la misma K y el mismo vencimiento en la call y la put.'
+                'Compras una opción call y una put con el mismo strike K y el mismo '
+                'vencimiento. No estás apostando solo a que suba o baje: estás '
+                'comprando volatilidad realizada suficiente para que el movimiento a '
+                'cualquiera de los dos lados supere lo que pagaste en primas.'
             ),
             'modelo': (
-                r'\text{Larga sintética: call largo + put corto}'
-                r'\qquad \text{Corta sintética: call corto + put largo}'
-                r'\qquad \text{(mismo } K,\ T \text{ en ambas patas)}'
+                r'\text{Buy straddle} = \text{call largo}(K) + \text{put largo}(K)'
+                r'\qquad \text{Costo inicial} = c + p'
             ),
             'enfoque': (
-                'La intuición viene de la paridad put–call: si no hubiera costos de '
-                'transacción ni restricciones, el valor relativo de calls y puts al '
-                'mismo strike amarra el precio forward del subyacente. Las '
-                'sintéticas son la traducción operativa de esa relación en el libro de posiciones.'
+                'Si al vencimiento el precio queda muy cerca de K, pierdes casi todo '
+                'el desembolso inicial. Si salta lejos de K (arriba o abajo), una de '
+                'las patas compensa y la ganancia puede ser grande en cola.'
             ),
             'conceptos': [
-                'Misma K y mismo vencimiento en call y put',
-                'El payoff combinado puede ser lineal en ST (como el subyacente)',
-                'El costo inicial es la diferencia de primas c − p (o su signo)',
-                'Útil para cobertura, arbitraje relativo y ajuste de exposición',
+                'Misma K y mismo vencimiento en ambas patas (straddle clásico)',
+                'Delta neto cercano a cero al abrir cerca del dinero',
+                'Pagas tiempo (theta) y compras convexidad (gamma) y sensibilidad a la vol (vega)',
+                'Complemento conceptual frente a spreads direccionales o sintéticos',
             ],
             'demo': 'intro',
         },
         {
-            'titulo': 'Sintética larga (bull) · call largo + put corto',
+            'titulo': 'Payoff al vencimiento · forma en V',
             'idea': (
-                'Compramos la call K y vendemos la put K. Al vencimiento, el valor '
-                'intrínseco neto es max(ST−K,0) − max(K−ST,0) = ST − K: la misma '
-                'pendiente +1 que tener una acción larga desde el strike, desplazada '
-                'por el desembolso neto de primas pagado hoy (c − p).'
+                'Al vencimiento el payoff es la suma de las dos opciones largas: '
+                'max(ST−K,0) + max(K−ST,0) menos el costo c + p. Es simétrico alrededor '
+                'de K: crece linealmente si ST se aleja del strike en cualquier dirección.'
             ),
             'modelo': (
-                r'\Pi_{\text{bull}}(S_T) = \max(S_T-K,0) - \max(K-S_T,0) - (c-p)'
-                r' \;=\; S_T - K - (c-p)'
-                r'\qquad \text{BEP} = K + (c-p)'
+                r'\Pi(S_T) = \max(S_T-K,0) + \max(K-S_T,0) - (c+p)'
+                r'\qquad S_T > K \Rightarrow \Pi = S_T - K - (c+p)'
+                r'\qquad S_T < K \Rightarrow \Pi = K - S_T - (c+p)'
             ),
             'enfoque': (
-                'Si ST sube un peso por encima del breakeven, ganas un peso (antes de '
-                'costos); si cae, pierdes en simetría —riesgo ilimitado a la baja al '
-                'igual que una posición larga en acciones. La prima del put vendido '
-                'financia en parte la call, pero te obliga a absorber caídas fuertes.'
+                'El punto más bajo del diagrama suele estar en ST = K, donde ambas '
+                'opciones terminan fuera del dinero y solo pierdes las primas. Fuera '
+                'de eso, una pata siempre entra en el dinero para compensar parcialmente.'
             ),
             'conceptos': [
-                'Sesgo alcista con delta ≈ +1 cerca del dinero',
-                'Breakeven: ST = K + (c − p), no simplemente K',
-                'Put corto: obligación de comprar al K si ST < K',
-                'Replicación imperfecta si faltan dividendos, tipos o spread bid-ask',
+                'Dos zonas de ganancia: ST por encima de K + (c+p) o por debajo de K − (c+p)',
+                'En K la pérdida es máxima e igual a −(c+p) (antes de costos)',
+                'No hay techo teórico de ganancia: subidas o bajadas extremas pagan',
+                'Igual estructura que “comprar volatilidad” en el libro de opciones',
             ],
-            'demo': 'synth_bull_payoff',
+            'demo': 'straddle_payoff',
         },
         {
-            'titulo': 'Sintética larga · ejemplo numérico',
+            'titulo': 'Ejemplo numérico · primas y breakevens',
             'idea': (
-                'Spot de referencia $100. Call K = $100 con prima c = $5; put K = $100 '
-                'con prima p = $3. Pagas un neto c − p = $2 por acción al abrir. '
-                'El diagrama es una recta: cada dólar que suba ST por encima del '
-                'breakeven suma un dólar a la ganancia.'
+                'Spot de referencia $100. Call ATM K = $100 con c = $5; put misma K con '
+                'p = $3. Pagas c + p = $8 por acción al abrir. Necesitas que ST termine '
+                'por encima de $108 o por debajo de $92 solo para cubrir el costo de '
+                'la estrategia al vencimiento.'
             ),
             'modelo': (
-                r'c - p = 2'
-                r'\qquad \text{BEP} = 100 + 2 = 102'
-                r'\qquad \Pi(110) = 10 - 2 = 8'
-                r'\qquad \Pi(90) = -10 - 2 = -12'
+                r'c + p = 8'
+                r'\qquad \text{BEP}_{\text{sup}} = 100 + 8 = 108'
+                r'\qquad \text{BEP}_{\text{inf}} = 100 - 8 = 92'
+                r'\qquad \Pi(110) = \Pi(90) = 2'
             ),
             'enfoque': (
-                'Compara con comprar la acción a $100: la sintética cuesta $2 menos al '
-                'inicio en este ejemplo (por la estructura de primas), pero el riesgo '
-                'de cola baja es cualitativamente el mismo orden que una larga real: '
-                'no hay techo en la caída del subyacente.'
+                'Observa la simetría: a igual distancia de K ganas lo mismo arriba o '
+                'abajo. El “valle” en K es la zona donde el mercado te dejó quieto y '
+                'las primas se fueron en valor tiempo puro.'
             ),
             'conceptos': [
-                'ST = 102 → breakeven respecto al desembolso inicial',
-                'ST < 100 → la put vendida está en el dinero (obligación cara)',
-                'ST > 100 → la call larga captura el alza; put expira sin valor',
-                'Relación lineal 1:1 con ST una vez fijado K y el neto de primas',
+                'ST = 100 → Π = −8 (peor caso al vencimiento en este ejemplo)',
+                'ST = 108 o 92 → breakeven respecto al desembolso total',
+                'ST = 110 o 90 → ganancia +2 (mismo movimiento absoluto desde K)',
+                'Ampliar c o p desplaza los breakevens y agranda el valle inicial',
             ],
-            'demo': 'synth_bull_ejemplo',
+            'demo': 'straddle_ejemplo',
         },
         {
-            'titulo': 'Sintética corta (bear) · call corto + put largo',
+            'titulo': 'Riesgo en K · theta y el “costo del silencio”',
             'idea': (
-                'Vendemos la call K y compramos la put K. El payoff intrínseco neto es '
-                '−max(ST−K,0) + max(K−ST,0) = K − ST: pendiente −1 como una venta '
-                'en corto del subyacente desde K, ajustada por el flujo inicial c − p '
-                '(recibes c de la call, pagas p por la put).'
+                'Mientras pasa el tiempo sin movimiento, la posición pierde valor por '
+                'theta: pagaste dos primas y ambas decaen si la volatilidad implícita '
+                'no sube lo bastante. En el vencimiento, si ST = K, pierdes el 100 % '
+                'del capital puesto en primas en este ejemplo.'
             ),
             'modelo': (
-                r'\Pi_{\text{bear}}(S_T) = -\max(S_T-K,0) + \max(K-S_T,0) + (c-p)'
-                r' \;=\; K - S_T + (c-p)'
-                r'\qquad \text{BEP} = K + (c-p)'
+                r'\Pi(K) = -(c+p) \ \text{al vencimiento si } S_T = K'
+                r'\qquad \Theta_{\text{estrategia}} < 0 \ \text{(típico)}'
             ),
             'enfoque': (
-                'Ganas cuando ST cae por debajo del breakeven; pierdes cuando sube —'
-                'la call corta tiene cola de pérdida teóricamente ilimitada al alza, '
-                'igual que un short de acciones. El put largo acota parcialmente el '
-                'riesgo en la zona baja pero no elimina la asimetría alcista del short.'
+                'Por eso el straddle largo se asocia a eventos (resultados, datos) o '
+                'a expectativas de salto —no a mercados laterales prolongados sin '
+                'ajuste de precios.'
             ),
             'conceptos': [
-                'Sesgo bajista con delta ≈ −1 cerca del dinero',
-                'Breakeven: ST = K + (c − p) (misma fórmula que la larga, signo opuesto del P&L)',
-                'Call corto: obligación de vender al K si ST > K',
-                'Requiere margen / garantías como cualquier posición corta en calls',
+                'Máxima pérdida acotada al costo inicial c + p (primas pagadas)',
+                'Riesgo de “vol crush”: IV baja tras el evento y ambas patas pierden valor',
+                'Gamma positivo: el delta cambia rápido cuando el subyaciente se mueve',
+                'Liquidez y spread bid-ask en dos patas encarecen el punto de equilibrio real',
             ],
-            'demo': 'synth_bear_payoff',
+            'demo': 'straddle_theta',
         },
         {
-            'titulo': 'Sintética corta · ejemplo numérico',
+            'titulo': 'Volatilidad implícita y lectura práctica',
             'idea': (
-                'Mismos K = $100, c = $5 y p = $3. Al abrir la corta sintética recibes '
-                'neto c − p = $2 (vendes la call más cara que el costo del put). '
-                'Al vencimiento Π = 100 − ST + 2; es el espejo de la larga sintética.'
+                'Al comprar un straddle pagas las primas que el mercado fija según la '
+                'volatilidad implícita. Si crees que el movimiento real será mayor que '
+                'lo que el precio de las opciones refleja (o que la IV subirá), la '
+                'estrategia puede tener sentido —siempre con gestión de riesgo.'
             ),
             'modelo': (
-                r'c - p = 2'
-                r'\qquad \text{BEP} = 100 + 2 = 102'
-                r'\qquad \Pi(90) = 10 + 2 = 12'
-                r'\qquad \Pi(110) = -10 + 2 = -8'
+                r'\text{Vega}_{\text{estrategia}} > 0 \quad \text{(posición larga en vol típica)}'
+                r'\qquad \text{Hedge ratio diario: revisar exposición en } \Delta\text{ neto}'
             ),
             'enfoque': (
-                'La tabla muestra la simetría con la slide anterior: donde la larga '
-                'ganaba +8 con ST = 110, la corta pierde −8. Es la misma estructura '
-                'de primas aplicada a la dirección opuesta del mercado.'
+                'No confundir: “largo vol” no garantiza ganancia; IV puede caer, el tiempo '
+                'pasa y el spot puede no moverse. El análisis es conjunto (precio, tiempo, IV).'
             ),
             'conceptos': [
-                'ST = 102 → ambas sintéticas (larga y corta) en breakeven',
-                'ST = 90 → la put largo paga y la call corta expira sin ejercicio',
-                'ST = 110 → la call corto está en el dinero (pérdida)',
-                'Riesgo teórico al alza ilimitado por la call vendida',
+                'Escenario favorable: salto del subyacente o expansión de la sonrisa de vol',
+                'Escenario adverso: rango estrecho + caída de IV (post-evento típico)',
+                'Alternativa: strangle (strikes distintos) con menor prima y breakevens más lejanos',
+                'Cierre antes del vencimiento: valor de mercado ≠ payoff intrínseco teórico',
             ],
-            'demo': 'synth_bear_ejemplo',
+            'demo': 'straddle_vol',
         },
         {
-            'titulo': 'Comparativa · bull vs bear sintético',
+            'titulo': 'Comparativa · straddle vs larga direccional',
             'idea': (
-                'La larga y la corta sintética son posiciones espejo: una apuesta a '
-                'subidas con pendiente +1 y la otra a bajadas con pendiente −1, '
-                'ambas centradas en el mismo strike y el mismo ajuste por c − p. '
-                'Elegir una u otra es una decisión puramente direccional (y de '
-                'apetito por margen y colas).'
+                'Una larga en acciones gana linealmente si sube y pierde si baja; el '
+                'straddle requiere movimiento grande en cualquier dirección para superar '
+                'el costo de dos primas. La sintética larga (call + put corto misma K) '
+                'es otra historia: payoff casi lineal alcista, distinto perfil de riesgo.'
             ),
             'modelo': (
-                r'\Pi_{\text{bull}} + \Pi_{\text{bear}} = 0 \ \text{(mismos } c,p,K \text{)}'
-                r'\qquad \Delta \approx +1 \ \text{vs}\ \Delta \approx -1'
+                r'\text{Stock largo:} \ \Pi \approx S_T - S_0'
+                r'\qquad \text{Buy straddle:} \ \Pi = |S_T - K| - (c+p) \ \text{(por tramos)}'
             ),
             'enfoque': (
-                'En la práctica se usan para cubrir exposiciones, convertir entre '
-                'delta de opciones y delta de cash, o explotar desalineaciones '
-                'respecto al subyaciente cuando las primas no reflejan la paridad. '
-                'No sustituyen el análisis de riesgo operativo ni el margen.'
+                'Elegir entre ellas depende de la hipótesis: dirección fuerte vs incertidumbre '
+                'amplia o creencia en salto bidireccional. Costos, tamaño y horizonte importan '
+                'tanto como el payoff al vencimiento.'
             ),
             'conceptos': [
-                'Mismo breakeven ST* = K + (c − p) para ambas, con P&L opuesto',
-                'Bull: pierdes si el mercado se desploma · Bear: pierdes si se dispara',
-                'Costo de carry y dividendos rompen la equivalencia exacta con el spot',
-                'Siempre verificar requerimientos de margen en el corto',
+                'Straddle: cero direccional aproximado al abrir; stock: delta +1 desde el inicio',
+                'Straddle: pérdida acotada por primas; stock largo: pérdida amplia hasta cero spot',
+                'Sintética larga mixta call/put: replica exposición subyacente, no “comprar vol”',
+                'Ninguna estrategia reemplaza reglas de tamaño y límites de pérdida',
             ],
-            'demo': 'synth_comparativa',
+            'demo': 'straddle_compare',
         },
     ]
 
@@ -1394,8 +1383,9 @@ def expo_sinteticos_view(request):
         'K': 100,
         'c': 5,
         'p': 3,
-        'D': 2,
-        'BEP': 102,
+        'premio_total': 8,
+        'bep_sup': 108,
+        'bep_inf': 92,
     }
 
     context = {

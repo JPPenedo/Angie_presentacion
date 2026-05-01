@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Posiciones sintéticas (bull y bear) | Exposición Pedagógica</title>
+  <title>Buy Straddle | Exposición Pedagógica</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
@@ -220,6 +220,44 @@
       background: rgba(248,113,113,0.1);
       color: var(--danger);
     }
+    .hero-rail {
+      position: relative;
+      z-index: 1;
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.65rem;
+      font-size: 0.78rem;
+    }
+    .hero-rail-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      font-size: 0.65rem;
+    }
+    .hero-rail-url {
+      color: var(--accent-soft);
+      text-decoration: none;
+      word-break: break-all;
+      font-family: ui-monospace, "Cascadia Mono", monospace;
+      font-size: 0.8rem;
+      border-bottom: 1px dashed rgba(134,239,172,0.35);
+    }
+    .hero-rail-url:hover { color: var(--accent-2); border-bottom-color: var(--accent-2); }
+    .hero-rail-sep { color: var(--muted); user-select: none; }
+    .hero-rail-related {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .hero-rail-related:hover { text-decoration: underline; }
 
     .section-title {
       display: flex; align-items: center; gap: 0.5rem;
@@ -375,12 +413,12 @@
 
     /* --- Cinemática de entrada por demo --- */
     .slide.active .mini-demo { transform-origin: 50% 50%; }
-    .slide.active[data-demo="intro"]                 .mini-demo { animation: introIntro       2.4s cubic-bezier(.2,.8,.2,1)   both; }
-    .slide.active[data-demo="synth_bull_payoff"]     .mini-demo { animation: introBull        2.2s cubic-bezier(.22,.1,.25,1) both; }
-    .slide.active[data-demo="synth_bull_ejemplo"]    .mini-demo { animation: introExample     2.1s cubic-bezier(.5,0,.1,1)    both; }
-    .slide.active[data-demo="synth_bear_payoff"]     .mini-demo { animation: introBear        2.2s cubic-bezier(.22,.1,.25,1) both; }
-    .slide.active[data-demo="synth_bear_ejemplo"]    .mini-demo { animation: introExample     2.1s cubic-bezier(.5,0,.1,1)    both; }
-    .slide.active[data-demo="synth_comparativa"]     .mini-demo { animation: introCompare     2.3s cubic-bezier(.2,.8,.2,1)   both; }
+    .slide.active[data-demo="intro"]              .mini-demo { animation: introIntro   2.4s cubic-bezier(.2,.8,.2,1)   both; }
+    .slide.active[data-demo="straddle_payoff"]    .mini-demo { animation: introCompare 2.3s cubic-bezier(.2,.8,.2,1)   both; }
+    .slide.active[data-demo="straddle_ejemplo"]   .mini-demo { animation: introExample 2.1s cubic-bezier(.5,0,.1,1)    both; }
+    .slide.active[data-demo="straddle_theta"]     .mini-demo { animation: introBear    2.2s cubic-bezier(.22,.1,.25,1) both; }
+    .slide.active[data-demo="straddle_vol"]       .mini-demo { animation: introBull    2.2s cubic-bezier(.22,.1,.25,1) both; }
+    .slide.active[data-demo="straddle_compare"]   .mini-demo { animation: introCompare 2.3s cubic-bezier(.2,.8,.2,1)   both; }
 
     @keyframes introIntro {
       0%   { opacity: 0; transform: scale(1.2) translateY(-6%); filter: blur(16px); }
@@ -692,15 +730,21 @@
 
   <div class="wrap">
     <section class="hero">
-      <h1><i class="bi bi-bezier2 me-2"></i>Sintéticos bull y bear</h1>
+      <h1><i class="bi bi-arrow-left-right me-2"></i>Buy Straddle</h1>
       <p>
-        Call y put al mismo strike para replicar una exposición larga o corta al
-        subyaciente: payoff lineal, breakeven K + (c − p) y espejo entre ambas direcciones.
+        Comprar call y put al mismo strike: apuesta a movimiento fuerte en cualquier dirección,
+        con costo inicial c + p y dos breakevens simétricos K ± (c + p) al vencimiento.
       </p>
       <div class="hero-chips">
-        <span class="hero-chip"><i class="bi bi-arrow-up-right"></i>Larga · call largo + put corto</span>
-        <span class="hero-chip gold"><i class="bi bi-arrow-down-right"></i>Corta · call corto + put largo</span>
-        <span class="hero-chip red"><i class="bi bi-lightning-charge"></i>Misma K · pendiente ±1 al vencimiento</span>
+        <span class="hero-chip"><i class="bi bi-plus-lg"></i>Call larga + put larga</span>
+        <span class="hero-chip gold"><i class="bi bi-bullseye"></i>Misma K · payoffs en V</span>
+        <span class="hero-chip red"><i class="bi bi-activity"></i>Long vega · sensible a IV</span>
+      </div>
+      <div class="hero-rail">
+        <span class="hero-rail-label"><i class="bi bi-train-front"></i>Railway</span>
+        <a class="hero-rail-url" href="{{ request.scheme }}://{{ request.get_host }}{% url 'core:expo_sinteticos' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'core:expo_sinteticos' %}</a>
+        <span class="hero-rail-sep" aria-hidden="true">·</span>
+        <a class="hero-rail-related" href="{% url 'core:expo_opciones' %}">Exposición spreads (Bull Call / Bear Put)</a>
       </div>
     </section>
 
@@ -749,7 +793,7 @@
           <article class="slide {% if forloop.first %}active{% endif %}"
                    data-slide-index="{{ forloop.counter0 }}"
                    data-demo="{{ s.demo }}">
-            <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Sintéticos</div>
+            <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Buy Straddle</div>
             <h3 class="anim">{{ s.titulo }}</h3>
 
             <div class="grid-2">
@@ -780,114 +824,87 @@
                   </div>
                 </div>
                 <div class="payoff-legend">
-                  <span class="pl-chip"><b>K</b> = strike</span>
-                  <span class="pl-chip"><b>c, p</b> = prima</span>
-                  <span class="pl-chip mid">Sintética = misma K en ambas patas</span>
+                  <span class="pl-chip"><b>K</b> = strike compartido</span>
+                  <span class="pl-chip"><b>c, p</b> = primas pagadas</span>
+                  <span class="pl-chip mid">Straddle = ambas patas largas</span>
                 </div>
                 {% endif %}
 
-                {% if s.demo == 'synth_bull_payoff' %}
-                <div class="payoff-wrap"><canvas data-synth-bull-payoff></canvas></div>
+                {% if s.demo == 'straddle_payoff' %}
+                <div class="payoff-wrap"><canvas data-straddle-payoff></canvas></div>
                 <div class="payoff-legend">
                   <span class="pl-chip">K = {{ ejemplo.K }}</span>
-                  <span class="pl-chip">c − p = {{ ejemplo.D }}</span>
-                  <span class="pl-chip mid">BEP = K + (c−p)</span>
-                  <span class="pl-chip up">Pendiente +1</span>
-                  <span class="pl-chip down">Cola baja</span>
+                  <span class="pl-chip">c + p = {{ ejemplo.premio_total }}</span>
+                  <span class="pl-chip mid">BEP = K ± (c+p)</span>
+                  <span class="pl-chip up">Ganancia si ST se aleja de K</span>
+                  <span class="pl-chip down">Mínimo típico en ST = K</span>
                 </div>
                 {% endif %}
 
-                {% if s.demo == 'synth_bull_ejemplo' %}
+                {% if s.demo == 'straddle_ejemplo' %}
                 <div class="kpi-grid">
                   <div class="kpi-tile">
-                    <span class="kpi-l">Neto c − p (pago)</span>
-                    <span class="kpi-v">${{ ejemplo.D|floatformat:2 }}</span>
+                    <span class="kpi-l">Premio total (c + p)</span>
+                    <span class="kpi-v">${{ ejemplo.premio_total|floatformat:2 }}</span>
                   </div>
                   <div class="kpi-tile gold">
-                    <span class="kpi-l">Breakeven (ST)</span>
-                    <span class="kpi-v">${{ ejemplo.BEP|floatformat:0 }}</span>
+                    <span class="kpi-l">Breakevens (ST)</span>
+                    <span class="kpi-v">${{ ejemplo.bep_inf|floatformat:0 }} · ${{ ejemplo.bep_sup|floatformat:0 }}</span>
                   </div>
                   <div class="kpi-tile green">
-                    <span class="kpi-l">Π si ST = 110</span>
-                    <span class="kpi-v">+$8.00</span>
+                    <span class="kpi-l">Π si ST = 110 o 90</span>
+                    <span class="kpi-v">+$2.00</span>
                   </div>
                   <div class="kpi-tile red">
-                    <span class="kpi-l">Π si ST = 90</span>
-                    <span class="kpi-v">−$12.00</span>
-                  </div>
-                </div>
-                <div class="payoff-wrap" style="min-height:140px;"><canvas data-synth-bull-scenario></canvas></div>
-                <table class="scn-table">
-                  <thead>
-                    <tr><th>ST</th><th>Call largo</th><th>Put corto</th><th>Π larga</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>$90</td><td>−$5</td><td>−$7</td><td class="loss">−$12</td></tr>
-                    <tr><td>$100</td><td>−$5</td><td>+$3</td><td class="loss">−$2</td></tr>
-                    <tr><td>$102</td><td>−$3</td><td>+$3</td><td class="zero">$0</td></tr>
-                    <tr><td>$105</td><td>$0</td><td>+$3</td><td class="gain">+$3</td></tr>
-                    <tr><td>$110</td><td>+$5</td><td>+$3</td><td class="gain">+$8</td></tr>
-                  </tbody>
-                </table>
-                {% endif %}
-
-                {% if s.demo == 'synth_bear_payoff' %}
-                <div class="payoff-wrap"><canvas data-synth-bear-payoff></canvas></div>
-                <div class="payoff-legend">
-                  <span class="pl-chip">K = {{ ejemplo.K }}</span>
-                  <span class="pl-chip">c − p = {{ ejemplo.D }}</span>
-                  <span class="pl-chip mid">BEP = K + (c−p)</span>
-                  <span class="pl-chip up">Gana si ST cae</span>
-                  <span class="pl-chip down">Cola alta (call corto)</span>
-                </div>
-                {% endif %}
-
-                {% if s.demo == 'synth_bear_ejemplo' %}
-                <div class="kpi-grid">
-                  <div class="kpi-tile blue">
-                    <span class="kpi-l">Neto c − p (cobro)</span>
-                    <span class="kpi-v">+${{ ejemplo.D|floatformat:2 }}</span>
-                  </div>
-                  <div class="kpi-tile gold">
-                    <span class="kpi-l">Breakeven (ST)</span>
-                    <span class="kpi-v">${{ ejemplo.BEP|floatformat:0 }}</span>
-                  </div>
-                  <div class="kpi-tile green">
-                    <span class="kpi-l">Π si ST = 90</span>
-                    <span class="kpi-v">+$12.00</span>
-                  </div>
-                  <div class="kpi-tile red">
-                    <span class="kpi-l">Π si ST = 110</span>
+                    <span class="kpi-l">Π si ST = K = 100</span>
                     <span class="kpi-v">−$8.00</span>
                   </div>
                 </div>
-                <div class="payoff-wrap" style="min-height:140px;"><canvas data-synth-bear-scenario></canvas></div>
+                <div class="payoff-wrap" style="min-height:140px;"><canvas data-straddle-scenario></canvas></div>
                 <table class="scn-table">
                   <thead>
-                    <tr><th>ST</th><th>Call corto</th><th>Put largo</th><th>Π corta</th></tr>
+                    <tr><th>ST</th><th>Call largo</th><th>Put largo</th><th>Π straddle</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td>$90</td><td>+$5</td><td>+$7</td><td class="gain">+$12</td></tr>
-                    <tr><td>$100</td><td>+$5</td><td>−$3</td><td class="gain">+$2</td></tr>
-                    <tr><td>$102</td><td>+$3</td><td>−$3</td><td class="zero">$0</td></tr>
-                    <tr><td>$105</td><td>$0</td><td>−$3</td><td class="loss">−$3</td></tr>
-                    <tr><td>$110</td><td>−$5</td><td>−$3</td><td class="loss">−$8</td></tr>
+                    <tr><td>$90</td><td>−$5</td><td>+$7</td><td class="gain">+$2</td></tr>
+                    <tr><td>$92</td><td>−$5</td><td>+$5</td><td class="zero">$0</td></tr>
+                    <tr><td>$100</td><td>−$5</td><td>−$3</td><td class="loss">−$8</td></tr>
+                    <tr><td>$108</td><td>+$3</td><td>−$3</td><td class="zero">$0</td></tr>
+                    <tr><td>$110</td><td>+$5</td><td>−$3</td><td class="gain">+$2</td></tr>
                   </tbody>
                 </table>
                 {% endif %}
 
-                {% if s.demo == 'synth_comparativa' %}
-                <div class="payoff-wrap"><canvas data-synth-compare></canvas></div>
+                {% if s.demo == 'straddle_theta' %}
+                <div class="payoff-wrap"><canvas data-straddle-theta></canvas></div>
+                <div class="payoff-legend">
+                  <span class="pl-chip">Peor caso al venc.: −(c+p) si ST = K</span>
+                  <span class="pl-chip mid">Theta diario suele erosionar valor</span>
+                  <span class="pl-chip down">Rango lateral = enemigo del straddle largo</span>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'straddle_vol' %}
+                <div class="payoff-wrap"><canvas data-straddle-vol></canvas></div>
+                <div class="payoff-legend">
+                  <span class="pl-chip">Vega positiva (típico)</span>
+                  <span class="pl-chip up">IV ↑ suele ayudar (todo lo demás igual)</span>
+                  <span class="pl-chip down">Vol crush tras evento: riesgo clásico</span>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'straddle_compare' %}
+                <div class="payoff-wrap"><canvas data-straddle-compare></canvas></div>
                 <table class="cmp-table">
                   <thead>
-                    <tr><th></th><th class="cmp-col-bull">Larga sintética (bull)</th><th class="cmp-col-bear">Corta sintética (bear)</th></tr>
+                    <tr><th></th><th class="cmp-col-bull">Buy Straddle</th><th class="cmp-col-bear">Stock largo (S₀ = K)</th></tr>
                   </thead>
                   <tbody>
-                    <tr><td>Patrones</td><td class="cmp-col-bull">Call largo + put corto</td><td class="cmp-col-bear">Call corto + put largo</td></tr>
-                    <tr><td>Payoff al vencimiento</td><td class="cmp-col-bull">ST − K − (c − p)</td><td class="cmp-col-bear">K − ST + (c − p)</td></tr>
-                    <tr><td>Pendiente en ST</td><td class="cmp-col-bull">+1</td><td class="cmp-col-bear">−1</td></tr>
-                    <tr><td>Breakeven</td><td class="cmp-col-bull">K + (c − p)</td><td class="cmp-col-bear">K + (c − p)</td></tr>
-                    <tr><td>Riesgo destacado</td><td class="cmp-col-bull">Caídas fuertes (put corto)</td><td class="cmp-col-bear">Rally (call corto)</td></tr>
+                    <tr><td>Patrones</td><td class="cmp-col-bull">Call largo + put largo (K)</td><td class="cmp-col-bear">Comprar acción a S₀</td></tr>
+                    <tr><td>Breakeven (aprox.)</td><td class="cmp-col-bull">K ± (c + p)</td><td class="cmp-col-bear">S₀ (precio pagado)</td></tr>
+                    <tr><td>Dirección</td><td class="cmp-col-bull">Necesita salto; simétrico arriba/abajo</td><td class="cmp-col-bear">Gana solo si sube ST</td></tr>
+                    <tr><td>Pérdida acotada</td><td class="cmp-col-bull">Sí (−c − p al peor caso)</td><td class="cmp-col-bear">No (hasta ST → 0)</td></tr>
+                    <tr><td>Riesgo destacado</td><td class="cmp-col-bull">Tiempo + IV + rango estrecho</td><td class="cmp-col-bear">Caídas prolongadas del spot</td></tr>
                   </tbody>
                 </table>
                 {% endif %}
@@ -916,26 +933,41 @@
 
   <script>
     /* =================== CONFIG DEL EJEMPLO =================== */
-    const SYN = {
+    const STR = {
       K: {{ ejemplo.K }},
       c: {{ ejemplo.c }},
       p: {{ ejemplo.p }},
+      S0: {{ ejemplo.spot }},
     };
-    SYN.D = SYN.c - SYN.p;
-    SYN.BEP = SYN.K + SYN.D;
+    STR.premio = STR.c + STR.p;
+    STR.BEP_UP = STR.K + STR.premio;
+    STR.BEP_DN = STR.K - STR.premio;
 
-    function synthBullPayoff(ST) { return ST - SYN.K - SYN.D; }
-    function synthBearPayoff(ST) { return SYN.K - ST + SYN.D; }
+    function straddlePayoff(ST) {
+      return longCallPayoff(ST, STR.K, STR.c) + longPutPayoff(ST, STR.K, STR.p);
+    }
+    function longStockPayoff(ST) { return ST - STR.S0; }
 
     function longCallPayoff(ST, K, c) { return Math.max(ST - K, 0) - c; }
     function longPutPayoff(ST, K, p)  { return Math.max(K - ST, 0) - p; }
-    function shortCallPL(ST, K, c)    { return c - Math.max(ST - K, 0); }
-    function shortPutPL(ST, K, p)     { return p - Math.max(K - ST, 0); }
 
     function linspace(a, b, n) {
       const arr = []; const step = (b - a) / (n - 1);
       for (let i = 0; i < n; i++) arr.push(+(a + i * step).toFixed(2));
       return arr;
+    }
+
+    function vline(x, y0, y1, labelExtra) {
+      return {
+        label: (labelExtra != null ? labelExtra : 'Ref'),
+        data: [{ x, y: y0 }, { x, y: y1 }],
+        borderColor: 'rgba(251,191,36,0.75)',
+        borderDash: [4, 4],
+        borderWidth: 1.3,
+        pointRadius: 0,
+        tension: 0,
+        fill: false,
+      };
     }
 
     /* =================== SLIDE ENGINE =================== */
@@ -1041,7 +1073,7 @@
       if (!cC || !cP || typeof Chart === 'undefined') return;
 
       destroyIfAny(cC); destroyIfAny(cP);
-      const K = SYN.K, c = SYN.c, p = SYN.p;
+      const K = STR.K, c = STR.c, p = STR.p;
       const xs = linspace(70, 130, 61);
 
       const callData = xs.map(st => ({ x: st, y: longCallPayoff(st, K, c) }));
@@ -1061,7 +1093,7 @@
             },
           ],
         },
-        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -8, maxY: 28 }),
+        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
       });
       chartCache.set(cC, chC);
 
@@ -1079,25 +1111,25 @@
             },
           ],
         },
-        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -8, maxY: 28 }),
+        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
       });
       chartCache.set(cP, chP);
     }
 
-    /* ---- Sintética larga: call largo + put corto ---- */
-    function activateSynthBullPayoff(slideEl) {
-      const canvas = slideEl.querySelector('[data-synth-bull-payoff]');
+    /* ---- Buy straddle: payoff con patas ---- */
+    function activateStraddlePayoff(slideEl) {
+      const canvas = slideEl.querySelector('[data-straddle-payoff]');
       if (!canvas || typeof Chart === 'undefined') return;
       destroyIfAny(canvas);
 
-      const lo = SYN.K - 20, hi = SYN.K + 20;
+      const lo = STR.K - 20, hi = STR.K + 20;
       const xs = linspace(lo, hi, 121);
-      const comb = xs.map(st => ({ x: st, y: synthBullPayoff(st) }));
-      const legC = xs.map(st => ({ x: st, y: longCallPayoff(st, SYN.K, SYN.c) }));
-      const legP = xs.map(st => ({ x: st, y: shortPutPL(st, SYN.K, SYN.p) }));
+      const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
+      const legC = xs.map(st => ({ x: st, y: longCallPayoff(st, STR.K, STR.c) }));
+      const legP = xs.map(st => ({ x: st, y: longPutPayoff(st, STR.K, STR.p) }));
 
-      const yMin = Math.min(synthBullPayoff(lo), synthBearPayoff(lo)) - 3;
-      const yMax = Math.max(synthBullPayoff(hi), synthBearPayoff(hi)) + 3;
+      const yMin = Math.min(straddlePayoff(lo), straddlePayoff(STR.K)) - 2;
+      const yMax = Math.max(straddlePayoff(hi), straddlePayoff(lo)) + 3;
 
       const chart = new Chart(canvas, {
         type: 'line',
@@ -1107,91 +1139,27 @@
               label: 'Call largo (K)',
               data: legC,
               borderColor: 'rgba(96,165,250,0.65)',
-              borderDash: [5,4], borderWidth: 1.4,
-              pointRadius: 0, tension: 0, fill: false,
-            },
-            {
-              label: 'Put corto (K)',
-              data: legP,
-              borderColor: 'rgba(251,191,36,0.65)',
-              borderDash: [5,4], borderWidth: 1.4,
-              pointRadius: 0, tension: 0, fill: false,
-            },
-            {
-              label: 'Larga sintética',
-              data: comb,
-              borderColor: 'rgba(74,222,128,1)',
-              backgroundColor: 'rgba(74,222,128,0.2)',
-              borderWidth: 2.6,
-              pointRadius: 0, tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.2)', below: 'rgba(248,113,113,0.18)' },
-            },
-            {
-              label: 'Breakeven',
-              data: [{ x: SYN.BEP, y: yMin }, { x: SYN.BEP, y: yMax }],
-              borderColor: 'rgba(251,191,36,0.9)',
-              borderDash: [3,3], borderWidth: 1.4,
-              pointRadius: 0, tension: 0, fill: false,
-            },
-          ],
-        },
-        options: basePayoffOptions({
-          minX: lo, maxX: hi, minY: yMin, maxY: yMax,
-          title: 'Payoff al vencimiento',
-        }),
-      });
-      chartCache.set(canvas, chart);
-    }
-
-    /* ---- Sintética corta: call corto + put largo ---- */
-    function activateSynthBearPayoff(slideEl) {
-      const canvas = slideEl.querySelector('[data-synth-bear-payoff]');
-      if (!canvas || typeof Chart === 'undefined') return;
-      destroyIfAny(canvas);
-
-      const lo = SYN.K - 20, hi = SYN.K + 20;
-      const xs = linspace(lo, hi, 121);
-      const comb = xs.map(st => ({ x: st, y: synthBearPayoff(st) }));
-      const legC = xs.map(st => ({ x: st, y: shortCallPL(st, SYN.K, SYN.c) }));
-      const legP = xs.map(st => ({ x: st, y: longPutPayoff(st, SYN.K, SYN.p) }));
-
-      const yMin = Math.min(synthBullPayoff(lo), synthBearPayoff(hi)) - 3;
-      const yMax = Math.max(synthBullPayoff(hi), synthBearPayoff(lo)) + 3;
-
-      const chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          datasets: [
-            {
-              label: 'Call corto (K)',
-              data: legC,
-              borderColor: 'rgba(96,165,250,0.65)',
-              borderDash: [5,4], borderWidth: 1.4,
+              borderDash: [5, 4], borderWidth: 1.4,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Put largo (K)',
               data: legP,
               borderColor: 'rgba(251,191,36,0.65)',
-              borderDash: [5,4], borderWidth: 1.4,
+              borderDash: [5, 4], borderWidth: 1.4,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
-              label: 'Corta sintética',
+              label: 'Buy straddle',
               data: comb,
-              borderColor: 'rgba(248,113,113,1)',
-              backgroundColor: 'rgba(248,113,113,0.18)',
+              borderColor: 'rgba(167,139,250,1)',
+              backgroundColor: 'rgba(167,139,250,0.22)',
               borderWidth: 2.6,
               pointRadius: 0, tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.2)', below: 'rgba(248,113,113,0.18)' },
+              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.18)', below: 'rgba(248,113,113,0.2)' },
             },
-            {
-              label: 'Breakeven',
-              data: [{ x: SYN.BEP, y: yMin }, { x: SYN.BEP, y: yMax }],
-              borderColor: 'rgba(251,191,36,0.9)',
-              borderDash: [3,3], borderWidth: 1.4,
-              pointRadius: 0, tension: 0, fill: false,
-            },
+            vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
+            vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
           ],
         },
         options: basePayoffOptions({
@@ -1202,100 +1170,139 @@
       chartCache.set(canvas, chart);
     }
 
-    function activateSynthBullEjemplo(slideEl) {
-      const canvas = slideEl.querySelector('[data-synth-bull-scenario]');
+    function activateStraddleScenario(slideEl) {
+      const canvas = slideEl.querySelector('[data-straddle-scenario]');
       if (!canvas || typeof Chart === 'undefined') return;
       destroyIfAny(canvas);
 
-      const lo = SYN.K - 18, hi = SYN.K + 18;
+      const lo = STR.K - 18, hi = STR.K + 18;
       const xs = linspace(lo, hi, 91);
-      const data = xs.map(st => ({ x: st, y: synthBullPayoff(st) }));
+      const data = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
 
       const chart = new Chart(canvas, {
         type: 'line',
         data: {
           datasets: [{
-            label: 'Π larga sintética',
+            label: 'Π buy straddle',
             data,
-            borderColor: 'rgba(74,222,128,1)',
-            backgroundColor: 'rgba(74,222,128,0.18)',
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.22)', below: 'rgba(248,113,113,0.2)' },
+            borderColor: 'rgba(167,139,250,1)',
+            backgroundColor: 'rgba(167,139,250,0.2)',
+            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.2)', below: 'rgba(248,113,113,0.22)' },
             borderWidth: 2.4, pointRadius: 0, tension: 0,
           }],
         },
         options: basePayoffOptions({
           minX: lo, maxX: hi,
-          minY: synthBullPayoff(lo) - 2,
-          maxY: synthBullPayoff(hi) + 2,
+          minY: straddlePayoff(STR.K) - 2,
+          maxY: straddlePayoff(lo) + 2,
         }),
       });
       chartCache.set(canvas, chart);
     }
 
-    function activateSynthBearEjemplo(slideEl) {
-      const canvas = slideEl.querySelector('[data-synth-bear-scenario]');
+    function activateStraddleTheta(slideEl) {
+      const canvas = slideEl.querySelector('[data-straddle-theta]');
       if (!canvas || typeof Chart === 'undefined') return;
       destroyIfAny(canvas);
 
-      const lo = SYN.K - 18, hi = SYN.K + 18;
-      const xs = linspace(lo, hi, 91);
-      const data = xs.map(st => ({ x: st, y: synthBearPayoff(st) }));
-
-      const chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'Π corta sintética',
-            data,
-            borderColor: 'rgba(248,113,113,1)',
-            backgroundColor: 'rgba(248,113,113,0.16)',
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.22)', below: 'rgba(248,113,113,0.2)' },
-            borderWidth: 2.4, pointRadius: 0, tension: 0,
-          }],
-        },
-        options: basePayoffOptions({
-          minX: lo, maxX: hi,
-          minY: synthBearPayoff(hi) - 2,
-          maxY: synthBearPayoff(lo) + 2,
-        }),
-      });
-      chartCache.set(canvas, chart);
-    }
-
-    function activateSynthComparativa(slideEl) {
-      const canvas = slideEl.querySelector('[data-synth-compare]');
-      if (!canvas || typeof Chart === 'undefined') return;
-      destroyIfAny(canvas);
-
-      const lo = SYN.K - 20, hi = SYN.K + 20;
-      const xs = linspace(lo, hi, 121);
-      const bull = xs.map(st => ({ x: st, y: synthBullPayoff(st) }));
-      const bear = xs.map(st => ({ x: st, y: synthBearPayoff(st) }));
+      const lo = STR.K - 16, hi = STR.K + 16;
+      const xs = linspace(lo, hi, 101);
+      const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
+      const yMin = straddlePayoff(STR.K) - 2;
+      const yMax = straddlePayoff(lo) + 2;
 
       const chart = new Chart(canvas, {
         type: 'line',
         data: {
           datasets: [
             {
-              label: 'Larga sintética (bull)',
-              data: bull,
-              borderColor: 'rgba(74,222,128,1)',
-              borderWidth: 2.4, pointRadius: 0, tension: 0,
+              label: 'Π al vencimiento',
+              data: comb,
+              borderColor: 'rgba(167,139,250,1)',
+              backgroundColor: 'rgba(167,139,250,0.18)',
+              borderWidth: 2.4,
+              pointRadius: 0,
+              tension: 0,
+              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.22)' },
+            },
+            vline(STR.K, yMin, yMax, 'ST = K (mínimo)'),
+          ],
+        },
+        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff (theta al vencimiento)' }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    function activateStraddleVol(slideEl) {
+      const canvas = slideEl.querySelector('[data-straddle-vol]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = 70, hi = 130;
+      const xs = linspace(lo, hi, 121);
+      const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
+      const yMin = -12;
+      const yMax = Math.max(straddlePayoff(lo), straddlePayoff(hi)) + 4;
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Buy straddle (colas)',
+            data: comb,
+            borderColor: 'rgba(96,165,250,1)',
+            backgroundColor: 'rgba(96,165,250,0.12)',
+            borderWidth: 2.2,
+            pointRadius: 0,
+            tension: 0,
+            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.14)', below: 'rgba(248,113,113,0.15)' },
+          }],
+        },
+        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff al vencimiento (rango amplio)' }),
+      });
+      chartCache.set(canvas, chart);
+    }
+
+    function activateStraddleCompare(slideEl) {
+      const canvas = slideEl.querySelector('[data-straddle-compare]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+
+      const lo = STR.K - 22, hi = STR.K + 22;
+      const xs = linspace(lo, hi, 121);
+      const sd = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
+      const stk = xs.map(st => ({ x: st, y: longStockPayoff(st) }));
+
+      const yMin = Math.min(straddlePayoff(STR.K), longStockPayoff(lo)) - 4;
+      const yMax = Math.max(straddlePayoff(hi), longStockPayoff(hi)) + 4;
+
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Buy straddle',
+              data: sd,
+              borderColor: 'rgba(167,139,250,1)',
+              borderWidth: 2.5,
+              pointRadius: 0,
+              tension: 0,
               fill: false,
             },
             {
-              label: 'Corta sintética (bear)',
-              data: bear,
-              borderColor: 'rgba(251,191,36,1)',
-              borderWidth: 2.4, pointRadius: 0, tension: 0,
+              label: 'Stock largo (S₀ = K)',
+              data: stk,
+              borderColor: 'rgba(74,222,128,0.85)',
+              borderDash: [6, 4],
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0,
               fill: false,
             },
           ],
         },
         options: basePayoffOptions({
-          minX: lo, maxX: hi,
-          minY: Math.min(synthBullPayoff(lo), synthBearPayoff(hi)) - 3,
-          maxY: Math.max(synthBullPayoff(hi), synthBearPayoff(lo)) + 3,
+          minX: lo, maxX: hi, minY: yMin, maxY: yMax,
           title: 'Payoff al vencimiento',
         }),
       });
@@ -1304,12 +1311,12 @@
 
     function activateDemo(slideEl) {
       const demo = slideEl.dataset.demo;
-      if (demo === 'intro')                 activateIntro(slideEl);
-      if (demo === 'synth_bull_payoff')     activateSynthBullPayoff(slideEl);
-      if (demo === 'synth_bull_ejemplo')    activateSynthBullEjemplo(slideEl);
-      if (demo === 'synth_bear_payoff')     activateSynthBearPayoff(slideEl);
-      if (demo === 'synth_bear_ejemplo')    activateSynthBearEjemplo(slideEl);
-      if (demo === 'synth_comparativa')     activateSynthComparativa(slideEl);
+      if (demo === 'intro')              activateIntro(slideEl);
+      if (demo === 'straddle_payoff')    activateStraddlePayoff(slideEl);
+      if (demo === 'straddle_ejemplo')   activateStraddleScenario(slideEl);
+      if (demo === 'straddle_theta')     activateStraddleTheta(slideEl);
+      if (demo === 'straddle_vol')       activateStraddleVol(slideEl);
+      if (demo === 'straddle_compare')   activateStraddleCompare(slideEl);
     }
 
     window.addEventListener('load', () => {

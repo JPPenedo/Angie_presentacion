@@ -93,6 +93,9 @@ Abre en el navegador:
 - `https://<tu-subdominio>.up.railway.app/` — dashboard / login.
 - `https://<tu-subdominio>.up.railway.app/denuncia-verde/` — proyecto de responsabilidad social.
 - `https://<tu-subdominio>.up.railway.app/proyecto-ods16/` — la misma página por la URL original.
+- `https://<tu-subdominio>.up.railway.app/expo-actuaria/` — exposición actuarial (slides).
+- `https://<tu-subdominio>.up.railway.app/expo-opciones/` — spreads bull/bear (opciones).
+- `https://<tu-subdominio>.up.railway.app/expo-sinteticos/` — posiciones sintéticas bull/bear (mismo strike).
 
 ## 9. Crear superusuario en Railway (una sola vez)
 
