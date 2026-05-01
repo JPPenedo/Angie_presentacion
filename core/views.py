@@ -1251,6 +1251,56 @@ def expo_sinteticos_view(request):
             'demo': 'intro',
         },
         {
+            'titulo': '¿Para qué sirve?',
+            'idea': (
+                'Sirve cuando esperas un movimiento grande del subyaciente pero no quieres '
+                'elegir solo “sube” o “baja”: earnings, elecciones, datos macro, rupturas '
+                'técnicas u otros eventos que suelen disparar la volatilidad realizada. '
+                'También es la forma típica de expresar en opciones una apuesta “larga en vol”.'
+            ),
+            'modelo': (
+                r'\text{Ideal si: } |\Delta S| \text{ grande} \ \land \ \text{dirección incierta}'
+                r'\qquad \text{Evitar si: mercado lateral prolongado + IV cara o que colapsa tras el evento}'
+            ),
+            'enfoque': (
+                'No es una apuesta direccional pura: pagas dos primas a cambio de ganar si el '
+                'precio termina lejos del strike. El costo de entrada (c + p) es el “precio” '
+                'de esa opcionalidad sobre el tamaño del salto.'
+            ),
+            'conceptos': [
+                'Eventos binarios o de alta incertidumbre (sin sesgo claro alcista/bajista)',
+                'Hipótesis: el mercado subestima cuánto se moverá el activo (o subirá la IV)',
+                'No sustituye análisis de probabilidad, tamaño de posición ni gestión de riesgo',
+                'Antes de operar: comisiones, spread bid-ask en dos patas y horizonte al vencimiento',
+            ],
+            'demo': 'straddle_para_que',
+        },
+        {
+            'titulo': 'Cómo se forma · call, put, compra o venta',
+            'idea': (
+                'Un buy straddle siempre combina dos patas largas al mismo strike K y vencimiento: '
+                'compras la call (pagas prima c) y compras la put (pagas prima p). No hay ventas '
+                'en la estructura clásica “larga”: evitas margen por posiciones cortas en opciones.'
+            ),
+            'modelo': (
+                r'\text{Call europea larga}(K): \ \text{pagas } c'
+                r'\qquad \text{Put europea larga}(K): \ \text{pagas } p'
+                r'\qquad \text{Flujo inicial neto} = -(c+p) \ \text{por unidad}'
+            ),
+            'enfoque': (
+                'En cada contrato hay un comprador y un vendedor: tú eres comprador de ambas '
+                'patas; el otro lado del mercado asume las primas y el riesgo corto en call o put. '
+                'La tabla resume la posición desde tu libro como titular del straddle.'
+            ),
+            'conceptos': [
+                'Call larga = derecho a comprar el subyaciente a K (prima pagada c)',
+                'Put larga = derecho a vender el subyaciente a K (prima pagada p)',
+                'Ambas son compras: tu peor caso acotado es perder las primas al vencimiento si ST = K',
+                'Vender el straddle (short) es la estructura espejo: cobras primas pero riesgo distinto',
+            ],
+            'demo': 'straddle_forma',
+        },
+        {
             'titulo': 'Payoff al vencimiento · forma en V',
             'idea': (
                 'Al vencimiento el payoff es la suma de las dos opciones largas: '
@@ -1301,6 +1351,63 @@ def expo_sinteticos_view(request):
                 'Ampliar c o p desplaza los breakevens y agranda el valle inicial',
             ],
             'demo': 'straddle_ejemplo',
+        },
+        {
+            'titulo': 'Participantes · ganancias y pérdidas al vencimiento',
+            'idea': (
+                'El mercado de opciones es de suma cero entre compradores y vendedores (sin contar '
+                'comisiones): lo que gana el comprador del straddle a expensas de un escenario '
+                'de precio, lo pierden en conjunto quienes vendieron la call y la put al mismo strike.'
+            ),
+            'modelo': (
+                r'\Pi_{\text{comprador}} + \Pi_{\text{vendedor call}} + \Pi_{\text{vendedor put}} = 0'
+                r'\qquad \Pi_{\text{vendedor call}}(S_T) = c - \max(S_T-K,0)'
+                r'\qquad \Pi_{\text{vendedor put}}(S_T) = p - \max(K-S_T,0)'
+            ),
+            'enfoque': (
+                'Abajo, el gráfico superpone al comprador del straddle y a cada vendedor de pata. '
+                'La tabla numérica con los mismos c, p y K del ejemplo ilustra un reparto tipo '
+                'con tres ST distintos.'
+            ),
+            'conceptos': [
+                'Comprador straddle: gana con movimientos extremos tras superar c + p',
+                'Vendedor de call: cobra c pero asume cola de pérdida ilimitada si ST ≫ K',
+                'Vendedor de put: cobra p pero asume pérdida grande si ST ≪ K',
+                'En la práctica, el “vendedor” puede ser un market maker con cobertura dinámica',
+            ],
+            'demo': 'straddle_participantes',
+        },
+        {
+            'titulo': 'Ventajas y desventajas del buy straddle',
+            'idea': (
+                'Toda estrategia equilibra flexibilidad y costo: aquí pagas por simetría y colas '
+                'abiertas, pero sufres si el activo no se mueve o la implícita cae después de un evento.'
+            ),
+            'modelo': (
+                r'\text{Ventaja clave: } \Pi \text{ simétrico en } S_T - K \text{ (colas largas)'
+                r'\qquad \text{Desventaja clave: theta }+\text{ costo doble de prima}'
+            ),
+            'enfoque': (
+                'Úsalo como checklist pedagógico, no como lista de “comprar o no”: el contexto '
+                '(precio, tiempo hasta el vencimiento, smile de vol) redefine cada ítem.'
+            ),
+            'conceptos': [
+                'Usa la tarjeta de al lado como resumen visual: ventajas vs desventajas',
+                'El contexto (IV, tiempo, evento) puede invertir qué tan relevante es cada punto',
+            ],
+            'ventajas': [
+                'Participación simétrica a movimientos fuertes arriba o abajo del strike',
+                'Pérdida inicial acotada al desembolso c + p (sin nuevas llamadas de margen por patas largas)',
+                'Perfil largo en volatilidad y convexidad (gamma): útil bajo ciertas hipótesis de salto',
+                'Implementación simple: solo dos piernas, mismo strike y vencimiento',
+            ],
+            'desventajas': [
+                'Costo doble de primas y theta negativo típico (el tiempo es enemigo sin movimiento)',
+                'Breakevens alejados: necesitas variación suficiente en ST para recuperar el premio',
+                'Riesgo de caída brusca de IV tras el evento (“vol crush”)',
+                'Dos spreads bid-ask y comisiones encarecen el resultado económico real',
+            ],
+            'demo': 'straddle_pro_con',
         },
         {
             'titulo': 'Riesgo en K · theta y el “costo del silencio”',
