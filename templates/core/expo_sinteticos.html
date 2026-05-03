@@ -16,22 +16,22 @@
       --navy: #2a2a2a;
       --card: #161616;
       --card-alt: #1c1c1c;
-      --border: rgba(255,80,60,0.14);
-      --accent: #ff3300;
-      --accent-2: #ff5533;
-      --accent-soft: #ff8866;
-      --ember-glow: rgba(255, 51, 0, 0.45);
+      --border: rgba(255,90,55,0.38);
+      --accent: #ff2200;
+      --accent-2: #ff5520;
+      --accent-soft: #ff9966;
+      --ember-glow: rgba(255, 40, 0, 0.55);
       --nebula: rgba(120, 120, 120, 0.35);
       --deep-blue: rgba(40, 40, 40, 0.65);
-      --gold: #ffaa66;
-      --text: #f4f4f5;
-      --muted: #a3a3ab;
+      --gold: #ffbb77;
+      --text: #fafafa;
+      --muted: #b8b8c0;
       --success: #5eead4;
       --warning: #ffb347;
-      --danger: #ff4466;
-      --line-2: #c4c4cc;
-      --violet: #b8b8c4;
-      --blue: #b4b4be;
+      --danger: #ff5566;
+      --line-2: #b8c8ff;
+      --violet: #d0d8ff;
+      --blue: #c8d0f0;
     }
     * { box-sizing: border-box; }
     body {
@@ -55,8 +55,8 @@
       position: absolute;
       inset: -35% -20%;
       background-image:
-        linear-gradient(rgba(255, 51, 0, 0.09) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+        linear-gradient(rgba(255, 60, 30, 0.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
       background-size: 52px 52px, 52px 52px;
       transform-origin: 50% 100%;
       transform: perspective(520px) rotateX(56deg) scale(1.35);
@@ -225,9 +225,9 @@
     .wrap {
       position: relative;
       z-index: 2;
-      max-width: min(1540px, calc(100vw - 1.25rem));
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 1.4rem 0.7rem 2.6rem;
+      padding: 1.4rem 1.2rem 2.6rem;
     }
 
     /* ---------- HERO ---------- */
@@ -235,13 +235,13 @@
       position: relative;
       overflow: hidden;
       background: linear-gradient(145deg, rgba(28,28,28,0.98), rgba(12,12,12,0.99));
-      border: 1px solid rgba(255,51,0,0.35);
+      border: 1px solid rgba(255,70,40,0.55);
       border-radius: 1rem;
       padding: 1.2rem 1.3rem;
       margin-bottom: 1rem;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,0.04) inset,
-        0 0 50px -8px rgba(255,51,0,0.25),
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 0 60px -6px rgba(255,51,0,0.42),
         0 20px 50px -20px rgba(0,0,0,0.8);
     }
     .hero::after{
@@ -258,7 +258,7 @@
       font-weight: 700;
       margin: 0 0 0.35rem;
       letter-spacing: 0.04em;
-      text-shadow: 0 0 28px rgba(255,51,0,0.35), 0 0 60px rgba(255,30,0,0.12);
+      text-shadow: 0 0 32px rgba(255,60,30,0.55), 0 0 80px rgba(255,40,0,0.22);
     }
     .hero p { margin: 0; color: var(--muted); font-size: 0.92rem; }
     .hero .hero-chips {
@@ -281,9 +281,10 @@
       color: var(--gold);
     }
     .hero-chip.cosmic-secondary {
-      border-color: rgba(200,200,210,0.45);
-      background: rgba(255,255,255,0.08);
-      color: #e2e2e8;
+      border-color: rgba(180,200,255,0.55);
+      background: rgba(100,130,255,0.14);
+      color: #e8eeff;
+      box-shadow: 0 0 18px rgba(140,170,255,0.2);
     }
     .hero-chip.red {
       border-color: rgba(251,113,133,0.45);
@@ -337,10 +338,10 @@
       letter-spacing: 0.04em;
     }
     .badge-pill {
-      border: 1px solid rgba(255,51,0,0.45);
-      background: rgba(255,51,0,0.12);
-      color: var(--accent-soft);
-      box-shadow: 0 0 16px rgba(255,51,0,0.12);
+      border: 1px solid rgba(255,90,50,0.65);
+      background: rgba(255,51,0,0.18);
+      color: #ffccb8;
+      box-shadow: 0 0 22px rgba(255,51,0,0.28);
       border-radius: 999px; font-size: 0.7rem;
       padding: 0.2rem 0.6rem;
       letter-spacing: 0.05em; text-transform: uppercase;
@@ -370,13 +371,12 @@
         var(--card);
       border: 1px solid rgba(255,51,0,0.22);
       border-radius: 1rem;
-      padding: 1rem 1.05rem 1.15rem;
-      overflow-x: hidden;
-      overflow-y: visible;
+      padding: 0.9rem;
+      overflow: hidden;
       box-shadow:
-        inset 0 0 1px rgba(255,80,60,0.08),
+        inset 0 0 1px rgba(255,90,60,0.12),
         0 12px 48px -10px rgba(0,0,0,0.75),
-        0 0 70px -28px rgba(255,51,0,0.18);
+        0 0 72px -24px rgba(255,51,0,0.28);
     }
     .slides-shell::before {
       content: "";
@@ -412,17 +412,19 @@
 
     .stage {
       position: relative;
-      min-height: 720px;
+      height: min(560px, calc(100vh - 280px));
+      min-height: 440px;
+      max-height: calc(100vh - 240px);
     }
     .slide {
       position: absolute; inset: 0;
       background: var(--card-alt);
       border: 1px solid var(--border);
       border-radius: 0.85rem;
-      padding: 1rem 1.1rem;
-      overflow-x: hidden;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       opacity: 0;
       pointer-events: none;
       transform: scale(0.985) translateY(12px);
@@ -473,7 +475,7 @@
       font-size: 1.28rem;
       font-weight: 700;
       letter-spacing: 0.03em;
-      text-shadow: 0 0 20px rgba(255,51,0,0.22);
+      text-shadow: 0 0 24px rgba(255,60,35,0.45);
     }
     .slide .subtitle {
       color: var(--accent-soft);
@@ -487,31 +489,71 @@
     .slide p { margin: 0.35rem 0; color: #d8d8dc; font-size: 0.9rem; line-height: 1.45; }
     .slide p strong { color: var(--text); }
 
+    .slide .subtitle,
+    .slide > h3 {
+      flex-shrink: 0;
+    }
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: minmax(0, 1fr);
       gap: 0.9rem;
-      margin-top: 0.6rem;
+      margin-top: 0.5rem;
+      flex: 1 1 auto;
+      min-height: 0;
+      align-items: stretch;
+    }
+    .grid-2 > div {
+      min-height: 0;
+    }
+    .slide:not([data-demo="straddle_forma"]):not([data-demo="straddle_participantes"]):not([data-demo="straddle_live"]) .grid-2 > div:first-child {
+      overflow-y: auto;
+      padding-right: 0.2rem;
     }
     @media (max-width: 820px) {
       .grid-2 { grid-template-columns: 1fr; }
-      .stage { min-height: 980px; }
+      .stage {
+        height: auto;
+        min-height: min(720px, calc(100vh - 220px));
+        max-height: none;
+      }
     }
 
-    /* Slides 2, 3 y 6: columna de gráfico / demo más ancha para que no se recorte */
+    /* Slides 2, 3 y 6: texto arriba y demo a ancho completo (sin pelear altura en dos columnas) */
     .slide[data-demo="straddle_forma"] .grid-2,
     .slide[data-demo="straddle_participantes"] .grid-2,
     .slide[data-demo="straddle_live"] .grid-2 {
-      grid-template-columns: minmax(220px, 0.34fr) minmax(380px, 1.08fr);
-      gap: 1rem;
-      align-items: start;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      gap: 0.55rem;
     }
-    @media (min-width: 1200px) {
-      .slide[data-demo="straddle_forma"] .grid-2,
-      .slide[data-demo="straddle_participantes"] .grid-2,
-      .slide[data-demo="straddle_live"] .grid-2 {
-        grid-template-columns: minmax(260px, 0.3fr) minmax(520px, 1.12fr);
-      }
+    .slide[data-demo="straddle_forma"] .grid-2 > div:last-child,
+    .slide[data-demo="straddle_participantes"] .grid-2 > div:last-child,
+    .slide[data-demo="straddle_live"] .grid-2 > div:last-child {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .slide[data-demo="straddle_forma"] .concept-list .concept-chip {
+      font-size: 0.74rem;
+      padding: 0.32rem 0.5rem 0.32rem 0.62rem;
+      line-height: 1.32;
+    }
+    .slide[data-demo="straddle_forma"] p,
+    .slide[data-demo="straddle_participantes"] p,
+    .slide[data-demo="straddle_live"] p {
+      font-size: 0.84rem;
+    }
+    .slide[data-demo="straddle_forma"] .grid-2 > div:first-child,
+    .slide[data-demo="straddle_participantes"] .grid-2 > div:first-child,
+    .slide[data-demo="straddle_live"] .grid-2 > div:first-child {
+      max-height: min(42vh, 400px);
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      padding-right: 0.15rem;
+    }
+    .slide[data-demo="straddle_participantes"] .payoff-wrap {
+      max-height: min(30vh, 230px);
     }
 
     /* --- Cinemática de entrada por demo --- */
@@ -579,16 +621,16 @@
       margin-top: 0.45rem;
       padding: 0.55rem 0.75rem 0.55rem 0.85rem;
       border-radius: 0.55rem;
-      border: 1px solid rgba(255,51,0,0.35);
+      border: 1px solid rgba(255,90,50,0.5);
       border-left-width: 4px;
-      border-left-color: rgba(255,51,0,0.95);
-      background: linear-gradient(100deg, rgba(255,51,0,0.12), rgba(24,24,26,0.95) 48%, rgba(70,70,75,0.08));
-      color: #f0f2f8;
+      border-left-color: #ff4418;
+      background: linear-gradient(100deg, rgba(255,60,30,0.18), rgba(24,24,26,0.95) 48%, rgba(90,90,98,0.1));
+      color: #fafafa;
       font-size: 0.84rem;
       line-height: 1.45;
       box-shadow:
-        0 0 28px rgba(255,51,0,0.12),
-        inset 0 1px 0 rgba(255,255,255,0.04);
+        0 0 32px rgba(255,51,0,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .concept-list {
@@ -739,22 +781,15 @@
     /* ---------- MINI DEMO ---------- */
     .mini-demo {
       position: relative;
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.12));
-      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.14));
+      border: 1px solid rgba(255,90,55,0.35);
       border-radius: 0.75rem;
-      padding: 0.75rem;
-      min-height: 300px;
-      overflow: visible;
-      display: flex; flex-direction: column;
-    }
-    .slide[data-demo="straddle_forma"] .mini-demo {
-      min-height: 500px;
-    }
-    .slide[data-demo="straddle_participantes"] .mini-demo {
-      min-height: 580px;
-    }
-    .slide[data-demo="straddle_live"] .mini-demo {
-      min-height: 640px;
+      padding: 0.6rem 0.65rem;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     .mini-demo .demo-head {
       display:flex; justify-content:space-between; align-items:center;
@@ -769,16 +804,18 @@
     }
     .mini-demo .demo-head .dots3 span:nth-child(1){ background:#ff3300; box-shadow:0 0 8px rgba(255,51,0,0.6); }
     .mini-demo .demo-head .dots3 span:nth-child(2){ background:#ffaa66; }
-    .mini-demo .demo-head .dots3 span:nth-child(3){ background:#c8c8d0; }
+    .mini-demo .demo-head .dots3 span:nth-child(3){ background:#a8b8ff; box-shadow: 0 0 8px rgba(160,180,255,0.45); }
 
     /* ---------- PAYOFF CHARTS ---------- */
     .payoff-wrap {
       position: relative;
-      flex: 1;
-      min-height: 220px;
+      flex: 1 1 0;
+      min-height: 120px;
+      max-height: min(34vh, 280px);
     }
-    .slide[data-demo="straddle_participantes"] .payoff-wrap {
-      min-height: 280px;
+    .slide[data-demo="straddle_para_que"] .payoff-wrap,
+    .slide[data-demo="straddle_legs_vs_result"] .payoff-wrap {
+      max-height: min(38vh, 300px);
     }
     .payoff-wrap canvas { width: 100% !important; height: 100% !important; }
 
@@ -786,7 +823,17 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.5rem;
-      flex: 1;
+      flex: 1 1 0;
+      min-height: 0;
+      max-height: min(36vh, 320px);
+    }
+    .slide[data-demo="straddle_forma"] .mini-demo .intro-grid {
+      order: 1;
+    }
+    .slide[data-demo="straddle_forma"] .mini-demo .table-scroll {
+      order: 2;
+      flex-shrink: 0;
+      margin-top: 0.35rem;
     }
     .intro-card {
       display: flex; flex-direction: column;
@@ -805,14 +852,10 @@
     }
     .intro-card.call .ic-title { color: var(--line-2); }
     .intro-card.put  .ic-title { color: var(--gold); }
-    .intro-card .ic-canvas { flex: 1; min-height: 160px; position: relative; }
-    .slide[data-demo="straddle_forma"] .intro-card .ic-canvas {
-      min-height: 210px;
-    }
-    @media (min-width: 1100px) {
-      .slide[data-demo="straddle_forma"] .intro-card .ic-canvas {
-        min-height: 240px;
-      }
+    .intro-card .ic-canvas {
+      flex: 1 1 0;
+      min-height: 0;
+      position: relative;
     }
     @media (max-width: 520px) {
       .intro-grid { grid-template-columns: 1fr; }
@@ -949,16 +992,22 @@
     .dot.active {
       background: linear-gradient(90deg, var(--accent), var(--line-2));
       width: 42px;
-      box-shadow: 0 0 14px rgba(255,51,0,0.45);
+      box-shadow: 0 0 18px rgba(255,60,30,0.65), 0 0 36px rgba(255,40,0,0.2);
     }
 
     /* Monitor “tiempo real” (última slide) */
     .live-widget {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
       background: linear-gradient(165deg, rgba(0,0,0,0.35), rgba(28,28,30,0.94));
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,100,70,0.25);
       border-radius: 0.75rem;
       padding: 0.55rem 0.6rem 0.65rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 0 24px rgba(255,51,0,0.12);
     }
     .live-widget-top {
       display: flex;
@@ -1048,14 +1097,11 @@
     }
     .live-kpi-v.up { color: var(--success); }
     .live-kpi-v.down { color: var(--danger); }
-    .live-chart-wrap { min-height: 240px; }
-    .slide[data-demo="straddle_live"] .live-chart-wrap {
-      min-height: 300px;
-    }
-    @media (min-width: 1100px) {
-      .slide[data-demo="straddle_live"] .live-chart-wrap {
-        min-height: 340px;
-      }
+    .live-widget .payoff-wrap.live-chart-wrap {
+      flex: 1 1 0;
+      min-height: 110px;
+      max-height: min(30vh, 260px);
+      margin-top: 0.25rem;
     }
 
     /* Tablas anchas: scroll horizontal dentro de la slide */
@@ -1585,12 +1631,12 @@
           datasets: [{
             label: 'Buy straddle (intuición)',
             data: comb,
-            borderColor: 'rgba(255,68,38,1)',
-            backgroundColor: 'rgba(255,68,38,0.12)',
-            borderWidth: 2.4,
+            borderColor: 'rgba(255,55,20,1)',
+            backgroundColor: 'rgba(255,55,20,0.16)',
+            borderWidth: 2.8,
             tension: 0,
             pointRadius: 0,
-            fill: { target: { value: 0 }, above: 'rgba(123,143,217,0.14)', below: 'rgba(255,80,100,0.2)' },
+            fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.2)', below: 'rgba(255,70,100,0.26)' },
           }],
         },
         options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Resultado al vencimiento ($)' }),
@@ -1615,10 +1661,10 @@
           datasets: [{
             label: 'Call · compra (paga c)',
             data: callData,
-            borderColor: 'rgba(130,150,235,1)',
-            backgroundColor: 'rgba(130,150,235,0.12)',
-            fill: { target: { value: 0 }, above: 'rgba(130,150,235,0.16)', below: 'rgba(255,90,110,0.14)' },
-            borderWidth: 2, pointRadius: 0, tension: 0.05,
+            borderColor: 'rgba(175,155,255,1)',
+            backgroundColor: 'rgba(175,155,255,0.16)',
+            fill: { target: { value: 0 }, above: 'rgba(175,155,255,0.22)', below: 'rgba(255,95,120,0.18)' },
+            borderWidth: 2.4, pointRadius: 0, tension: 0.05,
           }],
         },
         options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
@@ -1631,10 +1677,10 @@
           datasets: [{
             label: 'Put · compra (paga p)',
             data: putData,
-            borderColor: 'rgba(255,170,102,1)',
-            backgroundColor: 'rgba(255,170,102,0.12)',
-            fill: { target: { value: 0 }, above: 'rgba(130,150,235,0.12)', below: 'rgba(255,90,110,0.12)' },
-            borderWidth: 2, pointRadius: 0, tension: 0.05,
+            borderColor: 'rgba(255,195,110,1)',
+            backgroundColor: 'rgba(255,195,110,0.14)',
+            fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.14)', below: 'rgba(255,95,120,0.14)' },
+            borderWidth: 2.4, pointRadius: 0, tension: 0.05,
           }],
         },
         options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
@@ -1672,8 +1718,8 @@
             {
               label: 'Comprador straddle',
               data: buyer,
-              borderColor: 'rgba(255,68,38,1)',
-              borderWidth: 2.4,
+              borderColor: 'rgba(255,55,20,1)',
+              borderWidth: 2.8,
               tension: 0,
               pointRadius: 0,
               fill: false,
@@ -1681,9 +1727,9 @@
             {
               label: 'Vendedor call',
               data: wCall,
-              borderColor: 'rgba(130,150,235,0.9)',
+              borderColor: 'rgba(175,155,255,0.98)',
               borderDash: [6, 4],
-              borderWidth: 2,
+              borderWidth: 2.3,
               tension: 0,
               pointRadius: 0,
               fill: false,
@@ -1691,9 +1737,9 @@
             {
               label: 'Vendedor put',
               data: wPut,
-              borderColor: 'rgba(255,170,102,0.88)',
+              borderColor: 'rgba(255,195,110,0.95)',
               borderDash: [4, 4],
-              borderWidth: 2,
+              borderWidth: 2.3,
               tension: 0,
               pointRadius: 0,
               fill: false,
@@ -1728,25 +1774,25 @@
             {
               label: 'Call largo (K)',
               data: legC,
-              borderColor: 'rgba(130,150,235,0.8)',
-              borderDash: [6, 4], borderWidth: 1.5,
+              borderColor: 'rgba(175,155,255,0.92)',
+              borderDash: [6, 4], borderWidth: 1.9,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Put largo (K)',
               data: legP,
-              borderColor: 'rgba(255,170,102,0.75)',
-              borderDash: [4, 3], borderWidth: 1.5,
+              borderColor: 'rgba(255,195,110,0.9)',
+              borderDash: [4, 3], borderWidth: 1.9,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Straddle (resultado)',
               data: comb,
-              borderColor: 'rgba(255,68,38,1)',
-              backgroundColor: 'rgba(255,68,38,0.08)',
-              borderWidth: 2.8,
+              borderColor: 'rgba(255,55,20,1)',
+              backgroundColor: 'rgba(255,55,20,0.1)',
+              borderWidth: 3.1,
               pointRadius: 0, tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(130,150,235,0.12)', below: 'rgba(255,80,100,0.18)' },
+              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.16)', below: 'rgba(255,85,110,0.22)' },
             },
             vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
             vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
@@ -1889,21 +1935,21 @@
             {
               label: 'Straddle (precio simulado)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piS })),
-              borderColor: 'rgba(255,68,38,1)',
-              backgroundColor: 'rgba(255,68,38,0.1)',
-              borderWidth: 2.4,
+              borderColor: 'rgba(255,55,20,1)',
+              backgroundColor: 'rgba(255,55,20,0.12)',
+              borderWidth: 2.8,
               tension: 0.25,
               pointRadius: 4,
-              pointBackgroundColor: '#f4f4f8',
-              pointBorderColor: 'rgba(255,68,38,1)',
-              fill: { target: { value: 0 }, above: 'rgba(255,68,38,0.16)', below: 'rgba(255,80,100,0.12)' },
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: 'rgba(255,55,20,1)',
+              fill: { target: { value: 0 }, above: 'rgba(255,70,40,0.2)', below: 'rgba(255,90,110,0.16)' },
             },
             {
               label: 'Solo call (referencia)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piC })),
-              borderColor: 'rgba(130,150,235,0.88)',
+              borderColor: 'rgba(175,155,255,0.95)',
               borderDash: [6, 4],
-              borderWidth: 1.8,
+              borderWidth: 2.1,
               tension: 0.2,
               pointRadius: 0,
               fill: false,
