@@ -230,109 +230,9 @@
       padding: 1.4rem 1.2rem 2.6rem;
     }
 
-    /* ---------- HERO ---------- */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(145deg, rgba(28,28,28,0.98), rgba(12,12,12,0.99));
-      border: 1px solid rgba(255,70,40,0.55);
-      border-radius: 1rem;
-      padding: 1.2rem 1.3rem;
-      margin-bottom: 1rem;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.06) inset,
-        0 0 60px -6px rgba(255,51,0,0.42),
-        0 20px 50px -20px rgba(0,0,0,0.8);
-    }
-    .hero::after{
-      content:"";
-      position:absolute; inset:-45% -25% auto auto; width:65%; height:200%;
-      background: conic-gradient(from 200deg, rgba(255,51,0,0.32), rgba(80,80,88,0.18), transparent 42%);
-      filter: blur(42px); pointer-events:none;
-      animation: spin 24s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg);} }
-    .hero h1 {
-      font-family: "Rajdhani", system-ui, sans-serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin: 0 0 0.35rem;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 32px rgba(255,60,30,0.55), 0 0 80px rgba(255,40,0,0.22);
-    }
-    .hero p { margin: 0; color: var(--muted); font-size: 0.92rem; }
-    .hero .hero-chips {
-      display: flex; flex-wrap: wrap; gap: 0.4rem;
-      margin-top: 0.7rem;
-    }
-    .hero-chip {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      font-size: 0.72rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255,51,0,0.4);
-      background: rgba(255,51,0,0.1);
-      color: var(--accent-soft);
-      box-shadow: 0 0 14px rgba(255,51,0,0.08);
-    }
-    .hero-chip.gold {
-      border-color: rgba(255,170,102,0.45);
-      background: rgba(255,120,60,0.1);
-      color: var(--gold);
-    }
-    .hero-chip.cosmic-secondary {
-      border-color: rgba(180,200,255,0.55);
-      background: rgba(100,130,255,0.14);
-      color: #e8eeff;
-      box-shadow: 0 0 18px rgba(140,170,255,0.2);
-    }
-    .hero-chip.red {
-      border-color: rgba(251,113,133,0.45);
-      background: rgba(251,113,133,0.1);
-      color: var(--danger);
-    }
-    .hero-rail {
-      position: relative;
-      z-index: 1;
-      margin-top: 0.85rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.45rem 0.65rem;
-      font-size: 0.78rem;
-    }
-    .hero-rail-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-      font-size: 0.65rem;
-    }
-    .hero-rail-url {
-      color: #ffb399;
-      text-decoration: none;
-      word-break: break-all;
-      font-family: ui-monospace, "Cascadia Mono", monospace;
-      font-size: 0.8rem;
-      border-bottom: 1px dashed rgba(255,80,60,0.4);
-    }
-    .hero-rail-url:hover { color: #ffd0c2; border-bottom-color: rgba(255,120,90,0.7); }
-    .hero-rail-sep { color: var(--muted); user-select: none; }
-    .hero-rail-related {
-      color: var(--gold);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .hero-rail-related:hover { text-decoration: underline; }
-
     .section-title {
       display: flex; align-items: center; gap: 0.5rem;
-      margin: 1.2rem 0 0.7rem;
+      margin: 0.35rem 0 0.7rem;
       font-family: "Rajdhani", system-ui, sans-serif;
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -1354,26 +1254,6 @@
   </div>
 
   <div class="wrap">
-    <section class="hero">
-      <h1><i class="bi bi-arrow-left-right me-2"></i>Buy Straddle</h1>
-      <p>
-        Compras una call y una put al mismo precio de ejercicio: te va bien si el precio del activo
-        se mueve mucho hacia arriba o hacia abajo antes del vencimiento. Pagas dos primas y
-        buscas un salto claro del mercado para que valga la pena.
-      </p>
-      <div class="hero-chips">
-        <span class="hero-chip"><i class="bi bi-plus-lg"></i>Call larga + put larga</span>
-        <span class="hero-chip gold"><i class="bi bi-bullseye"></i>Misma K · payoffs en V</span>
-        <span class="hero-chip cosmic-secondary"><i class="bi bi-activity"></i>Colas abiertas · riesgo acotado al premio</span>
-      </div>
-      <div class="hero-rail">
-        <span class="hero-rail-label"><i class="bi bi-train-front"></i>Railway</span>
-        <a class="hero-rail-url" href="{{ request.scheme }}://{{ request.get_host }}{% url 'core:expo_sinteticos' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'core:expo_sinteticos' %}</a>
-        <span class="hero-rail-sep" aria-hidden="true">·</span>
-        <a class="hero-rail-related" href="{% url 'core:expo_opciones' %}">Exposición spreads (Bull Call / Bear Put)</a>
-      </div>
-    </section>
-
     <div class="section-title">
       <span class="badge-pill">Slides</span>
       <span>Recorrido conceptual en {{ slides|length }} pasos</span>
