@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buy Straddle | Exposición Pedagógica</title>
+  <title>Buy Straddle | Sintéticos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
@@ -19,34 +22,36 @@
           });"></script>
   <style>
     :root {
-      --bg: #090e0c;
-      --card: #111a16;
-      --card-alt: #172118;
-      --border: rgba(255,255,255,0.08);
-      --accent: #22c55e;
-      --accent-2: #4ade80;
-      --accent-soft: #86efac;
-      --gold: #fbbf24;
-      --text: #f0ede9;
-      --muted: #7a7470;
+      --bg: #0a0b0f;
+      --card: #0e1018;
+      --card-alt: #12141f;
+      --border: rgba(255,255,255,0.07);
+      --accent: #f59e0b;
+      --accent-2: #fbbf24;
+      --accent-soft: #fcd34d;
+      --teal: #2dd4bf;
+      --teal-dim: rgba(45,212,191,0.55);
+      --gold: #f59e0b;
+      --text: #f4f4f5;
+      --muted: #71717a;
       --success: #34d399;
       --warning: #fbbf24;
-      --danger: #f87171;
-      --blue: #60a5fa;
+      --danger: #fb7185;
+      --blue: #38bdf8;
       --violet: #a78bfa;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Segoe UI", system-ui, sans-serif;
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
       color: var(--text);
       min-height: 100vh;
       position: relative;
       background-color: var(--bg);
       background-image:
-        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-      background-size: 44px 44px, 44px 44px;
+        linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
+      background-size: 48px 48px, 48px 48px;
       background-attachment: fixed;
       overflow-x: hidden;
     }
@@ -74,13 +79,22 @@
     }
     .ambient.a1 {
       width: 620px; height: 540px; left: -10%; top: 8%;
-      background: radial-gradient(closest-side, rgba(34,197,94,0.35), transparent 70%);
+      background: radial-gradient(closest-side, rgba(245,158,11,0.22), transparent 72%);
       animation: ambDrift1 38s ease-in-out infinite alternate;
     }
     .ambient.a2 {
-      width: 480px; height: 440px; right: -8%; bottom: -4%;
-      background: radial-gradient(closest-side, rgba(74,222,128,0.28), transparent 70%);
+      width: 520px; height: 480px; right: -8%; bottom: -4%;
+      background: radial-gradient(closest-side, rgba(99,102,241,0.2), transparent 72%);
       animation: ambDrift2 44s ease-in-out infinite alternate;
+    }
+    .ambient.a3 {
+      width: 560px; height: 420px; left: 35%; bottom: -12%;
+      background: radial-gradient(closest-side, rgba(45,212,191,0.14), transparent 70%);
+      animation: ambDrift3 52s ease-in-out infinite alternate;
+    }
+    @keyframes ambDrift3 {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      100% { transform: translate3d(-12%, -18%, 0) scale(1.08); }
     }
     @keyframes ambDrift1 {
       0%   { transform: translate3d(0,0,0) scale(1); }
@@ -95,14 +109,14 @@
       left: -80vw;
       border-radius: 999px;
       background: linear-gradient(90deg,
-        rgba(34,197,94,0) 0%,
-        rgba(34,197,94,0.55) 18%,
-        rgba(134,239,172,1) 50%,
-        rgba(34,197,94,0.55) 82%,
-        rgba(34,197,94,0) 100%);
+        rgba(245,158,11,0) 0%,
+        rgba(245,158,11,0.45) 18%,
+        rgba(251,191,36,0.95) 50%,
+        rgba(245,158,11,0.45) 82%,
+        rgba(245,158,11,0) 100%);
       box-shadow:
-        0 0 18px 2px rgba(34,197,94,0.55),
-        0 0 55px 10px rgba(34,197,94,0.28);
+        0 0 18px 2px rgba(245,158,11,0.45),
+        0 0 55px 10px rgba(245,158,11,0.2);
       mix-blend-mode: screen;
       opacity: 0;
       will-change: transform, opacity;
@@ -180,17 +194,17 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(74,222,128,0.08));
-      border: 1px solid rgba(34,197,94,0.3);
+      background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(45,212,191,0.06));
+      border: 1px solid rgba(245,158,11,0.28);
       border-radius: 1rem;
       padding: 1.2rem 1.3rem;
       margin-bottom: 1rem;
-      box-shadow: 0 0 60px -10px rgba(34,197,94,0.25);
+      box-shadow: 0 0 60px -10px rgba(245,158,11,0.22);
     }
     .hero::after{
       content:"";
       position:absolute; inset:-40% -20% auto auto; width:60%; height:180%;
-      background: conic-gradient(from 90deg, rgba(34,197,94,0.22), rgba(134,239,172,0.08), transparent 45%);
+      background: conic-gradient(from 90deg, rgba(245,158,11,0.2), rgba(45,212,191,0.08), transparent 45%);
       filter: blur(40px); pointer-events:none;
       animation: spin 22s linear infinite;
     }
@@ -206,8 +220,8 @@
       font-size: 0.72rem;
       padding: 0.25rem 0.65rem;
       border-radius: 999px;
-      border: 1px solid rgba(34,197,94,0.35);
-      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(245,158,11,0.35);
+      background: rgba(245,158,11,0.1);
       color: var(--accent-soft);
     }
     .hero-chip.gold {
@@ -215,9 +229,14 @@
       background: rgba(251,191,36,0.1);
       color: var(--gold);
     }
+    .hero-chip.teal {
+      border-color: rgba(45,212,191,0.4);
+      background: rgba(45,212,191,0.1);
+      color: var(--teal);
+    }
     .hero-chip.red {
-      border-color: rgba(248,113,113,0.4);
-      background: rgba(248,113,113,0.1);
+      border-color: rgba(251,113,133,0.45);
+      background: rgba(251,113,133,0.1);
       color: var(--danger);
     }
     .hero-rail {
@@ -264,8 +283,8 @@
       margin: 1.2rem 0 0.7rem; font-weight: 700;
     }
     .badge-pill {
-      border: 1px solid rgba(34,197,94,0.25);
-      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(245,158,11,0.3);
+      background: rgba(245,158,11,0.12);
       color: var(--accent);
       border-radius: 999px; font-size: 0.7rem;
       padding: 0.2rem 0.6rem;
@@ -281,7 +300,7 @@
       height: 240px;
       pointer-events: none;
       opacity: 0.55;
-      filter: drop-shadow(0 0 8px rgba(34,197,94,0.35));
+      filter: drop-shadow(0 0 8px rgba(245,158,11,0.25));
     }
     .circuit-decor.left  { left: -135px; }
     .circuit-decor.right { right: -135px; transform: scaleX(-1); }
@@ -290,25 +309,25 @@
     .slides-shell {
       position: relative;
       background:
-        radial-gradient(600px 320px at 30% 20%, rgba(34,197,94,0.22), transparent 62%),
-        radial-gradient(500px 280px at 80% 90%, rgba(134,239,172,0.12), transparent 60%),
+        radial-gradient(600px 320px at 25% 15%, rgba(245,158,11,0.14), transparent 62%),
+        radial-gradient(480px 260px at 85% 85%, rgba(99,102,241,0.12), transparent 58%),
         linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 40%),
         var(--card);
-      border: 1px solid rgba(34,197,94,0.22);
+      border: 1px solid rgba(255,255,255,0.09);
       border-radius: 1rem;
       padding: 0.9rem;
       overflow: hidden;
       box-shadow:
         inset 0 0 1px rgba(255,255,255,0.05),
-        0 10px 40px -12px rgba(0,0,0,0.55),
-        0 0 80px -30px rgba(34,197,94,0.55);
+        0 10px 40px -12px rgba(0,0,0,0.65),
+        0 0 80px -30px rgba(245,158,11,0.2);
     }
     .slides-shell::before {
       content: "";
       position: absolute;
       width: 60%; height: 120%;
       left: -15%; top: -20%;
-      background: radial-gradient(closest-side, rgba(34,197,94,0.25), transparent 70%);
+      background: radial-gradient(closest-side, rgba(245,158,11,0.18), transparent 70%);
       filter: blur(28px);
       pointer-events: none;
       z-index: 0;
@@ -329,10 +348,10 @@
     }
     .progress-bar-x {
       height: 100%; width: 20%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      background: linear-gradient(90deg, var(--accent), var(--teal));
       border-radius: 999px;
       transition: width 0.7s cubic-bezier(.2,.8,.2,1);
-      box-shadow: 0 0 14px rgba(34,197,94,0.55);
+      box-shadow: 0 0 14px rgba(245,158,11,0.45);
     }
 
     .stage {
@@ -367,8 +386,8 @@
     .slide.active:hover {
       transform: scale(1.012) translateY(-1px);
       box-shadow:
-        0 18px 45px -18px rgba(34,197,94,0.35),
-        0 0 0 1px rgba(34,197,94,0.18);
+        0 18px 45px -18px rgba(245,158,11,0.22),
+        0 0 0 1px rgba(245,158,11,0.15);
       transition:
         opacity 0.9s ease,
         transform 0.45s cubic-bezier(.2,.8,.2,1),
@@ -413,16 +432,13 @@
 
     /* --- Cinemática de entrada por demo --- */
     .slide.active .mini-demo { transform-origin: 50% 50%; }
-    .slide.active[data-demo="intro"]              .mini-demo { animation: introIntro   2.4s cubic-bezier(.2,.8,.2,1)   both; }
-    .slide.active[data-demo="straddle_payoff"]    .mini-demo { animation: introCompare 2.3s cubic-bezier(.2,.8,.2,1)   both; }
-    .slide.active[data-demo="straddle_ejemplo"]   .mini-demo { animation: introExample 2.1s cubic-bezier(.5,0,.1,1)    both; }
-    .slide.active[data-demo="straddle_theta"]     .mini-demo { animation: introBear    2.2s cubic-bezier(.22,.1,.25,1) both; }
-    .slide.active[data-demo="straddle_vol"]       .mini-demo { animation: introBull    2.2s cubic-bezier(.22,.1,.25,1) both; }
-    .slide.active[data-demo="straddle_compare"]   .mini-demo { animation: introCompare 2.3s cubic-bezier(.2,.8,.2,1)   both; }
     .slide.active[data-demo="straddle_para_que"]  .mini-demo { animation: introIntro   2.2s cubic-bezier(.2,.8,.2,1)   both; }
     .slide.active[data-demo="straddle_forma"]     .mini-demo { animation: introExample 2.1s cubic-bezier(.5,0,.1,1)    both; }
     .slide.active[data-demo="straddle_participantes"] .mini-demo { animation: introBull 2.2s cubic-bezier(.22,.1,.25,1) both; }
     .slide.active[data-demo="straddle_pro_con"]    .mini-demo { animation: introCompare 2s cubic-bezier(.2,.8,.2,1)    both; }
+    .slide.active[data-demo="straddle_legs_vs_result"] .mini-demo { animation: introCompare 2.3s cubic-bezier(.2,.8,.2,1) both; }
+    .slide.active[data-demo="straddle_live"]      .mini-demo { animation: introIntro   2.2s cubic-bezier(.2,.8,.2,1)   both; }
+    @keyframes introIntro {
       0%   { opacity: 0; transform: scale(1.2) translateY(-6%); filter: blur(16px); }
       60%  { opacity: 1; transform: scale(1.05) translateY(0);   filter: blur(0); }
       100% { opacity: 1; transform: scale(1); }
@@ -476,8 +492,8 @@
 
     .math-chip {
       display: block;
-      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(134,239,172,0.08));
-      border: 1px solid rgba(34,197,94,0.3);
+      background: linear-gradient(135deg, rgba(245,158,11,0.14), rgba(45,212,191,0.06));
+      border: 1px solid rgba(245,158,11,0.28);
       border-radius: 0.6rem;
       padding: 0.55rem 0.75rem;
       color: #e6f7ec;
@@ -564,7 +580,7 @@
       margin-bottom: 0.3rem;
       display: flex; align-items: center; gap: 0.35rem;
     }
-    .intro-card.call .ic-title { color: var(--accent-soft); }
+    .intro-card.call .ic-title { color: var(--teal); }
     .intro-card.put  .ic-title { color: var(--gold); }
     .intro-card .ic-canvas { flex: 1; min-height: 140px; position: relative; }
     @media (max-width: 520px) {
@@ -687,9 +703,9 @@
       transition: all 0.25s ease;
     }
     .btn-darkx:hover {
-      border-color: rgba(34,197,94,0.4);
-      color: var(--accent);
-      background: rgba(34,197,94,0.06);
+      border-color: rgba(245,158,11,0.45);
+      color: var(--accent-soft);
+      background: rgba(245,158,11,0.08);
       transform: translateY(-1px);
     }
     .dots { display: flex; gap: 0.4rem; }
@@ -700,16 +716,113 @@
       transition: all 0.4s ease;
     }
     .dot.active {
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      background: linear-gradient(90deg, var(--accent), var(--teal));
       width: 42px;
-      box-shadow: 0 0 12px rgba(34,197,94,0.55);
+      box-shadow: 0 0 12px rgba(245,158,11,0.4);
     }
 
-    .footer-note {
-      margin-top: 1.4rem;
-      text-align: center;
+    /* Monitor “tiempo real” (última slide) */
+    .live-widget {
+      background: linear-gradient(165deg, rgba(0,0,0,0.45), rgba(18,20,31,0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.75rem;
+      padding: 0.55rem 0.6rem 0.65rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .live-widget-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.45rem;
+    }
+    .live-widget-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       color: var(--muted);
-      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .live-pause-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 0.55rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .live-pause-btn:hover {
+      background: rgba(245,158,11,0.12);
+      border-color: rgba(245,158,11,0.35);
+    }
+    .live-pause-btn[aria-pressed="true"] {
+      background: rgba(45,212,191,0.1);
+      border-color: rgba(45,212,191,0.35);
+    }
+    .live-tick-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.45rem;
+    }
+    .live-tick-pill {
+      font-size: 0.62rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .live-tick-pill.on {
+      background: rgba(255,255,255,0.12);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .live-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem;
+      margin-bottom: 0.45rem;
+    }
+    @media (min-width: 620px) {
+      .live-kpi-row { grid-template-columns: repeat(4, 1fr); }
+    }
+    .live-kpi {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 0.55rem;
+      padding: 0.4rem 0.5rem;
+    }
+    .live-kpi-l {
+      display: block;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+    .live-kpi-v {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .live-kpi-v.up { color: var(--success); }
+    .live-kpi-v.down { color: var(--danger); }
+    .live-chart-wrap { min-height: 200px; }
+    .live-foot {
+      margin: 0.35rem 0 0;
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: center;
     }
 
     /* Tabla “cómo se forma” */
@@ -777,113 +890,13 @@
     }
     .pro-box li, .con-box li { margin: 0.2rem 0; }
 
-    /* Laboratorio dinámico */
-    .dyn-lab {
-      margin-top: 1.6rem;
-      padding: 1rem 1.1rem 1.15rem;
-      border-radius: 1rem;
-      border: 1px solid rgba(167,139,250,0.35);
-      background:
-        radial-gradient(520px 220px at 20% 0%, rgba(167,139,250,0.18), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,0.03), transparent 45%),
-        var(--card-alt);
-      box-shadow: 0 0 50px -20px rgba(167,139,250,0.35);
-    }
-    .dyn-lab h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.12rem;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-    .dyn-lab .dyn-sub {
-      color: var(--muted);
-      font-size: 0.84rem;
-      margin: 0 0 0.85rem;
-      line-height: 1.4;
-    }
-    .dyn-controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 0.55rem 0.75rem;
-      align-items: end;
-      margin-bottom: 0.65rem;
-    }
-    .dyn-field label {
-      display: block;
-      font-size: 0.64rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--muted);
-      margin-bottom: 0.2rem;
-    }
-    .dyn-field input[type="number"] {
-      width: 100%;
-      padding: 0.38rem 0.45rem;
-      border-radius: 0.45rem;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.28);
-      color: var(--text);
-      font-size: 0.88rem;
-    }
-    .dyn-field-range {
-      grid-column: 1 / -1;
-    }
-    .dyn-field-range input[type="range"] {
-      width: 100%;
-      accent-color: var(--violet);
-    }
-    .dyn-readouts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      margin-bottom: 0.75rem;
-    }
-    .dyn-readout {
-      font-size: 0.75rem;
-      padding: 0.28rem 0.55rem;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #d4cdc6;
-    }
-    .dyn-readout b { color: var(--accent-soft); }
-    .dyn-charts {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.55rem;
-    }
-    @media (max-width: 900px) {
-      .dyn-charts { grid-template-columns: 1fr; }
-    }
-    .dyn-chart-card {
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      padding: 0.45rem 0.5rem 0.55rem;
-      min-height: 220px;
-      display: flex;
-      flex-direction: column;
-    }
-    .dyn-chart-card h3 {
-      margin: 0 0 0.35rem;
-      font-size: 0.74rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--muted);
-    }
-    .dyn-chart-card canvas { flex: 1; min-height: 180px; }
-    .dyn-reset {
-      margin-top: 0.6rem;
-      display: flex;
-      justify-content: flex-end;
-    }
   </style>
 </head>
 <body>
   <div class="lights" aria-hidden="true">
     <div class="ambient a1"></div>
     <div class="ambient a2"></div>
+    <div class="ambient a3"></div>
     <div class="streak s1"></div>
     <div class="streak s2 reverse"></div>
     <div class="streak s3"></div>
@@ -907,7 +920,7 @@
       <div class="hero-chips">
         <span class="hero-chip"><i class="bi bi-plus-lg"></i>Call larga + put larga</span>
         <span class="hero-chip gold"><i class="bi bi-bullseye"></i>Misma K · payoffs en V</span>
-        <span class="hero-chip red"><i class="bi bi-activity"></i>Long vega · sensible a IV</span>
+        <span class="hero-chip teal"><i class="bi bi-activity"></i>Colas abiertas · riesgo acotado al premio</span>
       </div>
       <div class="hero-rail">
         <span class="hero-rail-label"><i class="bi bi-train-front"></i>Railway</span>
@@ -926,8 +939,8 @@
       <svg class="circuit-decor left" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <linearGradient id="circL" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="rgba(34,197,94,0.05)"/>
-            <stop offset="1" stop-color="rgba(134,239,172,0.85)"/>
+            <stop offset="0" stop-color="rgba(245,158,11,0.08)"/>
+            <stop offset="1" stop-color="rgba(45,212,191,0.75)"/>
           </linearGradient>
         </defs>
         <g fill="none" stroke="url(#circL)" stroke-width="1.1">
@@ -935,7 +948,7 @@
           <path d="M0 120 H40  L60 140  V180 L110 200 H130"/>
           <path d="M0 70  H30  L50 90   V110 L80 130  H130"/>
         </g>
-        <g fill="rgba(134,239,172,1)">
+        <g fill="rgba(251,191,36,0.95)">
           <circle cx="2"  cy="20"  r="2.5"/>
           <circle cx="2"  cy="70"  r="2.5"/>
           <circle cx="2"  cy="120" r="2.5"/>
@@ -947,7 +960,7 @@
           <path d="M0 130 H35  L55 150  V185 L100 205 H130"/>
           <path d="M0 85  H25  L45 100  V120 L75 140  H130"/>
         </g>
-        <g fill="rgba(134,239,172,1)">
+        <g fill="rgba(45,212,191,0.9)">
           <circle cx="2"  cy="30"  r="2.5"/>
           <circle cx="2"  cy="85"  r="2.5"/>
           <circle cx="2"  cy="130" r="2.5"/>
@@ -962,7 +975,7 @@
           <article class="slide {% if forloop.first %}active{% endif %}"
                    data-slide-index="{{ forloop.counter0 }}"
                    data-demo="{{ s.demo }}">
-            <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Buy Straddle</div>
+            <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Straddle sintético</div>
             <h3 class="anim">{{ s.titulo }}</h3>
 
             <div class="grid-2">
@@ -977,27 +990,15 @@
 
               <div class="mini-demo">
                 <div class="demo-head">
-                  <span><i class="bi bi-bar-chart-line me-1"></i>Payoff al vencimiento</span>
+                  <span>
+                    {% if s.demo == 'straddle_live' %}
+                    <i class="bi bi-broadcast me-1"></i>Monitor simulado
+                    {% else %}
+                    <i class="bi bi-bar-chart-line me-1"></i>Payoff al vencimiento
+                    {% endif %}
+                  </span>
                   <span class="dots3"><span></span><span></span><span></span></span>
                 </div>
-
-                {% if s.demo == 'intro' %}
-                <div class="intro-grid">
-                  <div class="intro-card call">
-                    <div class="ic-title"><i class="bi bi-arrow-up"></i>Call largo</div>
-                    <div class="ic-canvas"><canvas data-mini-call></canvas></div>
-                  </div>
-                  <div class="intro-card put">
-                    <div class="ic-title"><i class="bi bi-arrow-down"></i>Put largo</div>
-                    <div class="ic-canvas"><canvas data-mini-put></canvas></div>
-                  </div>
-                </div>
-                <div class="payoff-legend">
-                  <span class="pl-chip"><b>K</b> = strike compartido</span>
-                  <span class="pl-chip"><b>c, p</b> = primas pagadas</span>
-                  <span class="pl-chip mid">Straddle = ambas patas largas</span>
-                </div>
-                {% endif %}
 
                 {% if s.demo == 'straddle_para_que' %}
                 <div class="payoff-wrap"><canvas data-para-que-straddle></canvas></div>
@@ -1039,49 +1040,13 @@
                 </div>
                 {% endif %}
 
-                {% if s.demo == 'straddle_payoff' %}
-                <div class="payoff-wrap"><canvas data-straddle-payoff></canvas></div>
+                {% if s.demo == 'straddle_legs_vs_result' %}
+                <div class="payoff-wrap"><canvas data-straddle-legs-vs></canvas></div>
                 <div class="payoff-legend">
-                  <span class="pl-chip">K = {{ ejemplo.K }}</span>
-                  <span class="pl-chip">c + p = {{ ejemplo.premio_total }}</span>
-                  <span class="pl-chip mid">BEP = K ± (c+p)</span>
-                  <span class="pl-chip up">Ganancia si ST se aleja de K</span>
-                  <span class="pl-chip down">Mínimo típico en ST = K</span>
+                  <span class="pl-chip">K = {{ ejemplo.K }} · c + p = {{ ejemplo.premio_total }}</span>
+                  <span class="pl-chip mid">Naranja continua = straddle combinado</span>
+                  <span class="pl-chip">Turquesa / ámbar punteado = call y put por separado</span>
                 </div>
-                {% endif %}
-
-                {% if s.demo == 'straddle_ejemplo' %}
-                <div class="kpi-grid">
-                  <div class="kpi-tile">
-                    <span class="kpi-l">Premio total (c + p)</span>
-                    <span class="kpi-v">${{ ejemplo.premio_total|floatformat:2 }}</span>
-                  </div>
-                  <div class="kpi-tile gold">
-                    <span class="kpi-l">Breakevens (ST)</span>
-                    <span class="kpi-v">${{ ejemplo.bep_inf|floatformat:0 }} · ${{ ejemplo.bep_sup|floatformat:0 }}</span>
-                  </div>
-                  <div class="kpi-tile green">
-                    <span class="kpi-l">Π si ST = 110 o 90</span>
-                    <span class="kpi-v">+$2.00</span>
-                  </div>
-                  <div class="kpi-tile red">
-                    <span class="kpi-l">Π si ST = K = 100</span>
-                    <span class="kpi-v">−$8.00</span>
-                  </div>
-                </div>
-                <div class="payoff-wrap" style="min-height:140px;"><canvas data-straddle-scenario></canvas></div>
-                <table class="scn-table">
-                  <thead>
-                    <tr><th>ST</th><th>Call largo</th><th>Put largo</th><th>Π straddle</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>$90</td><td>−$5</td><td>+$7</td><td class="gain">+$2</td></tr>
-                    <tr><td>$92</td><td>−$5</td><td>+$5</td><td class="zero">$0</td></tr>
-                    <tr><td>$100</td><td>−$5</td><td>−$3</td><td class="loss">−$8</td></tr>
-                    <tr><td>$108</td><td>+$3</td><td>−$3</td><td class="zero">$0</td></tr>
-                    <tr><td>$110</td><td>+$5</td><td>−$3</td><td class="gain">+$2</td></tr>
-                  </tbody>
-                </table>
                 {% endif %}
 
                 {% if s.demo == 'straddle_participantes' %}
@@ -1134,38 +1099,40 @@
                 </div>
                 {% endif %}
 
-                {% if s.demo == 'straddle_theta' %}
-                <div class="payoff-wrap"><canvas data-straddle-theta></canvas></div>
-                <div class="payoff-legend">
-                  <span class="pl-chip">Peor caso al venc.: −(c+p) si ST = K</span>
-                  <span class="pl-chip mid">Theta diario suele erosionar valor</span>
-                  <span class="pl-chip down">Rango lateral = enemigo del straddle largo</span>
+                {% if s.demo == 'straddle_live' %}
+                <div class="live-widget">
+                  <div class="live-widget-top">
+                    <span class="live-widget-title"><i class="bi bi-graph-up-arrow"></i> Straddle · replay</span>
+                    <button type="button" class="live-pause-btn" id="liveStraddlePause" aria-pressed="false" title="Pausar o reanudar actualización">
+                      <i class="bi bi-pause-fill" id="liveStraddlePauseIcon" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="live-tick-pills" aria-hidden="true">
+                    <span class="live-tick-pill on">Tick 10s</span>
+                    <span class="live-tick-pill">Spot simulado</span>
+                    <span class="live-tick-pill">Π al vencimiento (vista)</span>
+                  </div>
+                  <div class="live-kpi-row">
+                    <div class="live-kpi">
+                      <span class="live-kpi-l">Spot simulado</span>
+                      <span class="live-kpi-v" id="liveSpotVal">—</span>
+                    </div>
+                    <div class="live-kpi">
+                      <span class="live-kpi-l">Prima c + p</span>
+                      <span class="live-kpi-v" id="livePremVal">—</span>
+                    </div>
+                    <div class="live-kpi">
+                      <span class="live-kpi-l">Π comprador (a ese S)</span>
+                      <span class="live-kpi-v" id="livePiVal">—</span>
+                    </div>
+                    <div class="live-kpi">
+                      <span class="live-kpi-l">Dist. al BEP más cercano</span>
+                      <span class="live-kpi-v" id="liveBepVal">—</span>
+                    </div>
+                  </div>
+                  <div class="payoff-wrap live-chart-wrap"><canvas id="liveStraddleCanvas" data-live-straddle></canvas></div>
+                  <p class="live-foot" id="liveStatusFoot">Simulación pedagógica · próxima actualización en 10 s</p>
                 </div>
-                {% endif %}
-
-                {% if s.demo == 'straddle_vol' %}
-                <div class="payoff-wrap"><canvas data-straddle-vol></canvas></div>
-                <div class="payoff-legend">
-                  <span class="pl-chip">Vega positiva (típico)</span>
-                  <span class="pl-chip up">IV ↑ suele ayudar (todo lo demás igual)</span>
-                  <span class="pl-chip down">Vol crush tras evento: riesgo clásico</span>
-                </div>
-                {% endif %}
-
-                {% if s.demo == 'straddle_compare' %}
-                <div class="payoff-wrap"><canvas data-straddle-compare></canvas></div>
-                <table class="cmp-table">
-                  <thead>
-                    <tr><th></th><th class="cmp-col-bull">Buy Straddle</th><th class="cmp-col-bear">Stock largo (S₀ = K)</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>Patrones</td><td class="cmp-col-bull">Call largo + put largo (K)</td><td class="cmp-col-bear">Comprar acción a S₀</td></tr>
-                    <tr><td>Breakeven (aprox.)</td><td class="cmp-col-bull">K ± (c + p)</td><td class="cmp-col-bear">S₀ (precio pagado)</td></tr>
-                    <tr><td>Dirección</td><td class="cmp-col-bull">Necesita salto; simétrico arriba/abajo</td><td class="cmp-col-bear">Gana solo si sube ST</td></tr>
-                    <tr><td>Pérdida acotada</td><td class="cmp-col-bull">Sí (−c − p al peor caso)</td><td class="cmp-col-bear">No (hasta ST → 0)</td></tr>
-                    <tr><td>Riesgo destacado</td><td class="cmp-col-bull">Tiempo + IV + rango estrecho</td><td class="cmp-col-bear">Caídas prolongadas del spot</td></tr>
-                  </tbody>
-                </table>
                 {% endif %}
               </div>
             </div>
@@ -1183,55 +1150,6 @@
           <button class="btn-darkx" id="nextSlide">Siguiente<i class="bi bi-arrow-right ms-1"></i></button>
         </div>
       </div>
-    </div>
-
-    <section class="dyn-lab" id="labDinamico" aria-labelledby="labDinamicoTitulo">
-      <h2 id="labDinamicoTitulo"><i class="bi bi-sliders me-2"></i>Laboratorio dinámico</h2>
-      <p class="dyn-sub">
-        Cambia el strike y las primas: se redibujan la <strong>call larga</strong>, la <strong>put larga</strong> y el
-        <strong>straddle combinado</strong> (payoff al vencimiento). El deslizador <em>ST</em> fija un escenario y
-        actualiza las lecturas de P&amp;L.
-      </p>
-      <div class="dyn-controls">
-        <div class="dyn-field">
-          <label for="dynK">Strike K</label>
-          <input type="number" id="dynK" min="1" step="1" value="{{ ejemplo.K }}">
-        </div>
-        <div class="dyn-field">
-          <label for="dynC">Prima call <span class="text-muted">c</span></label>
-          <input type="number" id="dynC" min="0" step="0.5" value="{{ ejemplo.c }}">
-        </div>
-        <div class="dyn-field">
-          <label for="dynP">Prima put <span class="text-muted">p</span></label>
-          <input type="number" id="dynP" min="0" step="0.5" value="{{ ejemplo.p }}">
-        </div>
-        <div class="dyn-field dyn-field-range">
-          <label for="dynST"><span id="dynSTLabel">Precio terminal ST</span> = <strong id="dynSTVal">{{ ejemplo.spot }}</strong></label>
-          <input type="range" id="dynST" min="40" max="160" step="1" value="{{ ejemplo.spot }}">
-        </div>
-      </div>
-      <div class="dyn-readouts" id="dynReadouts" aria-live="polite"></div>
-      <div class="dyn-charts">
-        <div class="dyn-chart-card">
-          <h3>Call larga (origen)</h3>
-          <canvas id="dynChartCall" data-dyn-call></canvas>
-        </div>
-        <div class="dyn-chart-card">
-          <h3>Put larga (origen)</h3>
-          <canvas id="dynChartPut" data-dyn-put></canvas>
-        </div>
-        <div class="dyn-chart-card">
-          <h3>Straddle (resultado)</h3>
-          <canvas id="dynChartStraddle" data-dyn-straddle></canvas>
-        </div>
-      </div>
-      <div class="dyn-reset">
-        <button type="button" class="btn-darkx" id="dynReset"><i class="bi bi-arrow-counterclockwise me-1"></i>Restablecer al ejemplo (K={{ ejemplo.K }}, c={{ ejemplo.c }}, p={{ ejemplo.p }})</button>
-      </div>
-    </section>
-
-    <div class="footer-note">
-      Material pedagógico · los números son ilustrativos (no recomendación de inversión).
     </div>
   </div>
 
@@ -1255,8 +1173,6 @@
     }
     function writerCallPayoff(ST, K, c) { return c - Math.max(ST - K, 0); }
     function writerPutPayoff(ST, K, p) { return p - Math.max(K - ST, 0); }
-    function longStockPayoff(ST) { return ST - STR.S0; }
-
     function longCallPayoff(ST, K, c) { return Math.max(ST - K, 0) - c; }
     function longPutPayoff(ST, K, p)  { return Math.max(K - ST, 0) - p; }
 
@@ -1376,56 +1292,6 @@
       };
     }
 
-    /* ---- Demo: intro (call y put larga) ---- */
-    function activateIntro(slideEl) {
-      const cC = slideEl.querySelector('[data-mini-call]');
-      const cP = slideEl.querySelector('[data-mini-put]');
-      if (!cC || !cP || typeof Chart === 'undefined') return;
-
-      destroyIfAny(cC); destroyIfAny(cP);
-      const K = STR.K, c = STR.c, p = STR.p;
-      const xs = linspace(70, 130, 61);
-
-      const callData = xs.map(st => ({ x: st, y: longCallPayoff(st, K, c) }));
-      const putData  = xs.map(st => ({ x: st, y: longPutPayoff(st,  K, p) }));
-
-      const chC = new Chart(cC, {
-        type: 'line',
-        data: {
-          datasets: [
-            {
-              label: 'Call largo',
-              data: callData,
-              borderColor: 'rgba(74,222,128,1)',
-              backgroundColor: 'rgba(74,222,128,0.18)',
-              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.12)' },
-              borderWidth: 2, pointRadius: 0, tension: 0.05,
-            },
-          ],
-        },
-        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
-      });
-      chartCache.set(cC, chC);
-
-      const chP = new Chart(cP, {
-        type: 'line',
-        data: {
-          datasets: [
-            {
-              label: 'Put largo',
-              data: putData,
-              borderColor: 'rgba(251,191,36,1)',
-              backgroundColor: 'rgba(251,191,36,0.15)',
-              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.12)' },
-              borderWidth: 2, pointRadius: 0, tension: 0.05,
-            },
-          ],
-        },
-        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
-      });
-      chartCache.set(cP, chP);
-    }
-
     function activateParaQue(slideEl) {
       const canvas = slideEl.querySelector('[data-para-que-straddle]');
       if (!canvas || typeof Chart === 'undefined') return;
@@ -1441,12 +1307,12 @@
           datasets: [{
             label: 'Buy straddle (intuición)',
             data: comb,
-            borderColor: 'rgba(167,139,250,1)',
-            backgroundColor: 'rgba(167,139,250,0.2)',
+            borderColor: 'rgba(245,158,11,1)',
+            backgroundColor: 'rgba(245,158,11,0.12)',
             borderWidth: 2.4,
             tension: 0,
             pointRadius: 0,
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.18)', below: 'rgba(248,113,113,0.2)' },
+            fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.12)', below: 'rgba(251,113,133,0.18)' },
           }],
         },
         options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff al vencimiento' }),
@@ -1470,9 +1336,9 @@
           datasets: [{
             label: 'Call · compra (paga c)',
             data: callData,
-            borderColor: 'rgba(74,222,128,1)',
-            backgroundColor: 'rgba(74,222,128,0.18)',
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.12)' },
+            borderColor: 'rgba(45,212,191,1)',
+            backgroundColor: 'rgba(45,212,191,0.12)',
+            fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.14)', below: 'rgba(251,113,133,0.12)' },
             borderWidth: 2, pointRadius: 0, tension: 0.05,
           }],
         },
@@ -1487,8 +1353,8 @@
             label: 'Put · compra (paga p)',
             data: putData,
             borderColor: 'rgba(251,191,36,1)',
-            backgroundColor: 'rgba(251,191,36,0.15)',
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.12)' },
+            backgroundColor: 'rgba(251,191,36,0.12)',
+            fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.12)', below: 'rgba(251,113,133,0.12)' },
             borderWidth: 2, pointRadius: 0, tension: 0.05,
           }],
         },
@@ -1525,7 +1391,7 @@
             {
               label: 'Comprador straddle',
               data: buyer,
-              borderColor: 'rgba(167,139,250,1)',
+              borderColor: 'rgba(245,158,11,1)',
               borderWidth: 2.4,
               tension: 0,
               pointRadius: 0,
@@ -1534,7 +1400,7 @@
             {
               label: 'Vendedor call',
               data: wCall,
-              borderColor: 'rgba(96,165,250,0.9)',
+              borderColor: 'rgba(45,212,191,0.85)',
               borderDash: [6, 4],
               borderWidth: 2,
               tension: 0,
@@ -1544,7 +1410,7 @@
             {
               label: 'Vendedor put',
               data: wPut,
-              borderColor: 'rgba(251,191,36,0.9)',
+              borderColor: 'rgba(251,191,36,0.85)',
               borderDash: [4, 4],
               borderWidth: 2,
               tension: 0,
@@ -1558,9 +1424,9 @@
       chartCache.set(canvas, chart);
     }
 
-    /* ---- Buy straddle: payoff con patas ---- */
-    function activateStraddlePayoff(slideEl) {
-      const canvas = slideEl.querySelector('[data-straddle-payoff]');
+    /* ---- Patas vs resultado (slide dedicada) ---- */
+    function activateLegsVsResult(slideEl) {
+      const canvas = slideEl.querySelector('[data-straddle-legs-vs]');
       if (!canvas || typeof Chart === 'undefined') return;
       destroyIfAny(canvas);
 
@@ -1580,25 +1446,25 @@
             {
               label: 'Call largo (K)',
               data: legC,
-              borderColor: 'rgba(96,165,250,0.65)',
-              borderDash: [5, 4], borderWidth: 1.4,
+              borderColor: 'rgba(45,212,191,0.75)',
+              borderDash: [6, 4], borderWidth: 1.5,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Put largo (K)',
               data: legP,
-              borderColor: 'rgba(251,191,36,0.65)',
-              borderDash: [5, 4], borderWidth: 1.4,
+              borderColor: 'rgba(251,191,36,0.7)',
+              borderDash: [4, 3], borderWidth: 1.5,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
-              label: 'Buy straddle',
+              label: 'Straddle (resultado)',
               data: comb,
-              borderColor: 'rgba(167,139,250,1)',
-              backgroundColor: 'rgba(167,139,250,0.22)',
-              borderWidth: 2.6,
+              borderColor: 'rgba(245,158,11,1)',
+              backgroundColor: 'rgba(245,158,11,0.08)',
+              borderWidth: 2.8,
               pointRadius: 0, tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.18)', below: 'rgba(248,113,113,0.2)' },
+              fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.1)', below: 'rgba(251,113,133,0.16)' },
             },
             vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
             vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
@@ -1612,395 +1478,198 @@
       chartCache.set(canvas, chart);
     }
 
-    function activateStraddleScenario(slideEl) {
-      const canvas = slideEl.querySelector('[data-straddle-scenario]');
-      if (!canvas || typeof Chart === 'undefined') return;
-      destroyIfAny(canvas);
+    /* ---- Monitor simulado (última slide) ---- */
+    let liveStraddleTimer = null;
+    let liveCountdownTimer = null;
+    let liveStraddleChart = null;
+    let livePaused = false;
+    let liveSpot = 0;
+    let liveTickIndex = 0;
+    let liveHistory = [];
+    let liveCountdownSec = 10;
+    let livePauseBound = false;
 
-      const lo = STR.K - 18, hi = STR.K + 18;
-      const xs = linspace(lo, hi, 91);
-      const data = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
-
-      const chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'Π buy straddle',
-            data,
-            borderColor: 'rgba(167,139,250,1)',
-            backgroundColor: 'rgba(167,139,250,0.2)',
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.2)', below: 'rgba(248,113,113,0.22)' },
-            borderWidth: 2.4, pointRadius: 0, tension: 0,
-          }],
-        },
-        options: basePayoffOptions({
-          minX: lo, maxX: hi,
-          minY: straddlePayoff(STR.K) - 2,
-          maxY: straddlePayoff(lo) + 2,
-        }),
-      });
-      chartCache.set(canvas, chart);
+    function disposeLiveStraddle() {
+      if (liveStraddleTimer) {
+        clearInterval(liveStraddleTimer);
+        liveStraddleTimer = null;
+      }
+      if (liveCountdownTimer) {
+        clearInterval(liveCountdownTimer);
+        liveCountdownTimer = null;
+      }
+      const c = document.getElementById('liveStraddleCanvas');
+      if (c) destroyIfAny(c);
+      liveStraddleChart = null;
     }
 
-    function activateStraddleTheta(slideEl) {
-      const canvas = slideEl.querySelector('[data-straddle-theta]');
+    function liveChartOptions(yMin, yMax, xMax) {
+      const o = basePayoffOptions({ minX: 0, maxX: Math.max(4, xMax), minY: yMin, maxY: yMax, title: 'Π ($)' });
+      o.animation = { duration: 650, easing: 'easeOutCubic' };
+      o.scales.x.title.text = 'Tiempo (ticks de 10 s)';
+      o.plugins.tooltip.callbacks.title = (items) => 'Tick ' + items[0].parsed.x;
+      return o;
+    }
+
+    function refreshLiveKpis(spot, piS) {
+      const elS = document.getElementById('liveSpotVal');
+      const elP = document.getElementById('livePremVal');
+      const elPi = document.getElementById('livePiVal');
+      const elB = document.getElementById('liveBepVal');
+      if (elS) elS.textContent = '$' + spot.toFixed(1);
+      if (elP) elP.textContent = '$' + STR.premio.toFixed(2);
+      if (elPi) {
+        elPi.textContent = (piS >= 0 ? '+$' : '−$') + Math.abs(piS).toFixed(2);
+        elPi.classList.remove('up', 'down');
+        elPi.classList.add(piS >= 0 ? 'up' : 'down');
+      }
+      if (elB) {
+        const dUp = STR.BEP_UP - spot;
+        const dDn = spot - STR.BEP_DN;
+        const d = Math.min(Math.abs(dUp), Math.abs(dDn));
+        const nearUp = Math.abs(dUp) <= Math.abs(dDn);
+        elB.textContent = (nearUp ? 'Δ sup ' : 'Δ inf ') + '$' + d.toFixed(1);
+      }
+    }
+
+    function pushLiveTick() {
+      liveSpot += (Math.random() - 0.5) * 7;
+      liveSpot = Math.min(STR.K + 26, Math.max(STR.K - 26, liveSpot));
+      const piS = straddlePayoff(liveSpot);
+      const piC = longCallPayoff(liveSpot, STR.K, STR.c);
+      liveHistory.push({ x: liveTickIndex, spot: liveSpot, piS, piC });
+      if (liveHistory.length > 14) liveHistory.shift();
+      liveTickIndex += 1;
+      liveCountdownSec = 10;
+      refreshLiveKpis(liveSpot, piS);
+      const ys = liveHistory.map((h) => h.piS);
+      const yc = liveHistory.map((h) => h.piC);
+      const yMin = Math.min(...ys, ...yc, -12) - 1;
+      const yMax = Math.max(...ys, ...yc, 12) + 1;
+      const xMax = liveHistory[liveHistory.length - 1].x;
+      if (!liveStraddleChart) return;
+      liveStraddleChart.data.datasets[0].data = liveHistory.map((h) => ({ x: h.x, y: h.piS }));
+      liveStraddleChart.data.datasets[1].data = liveHistory.map((h) => ({ x: h.x, y: h.piC }));
+      liveStraddleChart.options.scales.x.max = Math.max(4, xMax + 0.5);
+      liveStraddleChart.options.scales.y.min = yMin;
+      liveStraddleChart.options.scales.y.max = yMax;
+      liveStraddleChart.update();
+      const foot = document.getElementById('liveStatusFoot');
+      if (foot) {
+        const t = new Date();
+        foot.textContent = 'Última actualización '
+          + t.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+          + ' · próxima en 10 s';
+      }
+    }
+
+    function startLiveIntervals() {
+      if (liveStraddleTimer) clearInterval(liveStraddleTimer);
+      if (liveCountdownTimer) clearInterval(liveCountdownTimer);
+      liveStraddleTimer = setInterval(() => {
+        if (!livePaused) pushLiveTick();
+      }, 10000);
+      liveCountdownTimer = setInterval(() => {
+        if (livePaused) return;
+        liveCountdownSec -= 1;
+        const foot = document.getElementById('liveStatusFoot');
+        if (foot && liveCountdownSec > 0) {
+          foot.textContent = 'Próxima actualización en ' + liveCountdownSec + ' s';
+        }
+      }, 1000);
+    }
+
+    function activateLiveStraddle() {
+      disposeLiveStraddle();
+      livePaused = false;
+      const pBtn = document.getElementById('liveStraddlePause');
+      const pIcon = document.getElementById('liveStraddlePauseIcon');
+      if (pBtn) pBtn.setAttribute('aria-pressed', 'false');
+      if (pIcon) pIcon.className = 'bi bi-pause-fill';
+      liveSpot = STR.S0;
+      liveTickIndex = 0;
+      liveHistory = [{ x: 0, spot: liveSpot, piS: straddlePayoff(liveSpot), piC: longCallPayoff(liveSpot, STR.K, STR.c) }];
+      liveCountdownSec = 10;
+      refreshLiveKpis(liveSpot, liveHistory[0].piS);
+
+      const canvas = document.getElementById('liveStraddleCanvas');
       if (!canvas || typeof Chart === 'undefined') return;
-      destroyIfAny(canvas);
 
-      const lo = STR.K - 16, hi = STR.K + 16;
-      const xs = linspace(lo, hi, 101);
-      const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
-      const yMin = straddlePayoff(STR.K) - 2;
-      const yMax = straddlePayoff(lo) + 2;
+      const ys = liveHistory.map((h) => h.piS);
+      const yMin = Math.min(...ys, -10) - 2;
+      const yMax = Math.max(...ys, 10) + 2;
 
-      const chart = new Chart(canvas, {
+      liveStraddleChart = new Chart(canvas, {
         type: 'line',
         data: {
           datasets: [
             {
-              label: 'Π al vencimiento',
-              data: comb,
-              borderColor: 'rgba(167,139,250,1)',
-              backgroundColor: 'rgba(167,139,250,0.18)',
+              label: 'Π straddle (al spot sim.)',
+              data: liveHistory.map((h) => ({ x: h.x, y: h.piS })),
+              borderColor: 'rgba(245,158,11,1)',
+              backgroundColor: 'rgba(245,158,11,0.1)',
               borderWidth: 2.4,
-              pointRadius: 0,
-              tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.22)' },
-            },
-            vline(STR.K, yMin, yMax, 'ST = K (mínimo)'),
-          ],
-        },
-        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff (theta al vencimiento)' }),
-      });
-      chartCache.set(canvas, chart);
-    }
-
-    function activateStraddleVol(slideEl) {
-      const canvas = slideEl.querySelector('[data-straddle-vol]');
-      if (!canvas || typeof Chart === 'undefined') return;
-      destroyIfAny(canvas);
-
-      const lo = 70, hi = 130;
-      const xs = linspace(lo, hi, 121);
-      const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
-      const yMin = -12;
-      const yMax = Math.max(straddlePayoff(lo), straddlePayoff(hi)) + 4;
-
-      const chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'Buy straddle (colas)',
-            data: comb,
-            borderColor: 'rgba(96,165,250,1)',
-            backgroundColor: 'rgba(96,165,250,0.12)',
-            borderWidth: 2.2,
-            pointRadius: 0,
-            tension: 0,
-            fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.14)', below: 'rgba(248,113,113,0.15)' },
-          }],
-        },
-        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff al vencimiento (rango amplio)' }),
-      });
-      chartCache.set(canvas, chart);
-    }
-
-    function activateStraddleCompare(slideEl) {
-      const canvas = slideEl.querySelector('[data-straddle-compare]');
-      if (!canvas || typeof Chart === 'undefined') return;
-      destroyIfAny(canvas);
-
-      const lo = STR.K - 22, hi = STR.K + 22;
-      const xs = linspace(lo, hi, 121);
-      const sd = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
-      const stk = xs.map(st => ({ x: st, y: longStockPayoff(st) }));
-
-      const yMin = Math.min(straddlePayoff(STR.K), longStockPayoff(lo)) - 4;
-      const yMax = Math.max(straddlePayoff(hi), longStockPayoff(hi)) + 4;
-
-      const chart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          datasets: [
-            {
-              label: 'Buy straddle',
-              data: sd,
-              borderColor: 'rgba(167,139,250,1)',
-              borderWidth: 2.5,
-              pointRadius: 0,
-              tension: 0,
-              fill: false,
+              tension: 0.25,
+              pointRadius: 4,
+              pointBackgroundColor: '#fafafa',
+              pointBorderColor: 'rgba(245,158,11,1)',
+              fill: { target: { value: 0 }, above: 'rgba(245,158,11,0.14)', below: 'rgba(251,113,133,0.12)' },
             },
             {
-              label: 'Stock largo (S₀ = K)',
-              data: stk,
-              borderColor: 'rgba(74,222,128,0.85)',
+              label: 'Solo call (referencia)',
+              data: liveHistory.map((h) => ({ x: h.x, y: h.piC })),
+              borderColor: 'rgba(45,212,191,0.85)',
               borderDash: [6, 4],
-              borderWidth: 2,
+              borderWidth: 1.8,
+              tension: 0.2,
               pointRadius: 0,
-              tension: 0,
               fill: false,
             },
           ],
         },
-        options: basePayoffOptions({
-          minX: lo, maxX: hi, minY: yMin, maxY: yMax,
-          title: 'Payoff al vencimiento',
-        }),
+        options: liveChartOptions(yMin, yMax, 4),
       });
-      chartCache.set(canvas, chart);
+      chartCache.set(canvas, liveStraddleChart);
+
+      const btn = document.getElementById('liveStraddlePause');
+      const icon = document.getElementById('liveStraddlePauseIcon');
+      if (btn && icon && !livePauseBound) {
+        livePauseBound = true;
+        btn.addEventListener('click', () => {
+          livePaused = !livePaused;
+          btn.setAttribute('aria-pressed', livePaused ? 'true' : 'false');
+          icon.className = livePaused ? 'bi bi-play-fill' : 'bi bi-pause-fill';
+          const foot = document.getElementById('liveStatusFoot');
+          if (livePaused) {
+            if (liveStraddleTimer) { clearInterval(liveStraddleTimer); liveStraddleTimer = null; }
+            if (liveCountdownTimer) { clearInterval(liveCountdownTimer); liveCountdownTimer = null; }
+            if (foot) foot.textContent = 'Pausado · pulsa de nuevo para reanudar';
+          } else {
+            liveCountdownSec = 10;
+            startLiveIntervals();
+            if (foot) foot.textContent = 'Próxima actualización en 10 s';
+          }
+        });
+      }
+      startLiveIntervals();
+      const foot0 = document.getElementById('liveStatusFoot');
+      if (foot0) foot0.textContent = 'Próxima actualización en 10 s';
     }
 
     function activateDemo(slideEl) {
       const demo = slideEl.dataset.demo;
-      if (demo === 'intro')                activateIntro(slideEl);
+      if (demo !== 'straddle_live') disposeLiveStraddle();
       if (demo === 'straddle_para_que')    activateParaQue(slideEl);
       if (demo === 'straddle_forma')       activateForma(slideEl);
-      if (demo === 'straddle_payoff')      activateStraddlePayoff(slideEl);
-      if (demo === 'straddle_ejemplo')     activateStraddleScenario(slideEl);
       if (demo === 'straddle_participantes') activateParticipantes(slideEl);
-      if (demo === 'straddle_pro_con')     { /* solo contenido HTML */ }
-      if (demo === 'straddle_theta')       activateStraddleTheta(slideEl);
-      if (demo === 'straddle_vol')         activateStraddleVol(slideEl);
-      if (demo === 'straddle_compare')     activateStraddleCompare(slideEl);
+      if (demo === 'straddle_pro_con')     { /* solo HTML */ }
+      if (demo === 'straddle_legs_vs_result') activateLegsVsResult(slideEl);
+      if (demo === 'straddle_live')        activateLiveStraddle();
     }
 
     window.addEventListener('load', () => {
       activateDemo(slides[0]);
-      initDynamicLab();
     });
-
-    /* -------- Laboratorio dinámico (gráficas en vivo) -------- */
-    function optsDyn(scale) {
-      const o = basePayoffOptions(scale);
-      o.animation = { duration: 0 };
-      o.transitions = { active: { animation: { duration: 0 } } };
-      return o;
-    }
-
-    function dynMarkerDataset(ST, y, hue) {
-      return {
-        label: 'ST (escenario)',
-        data: [{ x: ST, y }],
-        showLine: false,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        borderColor: 'rgba(255,255,255,0.95)',
-        backgroundColor: hue,
-        borderWidth: 2,
-      };
-    }
-
-    let dynChartCall = null;
-    let dynChartPut = null;
-    let dynChartStraddle = null;
-
-    function initDynamicLab() {
-      const dynK = document.getElementById('dynK');
-      const dynC = document.getElementById('dynC');
-      const dynP = document.getElementById('dynP');
-      const dynST = document.getElementById('dynST');
-      const ro = document.getElementById('dynReadouts');
-      const elC = document.getElementById('dynChartCall');
-      const elP = document.getElementById('dynChartPut');
-      const elS = document.getElementById('dynChartStraddle');
-      const btnReset = document.getElementById('dynReset');
-      if (!dynK || !dynC || !dynP || !dynST || !ro || !elC || !elP || !elS || typeof Chart === 'undefined') return;
-
-      const DDEF = { K: STR.K, c: STR.c, p: STR.p, ST: STR.S0 };
-
-      function clampRange(K) {
-        const lo = Math.max(5, K - 60);
-        const hi = Math.min(400, K + 60);
-        dynST.min = String(lo);
-        dynST.max = String(hi);
-        let st = parseFloat(dynST.value);
-        if (!Number.isFinite(st)) st = K;
-        if (st < lo) { st = lo; dynST.value = String(lo); }
-        if (st > hi) { st = hi; dynST.value = String(hi); }
-      }
-
-      function yBounds(lo, hi, fn, extraY) {
-        const xs = linspace(lo, hi, 55);
-        let mn = Infinity, mx = -Infinity;
-        xs.forEach((st) => {
-          const v = fn(st);
-          mn = Math.min(mn, v);
-          mx = Math.max(mx, v);
-        });
-        if (Number.isFinite(extraY)) {
-          mn = Math.min(mn, extraY);
-          mx = Math.max(mx, extraY);
-        }
-        if (!Number.isFinite(mn) || !Number.isFinite(mx)) { mn = -10; mx = 10; }
-        const pad = Math.max(1.5, (mx - mn) * 0.1);
-        return { mn: mn - pad, mx: mx + pad };
-      }
-
-      function paintReadouts(K, c, p, ST) {
-        const prem = c + p;
-        const bepU = K + prem;
-        const bepD = K - prem;
-        const yC = longCallPayoff(ST, K, c);
-        const yP = longPutPayoff(ST, K, p);
-        const yS = yC + yP;
-        const yWc = writerCallPayoff(ST, K, c);
-        const yWp = writerPutPayoff(ST, K, p);
-        ro.innerHTML = ''
-          + '<span class="dyn-readout"><b>c + p</b> = $' + prem.toFixed(2) + '</span>'
-          + '<span class="dyn-readout"><b>BEP</b> ≈ $' + bepD.toFixed(1) + ' · $' + bepU.toFixed(1) + '</span>'
-          + '<span class="dyn-readout"><b>Π comprador</b> en ST: <b>' + (yS >= 0 ? '+' : '') + '$' + yS.toFixed(2) + '</b></span>'
-          + '<span class="dyn-readout">Call larga: ' + (yC >= 0 ? '+' : '') + '$' + yC.toFixed(2)
-          + ' · Put larga: ' + (yP >= 0 ? '+' : '') + '$' + yP.toFixed(2) + '</span>'
-          + '<span class="dyn-readout text-muted" style="opacity:0.9">Vend. call: ' + (yWc >= 0 ? '+' : '') + '$' + yWc.toFixed(2)
-          + ' · Vend. put: ' + (yWp >= 0 ? '+' : '') + '$' + yWp.toFixed(2) + '</span>';
-      }
-
-      function refreshDynamicLab() {
-        const K = parseFloat(dynK.value);
-        const c = parseFloat(dynC.value);
-        const p = parseFloat(dynP.value);
-        let ST = parseFloat(dynST.value);
-        if (!Number.isFinite(K) || !Number.isFinite(c) || !Number.isFinite(p)) return;
-        if (c < 0 || p < 0) return;
-        clampRange(K);
-        ST = parseFloat(dynST.value);
-        document.getElementById('dynSTVal').textContent = Number.isFinite(ST) ? ST.toFixed(0) : '—';
-        paintReadouts(K, c, p, ST);
-
-        const lo = K - 38;
-        const hi = K + 38;
-        const xs = linspace(lo, hi, 111);
-
-        const yCst = longCallPayoff(ST, K, c);
-        const yPst = longPutPayoff(ST, K, p);
-        const ySst = yCst + yPst;
-        const yrC = yBounds(lo, hi, (st) => longCallPayoff(st, K, c), yCst);
-        const yrP = yBounds(lo, hi, (st) => longPutPayoff(st, K, p), yPst);
-        const yrS = yBounds(lo, hi, (st) => longCallPayoff(st, K, c) + longPutPayoff(st, K, p), ySst);
-
-        const lineCall = {
-          label: 'Call larga',
-          data: xs.map((st) => ({ x: st, y: longCallPayoff(st, K, c) })),
-          borderColor: 'rgba(74,222,128,1)',
-          borderWidth: 2,
-          tension: 0,
-          pointRadius: 0,
-          fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.14)', below: 'rgba(248,113,113,0.12)' },
-        };
-        const linePut = {
-          label: 'Put larga',
-          data: xs.map((st) => ({ x: st, y: longPutPayoff(st, K, p) })),
-          borderColor: 'rgba(251,191,36,1)',
-          borderWidth: 2,
-          tension: 0,
-          pointRadius: 0,
-          fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.14)', below: 'rgba(248,113,113,0.12)' },
-        };
-        const lineStr = {
-          label: 'Straddle',
-          data: xs.map((st) => ({ x: st, y: longCallPayoff(st, K, c) + longPutPayoff(st, K, p) })),
-          borderColor: 'rgba(167,139,250,1)',
-          borderWidth: 2.6,
-          tension: 0,
-          pointRadius: 0,
-          fill: { target: { value: 0 }, above: 'rgba(52,211,153,0.16)', below: 'rgba(248,113,113,0.18)' },
-        };
-
-        if (!dynChartCall) {
-          dynChartCall = new Chart(elC, {
-            type: 'line',
-            data: { datasets: [lineCall, dynMarkerDataset(ST, yCst, 'rgba(74,222,128,1)')] },
-            options: optsDyn({ minX: lo, maxX: hi, minY: yrC.mn, maxY: yrC.mx, title: 'Payoff call' }),
-          });
-          dynChartPut = new Chart(elP, {
-            type: 'line',
-            data: { datasets: [linePut, dynMarkerDataset(ST, yPst, 'rgba(251,191,36,1)')] },
-            options: optsDyn({ minX: lo, maxX: hi, minY: yrP.mn, maxY: yrP.mx, title: 'Payoff put' }),
-          });
-          const prem = c + p;
-          const bepDn = K - prem;
-          const bepUp = K + prem;
-          dynChartStraddle = new Chart(elS, {
-            type: 'line',
-            data: {
-              datasets: [
-                lineStr,
-                dynMarkerDataset(ST, ySst, 'rgba(167,139,250,1)'),
-                {
-                  label: 'BEP inf',
-                  data: [{ x: bepDn, y: yrS.mn }, { x: bepDn, y: yrS.mx }],
-                  borderColor: 'rgba(251,191,36,0.55)',
-                  borderDash: [4, 4],
-                  borderWidth: 1.2,
-                  pointRadius: 0,
-                  tension: 0,
-                  fill: false,
-                },
-                {
-                  label: 'BEP sup',
-                  data: [{ x: bepUp, y: yrS.mn }, { x: bepUp, y: yrS.mx }],
-                  borderColor: 'rgba(251,191,36,0.55)',
-                  borderDash: [4, 4],
-                  borderWidth: 1.2,
-                  pointRadius: 0,
-                  tension: 0,
-                  fill: false,
-                },
-              ],
-            },
-            options: optsDyn({ minX: lo, maxX: hi, minY: yrS.mn, maxY: yrS.mx, title: 'Payoff straddle' }),
-          });
-        } else {
-          dynChartCall.data.datasets[0] = lineCall;
-          dynChartCall.data.datasets[1] = dynMarkerDataset(ST, yCst, 'rgba(74,222,128,1)');
-          dynChartCall.options.scales.x.min = lo;
-          dynChartCall.options.scales.x.max = hi;
-          dynChartCall.options.scales.y.min = yrC.mn;
-          dynChartCall.options.scales.y.max = yrC.mx;
-          dynChartCall.update('none');
-
-          dynChartPut.data.datasets[0] = linePut;
-          dynChartPut.data.datasets[1] = dynMarkerDataset(ST, yPst, 'rgba(251,191,36,1)');
-          dynChartPut.options.scales.x.min = lo;
-          dynChartPut.options.scales.x.max = hi;
-          dynChartPut.options.scales.y.min = yrP.mn;
-          dynChartPut.options.scales.y.max = yrP.mx;
-          dynChartPut.update('none');
-
-          const prem = c + p;
-          const bepDn = K - prem;
-          const bepUp = K + prem;
-          dynChartStraddle.data.datasets[0] = lineStr;
-          dynChartStraddle.data.datasets[1] = dynMarkerDataset(ST, ySst, 'rgba(167,139,250,1)');
-          dynChartStraddle.data.datasets[2].data = [{ x: bepDn, y: yrS.mn }, { x: bepDn, y: yrS.mx }];
-          dynChartStraddle.data.datasets[3].data = [{ x: bepUp, y: yrS.mn }, { x: bepUp, y: yrS.mx }];
-          dynChartStraddle.options.scales.x.min = lo;
-          dynChartStraddle.options.scales.x.max = hi;
-          dynChartStraddle.options.scales.y.min = yrS.mn;
-          dynChartStraddle.options.scales.y.max = yrS.mx;
-          dynChartStraddle.update('none');
-        }
-      }
-
-      if (btnReset) {
-        btnReset.addEventListener('click', () => {
-          dynK.value = String(DDEF.K);
-          dynC.value = String(DDEF.c);
-          dynP.value = String(DDEF.p);
-          dynST.value = String(DDEF.ST);
-          clampRange(DDEF.K);
-          refreshDynamicLab();
-        });
-      }
-      ['input', 'change'].forEach((ev) => {
-        dynK.addEventListener(ev, refreshDynamicLab);
-        dynC.addEventListener(ev, refreshDynamicLab);
-        dynP.addEventListener(ev, refreshDynamicLab);
-        dynST.addEventListener(ev, refreshDynamicLab);
-      });
-      refreshDynamicLab();
-    }
   </script>
 </body>
 </html>
