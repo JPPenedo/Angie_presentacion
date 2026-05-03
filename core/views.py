@@ -1228,143 +1228,149 @@ def expo_sinteticos_view(request):
         {
             'titulo': '¿Para qué sirve?',
             'idea': (
-                'Sirve cuando esperas un movimiento grande del subyaciente pero no quieres '
-                'elegir solo sube o baja: resultados, datos macro, rupturas técnicas u '
-                'otros eventos con incertidumbre en la dirección. Pagas dos primas (c + p) '
-                'a cambio de ganar si el precio terminal ST termina lejos del strike K.'
+                'Imagina que esperas que el precio del activo se mueva mucho (por una noticia, '
+                'un resultado trimestral o un dato importante), pero no sabes si va a subir o a bajar. '
+                'El straddle te deja participar en los dos lados: pagas un “boleto” doble (dos primas) '
+                'y ganas si el precio al vencimiento queda bastante lejos del nivel acordado (el strike).'
             ),
-            'modelo': (
-                r'\text{Buy straddle} = \text{call largo}(K) + \text{put largo}(K)'
-                r'\qquad \text{Costo inicial} = c + p'
+            'dato_clave': (
+                'Compras una call y una put al mismo precio de ejercicio; en el ejemplo pagas 8 dólares '
+                'en total (5 + 3) y empatas si el precio termina en 92 o en 108.'
             ),
             'enfoque': (
-                'No es una apuesta direccional pura: el costo (c + p) fija qué tan lejos '
-                'de K debe quedar ST para que compense. Con K = 100, c = 5 y p = 3, los '
-                'breakevens al vencimiento son 92 y 108.'
+                'Si el precio termina pegado al strike (en el ejemplo, cerca de 100), suele ser la '
+                'situación más incómoda para quien compró el straddle: ahí es donde más duele haber '
+                'pagado las dos primas.'
             ),
             'conceptos': [
-                'Ideal si esperas variación grande del precio y la dirección es incierta',
-                'Evitar si el activo se queda en rango estrecho alrededor de K hasta el vencimiento',
-                'Comisiones y bid-ask en dos patas encarecen el punto de equilibrio real',
+                'Te encaja si tu historia es “habrá drama en el precio” y no “solo subirá”.',
+                'Te va mal si el mercado se queda dormido y el precio no se aleja del strike.',
+                'En la vida real suma comisiones y diferencia entre compra y venta en dos contratos.',
             ],
             'demo': 'straddle_para_que',
         },
         {
-            'titulo': '¿Cómo se forma? · Long, call, put · ¿Compra o venta?',
+            'titulo': '¿Cómo se arma? · Call, put · ¿Compras o vendes?',
             'idea': (
-                'El straddle largo clásico combina dos patas largas al mismo strike K y vencimiento: '
-                'compras la call (pagas prima c) y compras la put (pagas prima p). Ambas son compras; '
-                'no hay ventas en la estructura larga estándar.'
+                'En el straddle largo clásico solo hay compras: compras una call y compras una put '
+                'al mismo strike y vencimiento. Pagas la prima de la call y la prima de la put. '
+                'No estás vendiendo opciones en esta versión, así que no entra el tema del margen '
+                'por ventas cortas.'
             ),
-            'modelo': (
-                r'\text{Call larga}(K): \ \text{pagas } c'
-                r'\qquad \text{Put larga}(K): \ \text{pagas } p'
-                r'\qquad \text{Flujo inicial} = -(c+p)'
+            'dato_clave': (
+                '“Larga” = compraste el contrato. Quien te vende cada pata cobra la prima y asume '
+                'el lado opuesto del trato.'
             ),
             'enfoque': (
-                'Long significa posición comprada. El vendedor de cada pata cobra la prima '
-                'y asume el payoff opuesto. Vender el straddle (short) es el espejo: cobras '
-                'c + p pero el perfil de riesgo cambia por completo.'
+                'Si vendieras el straddle (versión corta), sería al revés: cobrarías las dos primas '
+                'pero tu riesgo y tu sensación en el gráfico cambian por completo. Aquí nos centramos '
+                'en el comprador del straddle.'
             ),
             'conceptos': [
-                'Call larga: derecho a comprar a K; put larga: derecho a vender a K',
-                'Peor caso del comprador del straddle: pierde c + p si ST = K al vencimiento',
-                'La tabla y los mini-payoffs al lado resumen cada pata por separado',
+                'Call comprada: te beneficia un suba fuerte por encima del strike (menos lo que pagaste).',
+                'Put comprada: te beneficia una baja fuerte por debajo del strike (menos lo que pagaste).',
+                'La tabla y los dos mini-gráficos de la derecha repiten el ejemplo con K = 100, primas 5 y 3.',
             ],
             'demo': 'straddle_forma',
         },
         {
-            'titulo': 'Ganancias y pérdidas de los participantes',
+            'titulo': '¿Quién gana y quién pierde?',
             'idea': (
-                'El mercado de opciones es de suma cero entre compradores y vendedores (sin contar '
-                'comisiones): lo que gana el comprador del straddle a expensas de un escenario '
-                'de precio, lo pierden en conjunto quienes vendieron la call y la put al mismo strike.'
+                'En un ejercicio de libro, sin comisiones, el dinero que gana un lado en la fecha '
+                'de vencimiento es el que pierde el otro en conjunto. Si el comprador del straddle '
+                'gana en un escenario, eso sale del bolsillo combinado de quien le vendió la call '
+                'y quien le vendió la put (en la misma mesa de negociación, suele simplificarse así).'
             ),
-            'modelo': (
-                r'\Pi_{\text{comprador}} + \Pi_{\text{vendedor call}} + \Pi_{\text{vendedor put}} = 0'
-                r'\qquad \Pi_{\text{vendedor call}}(S_T) = c - \max(S_T-K,0)'
-                r'\qquad \Pi_{\text{vendedor put}}(S_T) = p - \max(K-S_T,0)'
+            'dato_clave': (
+                'En la tabla de la derecha, la suma de las tres ganancias o pérdidas da cero en cada fila.'
             ),
             'enfoque': (
-                'El gráfico superpone al comprador del straddle y a cada vendedor de pata. '
-                'La tabla usa K = 100, c = 5, p = 3 con tres valores de ST.'
+                'El gráfico de colores muestra al comprador del straddle frente al vendedor de la call '
+                'y al vendedor de la put. Los números son el mismo ejemplo: precio de ejercicio 100, '
+                'primas 5 y 3, y tres precios finales (90, 100 y 110).'
             ),
             'conceptos': [
-                'Comprador straddle: gana con movimientos extremos tras superar c + p',
-                'Vendedor de call: cobra c; riesgo de cola si ST es mucho mayor que K',
-                'Vendedor de put: cobra p; riesgo de cola si ST es mucho menor que K',
+                'Con precio final 90: el comprador del straddle gana 2; el de la call gana 5; el de la put pierde 7.',
+                'Con precio final 100: el comprador del straddle pierde 8; los dos vendedores suman +8.',
+                'Con precio final 110: el comprador gana 2; el vendedor de la call pierde 5; el de la put gana 3.',
             ],
             'demo': 'straddle_participantes',
         },
         {
-            'titulo': 'Ventajas y desventajas',
+            'titulo': 'Lo bueno y lo no tan bueno',
             'idea': (
-                'Toda estrategia equilibra flexibilidad y costo: aquí compras simetría y colas '
-                'abiertas, pero pagas doble prima y sufres si el subyaciente no se mueve lo '
-                'suficiente o si la volatilidad implícita cae tras un evento.'
+                'Es una forma clara de apostar a “se va a mover fuerte” sin elegir bando. '
+                'A cambio, pagas dos entradas y necesitas que el movimiento sea grande para que '
+                'valga la pena frente a lo que desembolsaste.'
             ),
-            'modelo': (
-                r'\text{Ventaja: } \Pi \text{ simétrico en } |S_T - K| \text{ (tras c+p)}'
-                r'\qquad \text{Desventaja: costo } (c+p) + \text{decaimiento temporal típico}'
+            'dato_clave': (
+                'Piensa en ello como simetría a favor tuyo en los extremos, y un “valle” incómodo '
+                'justo cuando el precio termina pegado al strike.'
             ),
             'enfoque': (
-                'Usa la tarjeta de al lado como checklist pedagógico; el contexto (IV, tiempo, '
-                'evento) redefine qué tan relevante es cada punto.'
+                'La tarjeta verde resume lo que suele gustar del straddle largo; la rosa, lo que más '
+                'duele en la práctica (costo, tiempo y sorpresas después de un evento).'
             ),
             'conceptos': [
-                'Contrasta ventajas y desventajas antes de extrapolar a mercados reales',
+                'Úsalo como lista de control en clase, no como consejo de inversión.',
+                'Si hay un evento y la “nerviosidad” del mercado cae después, muchos straddles largos sufren.',
+                'Cuanto más pagas de comisiones y peor es la liquidez, más lejos tiene que ir el precio para notar ganancia.',
             ],
             'ventajas': [
-                'Participación simétrica a movimientos fuertes arriba o abajo del strike',
-                'Pérdida inicial acotada al desembolso c + p (sin margen por patas largas)',
-                'Implementación simple: dos piernas, mismo K y vencimiento',
+                'Ganas si el precio termina muy arriba o muy abajo del strike, no solo en una dirección.',
+                'Sabes desde el inicio el máximo que puedes perder: lo que pagaste por las dos primas.',
+                'Solo son dos contratos, mismo strike y misma fecha: fácil de dibujar y de explicar.',
             ],
             'desventajas': [
-                'Costo doble de primas; sin movimiento, el tiempo erosiona valor',
-                'Breakevens alejados: necesitas variación suficiente en ST',
-                'Riesgo de caída brusca de IV tras el evento; dos bid-ask encarecen el resultado',
+                'Pagas dos primas de entrada; si nada pasa, el tiempo no suele ser tu aliado.',
+                'Necesitas un salto claro del precio para recuperar el boleto doble.',
+                'Después de noticias, el mercado a veces “se calma” y las primas bajan; ahí duele.',
             ],
             'demo': 'straddle_pro_con',
         },
         {
-            'titulo': 'Opciones originales y resultado combinado',
+            'titulo': 'Las dos patas y el resultado junto',
             'idea': (
-                'Al vencimiento el resultado del straddle es la suma de los payoffs de la call '
-                'y la put largas, menos las primas. Las líneas punteadas muestran cada pata; '
-                'la línea continua naranja es la posición sintética combinada (con breakevens K ± (c+p)).'
+                'En el gráfico grande ves tres historias al vencimiento: la call sola (línea punteada '
+                'más “turquesa”), la put sola (punteada más ámbar) y la mezcla, el straddle, como '
+                'línea naranja sólida con relleno. Las rayitas verticales marcan dónde empatas con lo '
+                'que pagaste (en el ejemplo, alrededor de 92 y 108).'
             ),
-            'modelo': (
-                r'\Pi(S_T) = \underbrace{\max(S_T-K,0)-c}_{\text{call}} +'
-                r'\underbrace{\max(K-S_T,0)-p}_{\text{put}}'
+            'dato_clave': (
+                'El resultado combinado no es magia: es lo que haría la call más lo que haría la put, '
+                'menos las dos primas que ya pagaste.'
             ),
             'enfoque': (
-                'Cerca de K ambas patas valen poco y pierdes las primas; lejos de K una pata '
-                'entra en el dinero y arrastra el total.'
+                'Si el precio final queda cerca del strike, las dos patas valen poco y lo que pierdes '
+                'es básicamente el costo de las primas. Si el precio se va lejos, una pata despierta '
+                'y arrastra el resultado total.'
             ),
             'conceptos': [
-                'Líneas discontinuas: componentes call y put',
-                'Línea continua rellena: straddle (sintético combinado)',
-                'Líneas verticales: breakevens aproximados al vencimiento',
+                'Punteadas: cómo se ve cada opción por su cuenta al vencer.',
+                'Naranja continua: posición combinada (el straddle) que es la que ves como “sintético”.',
+                'Verticales: puntos de equilibrio aproximados respecto a las primas del ejemplo.',
             ],
             'demo': 'straddle_legs_vs_result',
         },
         {
-            'titulo': 'Monitor dinámico (simulación)',
+            'titulo': 'Monitor de juguete (simulación)',
             'idea': (
-                'Simulación pedagógica: cada 10 segundos se actualiza un spot ficticio y las '
-                'lecturas más útiles (prima total, Π al vencimiento a ese spot, distancia a '
-                'breakeven). Puedes pausar para leer con calma; no es cotización real.'
+                'Es un tablero de demostración: cada 10 segundos el programa inventa un precio del activo, '
+                'recalcula cuánto ganarías o perderías al vencimiento con ese precio y actualiza el '
+                'gráfico. No son precios reales de bolsa. Sirve para ver cómo “late” la idea del straddle '
+                'cuando el mercado se mueve.'
             ),
-            'modelo': (
-                r'\Pi(S) = |S-K| - (c+p) \ \text{(forma compacta al vencimiento, por tramos)}'
+            'dato_clave': (
+                'Puedes pausar el reloj con el botón y leer con calma; al reanudar, vuelve el tick cada 10 s.'
             ),
             'enfoque': (
-                'El gráfico acumula ticks de tiempo: línea naranja = Π del straddle al spot simulado; '
-                'línea turquesa discontinua = payoff de la solo-call al mismo S (referencia de una pata).'
+                'La línea naranja sigue la ganancia o pérdida del straddle al precio simulado; la turquesa '
+                'punteada muestra solo la call, para que compares una pata contra el conjunto.'
             ),
             'conceptos': [
-                'Sirve para visualizar sensibilidad del sintético a movimientos del subyacente',
-                'Pausa y reanuda con el botón del widget',
+                'Los números de arriba cambian con el precio simulado: spot, primas totales, resultado y distancia al equilibrio.',
+                'El eje horizontal son pasos de tiempo (cada paso = 10 segundos de simulación).',
+                'Si enseñas en vivo, pausa antes de preguntar al salón “¿qué creen que pasará en el siguiente tick?”.',
             ],
             'demo': 'straddle_live',
         },

@@ -6,39 +6,31 @@
   <title>Buy Straddle | Sintéticos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-          onload="renderMathInElement(document.body, {
-            delimiters: [
-              {left: '\\[', right: '\\]', display: true},
-              {left: '\\(', right: '\\)', display: false}
-            ],
-            throwOnError: false
-          });"></script>
   <style>
     :root {
-      --bg: #0a0b0f;
-      --card: #0e1018;
-      --card-alt: #12141f;
-      --border: rgba(255,255,255,0.07);
-      --accent: #f59e0b;
-      --accent-2: #fbbf24;
-      --accent-soft: #fcd34d;
-      --teal: #2dd4bf;
-      --teal-dim: rgba(45,212,191,0.55);
-      --gold: #f59e0b;
-      --text: #f4f4f5;
-      --muted: #71717a;
-      --success: #34d399;
-      --warning: #fbbf24;
-      --danger: #fb7185;
-      --blue: #38bdf8;
-      --violet: #a78bfa;
+      --bg: #050508;
+      --navy: #1a1a2e;
+      --card: #0a0a12;
+      --card-alt: #0e0e18;
+      --border: rgba(255,80,60,0.12);
+      --accent: #ff3300;
+      --accent-2: #ff5533;
+      --accent-soft: #ff8866;
+      --ember-glow: rgba(255, 51, 0, 0.45);
+      --nebula: rgba(88, 56, 140, 0.45);
+      --deep-blue: rgba(26, 42, 90, 0.55);
+      --gold: #ffaa66;
+      --text: #eef0f6;
+      --muted: #8890a8;
+      --success: #5eead4;
+      --warning: #ffb347;
+      --danger: #ff4466;
+      --line-2: #7b8fd9;
+      --violet: #9d7cff;
     }
     * { box-sizing: border-box; }
     body {
@@ -47,13 +39,58 @@
       color: var(--text);
       min-height: 100vh;
       position: relative;
-      background-color: var(--bg);
-      background-image:
-        linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
-      background-size: 48px 48px, 48px 48px;
-      background-attachment: fixed;
+      background: linear-gradient(145deg, #020203 0%, #0a0a18 38%, #05050c 72%, #080612 100%);
       overflow-x: hidden;
+    }
+
+    .cosmic-stack {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .cosmic-grid {
+      position: absolute;
+      inset: -35% -20%;
+      background-image:
+        linear-gradient(rgba(255, 51, 0, 0.11) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 140, 220, 0.06) 1px, transparent 1px);
+      background-size: 52px 52px, 52px 52px;
+      transform-origin: 50% 100%;
+      transform: perspective(520px) rotateX(56deg) scale(1.35);
+      opacity: 0.32;
+      mask-image: radial-gradient(ellipse 85% 70% at 50% 55%, black 20%, transparent 72%);
+      animation: gridWarp 22s ease-in-out infinite alternate;
+    }
+    @keyframes gridWarp {
+      0%   { transform: perspective(500px) rotateX(50deg) rotateZ(-0.8deg) scale(1.28); opacity: 0.26; }
+      100% { transform: perspective(560px) rotateX(60deg) rotateZ(0.8deg) scale(1.42); opacity: 0.38; }
+    }
+    .cosmic-nebula {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 20% 15%, rgba(255, 40, 20, 0.16), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 85% 75%, rgba(90, 60, 160, 0.2), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 55% 90%, rgba(26, 50, 110, 0.35), transparent 45%);
+      animation: nebulaPulse 16s ease-in-out infinite alternate;
+    }
+    @keyframes nebulaPulse {
+      0%   { opacity: 0.85; filter: saturate(1); }
+      100% { opacity: 1; filter: saturate(1.15); }
+    }
+    .cosmic-stars {
+      position: absolute;
+      inset: 0;
+      opacity: 0.55;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Ccircle cx='40' cy='60' r='1' fill='%23ffffff' opacity='0.5'/%3E%3Ccircle cx='120' cy='25' r='0.8' fill='%23ffcccc' opacity='0.45'/%3E%3Ccircle cx='200' cy='90' r='1.1' fill='%23fff' opacity='0.55'/%3E%3Ccircle cx='320' cy='40' r='0.7' fill='%23fff' opacity='0.4'/%3E%3Ccircle cx='360' cy='120' r='1' fill='%23ffaa99' opacity='0.35'/%3E%3Ccircle cx='80' cy='180' r='0.9' fill='%23fff' opacity='0.5'/%3E%3Ccircle cx='280' cy='200' r='1' fill='%23fff' opacity='0.45'/%3E%3Ccircle cx='150' cy='240' r='0.7' fill='%23fff' opacity='0.35'/%3E%3Ccircle cx='340' cy='280' r='1.1' fill='%23ffdddd' opacity='0.4'/%3E%3Ccircle cx='60' cy='320' r='0.8' fill='%23fff' opacity='0.45'/%3E%3Ccircle cx='220' cy='350' r='1' fill='%23fff' opacity='0.5'/%3E%3C/svg%3E");
+      background-size: 520px 520px;
+      animation: starDrift 80s linear infinite;
+    }
+    @keyframes starDrift {
+      from { background-position: 0 0; }
+      to   { background-position: 520px 260px; }
     }
 
     /* ===== LUZ DINÁMICA DE FONDO ===== */
@@ -78,18 +115,18 @@
       will-change: transform;
     }
     .ambient.a1 {
-      width: 620px; height: 540px; left: -10%; top: 8%;
-      background: radial-gradient(closest-side, rgba(245,158,11,0.22), transparent 72%);
+      width: 640px; height: 520px; left: -12%; top: 5%;
+      background: radial-gradient(closest-side, rgba(255, 45, 0, 0.28), transparent 70%);
       animation: ambDrift1 38s ease-in-out infinite alternate;
     }
     .ambient.a2 {
-      width: 520px; height: 480px; right: -8%; bottom: -4%;
-      background: radial-gradient(closest-side, rgba(99,102,241,0.2), transparent 72%);
+      width: 540px; height: 500px; right: -10%; bottom: -8%;
+      background: radial-gradient(closest-side, rgba(40, 55, 120, 0.45), transparent 72%);
       animation: ambDrift2 44s ease-in-out infinite alternate;
     }
     .ambient.a3 {
-      width: 560px; height: 420px; left: 35%; bottom: -12%;
-      background: radial-gradient(closest-side, rgba(45,212,191,0.14), transparent 70%);
+      width: 520px; height: 400px; left: 30%; bottom: -15%;
+      background: radial-gradient(closest-side, rgba(120, 70, 180, 0.22), transparent 72%);
       animation: ambDrift3 52s ease-in-out infinite alternate;
     }
     @keyframes ambDrift3 {
@@ -109,14 +146,14 @@
       left: -80vw;
       border-radius: 999px;
       background: linear-gradient(90deg,
-        rgba(245,158,11,0) 0%,
-        rgba(245,158,11,0.45) 18%,
-        rgba(251,191,36,0.95) 50%,
-        rgba(245,158,11,0.45) 82%,
-        rgba(245,158,11,0) 100%);
+        rgba(255,51,0,0) 0%,
+        rgba(255,51,0,0.5) 18%,
+        rgba(255,120,80,0.95) 50%,
+        rgba(255,51,0,0.5) 82%,
+        rgba(255,51,0,0) 100%);
       box-shadow:
-        0 0 18px 2px rgba(245,158,11,0.45),
-        0 0 55px 10px rgba(245,158,11,0.2);
+        0 0 22px 3px rgba(255,51,0,0.5),
+        0 0 60px 14px rgba(255,40,0,0.18);
       mix-blend-mode: screen;
       opacity: 0;
       will-change: transform, opacity;
@@ -150,13 +187,13 @@
     }
     .spark {
       position: absolute;
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       left: -10vw;
       border-radius: 50%;
-      background: #d1fadf;
+      background: #fff5f0;
       box-shadow:
-        0 0 10px 2px rgba(134,239,172,0.95),
-        0 0 28px 6px rgba(34,197,94,0.55);
+        0 0 12px 3px rgba(255,80,60,0.9),
+        0 0 28px 8px rgba(255,40,0,0.35);
       mix-blend-mode: screen;
       opacity: 0;
       will-change: transform, opacity;
@@ -179,12 +216,14 @@
       100% { transform: translate3d(-120vw, 0, 0); opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .streak, .spark, .ambient { animation: none; opacity: 0.35; }
+      .streak, .spark, .ambient, .cosmic-grid, .cosmic-stars, .cosmic-nebula { animation: none !important; }
+      .cosmic-grid { opacity: 0.22; }
+      .streak, .spark, .ambient { opacity: 0.35; }
     }
 
     .wrap {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       max-width: 1180px;
       margin: 0 auto;
       padding: 1.4rem 1.2rem 2.6rem;
@@ -194,22 +233,32 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(45,212,191,0.06));
-      border: 1px solid rgba(245,158,11,0.28);
+      background: linear-gradient(145deg, rgba(18,12,22,0.95), rgba(8,8,16,0.98));
+      border: 1px solid rgba(255,51,0,0.35);
       border-radius: 1rem;
       padding: 1.2rem 1.3rem;
       margin-bottom: 1rem;
-      box-shadow: 0 0 60px -10px rgba(245,158,11,0.22);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 0 50px -8px rgba(255,51,0,0.25),
+        0 20px 50px -20px rgba(0,0,0,0.8);
     }
     .hero::after{
       content:"";
-      position:absolute; inset:-40% -20% auto auto; width:60%; height:180%;
-      background: conic-gradient(from 90deg, rgba(245,158,11,0.2), rgba(45,212,191,0.08), transparent 45%);
-      filter: blur(40px); pointer-events:none;
-      animation: spin 22s linear infinite;
+      position:absolute; inset:-45% -25% auto auto; width:65%; height:200%;
+      background: conic-gradient(from 200deg, rgba(255,51,0,0.35), rgba(90,40,120,0.15), transparent 42%);
+      filter: blur(42px); pointer-events:none;
+      animation: spin 24s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg);} }
-    .hero h1 { font-size: 1.55rem; margin: 0 0 0.35rem; letter-spacing:-0.01em;}
+    .hero h1 {
+      font-family: "Rajdhani", system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.35rem;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 28px rgba(255,51,0,0.35), 0 0 60px rgba(255,30,0,0.12);
+    }
     .hero p { margin: 0; color: var(--muted); font-size: 0.92rem; }
     .hero .hero-chips {
       display: flex; flex-wrap: wrap; gap: 0.4rem;
@@ -220,19 +269,20 @@
       font-size: 0.72rem;
       padding: 0.25rem 0.65rem;
       border-radius: 999px;
-      border: 1px solid rgba(245,158,11,0.35);
-      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(255,51,0,0.4);
+      background: rgba(255,51,0,0.1);
       color: var(--accent-soft);
+      box-shadow: 0 0 14px rgba(255,51,0,0.08);
     }
     .hero-chip.gold {
-      border-color: rgba(251,191,36,0.4);
-      background: rgba(251,191,36,0.1);
+      border-color: rgba(255,170,102,0.45);
+      background: rgba(255,120,60,0.1);
       color: var(--gold);
     }
-    .hero-chip.teal {
-      border-color: rgba(45,212,191,0.4);
-      background: rgba(45,212,191,0.1);
-      color: var(--teal);
+    .hero-chip.cosmic-secondary {
+      border-color: rgba(123,143,217,0.45);
+      background: rgba(60,80,160,0.15);
+      color: #b8c8ff;
     }
     .hero-chip.red {
       border-color: rgba(251,113,133,0.45);
@@ -262,14 +312,14 @@
       font-size: 0.65rem;
     }
     .hero-rail-url {
-      color: var(--accent-soft);
+      color: #ffb399;
       text-decoration: none;
       word-break: break-all;
       font-family: ui-monospace, "Cascadia Mono", monospace;
       font-size: 0.8rem;
-      border-bottom: 1px dashed rgba(134,239,172,0.35);
+      border-bottom: 1px dashed rgba(255,80,60,0.4);
     }
-    .hero-rail-url:hover { color: var(--accent-2); border-bottom-color: var(--accent-2); }
+    .hero-rail-url:hover { color: #ffd0c2; border-bottom-color: rgba(255,120,90,0.7); }
     .hero-rail-sep { color: var(--muted); user-select: none; }
     .hero-rail-related {
       color: var(--gold);
@@ -280,12 +330,16 @@
 
     .section-title {
       display: flex; align-items: center; gap: 0.5rem;
-      margin: 1.2rem 0 0.7rem; font-weight: 700;
+      margin: 1.2rem 0 0.7rem;
+      font-family: "Rajdhani", system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
     }
     .badge-pill {
-      border: 1px solid rgba(245,158,11,0.3);
-      background: rgba(245,158,11,0.12);
-      color: var(--accent);
+      border: 1px solid rgba(255,51,0,0.45);
+      background: rgba(255,51,0,0.12);
+      color: var(--accent-soft);
+      box-shadow: 0 0 16px rgba(255,51,0,0.12);
       border-radius: 999px; font-size: 0.7rem;
       padding: 0.2rem 0.6rem;
       letter-spacing: 0.05em; text-transform: uppercase;
@@ -300,7 +354,7 @@
       height: 240px;
       pointer-events: none;
       opacity: 0.55;
-      filter: drop-shadow(0 0 8px rgba(245,158,11,0.25));
+      filter: drop-shadow(0 0 10px rgba(255,51,0,0.35));
     }
     .circuit-decor.left  { left: -135px; }
     .circuit-decor.right { right: -135px; transform: scaleX(-1); }
@@ -309,25 +363,25 @@
     .slides-shell {
       position: relative;
       background:
-        radial-gradient(600px 320px at 25% 15%, rgba(245,158,11,0.14), transparent 62%),
-        radial-gradient(480px 260px at 85% 85%, rgba(99,102,241,0.12), transparent 58%),
-        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 40%),
+        radial-gradient(620px 300px at 20% 10%, rgba(255,51,0,0.12), transparent 58%),
+        radial-gradient(480px 280px at 90% 85%, rgba(70,50,130,0.18), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0) 42%),
         var(--card);
-      border: 1px solid rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,51,0,0.22);
       border-radius: 1rem;
       padding: 0.9rem;
       overflow: hidden;
       box-shadow:
-        inset 0 0 1px rgba(255,255,255,0.05),
-        0 10px 40px -12px rgba(0,0,0,0.65),
-        0 0 80px -30px rgba(245,158,11,0.2);
+        inset 0 0 1px rgba(255,80,60,0.08),
+        0 12px 48px -10px rgba(0,0,0,0.75),
+        0 0 70px -28px rgba(255,51,0,0.18);
     }
     .slides-shell::before {
       content: "";
       position: absolute;
       width: 60%; height: 120%;
       left: -15%; top: -20%;
-      background: radial-gradient(closest-side, rgba(245,158,11,0.18), transparent 70%);
+      background: radial-gradient(closest-side, rgba(255,51,0,0.14), transparent 72%);
       filter: blur(28px);
       pointer-events: none;
       z-index: 0;
@@ -348,10 +402,10 @@
     }
     .progress-bar-x {
       height: 100%; width: 20%;
-      background: linear-gradient(90deg, var(--accent), var(--teal));
+      background: linear-gradient(90deg, #ff2200, #ff6633, #ffaa66);
       border-radius: 999px;
       transition: width 0.7s cubic-bezier(.2,.8,.2,1);
-      box-shadow: 0 0 14px rgba(245,158,11,0.45);
+      box-shadow: 0 0 16px rgba(255,51,0,0.55);
     }
 
     .stage {
@@ -386,8 +440,8 @@
     .slide.active:hover {
       transform: scale(1.012) translateY(-1px);
       box-shadow:
-        0 18px 45px -18px rgba(245,158,11,0.22),
-        0 0 0 1px rgba(245,158,11,0.15);
+        0 18px 45px -18px rgba(255,51,0,0.2),
+        0 0 0 1px rgba(255,51,0,0.22);
       transition:
         opacity 0.9s ease,
         transform 0.45s cubic-bezier(.2,.8,.2,1),
@@ -409,11 +463,20 @@
     }
 
     .slide h3 {
-      margin: 0 0 0.25rem; font-size: 1.18rem; letter-spacing:-0.01em;
+      font-family: "Rajdhani", system-ui, sans-serif;
+      margin: 0 0 0.25rem;
+      font-size: 1.28rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-shadow: 0 0 20px rgba(255,51,0,0.22);
     }
     .slide .subtitle {
-      color: var(--accent); font-size: 0.72rem;
-      text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700;
+      color: var(--accent-soft);
+      font-family: "Rajdhani", system-ui, sans-serif;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 700;
       margin-bottom: 0.55rem;
     }
     .slide p { margin: 0.35rem 0; color: #cfc9c4; font-size: 0.9rem; line-height: 1.45; }
@@ -490,39 +553,166 @@
       to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
     }
 
-    .math-chip {
+    .insight-strip {
       display: block;
-      background: linear-gradient(135deg, rgba(245,158,11,0.14), rgba(45,212,191,0.06));
-      border: 1px solid rgba(245,158,11,0.28);
-      border-radius: 0.6rem;
-      padding: 0.55rem 0.75rem;
-      color: #e6f7ec;
-      font-family: "Cambria Math","Latin Modern Math", "Segoe UI", serif;
-      font-size: 0.92rem;
-      letter-spacing: 0.01em;
-      margin-top: 0.4rem;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-      overflow-x: auto;
-      overflow-y: hidden;
+      margin-top: 0.45rem;
+      padding: 0.55rem 0.75rem 0.55rem 0.85rem;
+      border-radius: 0.55rem;
+      border: 1px solid rgba(255,51,0,0.35);
+      border-left-width: 4px;
+      border-left-color: rgba(255,51,0,0.95);
+      background: linear-gradient(100deg, rgba(255,51,0,0.14), rgba(12,10,22,0.92) 48%, rgba(80,60,140,0.08));
+      color: #f0f2f8;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      box-shadow:
+        0 0 28px rgba(255,51,0,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.04);
     }
-    .math-chip .katex-display { margin: 0; text-align: left; color: #f6efe8; }
-    .math-chip .katex-display > .katex { text-align: left; white-space: nowrap; }
-    .math-chip .katex { font-size: 1.02em; color: #f6efe8; }
 
     .concept-list {
-      margin: 0.6rem 0 0; padding: 0; list-style: none;
-      display: flex; flex-direction: column; gap: 0.3rem;
+      margin: 0.65rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.42rem;
+      position: relative;
     }
-    .concept-list li {
-      font-size: 0.82rem; color: #d9d3ce;
-      padding: 0.32rem 0.55rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
+    .concept-list .concept-chip {
+      position: relative;
+      overflow: hidden;
+      font-size: 0.8rem;
+      line-height: 1.42;
+      color: #e8e8ec;
+      padding: 0.45rem 0.65rem 0.45rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(125deg, rgba(22,24,35,0.95), rgba(30,28,26,0.75));
+      opacity: 0;
+      transform: translateX(-14px);
+      box-shadow: 0 0 0 rgba(255,51,0,0);
+    }
+    .concept-list .concept-chip::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0; width: 3px;
+      border-radius: 2px 0 0 2px;
+      background: linear-gradient(180deg, #ff3300, var(--line-2));
+      opacity: 0.9;
+    }
+    .concept-list .concept-chip::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+      background-size: 200% 100%;
+      background-position: 0% 0;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .slide.active .concept-list .concept-chip {
+      animation: chipEnter 0.72s cubic-bezier(.2,.8,.2,1) forwards,
+                 chipBorderPulse 3.2s ease-in-out infinite;
+      animation-delay: calc(1.38s + var(--i) * 0.13s), calc(2.05s + var(--i) * 0.11s);
+    }
+    .slide.active .concept-list .concept-chip::after {
+      animation: chipShimmer 2.6s ease-in-out infinite;
+      animation-delay: calc(1.95s + var(--i) * 0.12s);
+    }
+    @keyframes chipEnter {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes chipShimmer {
+      0%, 100% { opacity: 0.15; background-position: 0% 0; }
+      50% { opacity: 0.55; background-position: 100% 0; }
+    }
+    @keyframes chipBorderPulse {
+      0%, 100% {
+        border-color: rgba(255,51,0,0.22);
+        box-shadow: 0 0 0 0 rgba(255,51,0,0), inset 0 0 18px rgba(90,70,160,0.03);
+      }
+      50% {
+        border-color: rgba(255,100,70,0.45);
+        box-shadow: 0 0 22px rgba(255,51,0,0.18), inset 0 0 24px rgba(255,40,0,0.05);
+      }
+    }
+
+    .chip-list {
+      margin: 0.35rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.38rem;
+    }
+    .chip-list .pro-chip,
+    .chip-list .con-chip {
+      position: relative;
+      overflow: hidden;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      padding: 0.4rem 0.55rem 0.4rem 0.65rem;
       border-radius: 0.45rem;
+      opacity: 0;
+      transform: translateY(10px);
     }
-    .concept-list li::before {
-      content: "\2022"; color: var(--accent);
-      margin-right: 0.45rem; font-weight: 900;
+    .chip-list .pro-chip {
+      color: #d8f5e8;
+      border: 1px solid rgba(52,211,153,0.35);
+      background: linear-gradient(120deg, rgba(16,185,129,0.12), rgba(0,0,0,0.2));
+    }
+    .chip-list .con-chip {
+      color: #fde8ec;
+      border: 1px solid rgba(251,113,133,0.38);
+      background: linear-gradient(120deg, rgba(251,113,133,0.12), rgba(0,0,0,0.2));
+    }
+    .chip-list .pro-chip::after,
+    .chip-list .con-chip::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,0.07), transparent);
+      background-size: 200% 100%;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .slide.active .chip-list .pro-chip,
+    .slide.active .chip-list .con-chip {
+      animation: chipRise 0.65s cubic-bezier(.2,.8,.2,1) forwards,
+                 chipAuraSoft 2.8s ease-in-out infinite;
+      animation-delay: calc(1.32s + var(--i) * 0.1s), calc(1.9s + var(--i) * 0.08s);
+    }
+    .slide.active .chip-list .pro-chip::after {
+      animation: chipShimmer 2.4s ease-in-out infinite;
+      animation-delay: calc(1.85s + var(--i) * 0.1s);
+    }
+    .slide.active .chip-list .con-chip::after {
+      animation: chipShimmer 2.4s ease-in-out infinite;
+      animation-delay: calc(1.85s + var(--i) * 0.1s);
+    }
+    @keyframes chipRise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes chipAuraSoft {
+      0%, 100% { filter: brightness(1); box-shadow: 0 0 0 rgba(0,0,0,0); }
+      50% { filter: brightness(1.06); box-shadow: 0 0 16px rgba(255,255,255,0.06); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide.active .concept-list .concept-chip,
+      .slide.active .concept-list .concept-chip::after,
+      .slide.active .chip-list .pro-chip,
+      .slide.active .chip-list .con-chip,
+      .slide.active .chip-list .pro-chip::after,
+      .slide.active .chip-list .con-chip::after {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .slide.active .concept-list .concept-chip {
+        border-color: rgba(255,255,255,0.1);
+      }
     }
 
     /* ---------- MINI DEMO ---------- */
@@ -547,9 +737,9 @@
       width:8px;height:8px;border-radius:50%;
       background: rgba(255,255,255,0.15);
     }
-    .mini-demo .demo-head .dots3 span:nth-child(1){ background:#f87171; }
-    .mini-demo .demo-head .dots3 span:nth-child(2){ background:#fbbf24; }
-    .mini-demo .demo-head .dots3 span:nth-child(3){ background:#34d399; }
+    .mini-demo .demo-head .dots3 span:nth-child(1){ background:#ff3300; box-shadow:0 0 8px rgba(255,51,0,0.6); }
+    .mini-demo .demo-head .dots3 span:nth-child(2){ background:#ffaa66; }
+    .mini-demo .demo-head .dots3 span:nth-child(3){ background:#a8b8ff; }
 
     /* ---------- PAYOFF CHARTS ---------- */
     .payoff-wrap {
@@ -580,7 +770,7 @@
       margin-bottom: 0.3rem;
       display: flex; align-items: center; gap: 0.35rem;
     }
-    .intro-card.call .ic-title { color: var(--teal); }
+    .intro-card.call .ic-title { color: var(--line-2); }
     .intro-card.put  .ic-title { color: var(--gold); }
     .intro-card .ic-canvas { flex: 1; min-height: 140px; position: relative; }
     @media (max-width: 520px) {
@@ -603,7 +793,7 @@
     .pl-chip b { color: var(--text); font-weight: 600; }
     .pl-chip.up   { border-color: rgba(52,211,153,0.35); color: var(--success); }
     .pl-chip.down { border-color: rgba(248,113,113,0.35); color: var(--danger); }
-    .pl-chip.mid  { border-color: rgba(251,191,36,0.35);  color: var(--gold); }
+    .pl-chip.mid  { border-color: rgba(255,170,102,0.4);  color: var(--gold); }
 
     /* KPIs del ejemplo */
     .kpi-grid {
@@ -703,9 +893,9 @@
       transition: all 0.25s ease;
     }
     .btn-darkx:hover {
-      border-color: rgba(245,158,11,0.45);
+      border-color: rgba(255,80,50,0.45);
       color: var(--accent-soft);
-      background: rgba(245,158,11,0.08);
+      background: rgba(255,51,0,0.1);
       transform: translateY(-1px);
     }
     .dots { display: flex; gap: 0.4rem; }
@@ -716,9 +906,9 @@
       transition: all 0.4s ease;
     }
     .dot.active {
-      background: linear-gradient(90deg, var(--accent), var(--teal));
+      background: linear-gradient(90deg, var(--accent), var(--line-2));
       width: 42px;
-      box-shadow: 0 0 12px rgba(245,158,11,0.4);
+      box-shadow: 0 0 14px rgba(255,51,0,0.45);
     }
 
     /* Monitor “tiempo real” (última slide) */
@@ -760,12 +950,12 @@
       transition: background 0.2s ease, border-color 0.2s ease;
     }
     .live-pause-btn:hover {
-      background: rgba(245,158,11,0.12);
-      border-color: rgba(245,158,11,0.35);
+      background: rgba(255,51,0,0.12);
+      border-color: rgba(255,90,60,0.4);
     }
     .live-pause-btn[aria-pressed="true"] {
-      background: rgba(45,212,191,0.1);
-      border-color: rgba(45,212,191,0.35);
+      background: rgba(100,110,200,0.15);
+      border-color: rgba(140,155,230,0.45);
     }
     .live-tick-pills {
       display: flex;
@@ -888,11 +1078,21 @@
       padding-left: 1.1rem;
       color: #d4cdc6;
     }
+    .pro-box ul.chip-list, .con-box ul.chip-list {
+      padding-left: 0;
+      list-style: none;
+    }
     .pro-box li, .con-box li { margin: 0.2rem 0; }
+    .pro-box ul.chip-list li, .con-box ul.chip-list li { margin: 0; }
 
   </style>
 </head>
 <body>
+  <div class="cosmic-stack" aria-hidden="true">
+    <div class="cosmic-grid"></div>
+    <div class="cosmic-nebula"></div>
+    <div class="cosmic-stars"></div>
+  </div>
   <div class="lights" aria-hidden="true">
     <div class="ambient a1"></div>
     <div class="ambient a2"></div>
@@ -914,13 +1114,14 @@
     <section class="hero">
       <h1><i class="bi bi-arrow-left-right me-2"></i>Buy Straddle</h1>
       <p>
-        Comprar call y put al mismo strike: apuesta a movimiento fuerte en cualquier dirección,
-        con costo inicial c + p y dos breakevens simétricos K ± (c + p) al vencimiento.
+        Compras una call y una put al mismo precio de ejercicio: te va bien si el precio del activo
+        se mueve mucho hacia arriba o hacia abajo antes del vencimiento. Pagas dos primas y
+        buscas un salto claro del mercado para que valga la pena.
       </p>
       <div class="hero-chips">
         <span class="hero-chip"><i class="bi bi-plus-lg"></i>Call larga + put larga</span>
         <span class="hero-chip gold"><i class="bi bi-bullseye"></i>Misma K · payoffs en V</span>
-        <span class="hero-chip teal"><i class="bi bi-activity"></i>Colas abiertas · riesgo acotado al premio</span>
+        <span class="hero-chip cosmic-secondary"><i class="bi bi-activity"></i>Colas abiertas · riesgo acotado al premio</span>
       </div>
       <div class="hero-rail">
         <span class="hero-rail-label"><i class="bi bi-train-front"></i>Railway</span>
@@ -939,8 +1140,8 @@
       <svg class="circuit-decor left" viewBox="0 0 130 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <linearGradient id="circL" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="rgba(245,158,11,0.08)"/>
-            <stop offset="1" stop-color="rgba(45,212,191,0.75)"/>
+            <stop offset="0" stop-color="rgba(255,51,0,0.35)"/>
+            <stop offset="1" stop-color="rgba(120,140,220,0.75)"/>
           </linearGradient>
         </defs>
         <g fill="none" stroke="url(#circL)" stroke-width="1.1">
@@ -948,7 +1149,7 @@
           <path d="M0 120 H40  L60 140  V180 L110 200 H130"/>
           <path d="M0 70  H30  L50 90   V110 L80 130  H130"/>
         </g>
-        <g fill="rgba(251,191,36,0.95)">
+        <g fill="rgba(255,85,50,0.95)">
           <circle cx="2"  cy="20"  r="2.5"/>
           <circle cx="2"  cy="70"  r="2.5"/>
           <circle cx="2"  cy="120" r="2.5"/>
@@ -960,7 +1161,7 @@
           <path d="M0 130 H35  L55 150  V185 L100 205 H130"/>
           <path d="M0 85  H25  L45 100  V120 L75 140  H130"/>
         </g>
-        <g fill="rgba(45,212,191,0.9)">
+        <g fill="rgba(160,175,255,0.9)">
           <circle cx="2"  cy="30"  r="2.5"/>
           <circle cx="2"  cy="85"  r="2.5"/>
           <circle cx="2"  cy="130" r="2.5"/>
@@ -980,11 +1181,13 @@
 
             <div class="grid-2">
               <div>
-                <p class="anim"><strong>Idea central.</strong> {{ s.idea }}</p>
-                <div class="math-chip anim">\[ {{ s.modelo|safe }} \]</div>
-                <p class="anim" style="margin-top:0.6rem;"><strong>Lectura práctica.</strong> {{ s.enfoque }}</p>
-                <ul class="concept-list anim">
-                  {% for c in s.conceptos %}<li>{{ c }}</li>{% endfor %}
+                <p class="anim"><strong>En pocas palabras.</strong> {{ s.idea }}</p>
+                <div class="insight-strip anim">{{ s.dato_clave }}</div>
+                <p class="anim" style="margin-top:0.6rem;"><strong>Qué mirar en la práctica.</strong> {{ s.enfoque }}</p>
+                <ul class="concept-list" aria-label="Puntos clave">
+                  {% for c in s.conceptos %}
+                  <li class="concept-chip" style="--i: {{ forloop.counter0 }}">{{ c }}</li>
+                  {% endfor %}
                 </ul>
               </div>
 
@@ -994,7 +1197,7 @@
                     {% if s.demo == 'straddle_live' %}
                     <i class="bi bi-broadcast me-1"></i>Monitor simulado
                     {% else %}
-                    <i class="bi bi-bar-chart-line me-1"></i>Payoff al vencimiento
+                    <i class="bi bi-bar-chart-line me-1"></i>Gráfico al vencimiento
                     {% endif %}
                   </span>
                   <span class="dots3"><span></span><span></span><span></span></span>
@@ -1086,14 +1289,18 @@
                 <div class="pro-con-grid">
                   <div class="pro-box">
                     <h4><i class="bi bi-check-circle me-1"></i>Ventajas</h4>
-                    <ul>
-                      {% for v in s.ventajas %}<li>{{ v }}</li>{% endfor %}
+                    <ul class="chip-list">
+                      {% for v in s.ventajas %}
+                      <li class="pro-chip" style="--i: {{ forloop.counter0 }}">{{ v }}</li>
+                      {% endfor %}
                     </ul>
                   </div>
                   <div class="con-box">
                     <h4><i class="bi bi-x-circle me-1"></i>Desventajas</h4>
-                    <ul>
-                      {% for v in s.desventajas %}<li>{{ v }}</li>{% endfor %}
+                    <ul class="chip-list">
+                      {% for v in s.desventajas %}
+                      <li class="con-chip" style="--i: {{ forloop.counter0 }}">{{ v }}</li>
+                      {% endfor %}
                     </ul>
                   </div>
                 </div>
@@ -1110,7 +1317,7 @@
                   <div class="live-tick-pills" aria-hidden="true">
                     <span class="live-tick-pill on">Tick 10s</span>
                     <span class="live-tick-pill">Spot simulado</span>
-                    <span class="live-tick-pill">Π al vencimiento (vista)</span>
+                    <span class="live-tick-pill">Resultado al vencimiento</span>
                   </div>
                   <div class="live-kpi-row">
                     <div class="live-kpi">
@@ -1122,11 +1329,11 @@
                       <span class="live-kpi-v" id="livePremVal">—</span>
                     </div>
                     <div class="live-kpi">
-                      <span class="live-kpi-l">Π comprador (a ese S)</span>
+                      <span class="live-kpi-l">Resultado comprador (a ese precio)</span>
                       <span class="live-kpi-v" id="livePiVal">—</span>
                     </div>
                     <div class="live-kpi">
-                      <span class="live-kpi-l">Dist. al BEP más cercano</span>
+                      <span class="live-kpi-l">Distancia al equilibrio más cercano</span>
                       <span class="live-kpi-v" id="liveBepVal">—</span>
                     </div>
                   </div>
@@ -1186,7 +1393,7 @@
       return {
         label: (labelExtra != null ? labelExtra : 'Ref'),
         data: [{ x, y: y0 }, { x, y: y1 }],
-        borderColor: 'rgba(251,191,36,0.75)',
+        borderColor: 'rgba(255,100,80,0.65)',
         borderDash: [4, 4],
         borderWidth: 1.3,
         pointRadius: 0,
@@ -1267,7 +1474,7 @@
           tooltip: {
             callbacks: {
               label: (ctx) => ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(2),
-              title: (items) => 'ST = $' + items[0].parsed.x.toFixed(2),
+              title: (items) => 'Precio = $' + items[0].parsed.x.toFixed(2),
             },
           },
         },
@@ -1277,7 +1484,7 @@
             min: minX, max: maxX,
             grid: { color: 'rgba(148, 163, 184, 0.08)' },
             ticks: { color: '#a39d98', font: { size: 10 } },
-            title: { display: true, text: 'Precio del subyacente al vencimiento (ST)',
+            title: { display: true, text: 'Precio final del activo ($)',
                      color: '#a39d98', font: { size: 10 } },
           },
           y: {
@@ -1285,7 +1492,7 @@
             grid: { color: (ctx) => (ctx.tick.value === 0 ? 'rgba(255,255,255,0.35)' : 'rgba(148, 163, 184, 0.08)') },
             ticks: { color: '#a39d98', font: { size: 10 },
                      callback: (v) => (v >= 0 ? '+' : '') + '$' + v },
-            title: { display: true, text: title || 'Payoff (Π)',
+            title: { display: true, text: title || 'Resultado ($)',
                      color: '#a39d98', font: { size: 10 } },
           },
         },
@@ -1307,15 +1514,15 @@
           datasets: [{
             label: 'Buy straddle (intuición)',
             data: comb,
-            borderColor: 'rgba(245,158,11,1)',
-            backgroundColor: 'rgba(245,158,11,0.12)',
+            borderColor: 'rgba(255,68,38,1)',
+            backgroundColor: 'rgba(255,68,38,0.12)',
             borderWidth: 2.4,
             tension: 0,
             pointRadius: 0,
-            fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.12)', below: 'rgba(251,113,133,0.18)' },
+            fill: { target: { value: 0 }, above: 'rgba(123,143,217,0.14)', below: 'rgba(255,80,100,0.2)' },
           }],
         },
-        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff al vencimiento' }),
+        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Resultado al vencimiento ($)' }),
       });
       chartCache.set(canvas, chart);
     }
@@ -1336,9 +1543,9 @@
           datasets: [{
             label: 'Call · compra (paga c)',
             data: callData,
-            borderColor: 'rgba(45,212,191,1)',
-            backgroundColor: 'rgba(45,212,191,0.12)',
-            fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.14)', below: 'rgba(251,113,133,0.12)' },
+            borderColor: 'rgba(130,150,235,1)',
+            backgroundColor: 'rgba(130,150,235,0.12)',
+            fill: { target: { value: 0 }, above: 'rgba(130,150,235,0.16)', below: 'rgba(255,90,110,0.14)' },
             borderWidth: 2, pointRadius: 0, tension: 0.05,
           }],
         },
@@ -1352,9 +1559,9 @@
           datasets: [{
             label: 'Put · compra (paga p)',
             data: putData,
-            borderColor: 'rgba(251,191,36,1)',
-            backgroundColor: 'rgba(251,191,36,0.12)',
-            fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.12)', below: 'rgba(251,113,133,0.12)' },
+            borderColor: 'rgba(255,170,102,1)',
+            backgroundColor: 'rgba(255,170,102,0.12)',
+            fill: { target: { value: 0 }, above: 'rgba(130,150,235,0.12)', below: 'rgba(255,90,110,0.12)' },
             borderWidth: 2, pointRadius: 0, tension: 0.05,
           }],
         },
@@ -1391,7 +1598,7 @@
             {
               label: 'Comprador straddle',
               data: buyer,
-              borderColor: 'rgba(245,158,11,1)',
+              borderColor: 'rgba(255,68,38,1)',
               borderWidth: 2.4,
               tension: 0,
               pointRadius: 0,
@@ -1400,7 +1607,7 @@
             {
               label: 'Vendedor call',
               data: wCall,
-              borderColor: 'rgba(45,212,191,0.85)',
+              borderColor: 'rgba(130,150,235,0.9)',
               borderDash: [6, 4],
               borderWidth: 2,
               tension: 0,
@@ -1410,7 +1617,7 @@
             {
               label: 'Vendedor put',
               data: wPut,
-              borderColor: 'rgba(251,191,36,0.85)',
+              borderColor: 'rgba(255,170,102,0.88)',
               borderDash: [4, 4],
               borderWidth: 2,
               tension: 0,
@@ -1419,7 +1626,7 @@
             },
           ],
         },
-        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'P&L al vencimiento' }),
+        options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Ganancia o pérdida al vencer ($)' }),
       });
       chartCache.set(canvas, chart);
     }
@@ -1446,25 +1653,25 @@
             {
               label: 'Call largo (K)',
               data: legC,
-              borderColor: 'rgba(45,212,191,0.75)',
+              borderColor: 'rgba(130,150,235,0.8)',
               borderDash: [6, 4], borderWidth: 1.5,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Put largo (K)',
               data: legP,
-              borderColor: 'rgba(251,191,36,0.7)',
+              borderColor: 'rgba(255,170,102,0.75)',
               borderDash: [4, 3], borderWidth: 1.5,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Straddle (resultado)',
               data: comb,
-              borderColor: 'rgba(245,158,11,1)',
-              backgroundColor: 'rgba(245,158,11,0.08)',
+              borderColor: 'rgba(255,68,38,1)',
+              backgroundColor: 'rgba(255,68,38,0.08)',
               borderWidth: 2.8,
               pointRadius: 0, tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(45,212,191,0.1)', below: 'rgba(251,113,133,0.16)' },
+              fill: { target: { value: 0 }, above: 'rgba(130,150,235,0.12)', below: 'rgba(255,80,100,0.18)' },
             },
             vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
             vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
@@ -1472,7 +1679,7 @@
         },
         options: basePayoffOptions({
           minX: lo, maxX: hi, minY: yMin, maxY: yMax,
-          title: 'Payoff al vencimiento',
+          title: 'Resultado al vencimiento ($)',
         }),
       });
       chartCache.set(canvas, chart);
@@ -1504,7 +1711,7 @@
     }
 
     function liveChartOptions(yMin, yMax, xMax) {
-      const o = basePayoffOptions({ minX: 0, maxX: Math.max(4, xMax), minY: yMin, maxY: yMax, title: 'Π ($)' });
+      const o = basePayoffOptions({ minX: 0, maxX: Math.max(4, xMax), minY: yMin, maxY: yMax, title: 'Ganancia o pérdida ($)' });
       o.animation = { duration: 650, easing: 'easeOutCubic' };
       o.scales.x.title.text = 'Tiempo (ticks de 10 s)';
       o.plugins.tooltip.callbacks.title = (items) => 'Tick ' + items[0].parsed.x;
@@ -1604,21 +1811,21 @@
         data: {
           datasets: [
             {
-              label: 'Π straddle (al spot sim.)',
+              label: 'Straddle (precio simulado)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piS })),
-              borderColor: 'rgba(245,158,11,1)',
-              backgroundColor: 'rgba(245,158,11,0.1)',
+              borderColor: 'rgba(255,68,38,1)',
+              backgroundColor: 'rgba(255,68,38,0.1)',
               borderWidth: 2.4,
               tension: 0.25,
               pointRadius: 4,
-              pointBackgroundColor: '#fafafa',
-              pointBorderColor: 'rgba(245,158,11,1)',
-              fill: { target: { value: 0 }, above: 'rgba(245,158,11,0.14)', below: 'rgba(251,113,133,0.12)' },
+              pointBackgroundColor: '#f4f4f8',
+              pointBorderColor: 'rgba(255,68,38,1)',
+              fill: { target: { value: 0 }, above: 'rgba(255,68,38,0.16)', below: 'rgba(255,80,100,0.12)' },
             },
             {
               label: 'Solo call (referencia)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piC })),
-              borderColor: 'rgba(45,212,191,0.85)',
+              borderColor: 'rgba(130,150,235,0.88)',
               borderDash: [6, 4],
               borderWidth: 1.8,
               tension: 0.2,
