@@ -1332,8 +1332,8 @@ def expo_sinteticos_view(request):
             'titulo': 'Las dos patas y el resultado junto',
             'idea': (
                 'En el gráfico grande ves tres historias al vencimiento: la call sola (línea punteada '
-                'más “turquesa”), la put sola (punteada más ámbar) y la mezcla, el straddle, como '
-                'línea naranja sólida con relleno. Las rayitas verticales marcan dónde empatas con lo '
+                'violeta), la put sola (punteada en tono cálido) y la mezcla, el straddle, como '
+                'línea roja sólida con relleno. Las rayitas verticales marcan dónde empatas con lo '
                 'que pagaste (en el ejemplo, alrededor de 92 y 108).'
             ),
             'dato_clave': (
@@ -1347,7 +1347,7 @@ def expo_sinteticos_view(request):
             ),
             'conceptos': [
                 'Punteadas: cómo se ve cada opción por su cuenta al vencer.',
-                'Naranja continua: posición combinada (el straddle) que es la que ves como “sintético”.',
+                'Línea roja continua: posición combinada (el straddle), la que ves como “sintético”.',
                 'Verticales: puntos de equilibrio aproximados respecto a las primas del ejemplo.',
             ],
             'demo': 'straddle_legs_vs_result',
@@ -1364,8 +1364,8 @@ def expo_sinteticos_view(request):
                 'Puedes pausar el reloj con el botón y leer con calma; al reanudar, vuelve el tick cada 10 s.'
             ),
             'enfoque': (
-                'La línea naranja sigue la ganancia o pérdida del straddle al precio simulado; la turquesa '
-                'punteada muestra solo la call, para que compares una pata contra el conjunto.'
+                'La línea roja sigue la ganancia o pérdida del straddle al precio simulado; la línea '
+                'violeta punteada muestra solo la call, para que compares una pata contra el conjunto.'
             ),
             'conceptos': [
                 'Los números de arriba cambian con el precio simulado: spot, primas totales, resultado y distancia al equilibrio.',
