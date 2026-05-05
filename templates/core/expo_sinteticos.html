@@ -300,6 +300,9 @@
       animation: shellOrbit 16s ease-in-out infinite alternate;
     }
     .slides-shell > * { position: relative; z-index: 1; }
+    .slides-shell:has(.slide.active[data-demo="straddle_formulas"]) {
+      overflow: visible;
+    }
     @keyframes shellOrbit {
       0%   { transform: translate(0%, 0%)   scale(1); }
       50%  { transform: translate(40%, 10%) scale(1.15); }
@@ -788,6 +791,14 @@
       .slide.active .concept-list .concept-chip {
         border-color: rgba(255,255,255,0.1);
       }
+    }
+
+    .slide.active[data-demo="straddle_formulas"] {
+      overflow: visible;
+      z-index: 3;
+    }
+    .slide[data-demo="straddle_formulas"] .mini-demo {
+      overflow: visible;
     }
 
     /* ---------- MINI DEMO ---------- */
@@ -1297,8 +1308,9 @@
     .straddle-table-wrap {
       flex: 1;
       min-height: 0;
-      overflow: auto;
+      overflow: visible;
       padding: 0.15rem 0.1rem 0.35rem;
+      position: relative;
     }
     .straddle-summary-table {
       width: 100%;
@@ -1311,6 +1323,7 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       vertical-align: middle;
       text-align: left;
+      overflow: visible;
     }
     .straddle-summary-table th {
       color: var(--muted);
@@ -1327,42 +1340,79 @@
       display: block;
       position: relative;
       opacity: 0;
-      transform: translateY(14px) scale(0.98);
-      filter: blur(10px);
-      clip-path: inset(0 100% 0 0);
-      will-change: transform, opacity, filter, clip-path;
+      visibility: hidden;
+      transform-origin: center center;
+      min-height: 1.35em;
+      z-index: 1;
     }
     .straddle-val-wrap.is-revealed {
-      animation-duration: 0.88s;
-      animation-timing-function: cubic-bezier(.22, 1, .36, 1);
-      animation-fill-mode: forwards;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      filter: none;
     }
-    .straddle-val-wrap[data-reveal="wipe"].is-revealed { animation-name: straddleRevealWipe; }
-    .straddle-val-wrap[data-reveal="rise"].is-revealed { animation-name: straddleRevealRise; }
-    .straddle-val-wrap[data-reveal="glow"].is-revealed { animation-name: straddleRevealGlow; }
-    @keyframes straddleRevealWipe {
-      0%   { opacity: 0; transform: translateX(-8px) scale(0.99); filter: blur(10px); clip-path: inset(0 100% 0 0); }
-      55%  { opacity: 1; filter: blur(0); clip-path: inset(0 0% 0 0); }
-      100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); clip-path: inset(0 0% 0 0); }
+    /* Chispa / reflejo mientras está en el centro */
+    .straddle-val-wrap.straddle-shimmer {
+      z-index: 8;
     }
-    @keyframes straddleRevealRise {
-      0%   { opacity: 0; transform: translateY(22px) scale(0.94) rotate(-0.5deg); filter: blur(12px); clip-path: inset(100% 0 0 0); }
-      70%  { opacity: 1; filter: blur(0); clip-path: inset(0 0 0 0); }
-      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); filter: blur(0); clip-path: inset(0 0 0 0); }
+    .straddle-val-wrap.straddle-shimmer::before {
+      content: "";
+      position: absolute;
+      inset: -6px -10px;
+      border-radius: 10px;
+      pointer-events: none;
+      background: linear-gradient(
+        115deg,
+        transparent 0%,
+        transparent 38%,
+        rgba(255, 235, 200, 0.15) 44%,
+        rgba(255, 255, 255, 0.55) 49.5%,
+        rgba(255, 120, 60, 0.45) 50.5%,
+        rgba(255, 200, 140, 0.2) 56%,
+        transparent 62%,
+        transparent 100%
+      );
+      background-size: 220% 100%;
+      background-position: 130% 0;
+      animation: straddleLightStreak 1.05s cubic-bezier(.25, .9, .35, 1) forwards;
+      mix-blend-mode: screen;
+      opacity: 0.95;
     }
-    @keyframes straddleRevealGlow {
-      0%   { opacity: 0; transform: scale(0.96); filter: blur(8px) brightness(1.35); clip-path: inset(0 50% 0 50%); }
-      40%  { opacity: 1; filter: blur(2px) brightness(1.08); clip-path: inset(0 8% 0 8%); }
-      100% { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); clip-path: inset(0 0 0 0); }
+    .straddle-val-wrap.straddle-shimmer::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 8px;
+      pointer-events: none;
+      box-shadow:
+        0 0 22px 2px rgba(255, 100, 50, 0.35),
+        0 0 48px 8px rgba(255, 180, 120, 0.2),
+        inset 0 0 20px rgba(255, 240, 220, 0.12);
+      animation: straddleAuraPulse 1s ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes straddleLightStreak {
+      0%   { background-position: 130% 0; opacity: 0; }
+      12%  { opacity: 1; }
+      100% { background-position: -30% 0; opacity: 0.25; }
+    }
+    @keyframes straddleAuraPulse {
+      0%   { opacity: 0; transform: scale(0.92); }
+      35%  { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.05); }
     }
     .straddle-summary-table .katex { font-size: 0.92em; color: #faf6f2; }
     @media (prefers-reduced-motion: reduce) {
       .straddle-val-wrap {
         opacity: 1 !important;
+        visibility: visible !important;
         transform: none !important;
         filter: none !important;
-        clip-path: none !important;
         animation: none !important;
+      }
+      .straddle-val-wrap.straddle-shimmer::before,
+      .straddle-val-wrap.straddle-shimmer::after {
+        display: none !important;
       }
     }
 
@@ -1713,41 +1763,150 @@
     let idx = 0;
     let animating = false;
 
-    const straddleFormulasTimersBySlide = new WeakMap();
-    const STRADDLE_FORMULAS_STEP_MS = 1500;
-    const STRADDLE_FORMULAS_BASE_MS = 380;
+    const STRADDLE_FORMULAS_BASE_MS = 420;
+    const STRADDLE_FORMULAS_GAP_MS = 1500;
 
     function resetStraddleFormulasSlide(slideEl) {
       if (!slideEl || slideEl.dataset.demo !== 'straddle_formulas') return;
-      const pending = straddleFormulasTimersBySlide.get(slideEl);
-      if (pending) {
-        pending.forEach((id) => clearTimeout(id));
-        straddleFormulasTimersBySlide.delete(slideEl);
-      }
+      slideEl._straddleFlyToken = (slideEl._straddleFlyToken || 0) + 1;
       slideEl.querySelectorAll('.straddle-val-wrap').forEach((el) => {
-        el.classList.remove('is-revealed');
-        el.style.animation = 'none';
-        void el.offsetWidth;
-        el.style.removeProperty('animation');
+        el.classList.remove('is-revealed', 'straddle-shimmer');
+        el.style.cssText = '';
       });
     }
 
-    function startStraddleFormulasSequence(slideEl) {
+    function flyStraddleRow(el, slideEl, runToken) {
+      return new Promise((resolve) => {
+        if (slideEl._straddleFlyToken !== runToken) {
+          resolve();
+          return;
+        }
+        const arena = el.closest('.straddle-table-wrap');
+        if (!arena) {
+          el.classList.add('is-revealed');
+          resolve();
+          return;
+        }
+
+        const run = () => {
+          if (slideEl._straddleFlyToken !== runToken) {
+            resolve();
+            return;
+          }
+          const arenaRect = arena.getBoundingClientRect();
+          if (arenaRect.width < 2 || arenaRect.height < 2) {
+            el.classList.add('is-revealed');
+            resolve();
+            return;
+          }
+          const cx = arenaRect.left + arenaRect.width / 2;
+          const cy = arenaRect.top + arenaRect.height / 2;
+          const BIG = 1.48;
+
+          el.style.visibility = 'visible';
+          el.style.transition = 'none';
+          el.classList.add('straddle-shimmer');
+
+          let first = el.getBoundingClientRect();
+          if ((first.width < 2 || first.height < 2) && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+              delimiters: [
+                { left: '\\[', right: '\\]', display: true },
+                { left: '\\(', right: '\\)', display: false },
+              ],
+              throwOnError: false,
+            });
+            first = el.getBoundingClientRect();
+          }
+          if (first.width < 2 || first.height < 2) {
+            el.classList.remove('straddle-shimmer');
+            el.classList.add('is-revealed');
+            el.style.cssText = '';
+            resolve();
+            return;
+          }
+
+          const dx = cx - (first.left + first.width / 2);
+          const dy = cy - (first.top + first.height / 2);
+
+          el.style.opacity = '0';
+          el.style.transformOrigin = 'center center';
+          el.style.transform = `translate(${dx}px, ${dy}px) scale(0.76)`;
+          void el.offsetWidth;
+
+          window.setTimeout(() => {
+            if (slideEl._straddleFlyToken !== runToken) {
+              el.classList.remove('straddle-shimmer');
+              el.style.cssText = '';
+              resolve();
+              return;
+            }
+            el.style.transition = 'opacity 0.4s ease, transform 0.58s cubic-bezier(.34, 1.42, .52, 1), filter 0.5s ease';
+            el.style.opacity = '1';
+            el.style.filter = 'drop-shadow(0 0 22px rgba(255, 130, 70, 0.6)) drop-shadow(0 0 48px rgba(180, 190, 255, 0.2))';
+            el.style.transform = `translate(${dx}px, ${dy}px) scale(${BIG})`;
+          }, 36);
+
+          window.setTimeout(() => {
+            if (slideEl._straddleFlyToken !== runToken) {
+              el.classList.remove('straddle-shimmer');
+              el.style.cssText = '';
+              resolve();
+              return;
+            }
+            el.style.transition = 'transform 1.02s cubic-bezier(.2, 1, .36, 1), filter 0.8s ease';
+            el.style.filter = 'none';
+            el.style.transform = 'translate(0px, 0px) scale(1)';
+
+            let finished = false;
+            const finishReveal = () => {
+              if (finished) return;
+              finished = true;
+              el.removeEventListener('transitionend', onEnd);
+              window.clearTimeout(failSafe);
+              if (slideEl._straddleFlyToken !== runToken) {
+                el.style.cssText = '';
+                resolve();
+                return;
+              }
+              el.classList.remove('straddle-shimmer');
+              el.classList.add('is-revealed');
+              el.style.cssText = '';
+              resolve();
+            };
+            const onEnd = (e) => {
+              if (e.propertyName !== 'transform') return;
+              finishReveal();
+            };
+            el.addEventListener('transitionend', onEnd);
+            const failSafe = window.setTimeout(finishReveal, 1300);
+          }, 640);
+        };
+
+        requestAnimationFrame(() => requestAnimationFrame(run));
+      });
+    }
+
+    async function startStraddleFormulasSequence(slideEl) {
       if (!slideEl || slideEl.dataset.demo !== 'straddle_formulas') return;
       resetStraddleFormulasSlide(slideEl);
+      const runToken = slideEl._straddleFlyToken;
       const cells = Array.from(slideEl.querySelectorAll('.straddle-val-wrap[data-straddle-row]'));
       if (!cells.length) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        cells.forEach((el) => el.classList.add('is-revealed'));
+        cells.forEach((cel) => cel.classList.add('is-revealed'));
         return;
       }
-      const ids = [];
-      cells.forEach((el, i) => {
-        ids.push(window.setTimeout(() => {
-          el.classList.add('is-revealed');
-        }, STRADDLE_FORMULAS_BASE_MS + i * STRADDLE_FORMULAS_STEP_MS));
-      });
-      straddleFormulasTimersBySlide.set(slideEl, ids);
+
+      await new Promise((r) => setTimeout(r, STRADDLE_FORMULAS_BASE_MS));
+      for (let i = 0; i < cells.length; i++) {
+        if (slideEl._straddleFlyToken !== runToken) return;
+        await flyStraddleRow(cells[i], slideEl, runToken);
+        if (slideEl._straddleFlyToken !== runToken) return;
+        if (i < cells.length - 1) {
+          await new Promise((r) => setTimeout(r, STRADDLE_FORMULAS_GAP_MS));
+        }
+      }
     }
 
     function go(next) {
