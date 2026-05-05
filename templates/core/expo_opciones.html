@@ -381,6 +381,7 @@
     .slide.active[data-demo="bear_payoff"]  .mini-demo { animation: introBear        2.2s cubic-bezier(.22,.1,.25,1) both; }
     .slide.active[data-demo="bear_ejemplo"] .mini-demo { animation: introExample     2.1s cubic-bezier(.5,0,.1,1)    both; }
     .slide.active[data-demo="comparativa"]  .mini-demo { animation: introCompare     2.3s cubic-bezier(.2,.8,.2,1)   both; }
+    .slide.active[data-demo="long_straddle"] .mini-demo { animation: introExample     2.1s cubic-bezier(.5,0,.1,1)    both; }
 
     @keyframes introIntro {
       0%   { opacity: 0; transform: scale(1.2) translateY(-6%); filter: blur(16px); }
@@ -630,6 +631,85 @@
     .cmp-col-bull { color: var(--accent-soft); }
     .cmp-col-bear { color: var(--gold); }
 
+    /* ---------- Long Straddle · tabla con revelado secuencial ---------- */
+    .straddle-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 0.15rem 0.1rem 0.35rem;
+    }
+    .straddle-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    .straddle-summary-table th,
+    .straddle-summary-table td {
+      padding: 0.42rem 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: middle;
+      text-align: left;
+    }
+    .straddle-summary-table th {
+      color: var(--muted);
+      font-weight: 600;
+      width: 38%;
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+    }
+    .straddle-summary-table td {
+      color: #e8e4df;
+      font-family: "Cambria Math","Latin Modern Math","Segoe UI",serif;
+    }
+    .straddle-val-wrap {
+      display: block;
+      position: relative;
+      opacity: 0;
+      transform: translateY(14px) scale(0.98);
+      filter: blur(10px);
+      clip-path: inset(0 100% 0 0);
+      will-change: transform, opacity, filter, clip-path;
+    }
+    .straddle-val-wrap.is-revealed {
+      animation-duration: 0.88s;
+      animation-timing-function: cubic-bezier(.22,1,.36,1);
+      animation-fill-mode: forwards;
+    }
+    .straddle-val-wrap[data-reveal="wipe"].is-revealed {
+      animation-name: straddleRevealWipe;
+    }
+    .straddle-val-wrap[data-reveal="rise"].is-revealed {
+      animation-name: straddleRevealRise;
+    }
+    .straddle-val-wrap[data-reveal="glow"].is-revealed {
+      animation-name: straddleRevealGlow;
+    }
+    @keyframes straddleRevealWipe {
+      0%   { opacity: 0; transform: translateX(-8px) scale(0.99); filter: blur(10px); clip-path: inset(0 100% 0 0); }
+      55%  { opacity: 1; filter: blur(0); clip-path: inset(0 0% 0 0); }
+      100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); clip-path: inset(0 0% 0 0); }
+    }
+    @keyframes straddleRevealRise {
+      0%   { opacity: 0; transform: translateY(22px) scale(0.94) rotate(-0.5deg); filter: blur(12px); clip-path: inset(100% 0 0 0); }
+      70%  { opacity: 1; filter: blur(0); clip-path: inset(0 0 0 0); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); filter: blur(0); clip-path: inset(0 0 0 0); }
+    }
+    @keyframes straddleRevealGlow {
+      0%   { opacity: 0; transform: scale(0.96); filter: blur(8px) brightness(1.35); clip-path: inset(0 50% 0 50%); }
+      40%  { opacity: 1; filter: blur(2px) brightness(1.08); clip-path: inset(0 8% 0 8%); }
+      100% { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); clip-path: inset(0 0 0 0); }
+    }
+    .straddle-summary-table .katex { font-size: 0.95em; color: #f6efe8; }
+    @media (prefers-reduced-motion: reduce) {
+      .straddle-val-wrap {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        clip-path: none !important;
+        animation: none !important;
+      }
+    }
+
     /* ---------- CONTROLS ---------- */
     .controls {
       display: flex;
@@ -706,7 +786,7 @@
 
     <div class="section-title">
       <span class="badge-pill">Slides</span>
-      <span>Recorrido conceptual en 6 pasos</span>
+      <span>Recorrido conceptual en 7 pasos</span>
     </div>
 
     <div class="slides-section">
@@ -764,11 +844,52 @@
 
               <div class="mini-demo">
                 <div class="demo-head">
-                  <span><i class="bi bi-bar-chart-line me-1"></i>Payoff al vencimiento</span>
+                  <span>
+                    {% if s.demo == 'long_straddle' %}
+                    <i class="bi bi-table me-1"></i>Long Straddle · fórmulas clave
+                    {% else %}
+                    <i class="bi bi-bar-chart-line me-1"></i>Payoff al vencimiento
+                    {% endif %}
+                  </span>
                   <span class="dots3"><span></span><span></span><span></span></span>
                 </div>
 
-                {% if s.demo == 'intro' %}
+                {% if s.demo == 'long_straddle' %}
+                <div class="straddle-table-wrap" data-straddle-root>
+                  <table class="straddle-summary-table">
+                    <tbody>
+                      <tr>
+                        <th scope="row">Costo</th>
+                        <td><span class="straddle-val-wrap" data-reveal="wipe" data-straddle-row>\( \text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}} \)</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Ganancia máxima (al alza)</th>
+                        <td><span class="straddle-val-wrap" data-reveal="rise" data-straddle-row>Ilimitada</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Ganancia máxima (a la baja)</th>
+                        <td><span class="straddle-val-wrap" data-reveal="glow" data-straddle-row>Limitada pero alta \(\;\rightarrow\;\) \( K - (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Pérdida máxima</th>
+                        <td><span class="straddle-val-wrap" data-reveal="wipe" data-straddle-row>\( \text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}} \) cuando \( S_T = K \)</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Break-even superior</th>
+                        <td><span class="straddle-val-wrap" data-reveal="rise" data-straddle-row>\( K + (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Break-even inferior</th>
+                        <td><span class="straddle-val-wrap" data-reveal="glow" data-straddle-row>\( K - (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Strike price (K)</th>
+                        <td><span class="straddle-val-wrap" data-reveal="wipe" data-straddle-row>Usualmente at-the-money \(\approx\) precio actual del subyacente</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                {% elif s.demo == 'intro' %}
                 <div class="intro-grid">
                   <div class="intro-card call">
                     <div class="ic-title"><i class="bi bi-arrow-up"></i>Call largo</div>
@@ -959,10 +1080,51 @@
     let idx = 0;
     let animating = false;
 
+    const straddleTimersBySlide = new WeakMap();
+    const STRADDLE_STEP_MS = 1500;
+    const STRADDLE_BASE_MS = 380;
+
+    function resetLongStraddle(slideEl) {
+      if (!slideEl || slideEl.dataset.demo !== 'long_straddle') return;
+      const pending = straddleTimersBySlide.get(slideEl);
+      if (pending) {
+        pending.forEach((id) => clearTimeout(id));
+        straddleTimersBySlide.delete(slideEl);
+      }
+      slideEl.querySelectorAll('.straddle-val-wrap').forEach((el) => {
+        el.classList.remove('is-revealed');
+        el.style.animation = 'none';
+        void el.offsetWidth;
+        el.style.removeProperty('animation');
+      });
+    }
+
+    function startLongStraddle(slideEl) {
+      if (!slideEl || slideEl.dataset.demo !== 'long_straddle') return;
+      resetLongStraddle(slideEl);
+      const cells = Array.from(slideEl.querySelectorAll('.straddle-val-wrap[data-straddle-row]'));
+      if (!cells.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        cells.forEach((el) => el.classList.add('is-revealed'));
+        return;
+      }
+      const ids = [];
+      cells.forEach((el, i) => {
+        ids.push(window.setTimeout(() => {
+          el.classList.add('is-revealed');
+        }, STRADDLE_BASE_MS + i * STRADDLE_STEP_MS));
+      });
+      straddleTimersBySlide.set(slideEl, ids);
+    }
+
     function go(next) {
       if (animating) return;
       const target = (next + slides.length) % slides.length;
       if (target === idx) return;
+      const currentLeaving = slides[idx];
+      if (currentLeaving && currentLeaving.dataset.demo === 'long_straddle') {
+        resetLongStraddle(currentLeaving);
+      }
       animating = true;
       let direction = target > idx ? 1 : -1;
       if (idx === slides.length - 1 && target === 0) direction = 1;
@@ -1326,6 +1488,7 @@
       if (demo === 'bear_payoff')   activateBearPayoff(slideEl);
       if (demo === 'bear_ejemplo')  activateBearEjemplo(slideEl);
       if (demo === 'comparativa')   activateComparativa(slideEl);
+      if (demo === 'long_straddle') startLongStraddle(slideEl);
     }
 
     window.addEventListener('load', () => {
