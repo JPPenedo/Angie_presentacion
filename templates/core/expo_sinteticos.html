@@ -1312,106 +1312,116 @@
       padding: 0.15rem 0.1rem 0.35rem;
       position: relative;
     }
-    .straddle-summary-table {
+    .straddle-summary-table--grid {
+      display: flex;
+      flex-direction: column;
       width: 100%;
-      border-collapse: collapse;
       font-size: 0.74rem;
     }
-    .straddle-summary-table th,
-    .straddle-summary-table td {
+    .straddle-formula-row {
+      display: grid;
+      grid-template-columns: minmax(100px, 38%) 1fr;
+      gap: 0.45rem 0.55rem;
+      align-items: center;
       padding: 0.38rem 0.45rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      vertical-align: middle;
-      text-align: left;
-      overflow: visible;
-    }
-    .straddle-summary-table th {
-      color: var(--muted);
-      font-weight: 600;
-      width: 38%;
-      font-size: 0.68rem;
-      letter-spacing: 0.02em;
-    }
-    .straddle-summary-table td {
-      color: #ececec;
-      font-family: "Inter", "Cambria Math", "Latin Modern Math", "Segoe UI", serif;
-    }
-    .straddle-val-wrap {
-      display: block;
       position: relative;
       opacity: 0;
       visibility: hidden;
       transform-origin: center center;
-      min-height: 1.35em;
+      min-height: 2rem;
       z-index: 1;
+      will-change: auto;
     }
-    .straddle-val-wrap.is-revealed {
+    .straddle-formula-row.is-revealed {
       opacity: 1;
       visibility: visible;
       transform: none;
       filter: none;
     }
-    /* Chispa / reflejo mientras está en el centro */
-    .straddle-val-wrap.straddle-shimmer {
+    .straddle-formula-row.straddle-fly-active {
+      will-change: transform, opacity, filter;
+    }
+    .straddle-formula-label {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.68rem;
+      letter-spacing: 0.02em;
+      line-height: 1.35;
+    }
+    .straddle-formula-value {
+      color: #ececec;
+      font-family: "Inter", "Cambria Math", "Latin Modern Math", "Segoe UI", serif;
+      line-height: 1.4;
+    }
+    .straddle-formula-row.straddle-shimmer {
       z-index: 8;
     }
-    .straddle-val-wrap.straddle-shimmer::before {
+    .straddle-formula-row.straddle-shimmer::before {
       content: "";
       position: absolute;
-      inset: -6px -10px;
-      border-radius: 10px;
+      inset: -8px -12px;
+      border-radius: 12px;
       pointer-events: none;
       background: linear-gradient(
-        115deg,
+        118deg,
         transparent 0%,
-        transparent 38%,
-        rgba(255, 235, 200, 0.15) 44%,
-        rgba(255, 255, 255, 0.55) 49.5%,
-        rgba(255, 120, 60, 0.45) 50.5%,
-        rgba(255, 200, 140, 0.2) 56%,
-        transparent 62%,
+        transparent 36%,
+        rgba(255, 235, 200, 0.12) 42%,
+        rgba(255, 255, 255, 0.5) 49%,
+        rgba(255, 110, 55, 0.42) 51%,
+        rgba(255, 200, 140, 0.16) 58%,
+        transparent 64%,
         transparent 100%
       );
-      background-size: 220% 100%;
-      background-position: 130% 0;
-      animation: straddleLightStreak 1.05s cubic-bezier(.25, .9, .35, 1) forwards;
+      background-size: 240% 100%;
+      background-position: 125% 0;
+      animation: straddleLightStreak 1.12s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       mix-blend-mode: screen;
-      opacity: 0.95;
+      opacity: 0.92;
     }
-    .straddle-val-wrap.straddle-shimmer::after {
+    .straddle-formula-row.straddle-shimmer::after {
       content: "";
       position: absolute;
-      inset: -2px;
-      border-radius: 8px;
+      inset: -3px;
+      border-radius: 10px;
       pointer-events: none;
       box-shadow:
-        0 0 22px 2px rgba(255, 100, 50, 0.35),
-        0 0 48px 8px rgba(255, 180, 120, 0.2),
-        inset 0 0 20px rgba(255, 240, 220, 0.12);
-      animation: straddleAuraPulse 1s ease-out forwards;
+        0 0 26px 3px rgba(255, 100, 50, 0.32),
+        0 0 56px 12px rgba(255, 160, 100, 0.14),
+        inset 0 0 22px rgba(255, 240, 220, 0.1);
+      animation: straddleAuraPulse 1.05s cubic-bezier(0.33, 1, 0.68, 1) forwards;
       opacity: 0;
     }
     @keyframes straddleLightStreak {
-      0%   { background-position: 130% 0; opacity: 0; }
-      12%  { opacity: 1; }
-      100% { background-position: -30% 0; opacity: 0.25; }
+      0%   { background-position: 125% 0; opacity: 0; }
+      18%  { opacity: 1; }
+      100% { background-position: -28% 0; opacity: 0.2; }
     }
     @keyframes straddleAuraPulse {
-      0%   { opacity: 0; transform: scale(0.92); }
-      35%  { opacity: 1; }
-      100% { opacity: 0; transform: scale(1.05); }
+      0%   { opacity: 0; transform: scale(0.94); }
+      40%  { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.04); }
     }
-    .straddle-summary-table .katex { font-size: 0.92em; color: #faf6f2; }
+    .straddle-formula-value .katex { font-size: 0.92em; color: #faf6f2; }
+    @media (max-width: 520px) {
+      .straddle-formula-row {
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 0.25rem;
+      }
+    }
     @media (prefers-reduced-motion: reduce) {
-      .straddle-val-wrap {
+      .straddle-formula-row {
         opacity: 1 !important;
         visibility: visible !important;
         transform: none !important;
         filter: none !important;
         animation: none !important;
+        will-change: auto !important;
       }
-      .straddle-val-wrap.straddle-shimmer::before,
-      .straddle-val-wrap.straddle-shimmer::after {
+      .straddle-formula-row.straddle-shimmer::before,
+      .straddle-formula-row.straddle-shimmer::after {
         display: none !important;
       }
     }
@@ -1569,38 +1579,36 @@
 
                 {% if s.demo == 'straddle_formulas' %}
                 <div class="straddle-table-wrap" data-straddle-root>
-                  <table class="straddle-summary-table">
-                    <tbody>
-                      <tr>
-                        <th scope="row">Costo</th>
-                        <td><span class="straddle-val-wrap" data-reveal="wipe" data-straddle-row>\( \text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}} \)</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Ganancia máxima (al alza)</th>
-                        <td><span class="straddle-val-wrap" data-reveal="rise" data-straddle-row>Ilimitada</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Ganancia máxima (a la baja)</th>
-                        <td><span class="straddle-val-wrap" data-reveal="glow" data-straddle-row>Limitada pero alta \(\;\rightarrow\;\) \( K - (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Pérdida máxima</th>
-                        <td><span class="straddle-val-wrap" data-reveal="wipe" data-straddle-row>\( \text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}} \) cuando \( S_T = K \)</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Break-even superior</th>
-                        <td><span class="straddle-val-wrap" data-reveal="rise" data-straddle-row>\( K + (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Break-even inferior</th>
-                        <td><span class="straddle-val-wrap" data-reveal="glow" data-straddle-row>\( K - (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Strike price (K)</th>
-                        <td><span class="straddle-val-wrap" data-reveal="wipe" data-straddle-row>Usualmente at-the-money \(\approx\) precio actual del subyacente</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="straddle-summary-table--grid" role="table" aria-label="Resumen Long Straddle">
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Costo</div>
+                      <div class="straddle-formula-value" role="cell">\( \text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}} \)</div>
+                    </div>
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Ganancia máxima (al alza)</div>
+                      <div class="straddle-formula-value" role="cell">Ilimitada</div>
+                    </div>
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Ganancia máxima (a la baja)</div>
+                      <div class="straddle-formula-value" role="cell">Limitada pero alta \(\;\rightarrow\;\) \( K - (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</div>
+                    </div>
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Pérdida máxima</div>
+                      <div class="straddle-formula-value" role="cell">\( \text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}} \) cuando \( S_T = K \)</div>
+                    </div>
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Break-even superior</div>
+                      <div class="straddle-formula-value" role="cell">\( K + (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</div>
+                    </div>
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Break-even inferior</div>
+                      <div class="straddle-formula-value" role="cell">\( K - (\text{Prima}_{\text{Call}} + \text{Prima}_{\text{Put}}) \)</div>
+                    </div>
+                    <div class="straddle-formula-row" data-straddle-row role="row">
+                      <div class="straddle-formula-label" role="rowheader">Strike price (K)</div>
+                      <div class="straddle-formula-value" role="cell">Usualmente at-the-money \(\approx\) precio actual del subyacente</div>
+                    </div>
+                  </div>
                 </div>
                 {% endif %}
 
@@ -1769,24 +1777,28 @@
     function resetStraddleFormulasSlide(slideEl) {
       if (!slideEl || slideEl.dataset.demo !== 'straddle_formulas') return;
       slideEl._straddleFlyToken = (slideEl._straddleFlyToken || 0) + 1;
-      slideEl.querySelectorAll('.straddle-val-wrap').forEach((el) => {
-        el.classList.remove('is-revealed', 'straddle-shimmer');
-        el.style.cssText = '';
+      slideEl.querySelectorAll('.straddle-formula-row[data-straddle-row]').forEach((row) => {
+        row.classList.remove('is-revealed', 'straddle-shimmer', 'straddle-fly-active');
+        row.style.cssText = '';
       });
     }
 
-    function flyStraddleRow(el, slideEl, runToken) {
+    function flyStraddleRow(rowEl, slideEl, runToken) {
       return new Promise((resolve) => {
         if (slideEl._straddleFlyToken !== runToken) {
           resolve();
           return;
         }
-        const arena = el.closest('.straddle-table-wrap');
+        const arena = rowEl.closest('.straddle-table-wrap');
         if (!arena) {
-          el.classList.add('is-revealed');
+          rowEl.classList.add('is-revealed');
           resolve();
           return;
         }
+
+        const easePop = 'cubic-bezier(0.34, 1.16, 0.64, 1)';
+        const easeHome = 'cubic-bezier(0.16, 1, 0.3, 1)';
+        const BIG = 1.38;
 
         const run = () => {
           if (slideEl._straddleFlyToken !== runToken) {
@@ -1795,33 +1807,32 @@
           }
           const arenaRect = arena.getBoundingClientRect();
           if (arenaRect.width < 2 || arenaRect.height < 2) {
-            el.classList.add('is-revealed');
+            rowEl.classList.add('is-revealed');
             resolve();
             return;
           }
           const cx = arenaRect.left + arenaRect.width / 2;
           const cy = arenaRect.top + arenaRect.height / 2;
-          const BIG = 1.48;
 
-          el.style.visibility = 'visible';
-          el.style.transition = 'none';
-          el.classList.add('straddle-shimmer');
+          rowEl.style.visibility = 'visible';
+          rowEl.style.transition = 'none';
+          rowEl.classList.add('straddle-shimmer', 'straddle-fly-active');
 
-          let first = el.getBoundingClientRect();
-          if ((first.width < 2 || first.height < 2) && typeof window.renderMathInElement === 'function') {
-            window.renderMathInElement(el, {
+          if (typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(rowEl, {
               delimiters: [
                 { left: '\\[', right: '\\]', display: true },
                 { left: '\\(', right: '\\)', display: false },
               ],
               throwOnError: false,
             });
-            first = el.getBoundingClientRect();
           }
+
+          let first = rowEl.getBoundingClientRect();
           if (first.width < 2 || first.height < 2) {
-            el.classList.remove('straddle-shimmer');
-            el.classList.add('is-revealed');
-            el.style.cssText = '';
+            rowEl.classList.remove('straddle-shimmer', 'straddle-fly-active');
+            rowEl.classList.add('is-revealed');
+            rowEl.style.cssText = '';
             resolve();
             return;
           }
@@ -1829,58 +1840,73 @@
           const dx = cx - (first.left + first.width / 2);
           const dy = cy - (first.top + first.height / 2);
 
-          el.style.opacity = '0';
-          el.style.transformOrigin = 'center center';
-          el.style.transform = `translate(${dx}px, ${dy}px) scale(0.76)`;
-          void el.offsetWidth;
+          rowEl.style.opacity = '0';
+          rowEl.style.transformOrigin = 'center center';
+          rowEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.85)`;
+          void rowEl.offsetWidth;
 
-          window.setTimeout(() => {
+          requestAnimationFrame(() => {
             if (slideEl._straddleFlyToken !== runToken) {
-              el.classList.remove('straddle-shimmer');
-              el.style.cssText = '';
+              rowEl.classList.remove('straddle-shimmer', 'straddle-fly-active');
+              rowEl.style.cssText = '';
               resolve();
               return;
             }
-            el.style.transition = 'opacity 0.4s ease, transform 0.58s cubic-bezier(.34, 1.42, .52, 1), filter 0.5s ease';
-            el.style.opacity = '1';
-            el.style.filter = 'drop-shadow(0 0 22px rgba(255, 130, 70, 0.6)) drop-shadow(0 0 48px rgba(180, 190, 255, 0.2))';
-            el.style.transform = `translate(${dx}px, ${dy}px) scale(${BIG})`;
-          }, 36);
+            rowEl.style.transition =
+              `opacity 0.5s ${easePop}, transform 0.72s ${easePop}, filter 0.58s ease-out`;
+            rowEl.style.opacity = '1';
+            rowEl.style.filter =
+              'drop-shadow(0 0 20px rgba(255, 115, 72, 0.48)) drop-shadow(0 0 44px rgba(185, 195, 255, 0.16))';
+            rowEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${BIG})`;
+          });
 
-          window.setTimeout(() => {
+          let homeStarted = false;
+          let homeFailSafe;
+          const startHome = () => {
+            if (homeStarted) return;
+            homeStarted = true;
+            rowEl.removeEventListener('transitionend', onPopEnd);
+            window.clearTimeout(popFailSafe);
             if (slideEl._straddleFlyToken !== runToken) {
-              el.classList.remove('straddle-shimmer');
-              el.style.cssText = '';
+              rowEl.classList.remove('straddle-shimmer', 'straddle-fly-active');
+              rowEl.style.cssText = '';
               resolve();
               return;
             }
-            el.style.transition = 'transform 1.02s cubic-bezier(.2, 1, .36, 1), filter 0.8s ease';
-            el.style.filter = 'none';
-            el.style.transform = 'translate(0px, 0px) scale(1)';
+            rowEl.style.transition = `transform 1.18s ${easeHome}, filter 0.92s ease-out`;
+            rowEl.style.filter = 'none';
+            rowEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
 
             let finished = false;
             const finishReveal = () => {
               if (finished) return;
               finished = true;
-              el.removeEventListener('transitionend', onEnd);
-              window.clearTimeout(failSafe);
+              rowEl.removeEventListener('transitionend', onHomeEnd);
+              window.clearTimeout(homeFailSafe);
+              rowEl.classList.remove('straddle-shimmer', 'straddle-fly-active');
               if (slideEl._straddleFlyToken !== runToken) {
-                el.style.cssText = '';
+                rowEl.style.cssText = '';
                 resolve();
                 return;
               }
-              el.classList.remove('straddle-shimmer');
-              el.classList.add('is-revealed');
-              el.style.cssText = '';
+              rowEl.classList.add('is-revealed');
+              rowEl.style.cssText = '';
               resolve();
             };
-            const onEnd = (e) => {
+            const onHomeEnd = (e) => {
               if (e.propertyName !== 'transform') return;
               finishReveal();
             };
-            el.addEventListener('transitionend', onEnd);
-            const failSafe = window.setTimeout(finishReveal, 1300);
-          }, 640);
+            rowEl.addEventListener('transitionend', onHomeEnd);
+            homeFailSafe = window.setTimeout(finishReveal, 1700);
+          };
+
+          const onPopEnd = (e) => {
+            if (e.propertyName !== 'transform') return;
+            startHome();
+          };
+          rowEl.addEventListener('transitionend', onPopEnd);
+          const popFailSafe = window.setTimeout(startHome, 820);
         };
 
         requestAnimationFrame(() => requestAnimationFrame(run));
@@ -1891,7 +1917,7 @@
       if (!slideEl || slideEl.dataset.demo !== 'straddle_formulas') return;
       resetStraddleFormulasSlide(slideEl);
       const runToken = slideEl._straddleFlyToken;
-      const cells = Array.from(slideEl.querySelectorAll('.straddle-val-wrap[data-straddle-row]'));
+      const cells = Array.from(slideEl.querySelectorAll('.straddle-formula-row[data-straddle-row]'));
       if (!cells.length) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         cells.forEach((cel) => cel.classList.add('is-revealed'));
