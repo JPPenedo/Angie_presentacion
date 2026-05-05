@@ -1062,31 +1062,6 @@ def expo_opciones_view(request):
             'demo': 'intro',
         },
         {
-            'titulo': 'Long Straddle · costos, breakevens y perfiles',
-            'idea': (
-                'Con la misma call y put largas del slide anterior, si ambas comparten '
-                'el mismo strike K y vencimiento, obtienes un Long Straddle: apuestas a '
-                'volatilidad (movimiento grande) sin tomar sesgo direccional fuerte. '
-                'La tabla resume costo, extremos de ganancia/pérdida y breakevens.'
-            ),
-            'modelo': (
-                r'\Pi(S_T)=\max(S_T-K,0)+\max(K-S_T,0)-(c+p)'
-            ),
-            'enfoque': (
-                'Pagas c+p por adelantado. Si al vencimiento el subyacente se aleja '
-                'bastante de K — arriba o abajo — la suma de los payoffs puede superar '
-                'ese costo. El peor caso es quedar exactamente en K, donde ambas opciones '
-                'vencen sin valor intrínseco.'
-            ),
-            'conceptos': [
-                'Misma K en call y put · mismo vencimiento T',
-                'Dos breakevens: K ± (c + p)',
-                'Pérdida máxima acotada al débito total c + p',
-                'Ganancia al alza ilimitada; a la baja acotada por K − (c + p) si ST → 0',
-            ],
-            'demo': 'long_straddle',
-        },
-        {
             'titulo': 'Bull Call Spread · mecánica y fórmulas',
             'idea': (
                 'Si esperamos una subida moderada del subyacente y queremos abaratar '
@@ -1376,6 +1351,29 @@ def expo_sinteticos_view(request):
                 'Verticales: puntos de equilibrio aproximados respecto a las primas del ejemplo.',
             ],
             'demo': 'straddle_legs_vs_result',
+        },
+        {
+            'titulo': 'Long Straddle · costos, breakevens y perfiles',
+            'idea': (
+                'La misma call y put largas comparten un solo strike K y vencimiento: pagas c + p '
+                'y obtienes un perfil simétrico al vencimiento. La tabla resume en filas el costo, '
+                'qué pasa en los extremos de precio, la pérdida máxima y los dos puntos de equilibrio.'
+            ),
+            'dato_clave': (
+                'Cada fila de la derecha aparece en orden con un pequeño “efecto de escritura” visual; '
+                'si sales de la diapositiva y vuelves, la secuencia arranca de nuevo.'
+            ),
+            'enfoque': (
+                'Úsala como cierre analítico antes del monitor simulado: conecta el dibujo en V del '
+                'straddle con fórmulas compactas que puedes copiar al pizarrón.'
+            ),
+            'conceptos': [
+                'Misma K en call y put · mismo vencimiento T',
+                'Dos breakevens: K ± (c + p) — en el ejemplo, 92 y 108',
+                'Pérdida máxima = c + p cuando S_T = K',
+                'Ganancia al alza ilimitada; a la baja, tope teórico K − (c + p) si S_T → 0',
+            ],
+            'demo': 'straddle_formulas',
         },
         {
             'titulo': 'Monitor de juguete (simulación)',
