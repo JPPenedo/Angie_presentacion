@@ -446,30 +446,49 @@
     }
     .slide-copy-zone {
       border-radius: 0.65rem;
-      padding: 0.42rem 0.52rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed rgba(255, 90, 55, 0.38);
-      cursor: help;
+      padding: 0.55rem 0.62rem 0.58rem;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 90, 55, 0.32);
       outline: none;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 100, 70, 0.42) transparent;
     }
     .slide-copy-zone:hover,
     .slide-copy-zone:focus-visible {
-      border-color: rgba(255, 90, 55, 0.62);
-      background: rgba(255, 80, 55, 0.07);
+      border-color: rgba(255, 90, 55, 0.55);
+      background: rgba(255, 80, 55, 0.06);
+      box-shadow: 0 0 0 1px rgba(255, 90, 55, 0.12);
     }
-    .slide-teaser-p {
+    .slide-visible-lead {
       margin: 0 !important;
-      font-size: 0.74rem !important;
-      line-height: 1.38 !important;
-      color: #c6c6ce !important;
+      font-size: 0.88rem !important;
+      line-height: 1.48 !important;
+      color: #e0e0e6 !important;
     }
-    .slide-teaser-hint {
-      display: block;
-      margin-top: 0.32rem;
-      font-size: 0.62rem;
-      color: var(--muted);
-      letter-spacing: 0.03em;
+    .slide-visible-bullets {
+      margin: 0;
+      padding: 0 0 0 1.05rem;
+      list-style: disc;
+      display: flex;
+      flex-direction: column;
+      gap: 0.34rem;
+      font-size: 0.825rem;
+      line-height: 1.44;
+      color: #cacad2;
+      flex: 1 1 auto;
+    }
+    .slide-visible-bullets li {
+      padding-left: 0.12rem;
+    }
+    .slide-visible-bullets li::marker {
+      color: rgba(255, 120, 80, 0.85);
     }
     .slide-detail-flyout {
       position: absolute;
@@ -1631,8 +1650,12 @@
             <div class="grid-2">
               <div>
                 <div class="slide-copy-zone" tabindex="0">
-                  <p class="slide-teaser-p anim">{{ s.resumen_slide }}</p>
-                  <span class="slide-teaser-hint">Pasa el cursor o enfoca esta caja para ampliar el texto completo</span>
+                  <p class="slide-visible-lead anim">{{ s.resumen_intro }}</p>
+                  <ul class="slide-visible-bullets" aria-label="Resumen de la diapositiva">
+                    {% for b in s.resumen_bullets %}
+                    <li>{{ b }}</li>
+                    {% endfor %}
+                  </ul>
                 </div>
               </div>
 
