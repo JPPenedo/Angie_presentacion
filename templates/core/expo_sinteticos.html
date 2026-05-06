@@ -1069,10 +1069,25 @@
       padding: 0.12rem;
       transition: background 0.22s ease, box-shadow 0.22s ease;
       cursor: zoom-in;
+      position: relative;
+      pointer-events: auto;
     }
     .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover {
-      background: rgba(255, 55, 30, 0.06);
-      box-shadow: inset 0 0 0 1px rgba(255, 95, 55, 0.42);
+      background: rgba(255, 55, 30, 0.09);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 95, 55, 0.55),
+        0 0 0 1px rgba(255, 120, 80, 0.35),
+        0 18px 48px rgba(0, 0, 0, 0.45);
+      z-index: 6;
+    }
+    /* Sin hover: el canvas no intercepta el ratón — el contenedor recibe enter/leave */
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone:not(.forma-charts-hover) .payoff-wrap canvas,
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone:not(.forma-charts-hover) .ic-canvas canvas {
+      pointer-events: none !important;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover .payoff-wrap canvas,
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover .ic-canvas canvas {
+      pointer-events: auto !important;
     }
     .slide[data-demo="straddle_forma"] .forma-charts-hover-zone .forma-straddle-combined {
       flex: 1 1 0;
@@ -2340,16 +2355,38 @@
         if (o.plugins.tooltip) o.plugins.tooltip.enabled = false;
         x.title.display = false;
         y.title.display = false;
-        x.ticks.maxTicksLimit = 4;
-        y.ticks.maxTicksLimit = 4;
-        x.ticks.font = Object.assign({}, x.ticks.font, { size: 7 });
-        y.ticks.font = Object.assign({}, y.ticks.font, { size: 7 });
-        x.ticks.color = '#8a8a96';
-        y.ticks.color = '#8a8a96';
-        x.grid.color = 'rgba(110, 110, 120, 0.07)';
-        y.grid.color = 'rgba(110, 110, 120, 0.07)';
+        x.ticks.maxTicksLimit = 3;
+        y.ticks.maxTicksLimit = 3;
+        x.ticks.font = Object.assign({}, x.ticks.font, { size: 6, maxRotation: 0 });
+        y.ticks.font = Object.assign({}, y.ticks.font, { size: 6, maxRotation: 0 });
+        x.ticks.color = '#7a7a86';
+        y.ticks.color = '#7a7a86';
+        x.ticks.autoSkipPadding = 6;
+        y.ticks.autoSkipPadding = 6;
+        if (chart._formaOrigYTickCb === undefined && typeof y.ticks.callback === 'function') {
+          chart._formaOrigYTickCb = y.ticks.callback;
+        }
+        y.ticks.callback = (v) => (v >= 0 ? '+' : '') + '$' + Math.round(v);
+        x.grid = x.grid || {};
+        y.grid = y.grid || {};
+        x.grid.display = false;
+        y.grid.display = false;
         x.border.display = false;
         y.border.display = false;
+        if (Array.isArray(chart.data?.datasets)) {
+          chart.data.datasets.forEach((ds) => {
+            if (ds && typeof ds.borderWidth === 'number') {
+              if (chart._formaBorderW == null) chart._formaBorderW = ds.borderWidth;
+              ds.borderWidth = Math.max(1, chart._formaBorderW * 0.55);
+            }
+            if (ds && ds.fill && typeof ds.fill === 'object') {
+              if (chart._formaFillAbove == null) chart._formaFillAbove = ds.fill.above;
+              if (chart._formaFillBelow == null) chart._formaFillBelow = ds.fill.below;
+              ds.fill.above = 'rgba(160,150,255,0.08)';
+              ds.fill.below = 'rgba(255,70,100,0.1)';
+            }
+          });
+        }
       } else {
         o.plugins.legend.display = chart._formaShowLegend === true;
         if (o.plugins.tooltip) o.plugins.tooltip.enabled = true;
@@ -2357,16 +2394,34 @@
         y.title.display = true;
         delete x.ticks.maxTicksLimit;
         delete y.ticks.maxTicksLimit;
+        delete x.ticks.autoSkipPadding;
+        delete y.ticks.autoSkipPadding;
         x.ticks.font = Object.assign({}, x.ticks.font, { size: 10 });
         y.ticks.font = Object.assign({}, y.ticks.font, { size: 10 });
         x.ticks.color = '#b8b8c0';
         y.ticks.color = '#b8b8c0';
+        if (typeof chart._formaOrigYTickCb === 'function') {
+          y.ticks.callback = chart._formaOrigYTickCb;
+        }
+        x.grid = x.grid || {};
+        y.grid = y.grid || {};
+        x.grid.display = true;
+        y.grid.display = true;
         x.grid.color = 'rgba(180, 180, 190, 0.09)';
         y.grid.color = typeof chart._formaYGridFn === 'function'
           ? chart._formaYGridFn
           : (ctx) => (ctx.tick.value === 0 ? 'rgba(255,255,255,0.32)' : 'rgba(180, 180, 190, 0.09)');
         x.border.display = true;
         y.border.display = true;
+        if (Array.isArray(chart.data?.datasets)) {
+          chart.data.datasets.forEach((ds) => {
+            if (ds && chart._formaBorderW != null) ds.borderWidth = chart._formaBorderW;
+            if (ds && ds.fill && typeof ds.fill === 'object' && chart._formaFillAbove != null) {
+              ds.fill.above = chart._formaFillAbove;
+              ds.fill.below = chart._formaFillBelow;
+            }
+          });
+        }
       }
       chart.update(compact ? 0 : 220);
     }
@@ -2452,11 +2507,12 @@
       const lo = 70, hi = 130;
       const xs = linspace(lo, hi, 81);
 
+      let chartComb = null;
       if (cComb) {
         const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
         const yMin = straddlePayoff(K) - 4;
         const yMax = Math.max(straddlePayoff(lo), straddlePayoff(hi)) + 5;
-        const chComb = new Chart(cComb, {
+        chartComb = new Chart(cComb, {
           type: 'line',
           data: {
             datasets: [{
@@ -2472,8 +2528,8 @@
           },
           options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff straddle al vencer ($)' }),
         });
-        chartCache.set(cComb, chComb);
-        scheduleChartResize(chComb);
+        chartCache.set(cComb, chartComb);
+        scheduleChartResize(chartComb);
       }
 
       const xsLegs = linspace(70, 130, 61);
@@ -2514,9 +2570,13 @@
       scheduleChartResize(chC);
       scheduleChartResize(chP);
 
-      const charts = [chComb, chC, chP].filter(Boolean);
+      const charts = [chartComb, chC, chP].filter(Boolean);
       charts.forEach((ch) => {
-        ch._formaShowLegend = ch === chComb;
+        const gc = ch.options?.scales?.y?.grid?.color;
+        if (typeof gc === 'function') ch._formaYGridFn = gc;
+      });
+      charts.forEach((ch) => {
+        ch._formaShowLegend = ch === chartComb;
         applyFormaChartDisplayMode(ch, true);
       });
 
@@ -2532,9 +2592,14 @@
           charts.forEach((c) => applyFormaChartDisplayMode(c, true));
           charts.forEach(scheduleChartResize);
         };
-        zone.addEventListener('pointerenter', onEnter);
-        zone.addEventListener('pointerleave', onLeave);
+        const bindHover = (el, ev, fn) => el.addEventListener(ev, fn);
+        bindHover(zone, 'mouseenter', onEnter);
+        bindHover(zone, 'mouseleave', onLeave);
+        bindHover(zone, 'pointerenter', onEnter);
+        bindHover(zone, 'pointerleave', onLeave);
         slideEl._formaHoverTeardown = () => {
+          zone.removeEventListener('mouseenter', onEnter);
+          zone.removeEventListener('mouseleave', onLeave);
           zone.removeEventListener('pointerenter', onEnter);
           zone.removeEventListener('pointerleave', onLeave);
           zone.classList.remove('forma-charts-hover');
