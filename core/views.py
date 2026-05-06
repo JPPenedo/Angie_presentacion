@@ -1227,6 +1227,15 @@ def expo_sinteticos_view(request):
     slides = [
         {
             'titulo': '¿Para qué sirve?',
+            'resumen_slide': (
+                'Apuesta a un movimiento grande sin elegir dirección: compras call y put al mismo strike; '
+                'ganas si el precio al vencimiento se aleja bastante de K (en el ejemplo, 100).'
+            ),
+            'nota_ampliada': (
+                'La sensibilidad a la volatilidad implícita suele ser alta: antes de un evento las primas '
+                'pueden estar “infladas” y, si después el mercado se calma, un crush de vol puede dañar '
+                'la posición aun cuando el subyacente sí se movió.'
+            ),
             'idea': (
                 'Imagina que esperas que el precio del activo se mueva mucho (por una noticia, '
                 'un resultado trimestral o un dato importante), pero no sabes si va a subir o a bajar. '
@@ -1251,6 +1260,15 @@ def expo_sinteticos_view(request):
         },
         {
             'titulo': '¿Cómo se arma? · Call, put · ¿Compras o vendes?',
+            'resumen_slide': (
+                'Straddle largo = dos compras: call europea y put europea, mismo K y mismo vencimiento; '
+                'pagas primas c y p (sin ventas cortas ni margen en esta versión).'
+            ),
+            'nota_ampliada': (
+                'En mercados reales las primas dependen de la volatilidad implícita, tasas, dividendos '
+                'y del estilo de la opción (europea vs americana). La versión corta del straddle es otra '
+                'historia: cobras las primas pero asumes riesgo distinto.'
+            ),
             'idea': (
                 'En el straddle largo clásico solo hay compras: compras una call y compras una put '
                 'al mismo strike y vencimiento. Pagas la prima de la call y la prima de la put. '
@@ -1275,6 +1293,14 @@ def expo_sinteticos_view(request):
         },
         {
             'titulo': '¿Quién gana y quién pierde?',
+            'resumen_slide': (
+                'Al vencimiento, sin comisiones, es un juego de suma cero: lo que gana el comprador '
+                'del straddle lo aportan, en conjunto, quienes le vendieron la call y la put.'
+            ),
+            'nota_ampliada': (
+                'En la práctica hay comisiones, spreads bid-ask y posiblemente distintas contrapartes; '
+                'el cuadro de la diapositiva es una foto pedagógica con tres precios finales (90, 100, 110).'
+            ),
             'idea': (
                 'En un ejercicio de libro, sin comisiones, el dinero que gana un lado en la fecha '
                 'de vencimiento es el que pierde el otro en conjunto. Si el comprador del straddle '
@@ -1298,6 +1324,15 @@ def expo_sinteticos_view(request):
         },
         {
             'titulo': 'Lo bueno y lo no tan bueno',
+            'resumen_slide': (
+                'Ventaja: participas en subidas y bajadas fuertes con riesgo acotado al premio pagado. '
+                'Contrapartida: dos primas, decaimiento del tiempo y necesitas un salto claro del precio.'
+            ),
+            'nota_ampliada': (
+                'El straddle largo suele compararse con apostar a la “magnitud” del movimiento; tras datos '
+                'macro o resultados, una caída brusca de la volatilidad puede hacer que ambas opciones '
+                'pierdan valor rápido aunque el spot no quede exactamente en K.'
+            ),
             'idea': (
                 'Es una forma clara de apostar a “se va a mover fuerte” sin elegir bando. '
                 'A cambio, pagas dos entradas y necesitas que el movimiento sea grande para que '
@@ -1330,6 +1365,14 @@ def expo_sinteticos_view(request):
         },
         {
             'titulo': 'Las dos patas y el resultado junto',
+            'resumen_slide': (
+                'La línea roja es la suma de la call y la put al vencer, menos las dos primas; '
+                'las punteadas muestran cada pata sola; las verticales marcan los breakevens (~92 y 108).'
+            ),
+            'nota_ampliada': (
+                'Antes del vencimiento el valor de la posición incluye valor temporal y volatilidad; '
+                'este gráfico es el payoff teórico en la fecha T, como en los ejercicios de libro.'
+            ),
             'idea': (
                 'En el gráfico grande ves tres historias al vencimiento: la call sola (línea punteada '
                 'violeta), la put sola (punteada en tono cálido) y la mezcla, el straddle, como '
@@ -1354,6 +1397,14 @@ def expo_sinteticos_view(request):
         },
         {
             'titulo': 'Long Straddle · costos, breakevens y perfiles',
+            'resumen_slide': (
+                'Costo neto c+p; breakevens K±(c+p); pérdida máxima si S_T=K; ganancia al alza ilimitada '
+                'y a la baja acotada por K−(c+p) si el activo cae a cero.'
+            ),
+            'nota_ampliada': (
+                'Las fórmulas suponen opciones europeas al vencimiento y no incluyen comisiones. '
+                'En el pizarrón suele anotarse también que el delta neto cerca del ATM puede ser cercano a cero.'
+            ),
             'idea': (
                 'La misma call y put largas comparten un solo strike K y vencimiento: pagas c + p '
                 'y obtienes un perfil simétrico al vencimiento. La tabla resume en filas el costo, '
@@ -1377,6 +1428,14 @@ def expo_sinteticos_view(request):
         },
         {
             'titulo': 'Monitor de juguete (simulación)',
+            'resumen_slide': (
+                'Simulación pedagógica: cada 10 s un spot ficticio, payoff del comprador al vencimiento '
+                'y gráfico; puedes pausar para comentar en clase.'
+            ),
+            'nota_ampliada': (
+                'El monitor ignora valor temporal, cambios de volatilidad y dividendos: solo proyecta el '
+                'payoff de largo straddle como función del precio final, para fijar ideas.'
+            ),
             'idea': (
                 'Es un tablero de demostración: cada 10 segundos el programa inventa un precio del activo, '
                 'recalcula cuánto ganarías o perderías al vencimiento con ese precio y actualiza el '

@@ -432,6 +432,133 @@
       flex-direction: column;
       min-height: 0;
     }
+
+    .slide-media-block {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .slide-media-block > .grid-2 {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+    .slide-copy-zone {
+      border-radius: 0.65rem;
+      padding: 0.42rem 0.52rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed rgba(255, 90, 55, 0.38);
+      cursor: help;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .slide-copy-zone:hover,
+    .slide-copy-zone:focus-visible {
+      border-color: rgba(255, 90, 55, 0.62);
+      background: rgba(255, 80, 55, 0.07);
+    }
+    .slide-teaser-p {
+      margin: 0 !important;
+      font-size: 0.74rem !important;
+      line-height: 1.38 !important;
+      color: #c6c6ce !important;
+    }
+    .slide-teaser-hint {
+      display: block;
+      margin-top: 0.32rem;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+    .slide-detail-flyout {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: rgba(12, 12, 14, 0.97);
+      border: 1px solid rgba(255, 90, 55, 0.48);
+      border-radius: 0.75rem;
+      padding: 0.72rem 0.88rem 0.82rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.985);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 24px 52px rgba(0, 0, 0, 0.58);
+    }
+    .slide-detail-flyout .flyout-heading {
+      font-family: "Rajdhani", system-ui, sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-soft);
+      margin: 0 0 0.45rem;
+      font-weight: 700;
+    }
+    .slide-detail-flyout p {
+      font-size: 0.85rem;
+      line-height: 1.48;
+      margin: 0.32rem 0;
+    }
+    .slide-detail-flyout p strong { color: var(--text); }
+    .slide-detail-flyout .insight-strip {
+      margin-top: 0.38rem;
+      font-size: 0.8rem;
+      line-height: 1.42;
+    }
+    .slide-detail-flyout .concept-list {
+      margin-top: 0.42rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.32rem;
+      overflow: visible;
+    }
+    .slide-detail-flyout .concept-chip {
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+    .slide-detail-flyout .flyout-extra {
+      margin-top: 0.6rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      color: #d0d0d8;
+      line-height: 1.45;
+    }
+    .slide-detail-flyout .flyout-extra strong { color: var(--gold); }
+    .slide-detail-flyout .flyout-procon {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-top: 0.45rem;
+    }
+    .slide-detail-flyout .flyout-procon h4 {
+      font-size: 0.78rem;
+      margin: 0 0 0.28rem;
+      font-weight: 600;
+    }
+    .slide-detail-flyout .flyout-procon ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: #d4d4dc;
+    }
+    .slide.active .slide-media-block:has(.slide-copy-zone:hover) .slide-detail-flyout,
+    .slide.active .slide-media-block:has(.slide-detail-flyout:hover) .slide-detail-flyout,
+    .slide.active .slide-media-block:has(.slide-copy-zone:focus-within) .slide-detail-flyout {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    @media (max-width: 720px) {
+      .slide-detail-flyout .flyout-procon { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide-detail-flyout { transition: none; }
+    }
+
     /* Slides 2, 3 y 6: columna izquierda más estrecha, derecha prioriza gráficos */
     .slide[data-demo="straddle_forma"] .grid-2,
     .slide[data-demo="straddle_participantes"] .grid-2,
@@ -1500,16 +1627,13 @@
             <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Straddle sintético</div>
             <h3 class="anim">{{ s.titulo }}</h3>
 
+            <div class="slide-media-block">
             <div class="grid-2">
               <div>
-                <p class="anim"><strong>En pocas palabras.</strong> {{ s.idea }}</p>
-                <div class="insight-strip anim">{{ s.dato_clave }}</div>
-                <p class="anim slide-p-focus"><strong>Qué mirar en la práctica.</strong> {{ s.enfoque }}</p>
-                <ul class="concept-list" aria-label="Puntos clave">
-                  {% for c in s.conceptos %}
-                  <li class="concept-chip" style="--i: {{ forloop.counter0 }}">{{ c }}</li>
-                  {% endfor %}
-                </ul>
+                <div class="slide-copy-zone" tabindex="0">
+                  <p class="slide-teaser-p anim">{{ s.resumen_slide }}</p>
+                  <span class="slide-teaser-hint">Pasa el cursor o enfoca esta caja para ampliar el texto completo</span>
+                </div>
               </div>
 
               <div class="mini-demo">
@@ -1704,6 +1828,38 @@
                 </div>
                 {% endif %}
               </div>
+            </div>
+
+            <div class="slide-detail-flyout" aria-label="Texto completo de la diapositiva">
+              <div class="flyout-heading">Lectura ampliada</div>
+              <p><strong>En pocas palabras.</strong> {{ s.idea }}</p>
+              <div class="insight-strip">{{ s.dato_clave }}</div>
+              <p class="slide-p-focus"><strong>Qué mirar en la práctica.</strong> {{ s.enfoque }}</p>
+              <ul class="concept-list" aria-label="Puntos clave">
+                {% for c in s.conceptos %}
+                <li class="concept-chip" style="--i: {{ forloop.counter0 }}">{{ c }}</li>
+                {% endfor %}
+              </ul>
+              {% if s.demo == 'straddle_pro_con' %}
+              <div class="flyout-procon">
+                <div>
+                  <h4><i class="bi bi-check-circle me-1"></i>Ventajas</h4>
+                  <ul>
+                    {% for v in s.ventajas %}<li>{{ v }}</li>{% endfor %}
+                  </ul>
+                </div>
+                <div>
+                  <h4><i class="bi bi-x-circle me-1"></i>Desventajas</h4>
+                  <ul>
+                    {% for v in s.desventajas %}<li>{{ v }}</li>{% endfor %}
+                  </ul>
+                </div>
+              </div>
+              {% endif %}
+              {% if s.nota_ampliada %}
+              <p class="flyout-extra"><strong>Más detalle.</strong> {{ s.nota_ampliada }}</p>
+              {% endif %}
+            </div>
             </div>
           </article>
           {% endfor %}
