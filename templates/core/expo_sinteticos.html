@@ -1060,27 +1060,57 @@
       flex: 1 1 0;
       min-height: 0;
     }
-    .slide[data-demo="straddle_forma"] .forma-straddle-combined {
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone {
       flex: 1 1 0;
-      min-height: 124px;
-      max-height: min(34vh, 200px);
-      margin-bottom: 0.28rem;
-    }
-    .slide[data-demo="straddle_forma"] .mini-demo > .payoff-legend {
-      flex-shrink: 0;
-      margin-bottom: 0.15rem;
-    }
-    .slide[data-demo="straddle_forma"] .mini-demo .intro-grid.intro-grid--forma {
-      flex: 1.25 1 0;
       min-height: 0;
-      margin-top: 0.35rem;
-      gap: 0.72rem;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0.55rem;
+      padding: 0.12rem;
+      transition: background 0.22s ease, box-shadow 0.22s ease;
+      cursor: zoom-in;
     }
-    .slide[data-demo="straddle_forma"] .intro-card {
-      padding: 0.45rem 0.48rem 0.55rem;
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover {
+      background: rgba(255, 55, 30, 0.06);
+      box-shadow: inset 0 0 0 1px rgba(255, 95, 55, 0.42);
     }
-    .slide[data-demo="straddle_forma"] .intro-card .ic-canvas {
-      min-height: 122px;
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone .forma-straddle-combined {
+      flex: 1 1 0;
+      min-height: 96px;
+      max-height: min(26vh, 158px);
+      margin-bottom: 0.22rem;
+      transition: min-height 0.22s ease, max-height 0.22s ease;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover .forma-straddle-combined {
+      min-height: 168px;
+      max-height: min(44vh, 268px);
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone > .payoff-legend {
+      flex-shrink: 0;
+      margin-bottom: 0.12rem;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone:not(.forma-charts-hover) > .payoff-legend .pl-chip {
+      font-size: 0.56rem;
+      padding: 0.08rem 0.34rem;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone .intro-grid.intro-grid--forma {
+      flex: 1.2 1 0;
+      min-height: 0;
+      margin-top: 0.28rem;
+      gap: 0.62rem;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover .intro-grid.intro-grid--forma {
+      gap: 0.78rem;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone .intro-card {
+      padding: 0.4rem 0.45rem 0.48rem;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone .intro-card .ic-canvas {
+      min-height: 86px;
+      transition: min-height 0.22s ease;
+    }
+    .slide[data-demo="straddle_forma"] .forma-charts-hover-zone.forma-charts-hover .intro-card .ic-canvas {
+      min-height: 142px;
     }
     .slide[data-demo="straddle_forma"] .mini-demo .table-scroll {
       flex-shrink: 0;
@@ -1783,6 +1813,7 @@
                 {% endif %}
 
                 {% if s.demo == 'straddle_forma' %}
+                <div class="forma-charts-hover-zone" data-forma-chart-zone tabindex="-1" aria-label="Gráficos de payoff: pasa el cursor para ver detalle completo">
                 <div class="forma-straddle-combined payoff-wrap">
                   <canvas data-forma-combined></canvas>
                 </div>
@@ -1799,6 +1830,7 @@
                     <div class="ic-title"><i class="bi bi-arrow-down"></i>Put · compra</div>
                     <div class="ic-canvas"><canvas data-forma-put></canvas></div>
                   </div>
+                </div>
                 </div>
                 <div class="table-scroll">
                 <table class="forma-table">
@@ -2234,6 +2266,9 @@
         leaving._proConSeqToken = (leaving._proConSeqToken || 0) + 1;
         resetProConReveal(leaving);
       }
+      if (leaving && leaving.dataset.demo === 'straddle_forma') {
+        teardownFormaChartHover(leaving);
+      }
       animating = true;
       let direction = target > idx ? 1 : -1;
       if (idx === slides.length - 1 && target === 0) direction = 1;
@@ -2285,6 +2320,55 @@
       requestAnimationFrame(() => {
         try { chart.resize(); } catch (e) { /* noop */ }
       });
+    }
+
+    function teardownFormaChartHover(slideEl) {
+      if (!slideEl || typeof slideEl._formaHoverTeardown !== 'function') return;
+      slideEl._formaHoverTeardown();
+      slideEl._formaHoverTeardown = null;
+    }
+
+    function applyFormaChartDisplayMode(chart, compact) {
+      if (!chart?.options?.scales) return;
+      const o = chart.options;
+      const x = o.scales.x;
+      const y = o.scales.y;
+      x.border = x.border || {};
+      y.border = y.border || {};
+      if (compact) {
+        o.plugins.legend.display = false;
+        if (o.plugins.tooltip) o.plugins.tooltip.enabled = false;
+        x.title.display = false;
+        y.title.display = false;
+        x.ticks.maxTicksLimit = 4;
+        y.ticks.maxTicksLimit = 4;
+        x.ticks.font = Object.assign({}, x.ticks.font, { size: 7 });
+        y.ticks.font = Object.assign({}, y.ticks.font, { size: 7 });
+        x.ticks.color = '#8a8a96';
+        y.ticks.color = '#8a8a96';
+        x.grid.color = 'rgba(110, 110, 120, 0.07)';
+        y.grid.color = 'rgba(110, 110, 120, 0.07)';
+        x.border.display = false;
+        y.border.display = false;
+      } else {
+        o.plugins.legend.display = chart._formaShowLegend === true;
+        if (o.plugins.tooltip) o.plugins.tooltip.enabled = true;
+        x.title.display = true;
+        y.title.display = true;
+        delete x.ticks.maxTicksLimit;
+        delete y.ticks.maxTicksLimit;
+        x.ticks.font = Object.assign({}, x.ticks.font, { size: 10 });
+        y.ticks.font = Object.assign({}, y.ticks.font, { size: 10 });
+        x.ticks.color = '#b8b8c0';
+        y.ticks.color = '#b8b8c0';
+        x.grid.color = 'rgba(180, 180, 190, 0.09)';
+        y.grid.color = typeof chart._formaYGridFn === 'function'
+          ? chart._formaYGridFn
+          : (ctx) => (ctx.tick.value === 0 ? 'rgba(255,255,255,0.32)' : 'rgba(180, 180, 190, 0.09)');
+        x.border.display = true;
+        y.border.display = true;
+      }
+      chart.update(compact ? 0 : 220);
     }
 
     function basePayoffOptions({ minX, maxX, minY, maxY, title, hideLegend }) {
@@ -2357,6 +2441,7 @@
     }
 
     function activateForma(slideEl) {
+      teardownFormaChartHover(slideEl);
       const cComb = slideEl.querySelector('[data-forma-combined]');
       const cC = slideEl.querySelector('[data-forma-call]');
       const cP = slideEl.querySelector('[data-forma-put]');
@@ -2428,6 +2513,33 @@
       chartCache.set(cP, chP);
       scheduleChartResize(chC);
       scheduleChartResize(chP);
+
+      const charts = [chComb, chC, chP].filter(Boolean);
+      charts.forEach((ch) => {
+        ch._formaShowLegend = ch === chComb;
+        applyFormaChartDisplayMode(ch, true);
+      });
+
+      const zone = slideEl.querySelector('[data-forma-chart-zone]');
+      if (zone && charts.length) {
+        const onEnter = () => {
+          zone.classList.add('forma-charts-hover');
+          charts.forEach((c) => applyFormaChartDisplayMode(c, false));
+          charts.forEach(scheduleChartResize);
+        };
+        const onLeave = () => {
+          zone.classList.remove('forma-charts-hover');
+          charts.forEach((c) => applyFormaChartDisplayMode(c, true));
+          charts.forEach(scheduleChartResize);
+        };
+        zone.addEventListener('pointerenter', onEnter);
+        zone.addEventListener('pointerleave', onLeave);
+        slideEl._formaHoverTeardown = () => {
+          zone.removeEventListener('pointerenter', onEnter);
+          zone.removeEventListener('pointerleave', onLeave);
+          zone.classList.remove('forma-charts-hover');
+        };
+      }
     }
 
     function activateParticipantes(slideEl) {
