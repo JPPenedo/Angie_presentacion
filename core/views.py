@@ -1465,7 +1465,7 @@ def expo_sinteticos_view(request):
         {
             'titulo': 'Monitor de juguete (simulación)',
             'resumen_intro': (
-                'Es un tablero de demostración: cada diez segundos se sortea un precio del activo y se recalcula '
+                'Es un tablero de demostración: cada 2.5 segundos se sortea un precio del activo y se recalcula '
                 'el resultado del comprador del straddle como si ese fuera el precio al vencimiento.'
             ),
             'resumen_bullets': [
@@ -1479,13 +1479,13 @@ def expo_sinteticos_view(request):
                 'payoff de largo straddle como función del precio final, para fijar ideas.'
             ),
             'idea': (
-                'Es un tablero de demostración: cada 10 segundos el programa inventa un precio del activo, '
+                'Es un tablero de demostración: cada 2.5 segundos el programa inventa un precio del activo, '
                 'recalcula cuánto ganarías o perderías al vencimiento con ese precio y actualiza el '
                 'gráfico. No son precios reales de bolsa. Sirve para ver cómo “late” la idea del straddle '
                 'cuando el mercado se mueve.'
             ),
             'dato_clave': (
-                'Puedes pausar el reloj con el botón y leer con calma; al reanudar, vuelve el tick cada 10 s.'
+                'Puedes pausar el reloj con el botón y leer con calma; al reanudar, vuelve el tick cada 2.5 s.'
             ),
             'enfoque': (
                 'La línea roja sigue la ganancia o pérdida del straddle al precio simulado; la línea '
@@ -1493,7 +1493,7 @@ def expo_sinteticos_view(request):
             ),
             'conceptos': [
                 'Los números de arriba cambian con el precio simulado: spot, primas totales, resultado y distancia al equilibrio.',
-                'El eje horizontal son pasos de tiempo (cada paso = 10 segundos de simulación).',
+                'El eje horizontal son pasos de tiempo (cada paso = 2.5 segundos de simulación).',
                 'Si enseñas en vivo, pausa antes de preguntar al salón “¿qué creen que pasará en el siguiente tick?”.',
             ],
             'demo': 'straddle_live',

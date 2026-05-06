@@ -490,6 +490,30 @@
     .slide-visible-bullets li::marker {
       color: rgba(255, 120, 80, 0.85);
     }
+
+    /* Slides 1, 4 y 5: texto más grande y viñetas repartidas en la altura */
+    .slide[data-demo="straddle_para_que"] .slide-copy-zone,
+    .slide[data-demo="straddle_pro_con"] .slide-copy-zone,
+    .slide[data-demo="straddle_legs_vs_result"] .slide-copy-zone {
+      padding: 0.62rem 0.72rem 0.75rem;
+      gap: 0.52rem;
+    }
+    .slide[data-demo="straddle_para_que"] .slide-visible-lead,
+    .slide[data-demo="straddle_pro_con"] .slide-visible-lead,
+    .slide[data-demo="straddle_legs_vs_result"] .slide-visible-lead {
+      font-size: 0.98rem !important;
+      line-height: 1.56 !important;
+    }
+    .slide[data-demo="straddle_para_que"] .slide-visible-bullets,
+    .slide[data-demo="straddle_pro_con"] .slide-visible-bullets,
+    .slide[data-demo="straddle_legs_vs_result"] .slide-visible-bullets {
+      font-size: 0.91rem;
+      line-height: 1.52;
+      gap: 0.48rem;
+      flex: 1 1 auto;
+      justify-content: space-evenly;
+      padding: 0.15rem 0 0.2rem;
+    }
     .slide-detail-flyout {
       position: absolute;
       inset: 0;
@@ -881,6 +905,35 @@
       opacity: 0;
       transform: translateY(10px);
     }
+    /* Slide 4: revelado alternado verde / rojo (anula el stagger genérico) */
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown),
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown) {
+      opacity: 0 !important;
+      transform: translateY(16px) scale(0.97) !important;
+      animation: none !important;
+      filter: brightness(0.92);
+    }
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown)::after,
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown)::after {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip.is-pro-con-shown {
+      animation: proConChipProReveal 0.82s cubic-bezier(.22, 1, .36, 1) forwards !important;
+    }
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip.is-pro-con-shown {
+      animation: proConChipConReveal 0.82s cubic-bezier(.22, 1, .36, 1) forwards !important;
+    }
+    @keyframes proConChipProReveal {
+      0%   { opacity: 0; transform: translateY(18px) scale(0.96); box-shadow: 0 0 0 rgba(52, 211, 153, 0); }
+      55%  { opacity: 1; transform: translateY(-3px) scale(1.02); box-shadow: 0 0 26px rgba(52, 211, 153, 0.4); }
+      100% { opacity: 1; transform: translateY(0) scale(1); box-shadow: 0 0 12px rgba(52, 211, 153, 0.15); }
+    }
+    @keyframes proConChipConReveal {
+      0%   { opacity: 0; transform: translateY(18px) scale(0.96); box-shadow: 0 0 0 rgba(251, 113, 133, 0); }
+      55%  { opacity: 1; transform: translateY(-3px) scale(1.02); box-shadow: 0 0 26px rgba(251, 113, 133, 0.42); }
+      100% { opacity: 1; transform: translateY(0) scale(1); box-shadow: 0 0 12px rgba(251, 113, 133, 0.16); }
+    }
     .chip-list .pro-chip {
       color: #d8f5e8;
       border: 1px solid rgba(52,211,153,0.35);
@@ -907,6 +960,11 @@
                  chipAuraSoft 2.8s ease-in-out infinite;
       animation-delay: calc(1.32s + var(--i) * 0.1s), calc(1.9s + var(--i) * 0.08s);
     }
+    .slide.active .pro-con-grid--seq .chip-list .pro-chip,
+    .slide.active .pro-con-grid--seq .chip-list .con-chip {
+      animation: none;
+      animation-delay: 0s, 0s;
+    }
     .slide.active .chip-list .pro-chip::after {
       animation: chipShimmer 2.4s ease-in-out infinite;
       animation-delay: calc(1.85s + var(--i) * 0.1s);
@@ -914,6 +972,10 @@
     .slide.active .chip-list .con-chip::after {
       animation: chipShimmer 2.4s ease-in-out infinite;
       animation-delay: calc(1.85s + var(--i) * 0.1s);
+    }
+    .slide.active .pro-con-grid--seq .chip-list .pro-chip::after,
+    .slide.active .pro-con-grid--seq .chip-list .con-chip::after {
+      animation: none;
     }
     @keyframes chipRise {
       to { opacity: 1; transform: translateY(0); }
@@ -933,6 +995,13 @@
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
+      }
+      .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip,
+      .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        box-shadow: none !important;
       }
       .slide.active .concept-list .concept-chip {
         border-color: rgba(255,255,255,0.1);
@@ -992,21 +1061,36 @@
       min-height: 0;
     }
     .slide[data-demo="straddle_forma"] .forma-straddle-combined {
-      flex: 1.2 1 0;
-      min-height: 152px;
+      flex: 1 1 0;
+      min-height: 124px;
+      max-height: min(34vh, 200px);
+      margin-bottom: 0.28rem;
+    }
+    .slide[data-demo="straddle_forma"] .mini-demo > .payoff-legend {
+      flex-shrink: 0;
       margin-bottom: 0.15rem;
     }
     .slide[data-demo="straddle_forma"] .mini-demo .intro-grid.intro-grid--forma {
-      flex: 1 1 0;
+      flex: 1.25 1 0;
       min-height: 0;
-      margin-top: 0.28rem;
+      margin-top: 0.35rem;
+      gap: 0.72rem;
+    }
+    .slide[data-demo="straddle_forma"] .intro-card {
+      padding: 0.45rem 0.48rem 0.55rem;
     }
     .slide[data-demo="straddle_forma"] .intro-card .ic-canvas {
-      min-height: 108px;
+      min-height: 122px;
     }
     .slide[data-demo="straddle_forma"] .mini-demo .table-scroll {
       flex-shrink: 0;
-      margin-top: 0.32rem;
+      margin-top: 0.55rem;
+      padding-top: 0.42rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .slide[data-demo="straddle_forma"] .mini-demo {
+      overflow-x: hidden;
+      overflow-y: auto;
     }
     .intro-card {
       display: flex; flex-direction: column;
@@ -1366,7 +1450,7 @@
     .slide[data-demo="straddle_pro_con"] .pro-con-grid {
       flex: 1 1 0;
       min-height: 0;
-      overflow: hidden;
+      overflow: visible;
     }
 
     /* Tablas anchas: scroll horizontal dentro de la slide */
@@ -1455,6 +1539,12 @@
     }
     .pro-box li, .con-box li { margin: 0.2rem 0; }
     .pro-box ul.chip-list li, .con-box ul.chip-list li { margin: 0; }
+    .slide[data-demo="straddle_pro_con"] .chip-list .pro-chip,
+    .slide[data-demo="straddle_pro_con"] .chip-list .con-chip {
+      font-size: 0.82rem;
+      line-height: 1.42;
+      padding: 0.46rem 0.58rem 0.46rem 0.68rem;
+    }
 
     /* Long Straddle · tabla con revelado secuencial */
     .straddle-table-wrap {
@@ -1813,7 +1903,7 @@
                 {% endif %}
 
                 {% if s.demo == 'straddle_pro_con' %}
-                <div class="pro-con-grid">
+                <div class="pro-con-grid pro-con-grid--seq" data-pro-con-root>
                   <div class="pro-box">
                     <h4><i class="bi bi-check-circle me-1"></i>Ventajas</h4>
                     <ul class="chip-list">
@@ -1842,7 +1932,7 @@
                     </button>
                   </div>
                   <div class="live-tick-pills" aria-hidden="true">
-                    <span class="live-tick-pill on">Tick 10s</span>
+                    <span class="live-tick-pill on">Tick 2.5 s</span>
                     <span class="live-tick-pill">Spot simulado</span>
                     <span class="live-tick-pill">Resultado al vencimiento</span>
                   </div>
@@ -1865,7 +1955,7 @@
                     </div>
                   </div>
                   <div class="payoff-wrap live-chart-wrap"><canvas id="liveStraddleCanvas" data-live-straddle></canvas></div>
-                  <p class="live-foot" id="liveStatusFoot">Simulación pedagógica · próxima actualización en 10 s</p>
+                  <p class="live-foot" id="liveStatusFoot">Simulación pedagógica · próxima actualización en 2.5 s</p>
                 </div>
                 {% endif %}
               </div>
@@ -2140,6 +2230,10 @@
       if (leaving && leaving.dataset.demo === 'straddle_formulas') {
         resetStraddleFormulasSlide(leaving);
       }
+      if (leaving && leaving.dataset.demo === 'straddle_pro_con') {
+        leaving._proConSeqToken = (leaving._proConSeqToken || 0) + 1;
+        resetProConReveal(leaving);
+      }
       animating = true;
       let direction = target > idx ? 1 : -1;
       if (idx === slides.length - 1 && target === 0) direction = 1;
@@ -2193,7 +2287,7 @@
       });
     }
 
-    function basePayoffOptions({ minX, maxX, minY, maxY, title }) {
+    function basePayoffOptions({ minX, maxX, minY, maxY, title, hideLegend }) {
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -2201,7 +2295,7 @@
         interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: {
-            display: true,
+            display: !hideLegend,
             position: 'bottom',
             labels: { color: '#d2d2d8', font: { size: 10 }, boxWidth: 12, padding: 8 },
           },
@@ -2313,7 +2407,7 @@
             borderWidth: 2.4, pointRadius: 0, tension: 0.05,
           }],
         },
-        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
+        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30, hideLegend: true }),
       });
       chartCache.set(cC, chC);
 
@@ -2329,7 +2423,7 @@
             borderWidth: 2.4, pointRadius: 0, tension: 0.05,
           }],
         },
-        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30 }),
+        options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30, hideLegend: true }),
       });
       chartCache.set(cP, chP);
       scheduleChartResize(chC);
@@ -2454,6 +2548,7 @@
     }
 
     /* ---- Monitor simulado (última slide) ---- */
+    const LIVE_TICK_MS = 2500;
     let liveStraddleTimer = null;
     let liveCountdownTimer = null;
     let liveStraddleChart = null;
@@ -2461,7 +2556,7 @@
     let liveSpot = 0;
     let liveTickIndex = 0;
     let liveHistory = [];
-    let liveCountdownSec = 10;
+    let liveCountdownRemainMs = LIVE_TICK_MS;
     let livePauseBound = false;
 
     function disposeLiveStraddle() {
@@ -2479,9 +2574,9 @@
     }
 
     function liveChartOptions(yMin, yMax, xMax) {
-      const o = basePayoffOptions({ minX: 0, maxX: Math.max(4, xMax), minY: yMin, maxY: yMax, title: 'Ganancia o pérdida ($)' });
-      o.animation = { duration: 650, easing: 'easeOutCubic' };
-      o.scales.x.title.text = 'Tiempo (ticks de 10 s)';
+      const o = basePayoffOptions({ minX: 0, maxX: Math.max(6, xMax + 1), minY: yMin, maxY: yMax, title: 'Ganancia o pérdida ($)' });
+      o.animation = { duration: 520, easing: 'easeOutCubic' };
+      o.scales.x.title.text = 'Tiempo (ticks de 2.5 s)';
       o.plugins.tooltip.callbacks.title = (items) => 'Tick ' + items[0].parsed.x;
       return o;
     }
@@ -2513,9 +2608,8 @@
       const piS = straddlePayoff(liveSpot);
       const piC = longCallPayoff(liveSpot, STR.K, STR.c);
       liveHistory.push({ x: liveTickIndex, spot: liveSpot, piS, piC });
-      if (liveHistory.length > 14) liveHistory.shift();
       liveTickIndex += 1;
-      liveCountdownSec = 10;
+      liveCountdownRemainMs = LIVE_TICK_MS;
       refreshLiveKpis(liveSpot, piS);
       const ys = liveHistory.map((h) => h.piS);
       const yc = liveHistory.map((h) => h.piC);
@@ -2525,7 +2619,8 @@
       if (!liveStraddleChart) return;
       liveStraddleChart.data.datasets[0].data = liveHistory.map((h) => ({ x: h.x, y: h.piS }));
       liveStraddleChart.data.datasets[1].data = liveHistory.map((h) => ({ x: h.x, y: h.piC }));
-      liveStraddleChart.options.scales.x.max = Math.max(4, xMax + 0.5);
+      liveStraddleChart.options.scales.x.min = 0;
+      liveStraddleChart.options.scales.x.max = Math.max(6, xMax + 1);
       liveStraddleChart.options.scales.y.min = yMin;
       liveStraddleChart.options.scales.y.max = yMax;
       liveStraddleChart.update();
@@ -2534,7 +2629,7 @@
         const t = new Date();
         foot.textContent = 'Última actualización '
           + t.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-          + ' · próxima en 10 s';
+          + ' · próxima en 2.5 s';
       }
     }
 
@@ -2543,15 +2638,17 @@
       if (liveCountdownTimer) clearInterval(liveCountdownTimer);
       liveStraddleTimer = setInterval(() => {
         if (!livePaused) pushLiveTick();
-      }, 10000);
+      }, LIVE_TICK_MS);
       liveCountdownTimer = setInterval(() => {
         if (livePaused) return;
-        liveCountdownSec -= 1;
+        liveCountdownRemainMs -= 100;
+        if (liveCountdownRemainMs < 0) liveCountdownRemainMs = 0;
         const foot = document.getElementById('liveStatusFoot');
-        if (foot && liveCountdownSec > 0) {
-          foot.textContent = 'Próxima actualización en ' + liveCountdownSec + ' s';
+        if (foot) {
+          const s = (liveCountdownRemainMs / 1000).toFixed(1);
+          foot.textContent = 'Próxima actualización en ' + s + ' s';
         }
-      }, 1000);
+      }, 100);
     }
 
     function activateLiveStraddle() {
@@ -2564,7 +2661,7 @@
       liveSpot = STR.S0;
       liveTickIndex = 0;
       liveHistory = [{ x: 0, spot: liveSpot, piS: straddlePayoff(liveSpot), piC: longCallPayoff(liveSpot, STR.K, STR.c) }];
-      liveCountdownSec = 10;
+      liveCountdownRemainMs = LIVE_TICK_MS;
       refreshLiveKpis(liveSpot, liveHistory[0].piS);
 
       const canvas = document.getElementById('liveStraddleCanvas');
@@ -2621,15 +2718,48 @@
             if (liveCountdownTimer) { clearInterval(liveCountdownTimer); liveCountdownTimer = null; }
             if (foot) foot.textContent = 'Pausado · pulsa de nuevo para reanudar';
           } else {
-            liveCountdownSec = 10;
+            liveCountdownRemainMs = LIVE_TICK_MS;
             startLiveIntervals();
-            if (foot) foot.textContent = 'Próxima actualización en 10 s';
+            if (foot) foot.textContent = 'Próxima actualización en 2.5 s';
           }
         });
       }
       startLiveIntervals();
       const foot0 = document.getElementById('liveStatusFoot');
-      if (foot0) foot0.textContent = 'Próxima actualización en 10 s';
+      if (foot0) foot0.textContent = 'Próxima actualización en 2.5 s';
+    }
+
+    function resetProConReveal(slideEl) {
+      if (!slideEl) return;
+      slideEl.querySelectorAll('.pro-con-grid--seq .pro-chip, .pro-con-grid--seq .con-chip').forEach((el) => {
+        el.classList.remove('is-pro-con-shown');
+      });
+    }
+
+    async function runProConRevealSequence(slideEl) {
+      if (!slideEl || slideEl.dataset.demo !== 'straddle_pro_con') return;
+      resetProConReveal(slideEl);
+      const chips = slideEl.querySelectorAll('.pro-con-grid--seq .pro-chip, .pro-con-grid--seq .con-chip');
+      if (!chips.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        chips.forEach((el) => el.classList.add('is-pro-con-shown'));
+        return;
+      }
+      const runId = (slideEl._proConSeqToken = (slideEl._proConSeqToken || 0) + 1);
+      const pros = Array.from(slideEl.querySelectorAll('.pro-con-grid--seq .pro-chip'));
+      const cons = Array.from(slideEl.querySelectorAll('.pro-con-grid--seq .con-chip'));
+      const order = [];
+      const n = Math.max(pros.length, cons.length);
+      for (let i = 0; i < n; i += 1) {
+        if (pros[i]) order.push(pros[i]);
+        if (cons[i]) order.push(cons[i]);
+      }
+      const stepMs = 500;
+      for (let i = 0; i < order.length; i += 1) {
+        await new Promise((r) => setTimeout(r, i === 0 ? 280 : stepMs));
+        if (slideEl._proConSeqToken !== runId) return;
+        order[i].classList.add('is-pro-con-shown');
+      }
     }
 
     function activateDemo(slideEl) {
@@ -2638,7 +2768,7 @@
       if (demo === 'straddle_para_que')    activateParaQue(slideEl);
       if (demo === 'straddle_forma')       activateForma(slideEl);
       if (demo === 'straddle_participantes') activateParticipantes(slideEl);
-      if (demo === 'straddle_pro_con')     { /* solo HTML */ }
+      if (demo === 'straddle_pro_con')     runProConRevealSequence(slideEl);
       if (demo === 'straddle_legs_vs_result') activateLegsVsResult(slideEl);
       if (demo === 'straddle_formulas')     startStraddleFormulasSequence(slideEl);
       if (demo === 'straddle_live')        activateLiveStraddle();
