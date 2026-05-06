@@ -991,16 +991,22 @@
       flex: 1 1 0;
       min-height: 0;
     }
+    .slide[data-demo="straddle_forma"] .forma-straddle-combined {
+      flex: 1.2 1 0;
+      min-height: 152px;
+      margin-bottom: 0.15rem;
+    }
     .slide[data-demo="straddle_forma"] .mini-demo .intro-grid.intro-grid--forma {
-      order: 1;
       flex: 1 1 0;
       min-height: 0;
-      margin-top: 0.2rem !important;
+      margin-top: 0.28rem;
+    }
+    .slide[data-demo="straddle_forma"] .intro-card .ic-canvas {
+      min-height: 108px;
     }
     .slide[data-demo="straddle_forma"] .mini-demo .table-scroll {
-      order: 2;
       flex-shrink: 0;
-      margin-top: 0.25rem;
+      margin-top: 0.32rem;
     }
     .intro-card {
       display: flex; flex-direction: column;
@@ -1462,20 +1468,20 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      font-size: 0.74rem;
+      font-size: 0.88rem;
     }
     .straddle-formula-row {
       display: grid;
-      grid-template-columns: minmax(100px, 38%) 1fr;
-      gap: 0.45rem 0.55rem;
+      grid-template-columns: minmax(120px, 34%) 1fr;
+      gap: 0.5rem 0.65rem;
       align-items: center;
-      padding: 0.38rem 0.45rem;
+      padding: 0.48rem 0.5rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       position: relative;
       opacity: 0;
       visibility: hidden;
       transform-origin: center center;
-      min-height: 2rem;
+      min-height: 2.55rem;
       z-index: 1;
       will-change: auto;
     }
@@ -1491,14 +1497,15 @@
     .straddle-formula-label {
       color: var(--muted);
       font-weight: 600;
-      font-size: 0.68rem;
+      font-size: 0.78rem;
       letter-spacing: 0.02em;
-      line-height: 1.35;
+      line-height: 1.38;
     }
     .straddle-formula-value {
       color: #ececec;
       font-family: "Inter", "Cambria Math", "Latin Modern Math", "Segoe UI", serif;
-      line-height: 1.4;
+      font-size: 0.95rem;
+      line-height: 1.45;
     }
     .straddle-formula-row.straddle-shimmer {
       z-index: 8;
@@ -1549,7 +1556,11 @@
       40%  { opacity: 1; }
       100% { opacity: 0; transform: scale(1.04); }
     }
-    .straddle-formula-value .katex { font-size: 0.92em; color: #faf6f2; }
+    .straddle-formula-value .katex {
+      font-size: 1.28rem !important;
+      color: #faf6f2;
+    }
+    .straddle-formula-value .katex-display { margin: 0.35rem 0; }
     @media (max-width: 520px) {
       .straddle-formula-row {
         grid-template-columns: 1fr;
@@ -1682,6 +1693,23 @@
                 {% endif %}
 
                 {% if s.demo == 'straddle_forma' %}
+                <div class="forma-straddle-combined payoff-wrap">
+                  <canvas data-forma-combined></canvas>
+                </div>
+                <div class="payoff-legend">
+                  <span class="pl-chip mid">Straddle combinado al vencer (call + put − c − p)</span>
+                  <span class="pl-chip">Mínimo en K = {{ ejemplo.K }} · costo c + p = {{ ejemplo.premio_total }}</span>
+                </div>
+                <div class="intro-grid intro-grid--forma">
+                  <div class="intro-card call">
+                    <div class="ic-title"><i class="bi bi-arrow-up"></i>Call · compra</div>
+                    <div class="ic-canvas"><canvas data-forma-call></canvas></div>
+                  </div>
+                  <div class="intro-card put">
+                    <div class="ic-title"><i class="bi bi-arrow-down"></i>Put · compra</div>
+                    <div class="ic-canvas"><canvas data-forma-put></canvas></div>
+                  </div>
+                </div>
                 <div class="table-scroll">
                 <table class="forma-table">
                   <thead>
@@ -1702,16 +1730,6 @@
                     </tr>
                   </tbody>
                 </table>
-                </div>
-                <div class="intro-grid intro-grid--forma">
-                  <div class="intro-card call">
-                    <div class="ic-title"><i class="bi bi-arrow-up"></i>Call · compra</div>
-                    <div class="ic-canvas"><canvas data-forma-call></canvas></div>
-                  </div>
-                  <div class="intro-card put">
-                    <div class="ic-title"><i class="bi bi-arrow-down"></i>Put · compra</div>
-                    <div class="ic-canvas"><canvas data-forma-put></canvas></div>
-                  </div>
                 </div>
                 {% endif %}
 
@@ -2245,14 +2263,43 @@
     }
 
     function activateForma(slideEl) {
+      const cComb = slideEl.querySelector('[data-forma-combined]');
       const cC = slideEl.querySelector('[data-forma-call]');
       const cP = slideEl.querySelector('[data-forma-put]');
       if (!cC || !cP || typeof Chart === 'undefined') return;
+      destroyIfAny(cComb);
       destroyIfAny(cC); destroyIfAny(cP);
       const K = STR.K, c = STR.c, p = STR.p;
-      const xs = linspace(70, 130, 61);
-      const callData = xs.map(st => ({ x: st, y: longCallPayoff(st, K, c) }));
-      const putData  = xs.map(st => ({ x: st, y: longPutPayoff(st,  K, p) }));
+      const lo = 70, hi = 130;
+      const xs = linspace(lo, hi, 81);
+
+      if (cComb) {
+        const comb = xs.map(st => ({ x: st, y: straddlePayoff(st) }));
+        const yMin = straddlePayoff(K) - 4;
+        const yMax = Math.max(straddlePayoff(lo), straddlePayoff(hi)) + 5;
+        const chComb = new Chart(cComb, {
+          type: 'line',
+          data: {
+            datasets: [{
+              label: 'Straddle largo (combinado)',
+              data: comb,
+              borderColor: 'rgba(255,55,20,1)',
+              backgroundColor: 'rgba(255,55,20,0.14)',
+              borderWidth: 2.9,
+              tension: 0,
+              pointRadius: 0,
+              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.18)', below: 'rgba(255,70,100,0.22)' },
+            }],
+          },
+          options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff straddle al vencer ($)' }),
+        });
+        chartCache.set(cComb, chComb);
+        scheduleChartResize(chComb);
+      }
+
+      const xsLegs = linspace(70, 130, 61);
+      const callData = xsLegs.map(st => ({ x: st, y: longCallPayoff(st, K, c) }));
+      const putData  = xsLegs.map(st => ({ x: st, y: longPutPayoff(st,  K, p) }));
 
       const chC = new Chart(cC, {
         type: 'line',
