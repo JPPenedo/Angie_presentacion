@@ -912,12 +912,13 @@
     .chip-list .con-chip {
       position: relative;
       overflow: hidden;
-      font-size: 0.78rem;
-      line-height: 1.4;
-      padding: 0.4rem 0.55rem 0.4rem 0.65rem;
+      font-size: 0.81rem;
+      line-height: 1.42;
+      padding: 0.42rem 0.58rem 0.42rem 0.68rem;
       border-radius: 0.45rem;
       opacity: 0;
       transform: translateY(10px);
+      font-weight: 600;
     }
     /* Slide 4: revelado alternado verde / rojo (anula el stagger genérico) */
     .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown),
@@ -955,14 +956,14 @@
       100% { opacity: 1; transform: translateY(0) scale(1); box-shadow: 0 0 12px rgba(251, 113, 133, 0.16); }
     }
     .chip-list .pro-chip {
-      color: #d8f5e8;
-      border: 1px solid rgba(52,211,153,0.35);
-      background: linear-gradient(120deg, rgba(16,185,129,0.12), rgba(0,0,0,0.2));
+      color: #144a36;
+      border: 1px solid rgba(28, 150, 104, 0.45);
+      background: linear-gradient(120deg, rgba(72, 196, 145, 0.26), rgba(255,255,255,0.78));
     }
     .chip-list .con-chip {
-      color: #fde8ec;
-      border: 1px solid rgba(251,113,133,0.38);
-      background: linear-gradient(120deg, rgba(251,113,133,0.12), rgba(0,0,0,0.2));
+      color: #6f1e2a;
+      border: 1px solid rgba(231, 92, 112, 0.48);
+      background: linear-gradient(120deg, rgba(247, 130, 145, 0.28), rgba(255,255,255,0.8));
     }
     .chip-list .pro-chip::after,
     .chip-list .con-chip::after {
@@ -1701,12 +1702,12 @@
       line-height: 1.4;
     }
     .pro-box {
-      border: 1px solid rgba(52,211,153,0.35);
-      background: rgba(52,211,153,0.08);
+      border: 1px solid rgba(28, 150, 104, 0.4);
+      background: rgba(224, 250, 238, 0.8);
     }
     .con-box {
-      border: 1px solid rgba(248,113,113,0.35);
-      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(231, 92, 112, 0.42);
+      background: rgba(255, 233, 237, 0.82);
     }
     .pro-box h4, .con-box h4 {
       margin: 0 0 0.35rem;
@@ -1719,7 +1720,7 @@
     .pro-box ul, .con-box ul {
       margin: 0;
       padding-left: 1.1rem;
-      color: #d4cdc6;
+      color: #3f3129;
     }
     .pro-box ul.chip-list, .con-box ul.chip-list {
       padding-left: 0;
@@ -1754,7 +1755,10 @@
       gap: 0.5rem 0.65rem;
       align-items: center;
       padding: 0.48rem 0.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      border-bottom: 1px solid rgba(166, 126, 104, 0.28);
+      background: linear-gradient(180deg, rgba(255, 250, 244, 0.85), rgba(255, 244, 234, 0.76));
+      border-radius: 0.45rem;
+      margin-bottom: 0.16rem;
       position: relative;
       opacity: 0;
       visibility: hidden;
@@ -1773,16 +1777,16 @@
       will-change: transform, opacity, filter;
     }
     .straddle-formula-label {
-      color: var(--muted);
+      color: #5c463b;
       font-weight: 600;
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       letter-spacing: 0.02em;
       line-height: 1.38;
     }
     .straddle-formula-value {
-      color: #ececec;
+      color: #2e221c;
       font-family: "Inter", "Cambria Math", "Latin Modern Math", "Segoe UI", serif;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
       line-height: 1.45;
     }
     .straddle-formula-row.straddle-shimmer {
@@ -1836,7 +1840,7 @@
     }
     .straddle-formula-value .katex {
       font-size: 1.28rem !important;
-      color: #faf6f2;
+      color: #2e221c;
     }
     .straddle-formula-value .katex-display { margin: 0.35rem 0; }
     @media (max-width: 520px) {
