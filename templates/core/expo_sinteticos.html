@@ -907,21 +907,27 @@
     }
     /* Slide 4: revelado alternado verde / rojo (anula el stagger genérico) */
     .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown),
-    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown) {
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown),
+    .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown),
+    .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown) {
       opacity: 0 !important;
       transform: translateY(16px) scale(0.97) !important;
       animation: none !important;
       filter: brightness(0.92);
     }
     .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown)::after,
-    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown)::after {
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown)::after,
+    .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .pro-chip:not(.is-pro-con-shown)::after,
+    .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .con-chip:not(.is-pro-con-shown)::after {
       animation: none !important;
       opacity: 0 !important;
     }
-    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip.is-pro-con-shown {
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip.is-pro-con-shown,
+    .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .pro-chip.is-pro-con-shown {
       animation: proConChipProReveal 0.82s cubic-bezier(.22, 1, .36, 1) forwards !important;
     }
-    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip.is-pro-con-shown {
+    .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip.is-pro-con-shown,
+    .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .con-chip.is-pro-con-shown {
       animation: proConChipConReveal 0.82s cubic-bezier(.22, 1, .36, 1) forwards !important;
     }
     @keyframes proConChipProReveal {
@@ -997,7 +1003,9 @@
         transform: none !important;
       }
       .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .pro-chip,
-      .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip {
+      .slide.active[data-demo="straddle_pro_con"] .pro-con-grid--seq .chip-list .con-chip,
+      .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .pro-chip,
+      .slide.active[data-demo="straddle_sell_pro_con"] .pro-con-grid--seq .chip-list .con-chip {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
@@ -1452,6 +1460,7 @@
     }
     .slide[data-demo="straddle_para_que"] .grid-2 > div:first-child p,
     .slide[data-demo="straddle_pro_con"] .grid-2 > div:first-child p,
+    .slide[data-demo="straddle_sell_pro_con"] .grid-2 > div:first-child p,
     .slide[data-demo="straddle_legs_vs_result"] .grid-2 > div:first-child p {
       font-size: 0.8rem;
       line-height: 1.34;
@@ -1459,6 +1468,7 @@
     }
     .slide[data-demo="straddle_para_que"] .grid-2 > div:first-child .insight-strip,
     .slide[data-demo="straddle_pro_con"] .grid-2 > div:first-child .insight-strip,
+    .slide[data-demo="straddle_sell_pro_con"] .grid-2 > div:first-child .insight-strip,
     .slide[data-demo="straddle_legs_vs_result"] .grid-2 > div:first-child .insight-strip {
       margin-top: 0.28rem;
       padding: 0.38rem 0.5rem;
@@ -1467,6 +1477,7 @@
     }
     .slide[data-demo="straddle_para_que"] .concept-list,
     .slide[data-demo="straddle_pro_con"] .concept-list,
+    .slide[data-demo="straddle_sell_pro_con"] .concept-list,
     .slide[data-demo="straddle_legs_vs_result"] .concept-list {
       flex: 1 1 0;
       min-height: 0;
@@ -1497,6 +1508,25 @@
       min-height: 0;
       overflow: visible;
     }
+    .slide[data-demo="straddle_sell_pro_con"] .pro-con-grid {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow: visible;
+    }
+    .slide[data-demo="straddle_sell_pro_con"] .slide-copy-zone {
+      min-height: 100%;
+      padding: 0.68rem 0.74rem;
+    }
+    .slide[data-demo="straddle_sell_pro_con"] .slide-visible-lead {
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin-bottom: 0.5rem;
+    }
+    .slide[data-demo="straddle_sell_pro_con"] .slide-visible-bullets {
+      font-size: 0.86rem;
+      line-height: 1.5;
+      gap: 0.42rem;
+    }
 
     /* Tablas anchas: scroll horizontal dentro de la slide */
     .table-scroll {
@@ -1513,6 +1543,52 @@
       font-size: 0.65rem;
       color: var(--muted);
       text-align: center;
+    }
+    .live-variance-box {
+      display: flex;
+      align-items: center;
+      gap: 0.32rem;
+      margin: 0.2rem 0 0.28rem;
+      flex-wrap: wrap;
+    }
+    .live-variance-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-right: 0.06rem;
+    }
+    .live-var-btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.35);
+      color: var(--text);
+      border-radius: 0.45rem;
+      width: 1.55rem;
+      height: 1.45rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      transition: border-color .18s ease, transform .18s ease, background .18s ease;
+    }
+    .live-var-btn:hover {
+      border-color: rgba(255,120,80,0.5);
+      background: rgba(255,80,30,0.12);
+      transform: translateY(-1px);
+    }
+    .live-var-value {
+      font-size: 0.78rem;
+      font-weight: 700;
+      min-width: 3.5rem;
+      text-align: center;
+      color: #ffd8ca;
+      background: rgba(255,85,45,0.12);
+      border: 1px solid rgba(255,85,45,0.28);
+      border-radius: 0.45rem;
+      padding: 0.16rem 0.38rem;
+      font-variant-numeric: tabular-nums;
     }
 
     /* Tabla “cómo se forma” */
@@ -1988,6 +2064,12 @@
                     <button type="button" class="live-pause-btn" id="liveStraddlePause" aria-pressed="false" title="Pausar o reanudar actualización">
                       <i class="bi bi-pause-fill" id="liveStraddlePauseIcon" aria-hidden="true"></i>
                     </button>
+                  </div>
+                  <div class="live-variance-box">
+                    <span class="live-variance-label">Desviación simulada</span>
+                    <button type="button" class="live-var-btn" id="liveVarDown" title="Disminuir desviación">↓</button>
+                    <span class="live-var-value" id="liveVarValue">1.0x</span>
+                    <button type="button" class="live-var-btn" id="liveVarUp" title="Aumentar desviación">↑</button>
                   </div>
                   <div class="live-tick-pills" aria-hidden="true">
                     <span class="live-tick-pill on">Tick 2.5 s</span>
@@ -2796,6 +2878,17 @@
     let liveHistory = [];
     let liveCountdownRemainMs = LIVE_TICK_MS;
     let livePauseBound = false;
+    let liveVarBound = false;
+    let liveVolMult = 1.0;
+    const LIVE_STEP_BASE = 7;
+    const LIVE_VOL_MIN = 0.4;
+    const LIVE_VOL_MAX = 2.6;
+    const LIVE_VOL_STEP = 0.2;
+
+    function refreshLiveVarUi() {
+      const el = document.getElementById('liveVarValue');
+      if (el) el.textContent = liveVolMult.toFixed(1) + 'x';
+    }
 
     function disposeLiveStraddle() {
       if (liveStraddleTimer) {
@@ -2854,7 +2947,7 @@
     }
 
     function pushLiveTick() {
-      liveSpot += (Math.random() - 0.5) * 7;
+      liveSpot += (Math.random() - 0.5) * LIVE_STEP_BASE * liveVolMult;
       liveSpot = Math.min(STR.K + 26, Math.max(STR.K - 26, liveSpot));
       const piS = straddlePayoff(liveSpot);
       const piSell = -piS;
@@ -2996,6 +3089,20 @@
           }
         });
       }
+      const btnDown = document.getElementById('liveVarDown');
+      const btnUp = document.getElementById('liveVarUp');
+      if (btnDown && btnUp && !liveVarBound) {
+        liveVarBound = true;
+        btnDown.addEventListener('click', () => {
+          liveVolMult = Math.max(LIVE_VOL_MIN, +(liveVolMult - LIVE_VOL_STEP).toFixed(1));
+          refreshLiveVarUi();
+        });
+        btnUp.addEventListener('click', () => {
+          liveVolMult = Math.min(LIVE_VOL_MAX, +(liveVolMult + LIVE_VOL_STEP).toFixed(1));
+          refreshLiveVarUi();
+        });
+      }
+      refreshLiveVarUi();
       startLiveIntervals();
       const foot0 = document.getElementById('liveStatusFoot');
       if (foot0) foot0.textContent = 'Próxima actualización en 2.5 s';
