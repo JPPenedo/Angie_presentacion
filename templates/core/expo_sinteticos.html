@@ -24,12 +24,12 @@
     :root {
       --bg: #fff9f3;
       --navy: #ffd7bf;
-      --card: #fffdf9;
-      --card-alt: #fff8f1;
+      --card: #fff6ee;
+      --card-alt: #fff1e6;
       --border: rgba(255,120,70,0.42);
-      --accent: #ff5a1f;
-      --accent-2: #ff844d;
-      --accent-soft: #ff8f62;
+      --accent: #ff4b12;
+      --accent-2: #ff7738;
+      --accent-soft: #ff7e48;
       --ember-glow: rgba(255, 90, 40, 0.35);
       --nebula: rgba(255, 180, 130, 0.25);
       --deep-blue: rgba(255, 200, 165, 0.2);
@@ -285,7 +285,7 @@
         radial-gradient(480px 280px at 90% 85%, rgba(255,188,145,0.22), transparent 55%),
         linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.1) 42%),
         var(--card);
-      border: 1px solid rgba(255,120,70,0.34);
+      border: 1px solid rgba(255,120,70,0.42);
       border-radius: 1rem;
       padding: 0.9rem;
       overflow: hidden;
@@ -461,8 +461,8 @@
     .slide-copy-zone {
       border-radius: 0.65rem;
       padding: 0.55rem 0.62rem 0.58rem;
-      background: rgba(255, 255, 255, 0.56);
-      border: 1px solid rgba(255, 125, 75, 0.38);
+      background: rgba(255, 248, 241, 0.9);
+      border: 1px solid rgba(255, 122, 68, 0.46);
       outline: none;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
       flex: 1 1 auto;
@@ -1041,8 +1041,8 @@
     /* ---------- MINI DEMO ---------- */
     .mini-demo {
       position: relative;
-      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,243,232,0.86));
-      border: 1px solid rgba(255,120,75,0.38);
+      background: linear-gradient(180deg, rgba(255,251,246,0.95), rgba(255,239,226,0.94));
+      border: 1px solid rgba(255,118,65,0.44);
       border-radius: 0.75rem;
       padding: 0.6rem 0.65rem;
       flex: 1 1 auto;
@@ -1325,8 +1325,8 @@
       flex-direction: column;
       flex: 1 1 auto;
       min-height: 0;
-      background: linear-gradient(165deg, rgba(255,255,255,0.9), rgba(255,245,235,0.96));
-      border: 1px solid rgba(255,120,75,0.32);
+      background: linear-gradient(165deg, rgba(255,252,248,0.98), rgba(255,240,226,0.98));
+      border: 1px solid rgba(255,118,65,0.4);
       border-radius: 0.75rem;
       padding: 0.55rem 0.6rem 0.65rem;
       box-shadow:
@@ -1400,8 +1400,8 @@
       .live-kpi-row { grid-template-columns: repeat(4, 1fr); }
     }
     .live-kpi {
-      background: rgba(255,255,255,0.62);
-      border: 1px solid rgba(255,140,90,0.2);
+      background: rgba(255,250,245,0.9);
+      border: 1px solid rgba(255,130,80,0.28);
       border-radius: 0.55rem;
       padding: 0.4rem 0.5rem;
     }
@@ -2609,7 +2609,7 @@
           legend: {
             display: !hideLegend,
             position: 'bottom',
-            labels: { color: '#d2d2d8', font: { size: 10 }, boxWidth: 12, padding: 8 },
+            labels: { color: '#3f3129', font: { size: 10, weight: '600' }, boxWidth: 12, padding: 8 },
           },
           tooltip: {
             callbacks: {
@@ -2622,18 +2622,18 @@
           x: {
             type: 'linear',
             min: minX, max: maxX,
-            grid: { color: 'rgba(180, 180, 190, 0.09)' },
-            ticks: { color: '#b8b8c0', font: { size: 10 } },
+            grid: { color: 'rgba(125, 105, 90, 0.22)' },
+            ticks: { color: '#4f3f35', font: { size: 10, weight: '600' } },
             title: { display: true, text: 'Precio final del activo ($)',
-                     color: '#b8b8c0', font: { size: 10 } },
+                     color: '#4f3f35', font: { size: 10, weight: '600' } },
           },
           y: {
             min: minY, max: maxY,
-            grid: { color: (ctx) => (ctx.tick.value === 0 ? 'rgba(255,255,255,0.32)' : 'rgba(180, 180, 190, 0.09)') },
-            ticks: { color: '#b8b8c0', font: { size: 10 },
+            grid: { color: (ctx) => (ctx.tick.value === 0 ? 'rgba(110,95,84,0.48)' : 'rgba(125,105,90,0.2)') },
+            ticks: { color: '#4f3f35', font: { size: 10, weight: '600' },
                      callback: (v) => (v >= 0 ? '+' : '') + '$' + v },
             title: { display: true, text: title || 'Resultado ($)',
-                     color: '#b8b8c0', font: { size: 10 } },
+                     color: '#4f3f35', font: { size: 10, weight: '600' } },
           },
         },
       };
@@ -3099,21 +3099,21 @@
             {
               label: 'Buy Straddle (precio simulado)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piS })),
-              borderColor: 'rgba(255,55,20,1)',
-              backgroundColor: 'rgba(255,55,20,0.12)',
-              borderWidth: 2.8,
+              borderColor: 'rgba(230,72,24,1)',
+              backgroundColor: 'rgba(230,72,24,0.16)',
+              borderWidth: 3.0,
               tension: 0.25,
               pointRadius: 0,
               pointHoverRadius: 0,
-              fill: { target: { value: 0 }, above: 'rgba(255,70,40,0.2)', below: 'rgba(255,90,110,0.16)' },
+              fill: { target: { value: 0 }, above: 'rgba(230,72,24,0.24)', below: 'rgba(220,84,94,0.18)' },
             },
             {
               label: 'Sell Straddle (inverso)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piSell })),
-              borderColor: 'rgba(110, 235, 155, 0.95)',
-              backgroundColor: 'rgba(110, 235, 155, 0.10)',
+              borderColor: 'rgba(30, 142, 95, 0.98)',
+              backgroundColor: 'rgba(30, 142, 95, 0.12)',
               borderDash: [4, 3],
-              borderWidth: 2.3,
+              borderWidth: 2.5,
               tension: 0.2,
               pointRadius: 0,
               fill: false,
@@ -3121,9 +3121,9 @@
             {
               label: 'Solo call (referencia)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piC })),
-              borderColor: 'rgba(175,155,255,0.95)',
+              borderColor: 'rgba(90, 96, 195, 0.98)',
               borderDash: [6, 4],
-              borderWidth: 2.1,
+              borderWidth: 2.3,
               tension: 0.2,
               pointRadius: 0,
               fill: false,
