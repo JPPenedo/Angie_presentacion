@@ -3153,7 +3153,8 @@
     }
 
     async function runProConRevealSequence(slideEl) {
-      if (!slideEl || slideEl.dataset.demo !== 'straddle_pro_con') return;
+      if (!slideEl) return;
+      if (slideEl.dataset.demo !== 'straddle_pro_con' && slideEl.dataset.demo !== 'straddle_sell_pro_con') return;
       resetProConReveal(slideEl);
       const chips = slideEl.querySelectorAll('.pro-con-grid--seq .pro-chip, .pro-con-grid--seq .con-chip');
       if (!chips.length) return;
