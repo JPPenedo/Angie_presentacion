@@ -1992,7 +1992,7 @@
                   <div class="live-tick-pills" aria-hidden="true">
                     <span class="live-tick-pill on">Tick 2.5 s</span>
                     <span class="live-tick-pill">Spot simulado</span>
-                    <span class="live-tick-pill">Resultado al vencimiento</span>
+                    <span class="live-tick-pill">Buy y Sell al vencimiento</span>
                   </div>
                   <div class="live-kpi-row">
                     <div class="live-kpi">
@@ -2004,7 +2004,7 @@
                       <span class="live-kpi-v" id="livePremVal">—</span>
                     </div>
                     <div class="live-kpi">
-                      <span class="live-kpi-l">Resultado comprador (a ese precio)</span>
+                      <span class="live-kpi-l">Resultado buy (mismo precio)</span>
                       <span class="live-kpi-v" id="livePiVal">—</span>
                     </div>
                     <div class="live-kpi">
@@ -2016,7 +2016,7 @@
                   <p class="live-foot" id="liveStatusFoot">Simulación pedagógica · próxima actualización en 2.5 s</p>
                 <div class="live-kpi-row">
                   <div class="live-kpi">
-                    <span class="live-kpi-l">Resultado vendedor (mismo precio)</span>
+                    <span class="live-kpi-l">Resultado sell (mismo precio)</span>
                     <span class="live-kpi-v" id="liveSellPiVal">—</span>
                   </div>
                   <div class="live-kpi">
@@ -2857,19 +2857,22 @@
       liveSpot += (Math.random() - 0.5) * 7;
       liveSpot = Math.min(STR.K + 26, Math.max(STR.K - 26, liveSpot));
       const piS = straddlePayoff(liveSpot);
+      const piSell = -piS;
       const piC = longCallPayoff(liveSpot, STR.K, STR.c);
-      liveHistory.push({ x: liveTickIndex, spot: liveSpot, piS, piC });
+      liveHistory.push({ x: liveTickIndex, spot: liveSpot, piS, piSell, piC });
       liveTickIndex += 1;
       liveCountdownRemainMs = LIVE_TICK_MS;
       refreshLiveKpis(liveSpot, piS);
       const ys = liveHistory.map((h) => h.piS);
+      const ySell = liveHistory.map((h) => h.piSell);
       const yc = liveHistory.map((h) => h.piC);
-      const yMin = Math.min(...ys, ...yc, -12) - 1;
-      const yMax = Math.max(...ys, ...yc, 12) + 1;
+      const yMin = Math.min(...ys, ...ySell, ...yc, -12) - 1;
+      const yMax = Math.max(...ys, ...ySell, ...yc, 12) + 1;
       const xMax = liveHistory[liveHistory.length - 1].x;
       if (!liveStraddleChart) return;
       liveStraddleChart.data.datasets[0].data = liveHistory.map((h) => ({ x: h.x, y: h.piS }));
-      liveStraddleChart.data.datasets[1].data = liveHistory.map((h) => ({ x: h.x, y: h.piC }));
+      liveStraddleChart.data.datasets[1].data = liveHistory.map((h) => ({ x: h.x, y: h.piSell }));
+      liveStraddleChart.data.datasets[2].data = liveHistory.map((h) => ({ x: h.x, y: h.piC }));
       liveStraddleChart.options.scales.x.min = 0;
       liveStraddleChart.options.scales.x.max = Math.max(6, xMax + 1);
       liveStraddleChart.options.scales.y.min = yMin;
@@ -2911,7 +2914,13 @@
       if (pIcon) pIcon.className = 'bi bi-pause-fill';
       liveSpot = STR.S0;
       liveTickIndex = 0;
-      liveHistory = [{ x: 0, spot: liveSpot, piS: straddlePayoff(liveSpot), piC: longCallPayoff(liveSpot, STR.K, STR.c) }];
+      liveHistory = [{
+        x: 0,
+        spot: liveSpot,
+        piS: straddlePayoff(liveSpot),
+        piSell: shortStraddlePayoff(liveSpot),
+        piC: longCallPayoff(liveSpot, STR.K, STR.c),
+      }];
       liveCountdownRemainMs = LIVE_TICK_MS;
       refreshLiveKpis(liveSpot, liveHistory[0].piS);
 
@@ -2919,15 +2928,16 @@
       if (!canvas || typeof Chart === 'undefined') return;
 
       const ys = liveHistory.map((h) => h.piS);
-      const yMin = Math.min(...ys, -10) - 2;
-      const yMax = Math.max(...ys, 10) + 2;
+      const ySell = liveHistory.map((h) => h.piSell);
+      const yMin = Math.min(...ys, ...ySell, -10) - 2;
+      const yMax = Math.max(...ys, ...ySell, 10) + 2;
 
       liveStraddleChart = new Chart(canvas, {
         type: 'line',
         data: {
           datasets: [
             {
-              label: 'Straddle (precio simulado)',
+              label: 'Buy Straddle (precio simulado)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piS })),
               borderColor: 'rgba(255,55,20,1)',
               backgroundColor: 'rgba(255,55,20,0.12)',
@@ -2937,6 +2947,17 @@
               pointBackgroundColor: '#ffffff',
               pointBorderColor: 'rgba(255,55,20,1)',
               fill: { target: { value: 0 }, above: 'rgba(255,70,40,0.2)', below: 'rgba(255,90,110,0.16)' },
+            },
+            {
+              label: 'Sell Straddle (inverso)',
+              data: liveHistory.map((h) => ({ x: h.x, y: h.piSell })),
+              borderColor: 'rgba(110, 235, 155, 0.95)',
+              backgroundColor: 'rgba(110, 235, 155, 0.10)',
+              borderDash: [4, 3],
+              borderWidth: 2.3,
+              tension: 0.2,
+              pointRadius: 0,
+              fill: false,
             },
             {
               label: 'Solo call (referencia)',

@@ -1533,11 +1533,13 @@ def expo_sinteticos_view(request):
                 'Cobras primas al inicio y tu mejor zona está alrededor del strike.',
                 'No exige acertar si sube o baja; te importa que no se dispare el movimiento.',
                 'Misma estructura de dos contratos con K y T iguales: fácil de explicar en espejo con el long.',
+                'Si el subyacente se queda en rango, el paso del tiempo suele jugar a favor del vendedor.',
             ],
             'desventajas': [
                 'Riesgo alto en movimientos extremos, especialmente en subidas fuertes.',
                 'Requiere margen y disciplina de gestión de riesgo.',
                 'Eventos inesperados y saltos de volatilidad pueden deteriorar rápido la posición.',
+                'Una mala gestión del riesgo puede borrar varias primas cobradas en poco tiempo.',
             ],
             'demo': 'straddle_sell_pro_con',
         },
@@ -1545,12 +1547,12 @@ def expo_sinteticos_view(request):
             'titulo': 'Monitor de juguete (simulación)',
             'resumen_intro': (
                 'Es un tablero de demostración: cada 2.5 segundos se sortea un precio del activo y se recalcula '
-                'el resultado del comprador del straddle como si ese fuera el precio al vencimiento.'
+                'el resultado del buy y del sell straddle como si ese fuera el precio al vencimiento.'
             ),
             'resumen_bullets': [
                 'No son cotizaciones reales: solo sirve para ver cómo “late” el payoff cuando cambia el spot.',
-                'La franja roja sigue al straddle; la violeta punteada aísla la call para comparar.',
-                'Arriba verás spot simulado, prima total, P/L y distancia al breakeven más cercano.',
+                'La franja roja sigue el buy straddle y la línea verde sigue el sell straddle (inverso).',
+                'Arriba verás spot simulado, prima total, P/L buy, P/L sell y distancia al breakeven más cercano.',
                 'Puedes pausar el reloj para discutir con el salón qué podría pasar en el siguiente tick.',
             ],
             'nota_ampliada': (
@@ -1559,7 +1561,7 @@ def expo_sinteticos_view(request):
             ),
             'idea': (
                 'Es un tablero de demostración: cada 2.5 segundos el programa inventa un precio del activo, '
-                'recalcula cuánto ganarías o perderías al vencimiento con ese precio y actualiza el '
+                'recalcula cuánto ganarías o perderías al vencimiento con ese precio en buy y sell, y actualiza el '
                 'gráfico. No son precios reales de bolsa. Sirve para ver cómo “late” la idea del straddle '
                 'cuando el mercado se mueve.'
             ),
@@ -1567,11 +1569,11 @@ def expo_sinteticos_view(request):
                 'Puedes pausar el reloj con el botón y leer con calma; al reanudar, vuelve el tick cada 2.5 s.'
             ),
             'enfoque': (
-                'La línea roja sigue la ganancia o pérdida del straddle al precio simulado; la línea '
-                'violeta punteada muestra solo la call, para que compares una pata contra el conjunto.'
+                'Compara espejos en tiempo real: cuando buy mejora, sell empeora, y viceversa. '
+                'Así se visualiza rápido la lógica inversa entre ambas posiciones.'
             ),
             'conceptos': [
-                'Los números de arriba cambian con el precio simulado: spot, primas totales, resultado y distancia al equilibrio.',
+                'Los números de arriba cambian con el precio simulado: spot, primas totales, resultado buy, resultado sell y distancia al equilibrio.',
                 'El eje horizontal son pasos de tiempo (cada paso = 2.5 segundos de simulación).',
                 'Si enseñas en vivo, pausa antes de preguntar al salón “¿qué creen que pasará en el siguiente tick?”.',
             ],
