@@ -1812,6 +1812,8 @@
                     <i class="bi bi-broadcast me-1"></i>Monitor simulado
                     {% elif s.demo == 'straddle_formulas' %}
                     <i class="bi bi-table me-1"></i>Long Straddle · fórmulas clave
+                    {% elif s.demo == 'straddle_sell_pro_con' %}
+                    <i class="bi bi-check2-square me-1"></i>Sell Straddle · pros y contras
                     {% else %}
                     <i class="bi bi-bar-chart-line me-1"></i>Gráfico al vencimiento
                     {% endif %}
@@ -1876,6 +1878,15 @@
                   <span class="pl-chip">K = {{ ejemplo.K }} · c + p = {{ ejemplo.premio_total }}</span>
                   <span class="pl-chip mid">Línea roja continua = straddle combinado</span>
                   <span class="pl-chip">Punteadas: call (violeta) y put (tono cálido)</span>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'straddle_sell_basico' %}
+                <div class="payoff-wrap"><canvas data-sell-straddle-basic></canvas></div>
+                <div class="payoff-legend">
+                  <span class="pl-chip">K = {{ ejemplo.K }} · c + p = {{ ejemplo.premio_total }}</span>
+                  <span class="pl-chip mid">Línea roja = Sell Straddle (inverso del buy)</span>
+                  <span class="pl-chip down">Pico en K · pérdidas si ST se aleja de los BEP</span>
                 </div>
                 {% endif %}
 
@@ -1949,7 +1960,7 @@
                 <p style="font-size:0.72rem;color:var(--muted);margin:0.35rem 0 0;">Ejemplo con K = {{ ejemplo.K }}, c = {{ ejemplo.c }}, p = {{ ejemplo.p }} (suma cero entre las partes al vencimiento).</p>
                 {% endif %}
 
-                {% if s.demo == 'straddle_pro_con' %}
+                {% if s.demo == 'straddle_pro_con' or s.demo == 'straddle_sell_pro_con' %}
                 <div class="pro-con-grid pro-con-grid--seq" data-pro-con-root>
                   <div class="pro-box">
                     <h4><i class="bi bi-check-circle me-1"></i>Ventajas</h4>
@@ -2003,6 +2014,16 @@
                   </div>
                   <div class="payoff-wrap live-chart-wrap"><canvas id="liveStraddleCanvas" data-live-straddle></canvas></div>
                   <p class="live-foot" id="liveStatusFoot">Simulación pedagógica · próxima actualización en 2.5 s</p>
+                <div class="live-kpi-row">
+                  <div class="live-kpi">
+                    <span class="live-kpi-l">Resultado vendedor (mismo precio)</span>
+                    <span class="live-kpi-v" id="liveSellPiVal">—</span>
+                  </div>
+                  <div class="live-kpi">
+                    <span class="live-kpi-l">Lectura sell straddle</span>
+                    <span class="live-kpi-v" id="liveSellViewVal">—</span>
+                  </div>
+                </div>
                 </div>
                 {% endif %}
               </div>
@@ -2018,7 +2039,7 @@
                 <li class="concept-chip" style="--i: {{ forloop.counter0 }}">{{ c }}</li>
                 {% endfor %}
               </ul>
-              {% if s.demo == 'straddle_pro_con' %}
+              {% if s.demo == 'straddle_pro_con' or s.demo == 'straddle_sell_pro_con' %}
               <div class="flyout-procon">
                 <div>
                   <h4><i class="bi bi-check-circle me-1"></i>Ventajas</h4>
@@ -2070,6 +2091,9 @@
 
     function straddlePayoff(ST) {
       return longCallPayoff(ST, STR.K, STR.c) + longPutPayoff(ST, STR.K, STR.p);
+    }
+    function shortStraddlePayoff(ST) {
+      return -straddlePayoff(ST);
     }
     function straddlePayoffAt(ST, K, c, p) {
       return longCallPayoff(ST, K, c) + longPutPayoff(ST, K, p);
@@ -2724,6 +2748,43 @@
       scheduleChartResize(chart);
     }
 
+    function activateSellStraddleBasic(slideEl) {
+      const canvas = slideEl.querySelector('canvas[data-sell-straddle-basic]');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyIfAny(canvas);
+      const lo = STR.K - 28, hi = STR.K + 28;
+      const xs = linspace(lo, hi, 160);
+      const sellStraddle = xs.map((x) => ({ x, y: shortStraddlePayoff(x) }));
+      const yVals = sellStraddle.map((d) => d.y);
+      const yMin = Math.min(...yVals, -20) - 2;
+      const yMax = Math.max(...yVals, 10) + 2;
+      const chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Sell Straddle (resultado)',
+              data: sellStraddle,
+              borderColor: 'rgba(255,55,20,1)',
+              backgroundColor: 'rgba(255,55,20,0.1)',
+              borderWidth: 3.1,
+              pointRadius: 0,
+              tension: 0,
+              fill: { target: { value: 0 }, above: 'rgba(120,255,160,0.15)', below: 'rgba(255,90,110,0.2)' },
+            },
+            vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
+            vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
+          ],
+        },
+        options: basePayoffOptions({
+          minX: lo, maxX: hi, minY: yMin, maxY: yMax,
+          title: 'Resultado al vencimiento ($)',
+        }),
+      });
+      chartCache.set(canvas, chart);
+      scheduleChartResize(chart);
+    }
+
     /* ---- Monitor simulado (última slide) ---- */
     const LIVE_TICK_MS = 2500;
     let liveStraddleTimer = null;
@@ -2763,6 +2824,9 @@
       const elP = document.getElementById('livePremVal');
       const elPi = document.getElementById('livePiVal');
       const elB = document.getElementById('liveBepVal');
+      const elSellPi = document.getElementById('liveSellPiVal');
+      const elSellView = document.getElementById('liveSellViewVal');
+      const piSell = -piS;
       if (elS) elS.textContent = '$' + spot.toFixed(1);
       if (elP) elP.textContent = '$' + STR.premio.toFixed(2);
       if (elPi) {
@@ -2776,6 +2840,16 @@
         const d = Math.min(Math.abs(dUp), Math.abs(dDn));
         const nearUp = Math.abs(dUp) <= Math.abs(dDn);
         elB.textContent = (nearUp ? 'Δ sup ' : 'Δ inf ') + '$' + d.toFixed(1);
+      }
+      if (elSellPi) {
+        elSellPi.textContent = (piSell >= 0 ? '+$' : '−$') + Math.abs(piSell).toFixed(2);
+        elSellPi.classList.remove('up', 'down');
+        elSellPi.classList.add(piSell >= 0 ? 'up' : 'down');
+      }
+      if (elSellView) {
+        elSellView.textContent = piSell >= 0 ? 'Zona favorable (precio cerca de K)' : 'Zona de riesgo (precio lejos de K)';
+        elSellView.classList.remove('up', 'down');
+        elSellView.classList.add(piSell >= 0 ? 'up' : 'down');
       }
     }
 
@@ -2945,8 +3019,9 @@
       if (demo === 'straddle_para_que')    activateParaQue(slideEl);
       if (demo === 'straddle_forma')       activateForma(slideEl);
       if (demo === 'straddle_participantes') activateParticipantes(slideEl);
-      if (demo === 'straddle_pro_con')     runProConRevealSequence(slideEl);
+      if (demo === 'straddle_pro_con' || demo === 'straddle_sell_pro_con') runProConRevealSequence(slideEl);
       if (demo === 'straddle_legs_vs_result') activateLegsVsResult(slideEl);
+      if (demo === 'straddle_sell_basico') activateSellStraddleBasic(slideEl);
       if (demo === 'straddle_formulas')     startStraddleFormulasSequence(slideEl);
       if (demo === 'straddle_live')        activateLiveStraddle();
     }

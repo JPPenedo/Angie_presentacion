@@ -1463,6 +1463,85 @@ def expo_sinteticos_view(request):
             'demo': 'straddle_formulas',
         },
         {
+            'titulo': 'Sell Straddle · lo básico (lógica inversa)',
+            'resumen_intro': (
+                'Es la versión espejo del buy straddle: vendes call y put con misma K y mismo vencimiento, '
+                'cobras c + p al inicio y te favorece que el precio final quede cerca del strike.'
+            ),
+            'resumen_bullets': [
+                'Cobras las dos primas por adelantado: en el ejemplo, c + p = 8 con K = 100.',
+                'El máximo beneficio ocurre si S_T termina en K: te quedas con el premio total.',
+                'Empatas en los mismos breakevens K ± (c + p), aquí cerca de 92 y 108.',
+                'Si el precio se aleja mucho de K, las pérdidas crecen (sobre todo al alza).',
+            ],
+            'nota_ampliada': (
+                'En operación real suelen exigir margen porque hay riesgo de pérdidas grandes, y también '
+                'pegan comisiones y spreads en ambas patas.'
+            ),
+            'idea': (
+                'Piensa el sell straddle como la foto invertida del buy: en vez de pagar para apostar a '
+                'movimiento fuerte, cobras por apostar a que el activo no se moverá demasiado al vencimiento.'
+            ),
+            'dato_clave': (
+                'Perfil al vencimiento: una “V” invertida con pico en K; ganancia máxima = c + p y breakevens '
+                'en K ± (c + p).'
+            ),
+            'enfoque': (
+                'Sirve para introducir rápidamente la simetría inversa: mismo armado de strikes/fecha, pero '
+                'resultado opuesto al comprador.'
+            ),
+            'conceptos': [
+                'Misma estructura técnica que el long straddle, pero invertida en payoff.',
+                'Mejor escenario: precio final “pegado” al strike.',
+                'Escenario delicado: movimiento fuerte fuera del rango de equilibrio.',
+            ],
+            'demo': 'straddle_sell_basico',
+        },
+        {
+            'titulo': 'Sell Straddle · ventajas y desventajas',
+            'resumen_intro': (
+                'La apuesta ahora es “mercado tranquilo”: cobras prima hoy a cambio de asumir riesgo si mañana '
+                'hay un desplazamiento fuerte del precio.'
+            ),
+            'resumen_bullets': [
+                'Ventaja principal: ingreso inicial por c + p y mejor zona cerca de K al vencimiento.',
+                'Contras: riesgo grande en colas, en especial si el activo sube mucho.',
+                'No necesitas adivinar dirección, pero sí estimar que no habrá salto fuerte.',
+                'Suele requerir margen y una gestión de riesgo más estricta.',
+            ],
+            'nota_ampliada': (
+                'Pedagógicamente es útil contrastarlo con el buy: uno compra convexidad, el otro la vende.'
+            ),
+            'idea': (
+                'El sell straddle puede verse como “cobrar seguro” contra movimiento extremo: funciona cuando '
+                'el precio se queda en una zona acotada, pero sufre si el mercado entra en modo sorpresa.'
+            ),
+            'dato_clave': (
+                'Es la misma lógica de dos patas y mismo strike/vencimiento, pero con signos invertidos en casi '
+                'todo el perfil de riesgo/retorno.'
+            ),
+            'enfoque': (
+                'Úsala como checklist rápida: cuándo podría encajar, qué duele y por qué conviene remarcar el '
+                'tema de margen y control de riesgo.'
+            ),
+            'conceptos': [
+                'Gana más cuando no hay gran desplazamiento del spot al vencimiento.',
+                'Pierde si el precio rompe fuerte por arriba o por abajo.',
+                'En práctica real, costos y liquidez pueden achicar el colchón de primas.',
+            ],
+            'ventajas': [
+                'Cobras primas al inicio y tu mejor zona está alrededor del strike.',
+                'No exige acertar si sube o baja; te importa que no se dispare el movimiento.',
+                'Misma estructura de dos contratos con K y T iguales: fácil de explicar en espejo con el long.',
+            ],
+            'desventajas': [
+                'Riesgo alto en movimientos extremos, especialmente en subidas fuertes.',
+                'Requiere margen y disciplina de gestión de riesgo.',
+                'Eventos inesperados y saltos de volatilidad pueden deteriorar rápido la posición.',
+            ],
+            'demo': 'straddle_sell_pro_con',
+        },
+        {
             'titulo': 'Monitor de juguete (simulación)',
             'resumen_intro': (
                 'Es un tablero de demostración: cada 2.5 segundos se sortea un precio del activo y se recalcula '
