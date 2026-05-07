@@ -1565,6 +1565,18 @@
       line-height: 1.5;
       gap: 0.42rem;
     }
+    .slide[data-demo="straddle_sell_pro_con"] .chip-list .pro-chip,
+    .slide[data-demo="straddle_sell_pro_con"] .chip-list .con-chip {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+      filter: none !important;
+    }
+    .slide[data-demo="straddle_sell_pro_con"] .chip-list .pro-chip::after,
+    .slide[data-demo="straddle_sell_pro_con"] .chip-list .con-chip::after {
+      opacity: 0 !important;
+      animation: none !important;
+    }
 
     /* Tablas anchas: scroll horizontal dentro de la slide */
     .table-scroll {
