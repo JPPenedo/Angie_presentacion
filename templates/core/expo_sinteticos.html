@@ -1415,6 +1415,15 @@
     .slide[data-demo="straddle_live"] .live-widget {
       padding: 0.35rem 0.4rem 0.45rem;
     }
+    .slide[data-demo="straddle_live"] .live-kpi-row--sell {
+      order: 3;
+    }
+    .slide[data-demo="straddle_live"] .live-widget .payoff-wrap.live-chart-wrap {
+      order: 4;
+    }
+    .slide[data-demo="straddle_live"] .live-foot {
+      order: 5;
+    }
     .slide[data-demo="straddle_live"] .live-widget-top {
       margin-bottom: 0.28rem;
     }
@@ -1423,7 +1432,12 @@
     }
     .slide[data-demo="straddle_live"] .live-kpi-row {
       gap: 0.22rem;
-      margin-bottom: 0.28rem;
+      margin-bottom: 0.18rem;
+    }
+    .slide[data-demo="straddle_live"] .live-kpi-row--sell {
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: 0.15rem;
+      margin-bottom: 0.12rem;
     }
     .slide[data-demo="straddle_live"] .live-kpi {
       padding: 0.22rem 0.32rem;
@@ -1436,8 +1450,20 @@
       font-size: 0.82rem;
     }
     .slide[data-demo="straddle_live"] .live-foot {
-      margin-top: 0.25rem;
+      margin-top: 0.12rem;
       font-size: 0.58rem;
+    }
+    .slide[data-demo="straddle_live"] .live-widget .payoff-wrap.live-chart-wrap {
+      min-height: 120px;
+      margin-top: 0.1rem;
+    }
+    .slide[data-demo="straddle_live"] .live-variance-box {
+      margin: 0.05rem 0 0.14rem;
+      gap: 0.24rem;
+    }
+    .slide[data-demo="straddle_live"] .live-var-btn {
+      width: 1.38rem;
+      height: 1.28rem;
     }
     .slide[data-demo="straddle_forma"] .forma-table {
       font-size: 0.64rem;
@@ -2096,7 +2122,7 @@
                   </div>
                   <div class="payoff-wrap live-chart-wrap"><canvas id="liveStraddleCanvas" data-live-straddle></canvas></div>
                   <p class="live-foot" id="liveStatusFoot">Simulación pedagógica · próxima actualización en 2.5 s</p>
-                <div class="live-kpi-row">
+                <div class="live-kpi-row live-kpi-row--sell">
                   <div class="live-kpi">
                     <span class="live-kpi-l">Resultado sell (mismo precio)</span>
                     <span class="live-kpi-v" id="liveSellPiVal">—</span>
