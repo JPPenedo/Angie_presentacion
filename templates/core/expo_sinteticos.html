@@ -303,6 +303,9 @@
     .slides-shell:has(.slide.active[data-demo="straddle_formulas"]) {
       overflow: visible;
     }
+    .slides-shell:has(.slide.active[data-demo="straddle_live"]) {
+      overflow: visible;
+    }
     @keyframes shellOrbit {
       0%   { transform: translate(0%, 0%)   scale(1); }
       50%  { transform: translate(40%, 10%) scale(1.15); }
@@ -328,6 +331,11 @@
       height: min(640px, calc(100vh - 190px));
       min-height: 460px;
       max-height: calc(100vh - 160px);
+    }
+    .slides-shell:has(.slide.active[data-demo="straddle_live"]) .stage {
+      height: min(720px, calc(100vh - 120px));
+      min-height: 560px;
+      max-height: calc(100vh - 96px);
     }
     .slide {
       position: absolute; inset: 0;
@@ -1415,6 +1423,10 @@
     .slide[data-demo="straddle_live"] .live-widget {
       padding: 0.35rem 0.4rem 0.45rem;
     }
+    .slide[data-demo="straddle_live"] {
+      inset: -14px -10px -10px -10px;
+      z-index: 3;
+    }
     .slide[data-demo="straddle_live"] .live-kpi-row--sell {
       order: 3;
     }
@@ -1454,7 +1466,7 @@
       font-size: 0.58rem;
     }
     .slide[data-demo="straddle_live"] .live-widget .payoff-wrap.live-chart-wrap {
-      min-height: 120px;
+      min-height: 170px;
       margin-top: 0.1rem;
     }
     .slide[data-demo="straddle_live"] .live-variance-box {
