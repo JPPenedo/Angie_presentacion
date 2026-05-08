@@ -167,10 +167,10 @@
         {% csrf_token %}
 
         <div style="margin-bottom:0.85rem;">
-          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">Correo institucional o ID institucional</label>
+          <label style="font-size:0.79rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;display:block;">ID institucional</label>
           <div class="input-group-dark">
-            <span class="ig-icon"><i class="bi bi-envelope"></i></span>
-            <input type="text" name="dato_acceso" id="correoInput" placeholder="usuario@anahuac.mx o 12345678" value="{{ prefill_dato }}" required />
+            <span class="ig-icon"><i class="bi bi-upc-scan"></i></span>
+            <input type="text" name="dato_acceso" id="idInput" placeholder="12345678" value="{{ prefill_dato }}" required />
           </div>
         </div>
 
@@ -193,9 +193,9 @@
 
       <div class="helper-box">
         <div style="margin-bottom:0.35rem;"><strong>Acceso demo rápido</strong></div>
-        <button class="quick-btn" onclick="fillDemo('docente@anahuac.mx','demo123')">Docente demo</button>
-        <button class="quick-btn" onclick="fillDemo('alumno@anahuac.mx','demo123')">Alumno demo</button>
-        <button class="quick-btn" onclick="fillDemo('coordinacion@anahuac.mx','demo123')">Coordinación demo</button>
+        <button class="quick-btn" onclick="fillDemo('90000001','demo123')">Docente demo</button>
+        <button class="quick-btn" onclick="fillDemo('90000002','demo123')">Alumno demo</button>
+        <button class="quick-btn" onclick="fillDemo('90000003','demo123')">Coordinación demo</button>
       </div>
 
       <a href="{% url 'core:crear_cuenta' %}" class="helper-link">
@@ -208,8 +208,8 @@
   </div>
 
   <script>
-    function fillDemo(correo, pass) {
-      document.getElementById('correoInput').value = correo;
+    function fillDemo(idInstitucional, pass) {
+      document.getElementById('idInput').value = idInstitucional;
       document.getElementById('passInput').value = pass;
     }
     document.getElementById('showPassLogin').addEventListener('change', function () {

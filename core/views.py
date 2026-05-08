@@ -12,7 +12,6 @@ Guía de lectura (tipo profesor):
 from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.hashers import check_password, make_password
-from django.db.models import Q
 from django.db import DatabaseError
 from django.urls import reverse
 from django.utils import timezone
@@ -38,6 +37,7 @@ USUARIOS = {
         'rol': 'docente',
         'nombre': 'Dr. Gilberto Morales',
         'cargo': 'Coordinador de Actuaría',
+        'id_demo': '90000001',
     },
     'alumno@anahuac.mx': {
         'password': 'demo123',
@@ -47,12 +47,14 @@ USUARIOS = {
         'semestre_actual': 10,
         'creditos_totales': 240,
         'creditos_acreditados': 208,
+        'id_demo': '90000002',
     },
     'coordinacion@anahuac.mx': {
         'password': 'demo123',
         'rol': 'coordinacion',
         'nombre': 'Mtra. Andrea Paredes',
         'cargo': 'Coordinación Académica',
+        'id_demo': '90000003',
     },
 }
 
@@ -438,7 +440,7 @@ def login_view(request):
     """
     Profesor: esta vista hace tres cosas:
     1) Si ya hay sesión, evita re-login y redirige según rol.
-    2) Si llega POST, valida dato de acceso (correo o ID) + contraseña.
+    2) Si llega POST, valida ID institucional + contraseña.
     3) Si son correctos, guarda en sesión un perfil reducido para toda la app.
     """
     if _usuario_sesion(request):
@@ -458,7 +460,7 @@ def login_view(request):
         dato_acceso = request.POST.get('dato_acceso', '').strip().lower()
         password = request.POST.get('password', '').strip()
 
-        usuario = USUARIOS.get(dato_acceso)
+        usuario = next((u for u in USUARIOS.values() if u.get('id_demo') == dato_acceso), None)
         if usuario and usuario['password'] == password:
             # Profesor: aquí se "firma" la sesión de trabajo del usuario.
             # Esta estructura será usada por navbar, control de roles y vistas.
@@ -474,9 +476,7 @@ def login_view(request):
             return redirect('core:dashboard')
 
         try:
-            cuenta = CuentaAlumno.objects.filter(
-                Q(correo_institucional=dato_acceso) | Q(id_institucional=dato_acceso)
-            ).first()
+            cuenta = CuentaAlumno.objects.filter(id_institucional=dato_acceso).first()
         except DatabaseError:
             error = 'No se pudo consultar cuentas registradas. Verifica que las migraciones estén aplicadas en el servidor.'
             return render(
@@ -513,7 +513,7 @@ def login_view(request):
             }
             return redirect('core:perfil_alumno' if cuenta.rol == 'alumno' else 'core:dashboard')
         else:
-            error = 'Dato de acceso o contraseña incorrectos.'
+            error = 'ID institucional o contraseña incorrectos.'
 
     return render(
         request,
