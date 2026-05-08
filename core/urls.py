@@ -19,12 +19,6 @@ urlpatterns = [
     path('login/',               views.login_view,     name='login'),
     # Pantalla para registro de una nueva cuenta de alumno.
     path('crear-cuenta/',        views.crear_cuenta_view, name='crear_cuenta'),
-    # Verificación de correo mediante token.
-    path('verificar-cuenta/<str:token>/', views.verificar_cuenta_view, name='verificar_cuenta'),
-    # Solicitud de recuperación por correo.
-    path('recuperar-password/', views.recuperar_password_view, name='recuperar_password'),
-    # Pantalla para establecer nueva contraseña con token.
-    path('reset-password/<str:token>/', views.reset_password_view, name='reset_password'),
     # Página de exposición con slides actuariales y demo simplificada.
     path('expo-actuaria/', views.expo_actuaria_view, name='expo_actuaria'),
     # Página pedagógica sobre opciones: Bull Call Spread y Bear Put Spread.

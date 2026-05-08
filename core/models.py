@@ -28,7 +28,7 @@ class CuentaAlumno(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.nombre_completo} ({self.correo_institucional})"
+        return f"{self.nombre_completo} ({self.id_institucional})"
 
     def reset_token_is_valid(self):
         return bool(

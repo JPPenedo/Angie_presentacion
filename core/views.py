@@ -13,16 +13,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import DatabaseError
-from django.urls import reverse
-from django.utils import timezone
-from django.core.mail import send_mail
-from django.conf import settings
-from datetime import timedelta
-import secrets
-import logging
 from .models import CuentaAlumno
-
-logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Usuarios demo (sin modelos, autenticación por sesión)
@@ -32,14 +23,13 @@ logger = logging.getLogger(__name__)
 # Idea clave: aquí definimos "quién entra" y "qué rol tiene", lo cual determina
 # qué pantalla verá después del login (docente o alumno).
 USUARIOS = {
-    'docente@anahuac.mx': {
+    '90000001': {
         'password': 'demo123',
         'rol': 'docente',
         'nombre': 'Dr. Gilberto Morales',
         'cargo': 'Coordinador de Actuaría',
-        'id_demo': '90000001',
     },
-    'alumno@anahuac.mx': {
+    '90000002': {
         'password': 'demo123',
         'rol': 'alumno',
         'nombre': 'Juan Pablo Penedo',
@@ -47,14 +37,12 @@ USUARIOS = {
         'semestre_actual': 10,
         'creditos_totales': 240,
         'creditos_acreditados': 208,
-        'id_demo': '90000002',
     },
-    'coordinacion@anahuac.mx': {
+    '90000003': {
         'password': 'demo123',
         'rol': 'coordinacion',
         'nombre': 'Mtra. Andrea Paredes',
         'cargo': 'Coordinación Académica',
-        'id_demo': '90000003',
     },
 }
 
@@ -387,51 +375,6 @@ def _require_login(request):
     return None
 
 
-def _build_absolute_url(request, path):
-    """Construye URL absoluta para enlaces enviados por correo."""
-    return request.build_absolute_uri(path)
-
-
-def _send_verification_email(request, cuenta):
-    """Envía un correo breve para validar la cuenta recién creada."""
-    verify_url = _build_absolute_url(
-        request,
-        reverse('core:verificar_cuenta', args=[cuenta.verification_token]),
-    )
-    send_mail(
-        subject='Verifica tu cuenta - Plataforma Académica',
-        message=(
-            f'Hola {cuenta.nombre_completo},\n\n'
-            'Gracias por registrarte. Para activar tu cuenta, confirma tu correo aquí:\n'
-            f'{verify_url}\n\n'
-            'Si no solicitaste esta cuenta, ignora este mensaje.'
-        ),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[cuenta.correo_institucional],
-        fail_silently=False,
-    )
-
-
-def _send_password_reset_email(request, cuenta):
-    """Envía enlace temporal para restablecer contraseña."""
-    reset_url = _build_absolute_url(
-        request,
-        reverse('core:reset_password', args=[cuenta.reset_token]),
-    )
-    send_mail(
-        subject='Recuperación de contraseña - Plataforma Académica',
-        message=(
-            f'Hola {cuenta.nombre_completo},\n\n'
-            'Recibimos una solicitud para restablecer tu contraseña.\n'
-            f'Usa este enlace (vigente por 30 minutos):\n{reset_url}\n\n'
-            'Si no solicitaste este cambio, puedes ignorar este correo.'
-        ),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[cuenta.correo_institucional],
-        fail_silently=False,
-    )
-
-
 # ---------------------------------------------------------------------------
 # Vistas de autenticación
 # ---------------------------------------------------------------------------
@@ -451,16 +394,14 @@ def login_view(request):
     info = None
     prefill_dato = request.GET.get('dato', '').strip().lower()
     if request.GET.get('created') == '1':
-        info = 'Cuenta creada. Revisa tu correo y verifica tu cuenta para poder iniciar sesión.'
-    if request.GET.get('verified') == '1':
-        info = 'Correo verificado correctamente. Ya puedes iniciar sesión.'
+        info = 'Cuenta creada correctamente. Ya puedes iniciar sesión.'
     if request.GET.get('reset') == '1':
         info = 'Contraseña actualizada correctamente. Ya puedes iniciar sesión.'
     if request.method == 'POST':
         dato_acceso = request.POST.get('dato_acceso', '').strip().lower()
         password = request.POST.get('password', '').strip()
 
-        usuario = next((u for u in USUARIOS.values() if u.get('id_demo') == dato_acceso), None)
+        usuario = USUARIOS.get(dato_acceso)
         if usuario and usuario['password'] == password:
             # Profesor: aquí se "firma" la sesión de trabajo del usuario.
             # Esta estructura será usada por navbar, control de roles y vistas.
@@ -490,19 +431,8 @@ def login_view(request):
             )
 
         if cuenta and check_password(password, cuenta.password_hash):
-            if not cuenta.is_verified:
-                error = 'Tu cuenta aún no está verificada. Revisa tu correo institucional.'
-                return render(
-                    request,
-                    'core/login.html',
-                    {
-                        'error': error,
-                        'info': info,
-                        'prefill_dato': dato_acceso,
-                    },
-                )
             request.session['usuario'] = {
-                'correo': cuenta.correo_institucional,
+                'correo': cuenta.id_institucional,
                 'rol': cuenta.rol,
                 'nombre': cuenta.nombre_completo,
                 'matricula': cuenta.id_institucional,
@@ -529,7 +459,7 @@ def login_view(request):
 def crear_cuenta_view(request):
     """
     Profesor: registro mínimo de cuentas para alumnos/docentes/coordinación.
-    Campos: rol, correo institucional, nombre completo, ID de 8 dígitos y contraseña.
+    Campos: rol, nombre completo, ID de 8 dígitos y contraseña.
     """
     if _usuario_sesion(request):
         u = _usuario_sesion(request)
@@ -538,13 +468,11 @@ def crear_cuenta_view(request):
     error = None
     form_data = {
         'rol': 'alumno',
-        'correo': '',
         'nombre_completo': '',
         'id_institucional': '',
     }
 
     if request.method == 'POST':
-        correo = request.POST.get('correo', '').strip().lower()
         nombre_completo = request.POST.get('nombre_completo', '').strip()
         id_institucional = request.POST.get('id_institucional', '').strip()
         rol = request.POST.get('rol', 'alumno').strip()
@@ -553,15 +481,12 @@ def crear_cuenta_view(request):
 
         form_data = {
             'rol': rol,
-            'correo': correo,
             'nombre_completo': nombre_completo,
             'id_institucional': id_institucional,
         }
 
         if rol not in {'alumno', 'docente', 'coordinacion'}:
             error = 'Selecciona un rol válido.'
-        elif not correo.endswith('@anahuac.mx'):
-            error = 'Debes usar un correo institucional que termine en @anahuac.mx.'
         elif not nombre_completo:
             error = 'El nombre completo es obligatorio.'
         elif not (id_institucional.isdigit() and len(id_institucional) == 8):
@@ -570,19 +495,17 @@ def crear_cuenta_view(request):
             error = 'La contraseña debe tener al menos 6 caracteres.'
         elif password != password_confirm:
             error = 'La confirmación de contraseña no coincide.'
-        elif CuentaAlumno.objects.filter(correo_institucional=correo).exists():
-            error = 'Ese correo ya tiene una cuenta registrada.'
         elif CuentaAlumno.objects.filter(id_institucional=id_institucional).exists():
             error = 'Ese ID institucional ya está registrado.'
         else:
             try:
                 cuenta = CuentaAlumno.objects.create(
-                    correo_institucional=correo,
+                    correo_institucional=f'{id_institucional}@id.local',
                     nombre_completo=nombre_completo,
                     id_institucional=id_institucional,
                     rol=rol,
                     password_hash=make_password(password),
-                    verification_token=secrets.token_urlsafe(24),
+                    is_verified=True,
                 )
             except DatabaseError:
                 return render(
@@ -596,104 +519,9 @@ def crear_cuenta_view(request):
                         'form_data': form_data,
                     },
                 )
-            try:
-                _send_verification_email(request, cuenta)
-            except Exception:
-                # Si falla SMTP, mantenemos cuenta creada y mostramos mensaje explicativo.
-                return render(
-                    request,
-                    'core/signup.html',
-                    {
-                        'error': (
-                            'La cuenta se creó, pero no se pudo enviar el correo de verificación. '
-                            'Revisa la configuración de email SMTP.'
-                        ),
-                        'form_data': {'rol': 'alumno', 'correo': '', 'nombre_completo': '', 'id_institucional': ''},
-                    },
-                )
-            return redirect(f"{redirect('core:login').url}?created=1&dato={correo}")
+            return redirect(f"{redirect('core:login').url}?created=1&dato={id_institucional}")
 
     return render(request, 'core/signup.html', {'error': error, 'form_data': form_data})
-
-
-def verificar_cuenta_view(request, token):
-    """Marca cuenta como verificada usando token enviado por correo."""
-    cuenta = CuentaAlumno.objects.filter(verification_token=token).first()
-    if not cuenta:
-        return redirect(reverse('core:login'))
-
-    cuenta.is_verified = True
-    cuenta.verification_token = ''
-    cuenta.save(update_fields=['is_verified', 'verification_token'])
-    return redirect(f"{reverse('core:login')}?verified=1&dato={cuenta.correo_institucional}")
-
-
-def recuperar_password_view(request):
-    """Solicita recuperación de contraseña por correo institucional."""
-    info = None
-    error = None
-
-    try:
-        if request.method == 'POST':
-            correo = request.POST.get('correo', '').strip().lower()
-            if not correo:
-                error = 'Debes ingresar un correo institucional.'
-            else:
-                try:
-                    cuenta = CuentaAlumno.objects.filter(correo_institucional=correo).first()
-                except DatabaseError:
-                    error = 'No se pudo procesar la recuperación. Verifica migraciones de base de datos en el servidor.'
-                    return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
-                if cuenta:
-                    try:
-                        cuenta.reset_token = secrets.token_urlsafe(24)
-                        cuenta.reset_token_expires_at = timezone.now() + timedelta(minutes=30)
-                        cuenta.save(update_fields=['reset_token', 'reset_token_expires_at'])
-                        _send_password_reset_email(request, cuenta)
-                    except DatabaseError:
-                        error = 'No se pudo guardar el token de recuperación. Verifica migraciones de base de datos en el servidor.'
-                    except Exception:
-                        error = 'No se pudo enviar el correo de recuperación. Revisa la configuración SMTP.'
-                if not error:
-                    info = 'Si el correo existe, enviamos un enlace de recuperación.'
-    except Exception:
-        logger.exception('Error inesperado en recuperar_password_view')
-        error = 'Ocurrió un error inesperado al procesar la recuperación.'
-
-    return render(request, 'core/password_recovery_request.html', {'info': info, 'error': error})
-
-
-def reset_password_view(request, token):
-    """Permite definir una nueva contraseña usando token temporal."""
-    cuenta = CuentaAlumno.objects.filter(reset_token=token).first()
-    if not cuenta or not cuenta.reset_token_is_valid():
-        return render(
-            request,
-            'core/password_recovery_reset.html',
-            {'error': 'El enlace de recuperación es inválido o ya expiró.', 'token_valid': False},
-        )
-
-    error = None
-    if request.method == 'POST':
-        password = request.POST.get('password', '').strip()
-        password_confirm = request.POST.get('password_confirm', '').strip()
-
-        if len(password) < 6:
-            error = 'La contraseña debe tener al menos 6 caracteres.'
-        elif password != password_confirm:
-            error = 'La confirmación de contraseña no coincide.'
-        else:
-            cuenta.password_hash = make_password(password)
-            cuenta.reset_token = ''
-            cuenta.reset_token_expires_at = None
-            cuenta.save(update_fields=['password_hash', 'reset_token', 'reset_token_expires_at'])
-            return redirect(f"{reverse('core:login')}?reset=1&dato={cuenta.correo_institucional}")
-
-    return render(
-        request,
-        'core/password_recovery_reset.html',
-        {'error': error, 'token_valid': True},
-    )
 
 
 def logout_view(request):
