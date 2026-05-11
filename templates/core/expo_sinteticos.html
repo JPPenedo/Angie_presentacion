@@ -1395,6 +1395,84 @@
       margin-bottom: 0.18rem;
       color: #2f241e;
     }
+    .slide[data-demo="straddle_escenarios"] .grid-2,
+    .slide[data-demo="straddle_conclusiones"] .grid-2 {
+      grid-template-columns: minmax(300px, 0.62fr) minmax(420px, 1fr);
+      gap: 0.88rem;
+    }
+    .slide[data-demo="straddle_escenarios"] .slide-copy-zone,
+    .slide[data-demo="straddle_conclusiones"] .slide-copy-zone {
+      justify-content: space-between;
+      min-height: 100%;
+      padding: 0.86rem 0.92rem 0.9rem;
+      gap: 0.62rem;
+    }
+    .slide[data-demo="straddle_escenarios"] .slide-visible-lead,
+    .slide[data-demo="straddle_conclusiones"] .slide-visible-lead {
+      font-size: 1rem !important;
+      line-height: 1.62 !important;
+    }
+    .slide[data-demo="straddle_escenarios"] .slide-visible-bullets,
+    .slide[data-demo="straddle_conclusiones"] .slide-visible-bullets {
+      font-size: 0.93rem;
+      line-height: 1.58;
+      gap: 0.55rem;
+      justify-content: space-evenly;
+    }
+    .slide[data-demo="straddle_escenarios"] .mini-demo,
+    .slide[data-demo="straddle_conclusiones"] .mini-demo {
+      min-height: 100%;
+      padding: 0.8rem 0.84rem;
+    }
+    .slide[data-demo="straddle_escenarios"] .scn-table {
+      font-size: 0.8rem;
+      table-layout: fixed;
+      width: 100%;
+    }
+    .slide[data-demo="straddle_escenarios"] .scn-table th,
+    .slide[data-demo="straddle_escenarios"] .scn-table td {
+      padding: 0.34rem 0.42rem;
+    }
+    .slide[data-demo="straddle_escenarios"] .scn-table th:first-child,
+    .slide[data-demo="straddle_escenarios"] .scn-table td:first-child {
+      width: 30%;
+    }
+    .slide[data-demo="straddle_conclusiones"] .slide-conclusion-card {
+      height: 100%;
+      margin-top: 0.5rem;
+      align-content: stretch;
+      grid-auto-rows: 1fr;
+      gap: 0.55rem;
+    }
+    .slide[data-demo="straddle_conclusiones"] .slide-conclusion-item {
+      font-size: 0.83rem;
+      line-height: 1.45;
+      padding: 0.62rem 0.66rem;
+    }
+    .slide[data-demo="straddle_conclusiones"] .slide-conclusion-item strong {
+      font-size: 0.9rem;
+      margin-bottom: 0.24rem;
+    }
+    @media (min-width: 1400px) {
+      .slide[data-demo="straddle_escenarios"] .grid-2,
+      .slide[data-demo="straddle_conclusiones"] .grid-2 {
+        grid-template-columns: minmax(380px, 0.74fr) minmax(540px, 1fr);
+      }
+      .slide[data-demo="straddle_escenarios"] .slide-visible-lead,
+      .slide[data-demo="straddle_conclusiones"] .slide-visible-lead {
+        font-size: 1.08rem !important;
+      }
+      .slide[data-demo="straddle_escenarios"] .slide-visible-bullets,
+      .slide[data-demo="straddle_conclusiones"] .slide-visible-bullets {
+        font-size: 0.98rem;
+      }
+      .slide[data-demo="straddle_escenarios"] .scn-table {
+        font-size: 0.88rem;
+      }
+      .slide[data-demo="straddle_conclusiones"] .slide-conclusion-item {
+        font-size: 0.9rem;
+      }
+    }
 
     /* Monitor “tiempo real” (última slide) */
     .live-widget {
@@ -1962,6 +2040,33 @@
       height: calc(100vh - 118px);
       max-height: calc(100vh - 118px);
       min-height: calc(100vh - 118px);
+    }
+    body.is-fullscreen .slide[data-demo="straddle_escenarios"] .grid-2,
+    body.is-fullscreen .slide[data-demo="straddle_conclusiones"] .grid-2 {
+      grid-template-columns: minmax(420px, 0.82fr) minmax(620px, 1fr);
+      gap: 1rem;
+    }
+    body.is-fullscreen .slide[data-demo="straddle_escenarios"] .slide-copy-zone,
+    body.is-fullscreen .slide[data-demo="straddle_conclusiones"] .slide-copy-zone {
+      padding: 0.96rem 1rem;
+    }
+    body.is-fullscreen .slide[data-demo="straddle_escenarios"] .slide-visible-lead,
+    body.is-fullscreen .slide[data-demo="straddle_conclusiones"] .slide-visible-lead {
+      font-size: 1.12rem !important;
+      line-height: 1.66 !important;
+    }
+    body.is-fullscreen .slide[data-demo="straddle_escenarios"] .slide-visible-bullets,
+    body.is-fullscreen .slide[data-demo="straddle_conclusiones"] .slide-visible-bullets {
+      font-size: 1.01rem;
+      line-height: 1.62;
+    }
+    body.is-fullscreen .slide[data-demo="straddle_escenarios"] .scn-table {
+      font-size: 0.93rem;
+    }
+    body.is-fullscreen .slide[data-demo="straddle_conclusiones"] .slide-conclusion-item {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      padding: 0.72rem 0.78rem;
     }
 
   </style>
