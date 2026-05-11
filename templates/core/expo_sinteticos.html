@@ -6,7 +6,7 @@
   <title>Buy Straddle | Sintéticos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" />
@@ -46,7 +46,7 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
       color: var(--text);
       min-height: 100vh;
       position: relative;
@@ -249,7 +249,7 @@
     .section-title {
       display: flex; align-items: center; gap: 0.5rem;
       margin: 0.35rem 0 0.7rem;
-      font-family: "Rajdhani", system-ui, sans-serif;
+      font-family: "League Spartan", "Poppins", system-ui, sans-serif;
       font-weight: 700;
       letter-spacing: 0.04em;
     }
@@ -397,21 +397,35 @@
     }
 
     .slide h3 {
-      font-family: "Rajdhani", system-ui, sans-serif;
+      font-family: "League Spartan", "Poppins", system-ui, sans-serif;
       margin: 0 0 0.25rem;
-      font-size: 1.28rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
+      font-size: 1.34rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
       text-shadow: 0 0 24px rgba(255,60,35,0.45);
     }
     .slide .subtitle {
       color: var(--accent-soft);
-      font-family: "Rajdhani", system-ui, sans-serif;
-      font-size: 0.74rem;
+      font-family: "League Spartan", "Poppins", system-ui, sans-serif;
+      font-size: 0.76rem;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-weight: 700;
+      letter-spacing: 0.14em;
+      font-weight: 600;
       margin-bottom: 0.55rem;
+    }
+    .underlying-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin: 0 0 0.45rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #5b4a42;
+      border: 1px solid rgba(255, 126, 72, 0.34);
+      border-radius: 999px;
+      padding: 0.15rem 0.48rem;
+      background: rgba(255, 245, 237, 0.78);
+      width: fit-content;
     }
     .slide p { margin: 0.35rem 0; color: #4d3a32; font-size: 0.9rem; line-height: 1.45; }
     .slide p strong { color: var(--text); }
@@ -545,7 +559,7 @@
       box-shadow: 0 18px 42px rgba(255, 140, 90, 0.28);
     }
     .slide-detail-flyout .flyout-heading {
-      font-family: "Rajdhani", system-ui, sans-serif;
+      font-family: "League Spartan", "Poppins", system-ui, sans-serif;
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.14em;
@@ -1190,6 +1204,28 @@
       display: flex; flex-wrap: wrap; gap: 0.35rem;
       margin-top: 0.45rem;
     }
+    .anatomy-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.32rem;
+      margin-top: 0.4rem;
+    }
+    .anatomy-chip {
+      font-size: 0.63rem;
+      line-height: 1.3;
+      padding: 0.2rem 0.42rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 125, 85, 0.3);
+      background: rgba(255, 246, 238, 0.8);
+      color: #4c3f37;
+    }
+    .anatomy-chip strong {
+      color: #2f241e;
+      font-weight: 700;
+    }
+    .anatomy-chip.state-itm { border-color: rgba(31,154,107,0.45); }
+    .anatomy-chip.state-atm { border-color: rgba(255,179,71,0.5); }
+    .anatomy-chip.state-otm { border-color: rgba(219,78,78,0.4); }
     .pl-chip {
       display: inline-flex; align-items: center; gap: 0.3rem;
       font-size: 0.68rem;
@@ -1255,6 +1291,9 @@
     .scn-table .gain { color: var(--success); font-weight: 600; }
     .scn-table .loss { color: var(--danger);  font-weight: 600; }
     .scn-table .zero { color: var(--gold);    font-weight: 600; }
+    .scn-table .state-itm { color: var(--success); font-weight: 700; }
+    .scn-table .state-atm { color: var(--gold); font-weight: 700; }
+    .scn-table .state-otm { color: var(--danger); font-weight: 700; }
 
     /* Tabla comparativa */
     .cmp-table {
@@ -1291,6 +1330,13 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 0.8rem;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .presentation-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
     }
     .btn-darkx {
       border: 1px solid var(--border);
@@ -1307,6 +1353,11 @@
       background: rgba(255,51,0,0.1);
       transform: translateY(-1px);
     }
+    .btn-darkx.is-on {
+      border-color: rgba(255,80,50,0.6);
+      background: rgba(255,75,25,0.14);
+      color: var(--accent);
+    }
     .dots { display: flex; gap: 0.4rem; }
     .dot {
       width: 22px; height: 6px; border-radius: 999px;
@@ -1318,6 +1369,29 @@
       background: linear-gradient(90deg, var(--accent), var(--line-2));
       width: 42px;
       box-shadow: 0 0 18px rgba(255,60,30,0.65), 0 0 36px rgba(255,40,0,0.2);
+    }
+    .slide-conclusion-card {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.42rem;
+      margin-top: 0.42rem;
+    }
+    .slide-conclusion-item {
+      border: 1px solid rgba(255,120,70,0.35);
+      border-radius: 0.6rem;
+      padding: 0.48rem 0.55rem;
+      background: rgba(255, 250, 243, 0.84);
+      font-size: 0.76rem;
+      line-height: 1.36;
+      color: #4d3d35;
+    }
+    .slide-conclusion-item strong {
+      display: block;
+      font-family: "League Spartan", "Poppins", system-ui, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.18rem;
+      color: #2f241e;
     }
 
     /* Monitor “tiempo real” (última slide) */
@@ -1864,6 +1938,29 @@
         display: none !important;
       }
     }
+    @media (max-width: 700px) {
+      .anatomy-strip,
+      .slide-conclusion-card {
+        grid-template-columns: 1fr;
+      }
+    }
+    body.is-fullscreen {
+      overflow: hidden;
+    }
+    body.is-fullscreen .wrap {
+      max-width: 100vw;
+      padding: 0.45rem 0.55rem 0.65rem;
+    }
+    body.is-fullscreen .stage {
+      height: calc(100vh - 130px);
+      max-height: calc(100vh - 130px);
+      min-height: calc(100vh - 130px);
+    }
+    body.is-fullscreen .slides-shell:has(.slide.active[data-demo="straddle_live"]) .stage {
+      height: calc(100vh - 118px);
+      max-height: calc(100vh - 118px);
+      min-height: calc(100vh - 118px);
+    }
 
   </style>
 </head>
@@ -1938,6 +2035,9 @@
                    data-demo="{{ s.demo }}">
             <div class="subtitle anim">Slide {{ forloop.counter }} / {{ slides|length }} · Straddle sintético</div>
             <h3 class="anim">{{ s.titulo }}</h3>
+            {% if ejemplo.subyacente %}
+            <div class="underlying-ref anim"><i class="bi bi-activity"></i>{{ ejemplo.subyacente }}</div>
+            {% endif %}
 
             <div class="slide-media-block">
             <div class="grid-2">
@@ -1959,6 +2059,10 @@
                     <i class="bi bi-broadcast me-1"></i>Monitor simulado
                     {% elif s.demo == 'straddle_formulas' %}
                     <i class="bi bi-table me-1"></i>Long Straddle · fórmulas clave
+                    {% elif s.demo == 'straddle_escenarios' %}
+                    <i class="bi bi-grid-3x3-gap me-1"></i>Escenarios al vencimiento
+                    {% elif s.demo == 'straddle_conclusiones' %}
+                    <i class="bi bi-journal-check me-1"></i>Cierre de la sesión
                     {% elif s.demo == 'straddle_sell_pro_con' %}
                     <i class="bi bi-check2-square me-1"></i>Sell Straddle · pros y contras
                     {% else %}
@@ -1974,6 +2078,12 @@
                   <span class="pl-chip mid">Forma en V: ganas si ST se aleja de K</span>
                   <span class="pl-chip down">Si ST ≈ K al vencimiento, pierdes las primas</span>
                 </div>
+                <div class="anatomy-strip">
+                  <div class="anatomy-chip"><strong>Strike (K):</strong> referencia central del payoff.</div>
+                  <div class="anatomy-chip"><strong>BEP:</strong> \(K \pm (c+p)\) → {{ ejemplo.bep_inf }} y {{ ejemplo.bep_sup }}.</div>
+                  <div class="anatomy-chip state-itm"><strong>ITM (buy straddle):</strong> cuando \(S_T\) queda lejos de K.</div>
+                  <div class="anatomy-chip state-atm"><strong>ATM:</strong> cerca de K suele ser la zona más débil para buy.</div>
+                </div>
                 {% endif %}
 
                 {% if s.demo == 'straddle_forma' %}
@@ -1984,6 +2094,12 @@
                 <div class="payoff-legend">
                   <span class="pl-chip mid">Straddle combinado al vencer (call + put − c − p)</span>
                   <span class="pl-chip">Mínimo en K = {{ ejemplo.K }} · costo c + p = {{ ejemplo.premio_total }}</span>
+                </div>
+                <div class="anatomy-strip">
+                  <div class="anatomy-chip state-itm"><strong>Call ITM:</strong> \(S_T > K\).</div>
+                  <div class="anatomy-chip state-itm"><strong>Put ITM:</strong> \(S_T < K\).</div>
+                  <div class="anatomy-chip state-atm"><strong>ATM:</strong> \(S_T \approx K\).</div>
+                  <div class="anatomy-chip"><strong>Anatomía:</strong> K, prima total y breakevens gobiernan el perfil.</div>
                 </div>
                 <div class="intro-grid intro-grid--forma">
                   <div class="intro-card call">
@@ -2026,6 +2142,12 @@
                   <span class="pl-chip mid">Línea roja continua = straddle combinado</span>
                   <span class="pl-chip">Punteadas: call (violeta) y put (tono cálido)</span>
                 </div>
+                <div class="anatomy-strip">
+                  <div class="anatomy-chip"><strong>Strike K:</strong> pivote de las dos patas.</div>
+                  <div class="anatomy-chip"><strong>Breakevens:</strong> {{ ejemplo.bep_inf }} y {{ ejemplo.bep_sup }}.</div>
+                  <div class="anatomy-chip state-itm"><strong>Call ITM:</strong> payoff call despierta en \(S_T > K\).</div>
+                  <div class="anatomy-chip state-itm"><strong>Put ITM:</strong> payoff put despierta en \(S_T < K\).</div>
+                </div>
                 {% endif %}
 
                 {% if s.demo == 'straddle_sell_basico' %}
@@ -2034,6 +2156,12 @@
                   <span class="pl-chip">K = {{ ejemplo.K }} · c + p = {{ ejemplo.premio_total }}</span>
                   <span class="pl-chip mid">Línea roja = Sell Straddle (inverso del buy)</span>
                   <span class="pl-chip down">Pico en K · pérdidas si ST se aleja de los BEP</span>
+                </div>
+                <div class="anatomy-strip">
+                  <div class="anatomy-chip"><strong>Pico en K:</strong> ganancia máxima del sell.</div>
+                  <div class="anatomy-chip"><strong>BEP:</strong> {{ ejemplo.bep_inf }} y {{ ejemplo.bep_sup }}.</div>
+                  <div class="anatomy-chip state-atm"><strong>ATM favorable:</strong> \(S_T \approx K\).</div>
+                  <div class="anatomy-chip state-otm"><strong>Riesgo:</strong> pérdidas crecen lejos de K.</div>
                 </div>
                 {% endif %}
 
@@ -2074,6 +2202,12 @@
 
                 {% if s.demo == 'straddle_participantes' %}
                 <div class="payoff-wrap"><canvas data-participantes-chart></canvas></div>
+                <div class="anatomy-strip">
+                  <div class="anatomy-chip"><strong>Referencia:</strong> K = {{ ejemplo.K }} divide estados por pata.</div>
+                  <div class="anatomy-chip"><strong>Prima total:</strong> c + p = {{ ejemplo.premio_total }}.</div>
+                  <div class="anatomy-chip state-itm"><strong>Call ITM:</strong> \(S_T > K\), Put ITM: \(S_T < K\).</div>
+                  <div class="anatomy-chip state-atm"><strong>ATM:</strong> \(S_T = K\), máximo costo del buy.</div>
+                </div>
                 <div class="table-scroll">
                 <table class="scn-table">
                   <thead>
@@ -2105,6 +2239,64 @@
                 </table>
                 </div>
                 <p style="font-size:0.72rem;color:var(--muted);margin:0.35rem 0 0;">Ejemplo con K = {{ ejemplo.K }}, c = {{ ejemplo.c }}, p = {{ ejemplo.p }} (suma cero entre las partes al vencimiento).</p>
+                {% endif %}
+
+                {% if s.demo == 'straddle_escenarios' %}
+                <div class="table-scroll">
+                <table class="scn-table">
+                  <thead>
+                    <tr><th>Escenario</th><th>Call</th><th>Put</th><th>Buy</th><th>Sell</th><th>Lectura</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>\(S_T = {{ ejemplo.K|add:"-15" }}\) (caída fuerte)</td>
+                      <td class="state-otm">OTM</td>
+                      <td class="state-itm">ITM</td>
+                      <td class="gain">Gana</td>
+                      <td class="loss">Pierde</td>
+                      <td>Put arrastra el payoff</td>
+                    </tr>
+                    <tr>
+                      <td>\(S_T = {{ ejemplo.bep_inf }}\) (BEP inf)</td>
+                      <td class="state-otm">OTM</td>
+                      <td class="state-itm">ITM</td>
+                      <td class="zero">Empata</td>
+                      <td class="zero">Empata</td>
+                      <td>Punto de equilibrio inferior</td>
+                    </tr>
+                    <tr>
+                      <td>\(S_T = {{ ejemplo.K }}\) (strike)</td>
+                      <td class="state-atm">ATM</td>
+                      <td class="state-atm">ATM</td>
+                      <td class="loss">Pierde máx.</td>
+                      <td class="gain">Gana máx.</td>
+                      <td>Zona central del perfil</td>
+                    </tr>
+                    <tr>
+                      <td>\(S_T = {{ ejemplo.bep_sup }}\) (BEP sup)</td>
+                      <td class="state-itm">ITM</td>
+                      <td class="state-otm">OTM</td>
+                      <td class="zero">Empata</td>
+                      <td class="zero">Empata</td>
+                      <td>Punto de equilibrio superior</td>
+                    </tr>
+                    <tr>
+                      <td>\(S_T = {{ ejemplo.K|add:"15" }}\) (subida fuerte)</td>
+                      <td class="state-itm">ITM</td>
+                      <td class="state-otm">OTM</td>
+                      <td class="gain">Gana</td>
+                      <td class="loss">Pierde</td>
+                      <td>Call arrastra el payoff</td>
+                    </tr>
+                  </tbody>
+                </table>
+                </div>
+                <div class="anatomy-strip">
+                  <div class="anatomy-chip"><strong>Anatomía base:</strong> Strike K = {{ ejemplo.K }}.</div>
+                  <div class="anatomy-chip"><strong>Prima total:</strong> c + p = {{ ejemplo.premio_total }}.</div>
+                  <div class="anatomy-chip state-itm"><strong>ITM:</strong> pata con valor intrínseco positivo.</div>
+                  <div class="anatomy-chip state-otm"><strong>OTM:</strong> pata sin valor intrínseco al vencimiento.</div>
+                </div>
                 {% endif %}
 
                 {% if s.demo == 'straddle_pro_con' or s.demo == 'straddle_sell_pro_con' %}
@@ -2149,7 +2341,7 @@
                   </div>
                   <div class="live-kpi-row">
                     <div class="live-kpi">
-                      <span class="live-kpi-l">Spot simulado</span>
+                      <span class="live-kpi-l">Spot simulado del subyacente</span>
                       <span class="live-kpi-v" id="liveSpotVal">—</span>
                     </div>
                     <div class="live-kpi">
@@ -2177,6 +2369,27 @@
                     <span class="live-kpi-v" id="liveSellViewVal">—</span>
                   </div>
                 </div>
+                </div>
+                {% endif %}
+
+                {% if s.demo == 'straddle_conclusiones' %}
+                <div class="slide-conclusion-card">
+                  <div class="slide-conclusion-item">
+                    <strong>1) Tesis de mercado</strong>
+                    Buy: esperas desplazamiento fuerte. Sell: esperas rango y calma.
+                  </div>
+                  <div class="slide-conclusion-item">
+                    <strong>2) Anatomía obligatoria</strong>
+                    Ubica siempre \(K\), prima total y breakevens antes de interpretar P/L.
+                  </div>
+                  <div class="slide-conclusion-item">
+                    <strong>3) Estado por pata</strong>
+                    Revisa ITM/ATM/OTM de call y put para explicar el resultado final.
+                  </div>
+                  <div class="slide-conclusion-item">
+                    <strong>4) Riesgo operativo</strong>
+                    Costos, spreads y volatilidad implícita pueden cambiar la lectura teórica.
+                  </div>
                 </div>
                 {% endif %}
               </div>
@@ -2218,7 +2431,12 @@
         </div>
 
         <div class="controls">
-          <button class="btn-darkx" id="prevSlide"><i class="bi bi-arrow-left me-1"></i>Anterior</button>
+          <div class="presentation-actions">
+            <button class="btn-darkx" id="prevSlide"><i class="bi bi-arrow-left me-1"></i>Anterior</button>
+            <button class="btn-darkx" id="toggleFullscreen" title="Pantalla completa (Esc para salir)">
+              <i class="bi bi-fullscreen me-1" id="fullscreenIcon"></i><span id="fullscreenLabel">Pantalla completa</span>
+            </button>
+          </div>
           <div class="dots">
             {% for s in slides %}
             <span class="dot {% if forloop.first %}active{% endif %}" data-dot-index="{{ forloop.counter0 }}"></span>
@@ -2273,6 +2491,14 @@
         tension: 0,
         fill: false,
       };
+    }
+    function anatomyLineSet(y0, y1, includeBep = true) {
+      const lines = [vline(STR.K, y0, y1, 'Strike K')];
+      if (includeBep) {
+        lines.push(vline(STR.BEP_DN, y0, y1, 'BEP inf'));
+        lines.push(vline(STR.BEP_UP, y0, y1, 'BEP sup'));
+      }
+      return lines;
     }
 
     /* =================== SLIDE ENGINE =================== */
@@ -2490,9 +2716,35 @@
     document.getElementById('prevSlide').addEventListener('click', () => go(idx - 1));
     document.getElementById('nextSlide').addEventListener('click', () => go(idx + 1));
     dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    const fsBtn = document.getElementById('toggleFullscreen');
+    const fsIcon = document.getElementById('fullscreenIcon');
+    const fsLabel = document.getElementById('fullscreenLabel');
+    function syncFullscreenUi() {
+      const on = !!document.fullscreenElement;
+      document.body.classList.toggle('is-fullscreen', on);
+      if (fsBtn) fsBtn.classList.toggle('is-on', on);
+      if (fsIcon) fsIcon.className = on ? 'bi bi-fullscreen-exit me-1' : 'bi bi-fullscreen me-1';
+      if (fsLabel) fsLabel.textContent = on ? 'Salir pantalla completa' : 'Pantalla completa';
+    }
+    async function toggleFullscreen() {
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch (e) {
+        /* noop */
+      } finally {
+        syncFullscreenUi();
+      }
+    }
+    if (fsBtn) fsBtn.addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', syncFullscreenUi);
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') go(idx + 1);
       if (e.key === 'ArrowLeft')  go(idx - 1);
+      if (e.key === 'Escape' && document.fullscreenElement) syncFullscreenUi();
     });
 
     progressBar.style.width = (1 / slides.length * 100) + '%';
@@ -2628,7 +2880,7 @@
             min: minX, max: maxX,
             grid: { color: 'rgba(125, 105, 90, 0.22)' },
             ticks: { color: '#4f3f35', font: { size: 10, weight: '600' } },
-            title: { display: true, text: 'Precio final del activo ($)',
+            title: { display: true, text: 'Precio final del activo subyacente ($)',
                      color: '#4f3f35', font: { size: 10, weight: '600' } },
           },
           y: {
@@ -2655,16 +2907,19 @@
       const chart = new Chart(canvas, {
         type: 'line',
         data: {
-          datasets: [{
-            label: 'Buy straddle (intuición)',
-            data: comb,
-            borderColor: 'rgba(255,55,20,1)',
-            backgroundColor: 'rgba(255,55,20,0.16)',
-            borderWidth: 2.8,
-            tension: 0,
-            pointRadius: 0,
-            fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.2)', below: 'rgba(255,70,100,0.26)' },
-          }],
+          datasets: [
+            {
+              label: 'Buy straddle (intuición)',
+              data: comb,
+              borderColor: 'rgba(255,55,20,1)',
+              backgroundColor: 'rgba(255,55,20,0.16)',
+              borderWidth: 2.8,
+              tension: 0,
+              pointRadius: 0,
+              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.2)', below: 'rgba(255,70,100,0.26)' },
+            },
+            ...anatomyLineSet(yMin, yMax, true),
+          ],
         },
         options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Resultado al vencimiento ($)' }),
       });
@@ -2692,16 +2947,19 @@
         chartComb = new Chart(cComb, {
           type: 'line',
           data: {
-            datasets: [{
-              label: 'Straddle largo (combinado)',
-              data: comb,
-              borderColor: 'rgba(255,55,20,1)',
-              backgroundColor: 'rgba(255,55,20,0.14)',
-              borderWidth: 2.9,
-              tension: 0,
-              pointRadius: 0,
-              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.18)', below: 'rgba(255,70,100,0.22)' },
-            }],
+            datasets: [
+              {
+                label: 'Straddle largo (combinado)',
+                data: comb,
+                borderColor: 'rgba(255,55,20,1)',
+                backgroundColor: 'rgba(255,55,20,0.14)',
+                borderWidth: 2.9,
+                tension: 0,
+                pointRadius: 0,
+                fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.18)', below: 'rgba(255,70,100,0.22)' },
+              },
+              ...anatomyLineSet(yMin, yMax, true),
+            ],
           },
           options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Payoff straddle al vencer ($)' }),
         });
@@ -2716,14 +2974,17 @@
       const chC = new Chart(cC, {
         type: 'line',
         data: {
-          datasets: [{
-            label: 'Call · compra (paga c)',
-            data: callData,
-            borderColor: 'rgba(175,155,255,1)',
-            backgroundColor: 'rgba(175,155,255,0.16)',
-            fill: { target: { value: 0 }, above: 'rgba(175,155,255,0.22)', below: 'rgba(255,95,120,0.18)' },
-            borderWidth: 2.4, pointRadius: 0, tension: 0.05,
-          }],
+          datasets: [
+            {
+              label: 'Call · compra (paga c)',
+              data: callData,
+              borderColor: 'rgba(175,155,255,1)',
+              backgroundColor: 'rgba(175,155,255,0.16)',
+              fill: { target: { value: 0 }, above: 'rgba(175,155,255,0.22)', below: 'rgba(255,95,120,0.18)' },
+              borderWidth: 2.4, pointRadius: 0, tension: 0.05,
+            },
+            ...anatomyLineSet(-10, 30, false),
+          ],
         },
         options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30, hideLegend: true }),
       });
@@ -2732,14 +2993,17 @@
       const chP = new Chart(cP, {
         type: 'line',
         data: {
-          datasets: [{
-            label: 'Put · compra (paga p)',
-            data: putData,
-            borderColor: 'rgba(255,195,110,1)',
-            backgroundColor: 'rgba(255,195,110,0.14)',
-            fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.14)', below: 'rgba(255,95,120,0.14)' },
-            borderWidth: 2.4, pointRadius: 0, tension: 0.05,
-          }],
+          datasets: [
+            {
+              label: 'Put · compra (paga p)',
+              data: putData,
+              borderColor: 'rgba(255,195,110,1)',
+              backgroundColor: 'rgba(255,195,110,0.14)',
+              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.14)', below: 'rgba(255,95,120,0.14)' },
+              borderWidth: 2.4, pointRadius: 0, tension: 0.05,
+            },
+            ...anatomyLineSet(-10, 30, false),
+          ],
         },
         options: basePayoffOptions({ minX: 70, maxX: 130, minY: -10, maxY: 30, hideLegend: true }),
       });
@@ -2838,6 +3102,7 @@
               pointRadius: 0,
               fill: false,
             },
+            ...anatomyLineSet(yMin, yMax, true),
           ],
         },
         options: basePayoffOptions({ minX: lo, maxX: hi, minY: yMin, maxY: yMax, title: 'Ganancia o pérdida al vencer ($)' }),
@@ -2888,8 +3153,7 @@
               pointRadius: 0, tension: 0,
               fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.16)', below: 'rgba(255,85,110,0.22)' },
             },
-            vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
-            vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
+            ...anatomyLineSet(yMin, yMax, true),
           ],
         },
         options: basePayoffOptions({
@@ -2925,8 +3189,7 @@
               tension: 0,
               fill: { target: { value: 0 }, above: 'rgba(120,255,160,0.15)', below: 'rgba(255,90,110,0.2)' },
             },
-            vline(STR.BEP_DN, yMin, yMax, 'BEP inf'),
-            vline(STR.BEP_UP, yMin, yMax, 'BEP sup'),
+            ...anatomyLineSet(yMin, yMax, true),
           ],
         },
         options: basePayoffOptions({
@@ -3226,6 +3489,7 @@
     }
 
     window.addEventListener('load', () => {
+      syncFullscreenUi();
       activateDemo(slides[0]);
     });
   </script>

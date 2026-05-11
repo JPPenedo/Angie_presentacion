@@ -1372,6 +1372,40 @@ def expo_sinteticos_view(request):
             'demo': 'straddle_sell_pro_con',
         },
         {
+            'titulo': 'Escenarios al vencimiento · Buy vs Sell',
+            'resumen_intro': (
+                'Antes del monitor, compara escenarios discretos de precio final para ver el espejo '
+                'entre buy straddle y sell straddle en una sola lámina.'
+            ),
+            'resumen_bullets': [
+                'En S_T por debajo del break-even inferior, buy mejora y sell se deteriora.',
+                'En zona media (cerca de K), buy suele perder prima y sell suele capturarla.',
+                'En S_T por arriba del break-even superior, buy vuelve a mejorar y sell vuelve a sufrir.',
+                'El cuadro resume ITM/ATM/OTM de call y put por escenario.',
+            ],
+            'nota_ampliada': (
+                'Es una diapositiva puente: ayuda a pasar del payoff estático a la lectura dinámica '
+                'del monitor sin perder la lógica de estados por pata.'
+            ),
+            'idea': (
+                'En lugar de mirar solo curvas, aquí tomas algunos precios finales y lees de inmediato '
+                'qué pasa con cada estrategia y con cada pata. Así conectas el dibujo con decisiones.'
+            ),
+            'dato_clave': (
+                'El mismo S_T puede ser ITM para una pata y OTM para la otra; por eso el straddle '
+                'captura movimiento en ambos sentidos.'
+            ),
+            'enfoque': (
+                'Úsala como checklist previa al simulador: estado de call, estado de put, P/L buy y P/L sell.'
+            ),
+            'conceptos': [
+                'Buy y sell son espejos en payoff al vencimiento.',
+                'Call larga: ITM cuando S_T > K; Put larga: ITM cuando S_T < K.',
+                'En S_T = K: estado ATM y máxima pérdida del buy (máxima ganancia del sell).',
+            ],
+            'demo': 'straddle_escenarios',
+        },
+        {
             'titulo': 'Monitor de juguete (simulación)',
             'resumen_intro': (
                 'Es un tablero de demostración: cada 2.5 segundos se sortea un precio del activo y se recalcula '
@@ -1407,6 +1441,40 @@ def expo_sinteticos_view(request):
             ],
             'demo': 'straddle_live',
         },
+        {
+            'titulo': 'Conclusiones',
+            'resumen_intro': (
+                'Cierre ejecutivo de la estrategia: cuándo tiene sentido, qué vigilar y cómo evitar '
+                'lecturas incompletas del payoff.'
+            ),
+            'resumen_bullets': [
+                'Buy straddle compra convexidad: necesita desplazamiento relevante de S_T.',
+                'Sell straddle monetiza calma: sufre en eventos y colas de precio.',
+                'La anatomía clave siempre es K, prima total y breakevens K ± (c + p).',
+                'El estado ITM/ATM/OTM por pata ayuda a explicar resultados en clase.',
+            ],
+            'nota_ampliada': (
+                'El marco presentado es pedagógico y al vencimiento; para operación real hay que sumar '
+                'volatilidad implícita, liquidez, costos y gestión de riesgo.'
+            ),
+            'idea': (
+                'La misma estructura técnica puede jugar a favor o en contra según el régimen del mercado. '
+                'La clave no es memorizar la V, sino leer contexto, costo y distancia a equilibrio.'
+            ),
+            'dato_clave': (
+                'Sin movimiento suficiente, el buy suele perder por prima; con sobresaltos fuertes, '
+                'el sell concentra el riesgo.'
+            ),
+            'enfoque': (
+                'Como cierre docente, resume: tesis de mercado, anatomía del payoff y riesgos operativos.'
+            ),
+            'conceptos': [
+                'Define primero el escenario esperado (calma vs movimiento).',
+                'Cuantifica siempre breakevens y costo total.',
+                'Evalúa ITM/ATM/OTM de cada pata antes de concluir.',
+            ],
+            'demo': 'straddle_conclusiones',
+        },
     ]
 
     ejemplo = {
@@ -1417,6 +1485,7 @@ def expo_sinteticos_view(request):
         'premio_total': 8,
         'bep_sup': 108,
         'bep_inf': 92,
+        'subyacente': 'Activo subyacente (spot simulado)',
     }
 
     context = {
