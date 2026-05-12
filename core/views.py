@@ -1450,8 +1450,8 @@ def expo_sinteticos_view(request):
             'resumen_bullets': [
                 'Buy straddle compra convexidad: necesita desplazamiento relevante de S_T.',
                 'Sell straddle monetiza calma: sufre en eventos y colas de precio.',
-                'La anatomía clave siempre es K, prima total y breakevens K ± (c + p).',
-                'El estado ITM/ATM/OTM por pata ayuda a explicar resultados en clase.',
+                'Entre K − (c + p) y K + (c + p) el comprador suele quedar detrás al vencer: pagó dos primas y hace falta que el spot salga del corredor para empatar.',
+                'Long suele odiar una caída brusca de la volatilidad implícita tras la noticia; short cobra esas primas pero asume pérdidas crecientes si el precio rompe fuerte fuera de los breakevens.',
             ],
             'nota_ampliada': (
                 'El marco presentado es pedagógico y al vencimiento; para operación real hay que sumar '
@@ -1466,12 +1466,13 @@ def expo_sinteticos_view(request):
                 'el sell concentra el riesgo.'
             ),
             'enfoque': (
-                'Como cierre docente, resume: tesis de mercado, anatomía del payoff y riesgos operativos.'
+                'Como cierre docente, resume: tesis de mercado, corredor K ± (c + p) y contraste long/short '
+                'entre volatilidad implícita y riesgo en colas.'
             ),
             'conceptos': [
                 'Define primero el escenario esperado (calma vs movimiento).',
                 'Cuantifica siempre breakevens y costo total.',
-                'Evalúa ITM/ATM/OTM de cada pata antes de concluir.',
+                'Recuerda que el straddle largo gana por magnitud del movimiento respecto a K, no por acertar la dirección.',
             ],
             'demo': 'straddle_conclusiones',
         },
