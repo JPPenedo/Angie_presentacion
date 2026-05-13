@@ -121,12 +121,19 @@
     word-break: break-word;
     tab-size: 4;
   }
-  .pf-cap-reader-hint {
-    font-size: 0.68rem;
-    color: #6b7280;
-    padding: 0.35rem 1rem 0.75rem;
-    border-top: 1px solid rgba(255,255,255,0.04);
+  .pf-cap-struct {
+    margin-top: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    background: #0f1419;
+    padding: 1rem 1.15rem 1.15rem;
   }
+  .pf-cap-struct h3 { font-size: 0.95rem; font-weight: 700; color: #93c5fd; margin: 0 0 0.75rem; }
+  .pf-cap-struct .table { font-size: 0.78rem; margin-bottom: 0; }
+  .pf-cap-struct .table thead th { color: #9ca3af; border-color: rgba(255,255,255,0.08); }
+  .pf-cap-struct .table td { border-color: rgba(255,255,255,0.06); vertical-align: middle; }
+  .pf-cap-stat { font-size: 0.8rem; color: #d1d5db; }
+  .pf-cap-stat strong { color: #e5e7eb; }
   .pf-table-card { background: #1c1c1c; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 1.5rem; }
   .pf-table-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
   .pf-buy-pill {
@@ -217,9 +224,9 @@
     <div class="col-sm-6 col-xl-3">
       <div class="stat-card d-flex justify-content-between align-items-center">
         <div>
-          <div class="stat-value" style="color:var(--blue);">{{ materias_actuales|length }}</div>
-          <div class="stat-label">Materias en curso</div>
-          <div class="stat-delta text-secondary">Carga del semestre</div>
+          <div class="stat-value" style="color:var(--blue);">{% if cap_estructurado.program_summary.courses_used %}{{ cap_estructurado.program_summary.courses_used }}{% else %}{{ materias_actuales|length }}{% endif %}</div>
+          <div class="stat-label">{% if cap_estructurado.program_summary.courses_used %}Materias usadas (CAP){% else %}Materias en curso{% endif %}</div>
+          <div class="stat-delta text-secondary">{% if cap_estructurado.program_summary.courses_used %}Según resumen global{% else %}Carga del semestre{% endif %}</div>
         </div>
         <div class="stat-icon" style="background:var(--blue-dim);color:var(--blue);"><i class="bi bi-journal-bookmark-fill"></i></div>
       </div>
@@ -259,6 +266,66 @@
         </form>.
       </div>
     </div>
+    {% if cap_estructurado.courses or cap_estructurado.areas or cap_estructurado.program_summary.credits_required %}
+    <div class="pf-cap-struct mt-3">
+      <h3><i class="bi bi-diagram-3 me-1"></i>Lectura estructurada (solo texto embebido, PyMuPDF)</h3>
+      {% if cap_estructurado.program_summary.credits_required %}
+      <div class="row g-2 pf-cap-stat mb-3">
+        <div class="col-md-4"><strong>Créditos requeridos:</strong> {{ cap_estructurado.program_summary.credits_required|floatformat:2 }}</div>
+        <div class="col-md-4"><strong>Créditos usados (resumen global):</strong> {{ cap_estructurado.program_summary.credits_used|floatformat:2 }}</div>
+        <div class="col-md-4"><strong>Avance:</strong> {{ cap_estructurado.program_summary.progress_percent|floatformat:2 }}% · <strong>Cursos en resumen:</strong> {{ cap_estructurado.program_summary.courses_used }}</div>
+        <div class="col-12 small text-secondary">Totales del bloque «Total Required» del PDF (no suma de filas con NaN).</div>
+      </div>
+      {% endif %}
+      {% if cap_estructurado.areas %}
+      <p class="small text-secondary mb-1">Áreas detectadas: {{ cap_estructurado.areas|length }}</p>
+      <div class="table-responsive mb-3">
+        <table class="table table-dark table-sm">
+          <thead><tr><th>Área</th><th>Met</th><th>Req.</th><th>Usados</th><th>Cursos</th></tr></thead>
+          <tbody>
+            {% for a in cap_estructurado.areas %}
+            <tr>
+              <td>{{ a.area }}</td>
+              <td>{% if a.met %}Sí{% else %}No{% endif %}</td>
+              <td>{{ a.credits_required|floatformat:2 }}</td>
+              <td>{{ a.credits_used|floatformat:2 }}</td>
+              <td>{{ a.courses_used }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+      {% if cap_estructurado.courses %}
+      <p class="small text-secondary mb-1">Materias detectadas en detalle: {{ cap_estructurado.courses|length }} · Completadas: {{ cap_estructurado.completed_courses|length }} · Pendientes: {{ cap_estructurado.pending_courses|length }}</p>
+      <details class="mb-2">
+        <summary class="small text-info" style="cursor:pointer;">Ver materias parseadas ({{ cap_estructurado.courses|length }})</summary>
+        <div class="table-responsive mt-2">
+          <table class="table table-dark table-sm">
+            <thead><tr><th>Periodo</th><th>Código</th><th>Nombre</th><th>Créditos</th><th>Calif.</th><th>Estado</th></tr></thead>
+            <tbody>
+              {% for c in cap_estructurado.courses %}
+              <tr>
+                <td>{{ c.term|default:"—" }}</td>
+                <td>{{ c.code }}</td>
+                <td>{{ c.name }}</td>
+                <td>{% if c.credits_nan_row %}<span class="text-warning">NaN</span>{% else %}{{ c.credits_raw }}{% endif %}</td>
+                <td>{{ c.grade|default:"—" }}</td>
+                <td>{% if c.completed %}Hecha{% elif c.pending %}Pendiente{% else %}—{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      {% endif %}
+      {% if cap_estructurado.warnings %}
+      <div class="alert alert-warning py-2 px-3 small mb-0">
+        {% for w in cap_estructurado.warnings %}<div>{{ w }}</div>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
     {% if cuenta_db and cuenta_db.cap_texto_extraido and not es_demo_alumno %}
     <div class="pf-cap-reader">
       <div class="pf-cap-reader-head">

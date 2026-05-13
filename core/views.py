@@ -21,6 +21,7 @@ from django.views.decorators.http import require_POST, require_http_methods
 import copy
 import json
 
+from .cap_estructurado import procesar_pdf_cap_estructurado
 from .cap_lectura import extraer_texto_cap
 from .models import (
     BloqueEvaluacion,
@@ -711,7 +712,28 @@ def perfil_alumno(request):
         promedio_global = None
         total_creditos_hist = 0
         pct_avance = 0
-        if cuenta_db and cuenta_db.cap_subido_en:
+        cap_ps = {}
+        if cuenta_db and isinstance(cuenta_db.cap_estructurado, dict):
+            cap_ps = cuenta_db.cap_estructurado.get('program_summary') or {}
+        if cuenta_db and cuenta_db.cap_subido_en and cap_ps.get('credits_required'):
+            total_creditos_hist = int(round(float(cap_ps.get('credits_used', 0))))
+            pct_avance = float(cap_ps.get('progress_percent') or 0)
+            meta_creditos = int(round(float(cap_ps.get('credits_required'))))
+            cap_ok = True
+            cap_message = (
+                'CAP registrado. Los créditos y el avance se toman del resumen global «Total Required» del PDF.'
+            )
+            cursos_ok = (cuenta_db.cap_estructurado or {}).get('completed_courses') or []
+            vals = []
+            for c in cursos_ok:
+                g = c.get('grade')
+                if g:
+                    try:
+                        vals.append(float(g))
+                    except ValueError:
+                        continue
+            promedio_global = round(sum(vals) / len(vals), 2) if vals else None
+        elif cuenta_db and cuenta_db.cap_subido_en:
             total_creditos_hist = 48
             pct_avance = min(100, round(total_creditos_hist / meta_creditos * 100))
             promedio_global = 8.4
@@ -737,8 +759,18 @@ def perfil_alumno(request):
             max(0, meta_creditos - sum(m['creditos'] for sem in historial for m in sem['materias'])),
         ]
     elif cuenta_db and cuenta_db.cap_subido_en:
-        chunks = [12, 14, 14, meta_creditos - 48]
-        chunks = [max(0, c) for c in chunks]
+        areas_cap = (cuenta_db.cap_estructurado or {}).get('areas') or []
+        if areas_cap and len(areas_cap) >= 1:
+            chunks = []
+            for a in areas_cap[:3]:
+                chunks.append(max(0, int(round(float(a.get('credits_used', 0))))))
+            while len(chunks) < 3:
+                chunks.append(0)
+            chunks.append(max(0, meta_creditos - total_creditos_hist))
+            chunks = [max(0, c) for c in chunks][:4]
+        else:
+            chunks = [12, 14, 14, meta_creditos - total_creditos_hist]
+            chunks = [max(0, c) for c in chunks]
     else:
         chunks = [0, 0, 0, meta_creditos]
 
@@ -758,6 +790,7 @@ def perfil_alumno(request):
         'cap_ok': cap_ok,
         'cap_message': cap_message,
         'cap_extraccion_resumen': (cuenta_db.cap_extraccion_resumen or '') if cuenta_db else '',
+        'cap_estructurado': (cuenta_db.cap_estructurado or {}) if cuenta_db else {},
         'cap_lectura_error': cuenta_db.cap_error_lectura if cuenta_db else '',
     }
     return render(request, 'core/perfil_alumno.html', context)
@@ -784,9 +817,32 @@ def subir_cap_alumno(request):
         raw = archivo.read()
         nombre = (archivo.name or '')[:260]
         texto_extraido, error_lectura, resumen = extraer_texto_cap(raw, nombre)
+        ext = nombre.lower().rsplit('.', 1)[-1] if '.' in nombre else ''
+        if ext == 'pdf':
+            cap_dict, _ = procesar_pdf_cap_estructurado(raw)
+            cuenta.cap_estructurado = cap_dict
+            ps = cap_dict.get('program_summary') or {}
+            logger.info(
+                'CAP PDF estructurado guardado: cursos=%s áreas=%s req=%s used=%s %%=%s nan_cursadas=%s',
+                len(cap_dict.get('courses') or []),
+                len(cap_dict.get('areas') or []),
+                ps.get('credits_required'),
+                ps.get('credits_used'),
+                ps.get('progress_percent'),
+                len(
+                    [
+                        c
+                        for c in (cap_dict.get('courses') or [])
+                        if c.get('credits_nan_row') and c.get('completed')
+                    ]
+                ),
+            )
+        else:
+            cuenta.cap_estructurado = {}
     else:
         nombre = (request.POST.get('nombre_simulado') or 'CAP_simulado.pdf').strip()[:260]
         error_lectura = 'Simulación sin archivo: no se ejecutó lectura automática.'
+        cuenta.cap_estructurado = {}
 
     now = timezone.now()
     cuenta.cap_subido_en = now

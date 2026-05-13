@@ -33,6 +33,11 @@ class CuentaAlumno(models.Model):
         blank=True,
         help_text="Motor elegido y estadísticas de la última lectura local del CAP.",
     )
+    cap_estructurado = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Parseo estructurado (program_summary, áreas, cursos) desde CAP PDF.",
+    )
     cap_ultima_lectura_en = models.DateTimeField(null=True, blank=True)
 
     class Meta:
