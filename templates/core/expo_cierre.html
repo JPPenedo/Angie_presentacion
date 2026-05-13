@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
   <style>
     :root {
@@ -28,6 +29,7 @@
       --warning: #ffb347;
       --danger: #db4e4e;
       --blue-soft: #6c8cc7;
+      --blue-bright: #8eb1ee;
     }
 
     * { box-sizing: border-box; }
@@ -106,7 +108,7 @@
       z-index: 1;
       max-width: 1280px;
       margin: 0 auto;
-      padding: 1.6rem 1.4rem 4rem;
+      padding: 1.4rem 1.4rem 3rem;
     }
 
     .topbar {
@@ -115,197 +117,106 @@
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 1.4rem;
+      margin-bottom: 1.1rem;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
+    .brand { display: flex; align-items: center; gap: 0.7rem; }
     .brand-mark {
-      width: 38px;
-      height: 38px;
+      width: 38px; height: 38px;
       border-radius: 12px;
       background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
       color: #1d1410;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-weight: 800;
       font-family: "Sora", "Inter", sans-serif;
       box-shadow: 0 8px 24px rgba(201, 160, 106, 0.3);
     }
     .brand-info { display: flex; flex-direction: column; }
-    .brand-name {
-      font-family: "Sora", "Inter", sans-serif;
-      font-weight: 700;
-      font-size: 0.9rem;
-      letter-spacing: 0.01em;
-      color: #f3eada;
-    }
-    .brand-sub {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+    .brand-name { font-family: "Sora", "Inter", sans-serif; font-weight: 700; font-size: 0.9rem; color: #f3eada; }
+    .brand-sub { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
     .topbar-meta {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.15rem;
-      font-size: 0.72rem;
-      color: var(--muted);
-      text-align: right;
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 0.15rem; font-size: 0.72rem; color: var(--muted); text-align: right;
     }
-    .topbar-meta strong {
-      color: #e8dcc8;
-      font-weight: 600;
-    }
+    .topbar-meta strong { color: #e8dcc8; font-weight: 600; }
 
     .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      margin-bottom: 1rem;
-      color: var(--muted);
-      font-size: 0.8rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      display: flex; align-items: center; gap: 0.7rem;
+      margin-bottom: 0.85rem;
+      color: var(--muted); font-size: 0.78rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
     .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.7rem;
-      border-radius: 999px;
-      background: var(--pf-accent-soft);
-      color: var(--pf-accent);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      display: inline-flex; align-items: center;
+      padding: 0.25rem 0.7rem; border-radius: 999px;
+      background: var(--pf-accent-soft); color: var(--pf-accent);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
       border: 1px solid rgba(201, 160, 106, 0.3);
     }
 
-    /* ============ SLIDES ============ */
-    .slides-section {
-      position: relative;
-    }
+    /* ============ SLIDES SHELL ============ */
     .slides-shell {
       position: relative;
       background: linear-gradient(180deg, #131210 0%, #0d0c0a 100%);
       border: 1px solid var(--border);
-      border-radius: 1.5rem;
-      padding: 1.2rem 1.2rem 1rem;
+      border-radius: 1.4rem;
+      padding: 1.1rem 1.2rem 1rem;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
     }
-    .progress-rail {
-      height: 4px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-bottom: 1rem;
-    }
-    .progress-bar-x {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--gold), var(--pf-accent));
-      border-radius: 999px;
-      transition: width 0.4s ease;
-    }
+    .progress-rail { height: 4px; width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 999px; overflow: hidden; margin-bottom: 0.9rem; }
+    .progress-bar-x { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--pf-accent)); border-radius: 999px; transition: width 0.4s ease; }
 
-    .stage {
-      position: relative;
-      min-height: 580px;
-    }
-    .slide {
-      display: none;
-      animation: fadeInUp 0.5s ease both;
-    }
+    .stage { position: relative; min-height: 560px; }
+    .slide { display: none; animation: fadeInUp 0.5s ease both; }
     .slide.active { display: block; }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
     .anim { animation: fadeInUp 0.6s 0.05s ease both; }
     .anim-2 { animation: fadeInUp 0.6s 0.15s ease both; }
     .anim-3 { animation: fadeInUp 0.6s 0.25s ease both; }
 
     .slide .subtitle {
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 600;
+      font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); font-weight: 600;
     }
     .slide .subtitle .dot-sep { color: rgba(201, 160, 106, 0.5); margin: 0 0.4rem; }
     .slide h2 {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: clamp(1.6rem, 2.6vw, 2.1rem);
-      line-height: 1.18;
-      font-weight: 700;
+      font-size: clamp(1.55rem, 2.5vw, 2rem);
+      line-height: 1.18; font-weight: 700;
       color: #fdf6ea;
-      margin: 0.4rem 0 0.4rem;
+      margin: 0.4rem 0 0.5rem;
       letter-spacing: -0.01em;
     }
     .slide h2 .accent { color: var(--gold); }
-    .slide .slide-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.3rem 0.7rem;
-      border-radius: 999px;
-      background: rgba(108, 140, 199, 0.12);
-      color: #c8d3eb;
-      border: 1px solid rgba(108, 140, 199, 0.3);
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+    .slide .slide-lead {
+      color: #d1d5db; font-size: 0.92rem; line-height: 1.5; margin: 0 0 0.7rem;
+      max-width: 70ch;
     }
+    .slide .slide-lead.center { margin-left: auto; margin-right: auto; text-align: center; }
 
+    /* layout helpers */
     .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-      margin-top: 1.1rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem;
     }
-    @media (max-width: 980px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
+    .stack { display: flex; flex-direction: column; gap: 0.85rem; }
 
     .copy-zone {
       background: rgba(255, 255, 255, 0.025);
       border: 1px solid var(--border);
-      border-radius: 1.1rem;
-      padding: 1.1rem 1.2rem;
+      border-radius: 1.05rem;
+      padding: 1rem 1.1rem;
     }
     .copy-zone .lead {
-      font-size: 1rem;
-      color: #e8dcc8;
-      line-height: 1.55;
-      margin: 0 0 0.85rem;
+      font-size: 0.95rem; color: #e8dcc8; line-height: 1.55; margin: 0 0 0.7rem;
     }
-    .copy-zone ul.visible-bullets {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+    .copy-zone ul.visible-bullets { list-style: none; padding: 0; margin: 0; }
     .copy-zone ul.visible-bullets li {
-      position: relative;
-      padding-left: 1.4rem;
-      margin-bottom: 0.55rem;
-      font-size: 0.86rem;
-      color: #d1d5db;
-      line-height: 1.5;
+      position: relative; padding-left: 1.3rem; margin-bottom: 0.45rem;
+      font-size: 0.84rem; color: #d1d5db; line-height: 1.5;
     }
     .copy-zone ul.visible-bullets li::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.55rem;
-      width: 0.5rem;
-      height: 0.5rem;
-      border-radius: 50%;
+      content: ""; position: absolute; left: 0; top: 0.55rem;
+      width: 0.5rem; height: 0.5rem; border-radius: 50%;
       background: linear-gradient(135deg, var(--gold), var(--pf-accent));
       box-shadow: 0 0 0 2px rgba(201, 160, 106, 0.2);
     }
@@ -313,468 +224,335 @@
     .visual-zone {
       background: linear-gradient(160deg, #1c1a15 0%, #15130f 100%);
       border: 1px solid rgba(201, 160, 106, 0.22);
-      border-radius: 1.1rem;
-      padding: 1.1rem 1.2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
+      border-radius: 1.05rem;
+      padding: 1rem 1.1rem;
+      display: flex; flex-direction: column; gap: 0.7rem;
     }
+    .visual-zone.flush { padding: 0.9rem 1rem 1rem; }
     .visual-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.74rem;
-      color: var(--gold);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.74rem; color: var(--gold); font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
     .visual-head .dots-3 { display: inline-flex; gap: 0.3rem; }
-    .visual-head .dots-3 span {
-      width: 0.45rem;
-      height: 0.45rem;
-      border-radius: 50%;
-      background: rgba(201, 160, 106, 0.35);
-    }
+    .visual-head .dots-3 span { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: rgba(201, 160, 106, 0.35); }
     .visual-head .dots-3 span:last-child { background: rgba(108, 140, 199, 0.45); }
 
-    /* === bloques visuales por tipo === */
-    .hero-metrics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.6rem;
-    }
+    /* ============ HERO METRICS ============ */
+    .hero-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; }
     .metric-card {
       background: rgba(201, 160, 106, 0.07);
       border: 1px solid rgba(201, 160, 106, 0.22);
-      border-radius: 0.9rem;
-      padding: 0.85rem 0.9rem;
+      border-radius: 0.85rem;
+      padding: 0.75rem 0.8rem;
       text-align: center;
     }
     .metric-card .value {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: -0.01em;
+      font-size: 1.3rem; font-weight: 700; color: var(--gold); letter-spacing: -0.01em;
     }
-    .metric-card .label {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-top: 0.2rem;
-    }
-    .hero-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 0.4rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      color: #d1d5db;
-      font-size: 0.78rem;
-    }
-    .hero-line .who { color: var(--gold); font-weight: 600; }
+    .metric-card .label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.15rem; }
 
-    .pain-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.6rem;
-    }
-    .pain-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 0.9rem;
-      padding: 0.8rem 0.9rem;
-      display: flex;
-      gap: 0.6rem;
-      align-items: flex-start;
-    }
-    .pain-card .pi-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      background: rgba(201, 160, 106, 0.12);
-      color: var(--gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 0.95rem;
-    }
-    .pain-card .role { font-size: 0.74rem; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; text-transform: uppercase; }
-    .pain-card .pain { font-size: 0.78rem; color: #d1d5db; line-height: 1.45; }
+    /* ============ CHART WRAPS ============ */
+    .chart-wrap { position: relative; width: 100%; }
+    .chart-wrap.h-260 { height: 260px; }
+    .chart-wrap.h-300 { height: 300px; }
+    .chart-wrap.h-340 { height: 340px; }
+    .chart-wrap.h-180 { height: 180px; }
 
-    .module-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.55rem;
+    .donut-hero {
+      position: relative;
+      width: 100%;
+      height: 260px;
     }
-    .module-cards .mod-card {
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .donut-center .pct {
+      font-family: "Sora", "Inter", sans-serif;
+      font-size: 2.2rem; font-weight: 700;
+      color: var(--gold); line-height: 1;
+    }
+    .donut-center .pct-label {
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+    .donut-center .pct-sub {
+      font-size: 0.78rem; color: #e8dcc8; margin-top: 0.2rem;
+    }
+
+    /* ============ MODULE / PAIN / PERSONA CARDS ============ */
+    .module-grid-5 {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem;
+    }
+    .module-grid-5 .mod-card:nth-child(4),
+    .module-grid-5 .mod-card:nth-child(5) {
+      grid-column: span 1;
+    }
+    @media (max-width: 880px) { .module-grid-5 { grid-template-columns: repeat(2, 1fr); } }
+    .mod-card {
       background: rgba(255, 255, 255, 0.025);
       border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.75rem 0.85rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      border-radius: 0.95rem;
+      padding: 0.85rem 0.9rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
       transition: border-color 0.18s ease, transform 0.18s ease;
+      position: relative; overflow: hidden;
     }
-    .module-cards .mod-card:hover {
+    .mod-card::after {
+      content: ""; position: absolute; top: 0; left: 0;
+      width: 36px; height: 36px;
+      background: radial-gradient(circle at 0 0, rgba(201,160,106,0.25), transparent 70%);
+    }
+    .mod-card:hover {
       border-color: rgba(201, 160, 106, 0.5);
       transform: translateY(-2px);
     }
     .mod-card .mod-head {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--gold);
-      font-weight: 600;
-      font-size: 0.8rem;
+      display: flex; align-items: center; gap: 0.4rem;
+      color: var(--gold); font-weight: 600; font-size: 0.85rem;
     }
-    .mod-card .mod-desc {
-      font-size: 0.74rem;
-      color: #c4c4c8;
-      line-height: 1.45;
-    }
-    .module-cards .mod-card.span-2 {
-      grid-column: 1 / -1;
-    }
+    .mod-card .mod-desc { font-size: 0.76rem; color: #c4c4c8; line-height: 1.45; }
 
-    .persona-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.55rem;
+    .persona-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+    @media (max-width: 1100px) { .persona-grid-3 { grid-template-columns: 1fr; } }
+    .persona-card-full {
+      background: linear-gradient(180deg, rgba(201,160,106,0.08), rgba(255,255,255,0.025));
+      border: 1px solid rgba(201, 160, 106, 0.25);
+      border-radius: 1.1rem;
+      padding: 1rem 1.05rem;
+      position: relative; overflow: hidden;
     }
-    @media (max-width: 1100px) {
-      .persona-grid { grid-template-columns: 1fr; }
+    .persona-card-full .ph {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--gold); font-weight: 700; font-size: 0.95rem;
+      margin-bottom: 0.6rem;
     }
-    .persona-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      border-radius: 0.95rem;
-      padding: 0.8rem 0.85rem;
+    .persona-card-full .ph i { font-size: 1.1rem; }
+    .persona-card-full .kpi-block {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(201, 160, 106, 0.25);
+      border-radius: 0.7rem;
+      padding: 0.55rem 0.7rem;
+      margin-bottom: 0.7rem;
+      text-align: center;
     }
-    .persona-card .ph {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--gold);
-      font-weight: 700;
-      font-size: 0.82rem;
-      margin-bottom: 0.45rem;
+    .persona-card-full .kpi-block .kpi {
+      font-family: "Sora", "Inter", sans-serif;
+      color: var(--gold); font-size: 1.4rem; font-weight: 700; line-height: 1;
     }
-    .persona-card ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    .persona-card-full .kpi-block .kpi-label {
+      color: var(--muted); font-size: 0.66rem;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      margin-top: 0.25rem;
     }
-    .persona-card ul li {
-      position: relative;
-      padding-left: 1rem;
-      font-size: 0.74rem;
-      color: #d1d5db;
-      line-height: 1.45;
-      margin-bottom: 0.3rem;
+    .persona-card-full ul { list-style: none; padding: 0; margin: 0; }
+    .persona-card-full ul li {
+      position: relative; padding-left: 1rem; font-size: 0.78rem;
+      color: #d1d5db; line-height: 1.5; margin-bottom: 0.35rem;
     }
-    .persona-card ul li::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.5rem;
-      width: 0.32rem;
-      height: 0.32rem;
-      border-radius: 50%;
+    .persona-card-full ul li::before {
+      content: ""; position: absolute; left: 0; top: 0.52rem;
+      width: 0.35rem; height: 0.35rem; border-radius: 50%;
       background: var(--gold);
     }
 
-    .pillars {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0.45rem;
+    /* ============ PILLARS (5 ejes) - chip row ============ */
+    .pillars-row {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.45rem; margin-top: 0.75rem;
     }
-    @media (max-width: 1100px) {
-      .pillars { grid-template-columns: repeat(2, 1fr); }
-    }
-    .pillar {
+    @media (max-width: 1100px) { .pillars-row { grid-template-columns: repeat(2, 1fr); } }
+    .pillar-chip {
       background: rgba(255, 255, 255, 0.025);
       border: 1px solid var(--border);
-      border-radius: 0.8rem;
-      padding: 0.65rem 0.6rem;
-      text-align: left;
+      border-radius: 0.7rem;
+      padding: 0.55rem 0.6rem;
     }
-    .pillar .pn {
+    .pillar-chip .pn {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: 0.95rem;
-      color: var(--gold);
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-size: 0.85rem; color: var(--gold); font-weight: 700;
     }
-    .pillar .pt {
-      color: #f3eada;
-      font-size: 0.74rem;
-      font-weight: 600;
-      margin-top: 0.2rem;
-    }
-    .pillar .pd {
-      color: #b8b8be;
-      font-size: 0.7rem;
-      line-height: 1.4;
-      margin-top: 0.2rem;
-    }
+    .pillar-chip .pt { color: #f3eada; font-size: 0.74rem; font-weight: 600; margin-top: 0.15rem; }
+    .pillar-chip .pd { color: #b8b8be; font-size: 0.68rem; line-height: 1.4; margin-top: 0.15rem; }
 
-    .improve-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.74rem;
-      color: #d1d5db;
-    }
+    /* ============ IMPROVE TABLE ============ */
+    .improve-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; color: #d1d5db; }
     .improve-table thead th {
-      text-align: left;
-      font-weight: 600;
-      color: var(--gold);
-      padding: 0.5rem 0.6rem;
-      border-bottom: 1px solid rgba(201, 160, 106, 0.25);
-      font-size: 0.72rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      text-align: left; font-weight: 600; color: var(--gold);
+      padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(201, 160, 106, 0.25);
+      font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase;
     }
     .improve-table tbody td {
-      padding: 0.5rem 0.6rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       vertical-align: top;
     }
     .improve-table tbody tr:last-child td { border-bottom: none; }
     .improve-table .reto { color: #f3eada; font-weight: 600; }
     .improve-table .estado {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      background: rgba(255, 179, 71, 0.12);
-      color: var(--warning);
-      font-size: 0.66rem;
-      border: 1px solid rgba(255, 179, 71, 0.3);
+      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px;
+      background: rgba(255, 179, 71, 0.12); color: var(--warning);
+      font-size: 0.66rem; border: 1px solid rgba(255, 179, 71, 0.3);
     }
 
-    .conclusion-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.55rem;
+    /* ============ CONCLUSION CARDS (slide 7) ============ */
+    .concl-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.55rem;
     }
+    @media (max-width: 980px) { .concl-row { grid-template-columns: repeat(2, 1fr); } }
     .concl-card {
       background: linear-gradient(160deg, rgba(201, 160, 106, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%);
       border: 1px solid rgba(201, 160, 106, 0.25);
-      border-radius: 0.95rem;
-      padding: 0.8rem 0.85rem;
+      border-radius: 0.85rem;
+      padding: 0.7rem 0.8rem;
+      position: relative;
+    }
+    .concl-card::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--gold), var(--pf-accent));
+      border-radius: 0.85rem 0 0 0.85rem;
     }
     .concl-card .cn {
       font-family: "Sora", "Inter", sans-serif;
-      color: var(--gold);
-      font-size: 0.9rem;
-      font-weight: 700;
+      color: var(--gold); font-size: 1rem; font-weight: 700;
     }
-    .concl-card .ct {
-      color: #f3eada;
-      font-size: 0.84rem;
-      font-weight: 600;
-      margin-top: 0.2rem;
-    }
-    .concl-card .cd {
-      color: #c4c4c8;
-      font-size: 0.74rem;
-      line-height: 1.45;
-      margin-top: 0.3rem;
-    }
+    .concl-card .ct { color: #f3eada; font-size: 0.82rem; font-weight: 600; margin-top: 0.15rem; }
+    .concl-card .cd { color: #c4c4c8; font-size: 0.72rem; line-height: 1.4; margin-top: 0.2rem; }
 
-    .roadmap {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.45rem;
+    /* ============ ROADMAP TIMELINE (slide 8) ============ */
+    .timeline-wrap {
+      position: relative; padding: 1.2rem 0.7rem 0.6rem;
     }
-    @media (max-width: 1100px) {
-      .roadmap { grid-template-columns: repeat(2, 1fr); }
-    }
-    .road-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.65rem 0.7rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .road-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
+    .timeline-line {
+      position: absolute; top: 56px; left: 6%; right: 6%;
       height: 3px;
-      background: linear-gradient(90deg, var(--gold), var(--pf-accent));
-      opacity: 0.8;
+      background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--pf-accent), var(--blue-soft));
+      border-radius: 999px;
+      box-shadow: 0 0 12px rgba(201, 160, 106, 0.4);
     }
-    .road-card .rf {
-      font-size: 0.66rem;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 700;
-      margin-top: 0.3rem;
+    .timeline-line::before {
+      content: ""; position: absolute; left: 0; top: -2px; bottom: -2px;
+      width: 0%; background: rgba(212, 165, 116, 0.5); border-radius: 999px;
+      animation: timelinePulse 5s ease-in-out infinite;
     }
-    .road-card .rt {
-      color: #f3eada;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-top: 0.2rem;
+    @keyframes timelinePulse {
+      0% { width: 0%; opacity: 0.5; }
+      45% { width: 100%; opacity: 0.7; }
+      100% { width: 100%; opacity: 0; }
     }
-    .road-card .rd {
-      color: #b8b8be;
-      font-size: 0.7rem;
-      line-height: 1.4;
-      margin-top: 0.25rem;
+    .timeline-stops {
+      position: relative; display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+    }
+    .timeline-stop {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding-top: 30px;
+      position: relative;
+    }
+    .timeline-dot {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--gold) 0%, var(--gold-deep) 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: #1d1410; font-size: 1.2rem;
+      box-shadow: 0 0 0 4px rgba(201, 160, 106, 0.18), 0 6px 24px rgba(201, 160, 106, 0.3);
+      position: absolute; top: 6px;
+      animation: dotPulse 3.4s ease-in-out infinite;
+    }
+    .timeline-stop:nth-child(2) .timeline-dot { animation-delay: -0.85s; }
+    .timeline-stop:nth-child(3) .timeline-dot { animation-delay: -1.7s; }
+    .timeline-stop:nth-child(4) .timeline-dot { animation-delay: -2.55s; }
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(201, 160, 106, 0.18), 0 6px 24px rgba(201, 160, 106, 0.3); }
+      50%      { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(201, 160, 106, 0.25), 0 8px 30px rgba(201, 160, 106, 0.45); }
+    }
+    .timeline-stop .ts-fase {
+      font-size: 0.66rem; color: var(--gold); font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+    .timeline-stop .ts-titulo {
+      color: #f3eada; font-size: 0.92rem; font-weight: 600; margin-top: 0.2rem;
+    }
+    .timeline-stop .ts-desc {
+      color: #b8b8be; font-size: 0.74rem; line-height: 1.45;
+      margin-top: 0.25rem; max-width: 90%;
+    }
+    @media (max-width: 880px) {
+      .timeline-stops { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+      .timeline-line { display: none; }
     }
 
-    /* === flyout: lectura ampliada === */
-    .flyout {
-      margin-top: 1.1rem;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border);
-      border-radius: 1.1rem;
-      padding: 1rem 1.2rem;
+    /* ============ CLOSING (slide 9) ============ */
+    .closing-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
+      margin-top: 0.9rem;
     }
-    .flyout-heading {
-      font-size: 0.72rem;
-      color: var(--gold);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .flyout p {
-      color: #d1d5db;
-      font-size: 0.84rem;
-      line-height: 1.55;
-      margin: 0 0 0.55rem;
-    }
-    .flyout p strong { color: #f3eada; font-weight: 600; }
-    .flyout .insight-strip {
-      background: rgba(201, 160, 106, 0.08);
-      border-left: 3px solid var(--gold);
-      padding: 0.55rem 0.85rem;
-      border-radius: 0.5rem;
-      color: #e8dcc8;
-      font-size: 0.8rem;
-      line-height: 1.5;
-      margin: 0.4rem 0 0.55rem;
-    }
-    .flyout .concept-list {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      padding: 0;
-      margin: 0.4rem 0 0;
-    }
-    .flyout .concept-list .chip {
-      padding: 0.35rem 0.7rem;
-      border-radius: 999px;
-      background: rgba(108, 140, 199, 0.10);
-      border: 1px solid rgba(108, 140, 199, 0.3);
-      color: #c8d3eb;
-      font-size: 0.72rem;
-      font-weight: 500;
-    }
+    @media (max-width: 880px) { .closing-grid { grid-template-columns: repeat(2, 1fr); } }
 
     /* ============ CONTROLS ============ */
     .controls {
-      margin-top: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
+      margin-top: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.75rem; flex-wrap: wrap;
     }
-    .controls .ctrl-side {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    .controls .ctrl-side { display: inline-flex; align-items: center; gap: 0.5rem; }
     .btn-dark {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.55rem 1.1rem;
-      border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.55rem 1.05rem; border-radius: 999px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
-      color: #e5e7eb;
-      font-size: 0.82rem;
-      font-weight: 600;
+      color: #e5e7eb; font-size: 0.82rem; font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
     }
     .btn-dark:hover {
       background: rgba(201, 160, 106, 0.12);
       border-color: rgba(201, 160, 106, 0.4);
-      color: var(--gold);
-      transform: translateY(-1px);
+      color: var(--gold); transform: translateY(-1px);
     }
     .btn-dark.primary {
       background: linear-gradient(135deg, rgba(201, 160, 106, 0.18), rgba(139, 90, 46, 0.18));
       border-color: rgba(201, 160, 106, 0.5);
       color: var(--gold);
     }
-    .dots {
-      display: inline-flex;
-      gap: 0.35rem;
-      align-items: center;
-    }
+    .dots { display: inline-flex; gap: 0.35rem; align-items: center; }
     .dot {
-      width: 0.55rem;
-      height: 0.55rem;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.18);
-      cursor: pointer;
+      width: 0.55rem; height: 0.55rem; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18); cursor: pointer;
       transition: transform 0.15s ease, background 0.15s ease;
     }
     .dot.active {
-      background: var(--gold);
-      transform: scale(1.3);
+      background: var(--gold); transform: scale(1.3);
       box-shadow: 0 0 0 3px rgba(201, 160, 106, 0.18);
     }
     .dot:hover:not(.active) { background: rgba(201, 160, 106, 0.5); }
-
-    .kbd-hint {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.03em;
-    }
+    .kbd-hint { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.03em; }
     .kbd-hint kbd {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border);
-      padding: 0.05rem 0.35rem;
-      border-radius: 4px;
+      padding: 0.05rem 0.35rem; border-radius: 4px;
       font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-      color: #e5e7eb;
-      font-size: 0.7rem;
+      color: #e5e7eb; font-size: 0.7rem;
     }
 
     /* ============ FULLSCREEN ============ */
-    body.is-fullscreen .wrap {
-      max-width: none;
-      padding: 1rem 2rem 2rem;
-    }
+    body.is-fullscreen .wrap { max-width: none; padding: 1rem 2rem 2rem; }
     body.is-fullscreen .stage { min-height: calc(100vh - 240px); }
-    body.is-fullscreen .slide h2 { font-size: clamp(1.9rem, 3vw, 2.5rem); }
-    body.is-fullscreen .copy-zone .lead { font-size: 1.08rem; }
-    body.is-fullscreen .topbar { margin-bottom: 0.6rem; }
+    body.is-fullscreen .slide h2 { font-size: clamp(1.9rem, 3vw, 2.4rem); }
+    body.is-fullscreen .topbar { margin-bottom: 0.5rem; }
+    body.is-fullscreen .chart-wrap.h-260,
+    body.is-fullscreen .donut-hero { height: 320px; }
+    body.is-fullscreen .chart-wrap.h-300 { height: 360px; }
+    body.is-fullscreen .chart-wrap.h-340 { height: 400px; }
 
     @media (max-width: 700px) {
-      .wrap { padding: 1.1rem 0.85rem 3rem; }
+      .wrap { padding: 1rem 0.85rem 2.5rem; }
       .topbar-meta { display: none; }
-      .grid-2 { gap: 0.85rem; margin-top: 0.8rem; }
+      .grid-2 { gap: 0.75rem; }
     }
   </style>
 </head>
@@ -816,7 +594,8 @@
           {% for s in slides %}
           <article class="slide {% if forloop.first %}active{% endif %}"
                    data-slide-index="{{ forloop.counter0 }}"
-                   data-demo="{{ s.demo }}">
+                   data-demo="{{ s.demo }}"
+                   data-layout="{{ s.layout }}">
             <div class="subtitle anim">
               Slide {{ forloop.counter }} / {{ slides|length }}
               <span class="dot-sep">·</span>
@@ -824,172 +603,233 @@
             </div>
             <h2 class="anim-2">{{ s.titulo }}</h2>
 
-            <div class="grid-2">
-              <div class="anim-2">
+            {# ============== LAYOUT: hero_chart (slide 1) ============== #}
+            {% if s.layout == 'hero_chart' %}
+            <p class="slide-lead anim-2">{{ s.lead }}</p>
+            <div class="grid-2 anim-3">
+              <div class="visual-zone flush">
+                <div class="visual-head">
+                  <span><i class="bi bi-pie-chart-fill me-1"></i>Avance ejemplo</span>
+                  <span class="dots-3"><span></span><span></span><span></span></span>
+                </div>
+                <div class="donut-hero">
+                  <canvas data-chart="donut_avance"
+                          data-usados="{{ s.chart.usados }}"
+                          data-requeridos="{{ s.chart.requeridos }}"></canvas>
+                  <div class="donut-center">
+                    <div class="pct" id="donutHeroPct">—</div>
+                    <div class="pct-label">avance</div>
+                    <div class="pct-sub">{{ s.chart.usados }} / {{ s.chart.requeridos }} cr.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stack">
+                <div class="hero-metrics">
+                  {% for m in s.hero_metrics %}
+                  <div class="metric-card">
+                    <div class="value">{{ m.value }}</div>
+                    <div class="label">{{ m.label }}</div>
+                  </div>
+                  {% endfor %}
+                </div>
                 <div class="copy-zone">
-                  <p class="lead">{{ s.lead }}</p>
                   <ul class="visible-bullets">
                     {% for b in s.bullets %}<li>{{ b }}</li>{% endfor %}
                   </ul>
                 </div>
               </div>
+            </div>
 
-              <div class="anim-3">
-                <div class="visual-zone">
-                  <div class="visual-head">
-                    <span>
-                      {% if s.side_kind == 'hero_meta' %}<i class="bi bi-stars me-1"></i>Síntesis del prototipo
-                      {% elif s.side_kind == 'pain_grid' %}<i class="bi bi-exclamation-diamond me-1"></i>Donde duele hoy
-                      {% elif s.side_kind == 'module_cards' %}<i class="bi bi-grid-3x3-gap me-1"></i>Módulos del sistema
-                      {% elif s.side_kind == 'persona_cards' %}<i class="bi bi-people me-1"></i>Tres lecturas, una fuente
-                      {% elif s.side_kind == 'theory_pillars' %}<i class="bi bi-bookmark-star me-1"></i>Cinco ejes teóricos
-                      {% elif s.side_kind == 'improve_table' %}<i class="bi bi-tools me-1"></i>Hoja de mejora
-                      {% elif s.side_kind == 'conclusion_cards' %}<i class="bi bi-journal-check me-1"></i>Conclusiones clave
-                      {% elif s.side_kind == 'roadmap' %}<i class="bi bi-map me-1"></i>Roadmap
-                      {% elif s.side_kind == 'closing_summary' %}<i class="bi bi-flag me-1"></i>Cierre ejecutivo
-                      {% else %}<i class="bi bi-bar-chart-line me-1"></i>Visual de apoyo
-                      {% endif %}
-                    </span>
-                    <span class="dots-3"><span></span><span></span><span></span></span>
-                  </div>
-
-                  {% if s.side_kind == 'hero_meta' %}
-                  <div class="hero-metrics">
-                    {% for m in s.hero_metrics %}
-                    <div class="metric-card">
-                      <div class="value">{{ m.value }}</div>
-                      <div class="label">{{ m.label }}</div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  <div class="hero-line">
-                    <span>Capa visual sobre datos curriculares</span>
-                    <span class="who">no sustituye, complementa</span>
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'pain_grid' %}
-                  <div class="pain-grid">
-                    {% for p in s.pain_grid %}
-                    <div class="pain-card">
-                      <div class="pi-icon"><i class="bi bi-{{ p.icon }}"></i></div>
-                      <div>
-                        <div class="role">{{ p.rol }}</div>
-                        <div class="pain">{{ p.pain }}</div>
-                      </div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'module_cards' %}
-                  <div class="module-cards">
-                    {% for m in s.modules %}
-                    <div class="mod-card {% if forloop.last and s.modules|length|divisibleby:2 == False %}span-2{% endif %}">
-                      <div class="mod-head"><i class="bi bi-{{ m.icon }}"></i>{{ m.titulo }}</div>
-                      <div class="mod-desc">{{ m.desc }}</div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'persona_cards' %}
-                  <div class="persona-grid">
-                    {% for p in s.personas %}
-                    <div class="persona-card">
-                      <div class="ph"><i class="bi bi-{{ p.icon }}"></i>{{ p.rol }}</div>
-                      <ul>
-                        {% for pt in p.puntos %}<li>{{ pt }}</li>{% endfor %}
-                      </ul>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'theory_pillars' %}
-                  <div class="pillars">
-                    {% for p in s.pillars %}
-                    <div class="pillar">
-                      <div class="pn">{{ p.n }}</div>
-                      <div class="pt">{{ p.titulo }}</div>
-                      <div class="pd">{{ p.desc }}</div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'improve_table' %}
-                  <div style="overflow:auto;">
-                    <table class="improve-table">
-                      <thead>
-                        <tr>
-                          <th>Reto</th>
-                          <th>Estado</th>
-                          <th>Siguiente paso</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for r in s.mejoras %}
-                        <tr>
-                          <td class="reto">{{ r.reto }}</td>
-                          <td><span class="estado">{{ r.estado }}</span></td>
-                          <td>{{ r.siguiente }}</td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'conclusion_cards' %}
-                  <div class="conclusion-cards">
-                    {% for c in s.conclusiones %}
-                    <div class="concl-card">
-                      <div class="cn">{{ c.n }}</div>
-                      <div class="ct">{{ c.titulo }}</div>
-                      <div class="cd">{{ c.desc }}</div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'roadmap' %}
-                  <div class="roadmap">
-                    {% for r in s.roadmap %}
-                    <div class="road-card">
-                      <div class="rf">{{ r.fase }}</div>
-                      <div class="rt">{{ r.titulo }}</div>
-                      <div class="rd">{{ r.desc }}</div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
-
-                  {% if s.side_kind == 'closing_summary' %}
-                  <div class="conclusion-cards">
-                    {% for c in s.closing_items %}
-                    <div class="concl-card">
-                      <div class="cn">{{ c.n }}</div>
-                      <div class="ct">{{ c.titulo }}</div>
-                      <div class="cd">{{ c.desc }}</div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                  {% endif %}
+            {# ============== LAYOUT: split_chart (slide 2) ============== #}
+            {% elif s.layout == 'split_chart' %}
+            <p class="slide-lead anim-2">{{ s.lead }}</p>
+            <div class="grid-2 anim-3">
+              <div class="copy-zone">
+                <ul class="visible-bullets">
+                  {% for b in s.bullets %}<li>{{ b }}</li>{% endfor %}
+                </ul>
+              </div>
+              <div class="visual-zone flush">
+                <div class="visual-head">
+                  <span><i class="bi bi-bar-chart-line me-1"></i>Minutos para consultar info académica</span>
+                  <span class="dots-3"><span></span><span></span><span></span></span>
+                </div>
+                <div class="chart-wrap h-260">
+                  <canvas data-chart="bar_tiempo"
+                          data-labels='{{ s.chart.labels|safe }}'
+                          data-antes='{{ s.chart.antes|safe }}'
+                          data-despues='{{ s.chart.despues|safe }}'></canvas>
                 </div>
               </div>
             </div>
 
-            <div class="flyout anim-3">
-              <div class="flyout-heading"><i class="bi bi-bookmark-fill"></i>Lectura ampliada</div>
-              <p><strong>En pocas palabras.</strong> {{ s.flyout_summary }}</p>
-              <div class="insight-strip">{{ s.flyout_focus }}</div>
-              <ul class="concept-list">
-                {% for chip in s.flyout_chips %}
-                <li class="chip">{{ chip }}</li>
-                {% endfor %}
-              </ul>
+            {# ============== LAYOUT: full_cards (slide 3) ============== #}
+            {% elif s.layout == 'full_cards' %}
+            <p class="slide-lead anim-2 center">{{ s.lead }}</p>
+            <div class="module-grid-5 anim-3">
+              {% for m in s.modules %}
+              <div class="mod-card">
+                <div class="mod-head"><i class="bi bi-{{ m.icon }}"></i>{{ m.titulo }}</div>
+                <div class="mod-desc">{{ m.desc }}</div>
+              </div>
+              {% endfor %}
             </div>
+
+            {# ============== LAYOUT: persona_full (slide 4) ============== #}
+            {% elif s.layout == 'persona_full' %}
+            <p class="slide-lead anim-2 center">{{ s.lead }}</p>
+            <div class="persona-grid-3 anim-3">
+              {% for p in s.personas %}
+              <div class="persona-card-full">
+                <div class="ph"><i class="bi bi-{{ p.icon }}"></i>{{ p.rol }}</div>
+                <div class="kpi-block">
+                  <div class="kpi">{{ p.kpi }}</div>
+                  <div class="kpi-label">{{ p.kpi_label }}</div>
+                </div>
+                <ul>
+                  {% for pt in p.puntos %}<li>{{ pt }}</li>{% endfor %}
+                </ul>
+              </div>
+              {% endfor %}
+            </div>
+
+            {# ============== LAYOUT: chart_full_top (slides 5 y 7) ============== #}
+            {% elif s.layout == 'chart_full_top' %}
+            <p class="slide-lead anim-2 center">{{ s.lead }}</p>
+            <div class="visual-zone flush anim-3">
+              <div class="visual-head">
+                {% if s.chart.kind == 'radar_fundamento' %}
+                <span><i class="bi bi-bookmark-star me-1"></i>Cobertura por eje</span>
+                {% else %}
+                <span><i class="bi bi-bar-chart-steps me-1"></i>Antes vs Después</span>
+                {% endif %}
+                <span class="dots-3"><span></span><span></span><span></span></span>
+              </div>
+              <div class="chart-wrap h-300">
+                {% if s.chart.kind == 'radar_fundamento' %}
+                <canvas data-chart="radar_fundamento"
+                        data-labels='{{ s.chart.labels|safe }}'
+                        data-valores='{{ s.chart.valores|safe }}'></canvas>
+                {% elif s.chart.kind == 'bar_impacto' %}
+                <canvas data-chart="bar_impacto"
+                        data-labels='{{ s.chart.labels|safe }}'
+                        data-antes='{{ s.chart.antes|safe }}'
+                        data-despues='{{ s.chart.despues|safe }}'></canvas>
+                {% endif %}
+              </div>
+            </div>
+            {% if s.pillars %}
+            <div class="pillars-row anim-3">
+              {% for p in s.pillars %}
+              <div class="pillar-chip">
+                <div class="pn">{{ p.n }}</div>
+                <div class="pt">{{ p.titulo }}</div>
+                <div class="pd">{{ p.desc }}</div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% if s.conclusiones %}
+            <div class="concl-row anim-3" style="margin-top:0.85rem;">
+              {% for c in s.conclusiones %}
+              <div class="concl-card">
+                <div class="cn">{{ c.n }}</div>
+                <div class="ct">{{ c.titulo }}</div>
+                <div class="cd">{{ c.desc }}</div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            {# ============== LAYOUT: split_table (slide 6) ============== #}
+            {% elif s.layout == 'split_table' %}
+            <p class="slide-lead anim-2">{{ s.lead }}</p>
+            <div class="grid-2 anim-3">
+              <div class="visual-zone">
+                <div class="visual-head">
+                  <span><i class="bi bi-tools me-1"></i>Hoja de mejora</span>
+                  <span class="dots-3"><span></span><span></span><span></span></span>
+                </div>
+                <div style="overflow:auto;">
+                  <table class="improve-table">
+                    <thead>
+                      <tr>
+                        <th>Reto</th>
+                        <th>Estado</th>
+                        <th>Siguiente paso</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for r in s.mejoras %}
+                      <tr>
+                        <td class="reto">{{ r.reto }}</td>
+                        <td><span class="estado">{{ r.estado }}</span></td>
+                        <td>{{ r.siguiente }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="copy-zone">
+                <div style="color:var(--gold);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.55rem;">
+                  <i class="bi bi-compass me-1"></i>Tres principios
+                </div>
+                <ul class="visible-bullets">
+                  {% for b in s.bullets %}<li>{{ b }}</li>{% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            {# ============== LAYOUT: timeline_full (slide 8) ============== #}
+            {% elif s.layout == 'timeline_full' %}
+            <p class="slide-lead anim-2 center">{{ s.lead }}</p>
+            <div class="visual-zone flush anim-3">
+              <div class="visual-head">
+                <span><i class="bi bi-map me-1"></i>Roadmap de evolución</span>
+                <span class="dots-3"><span></span><span></span><span></span></span>
+              </div>
+              <div class="timeline-wrap">
+                <div class="timeline-line"></div>
+                <div class="timeline-stops">
+                  {% for r in s.roadmap %}
+                  <div class="timeline-stop">
+                    <div class="timeline-dot"><i class="bi bi-{{ r.icon }}"></i></div>
+                    <div class="ts-fase">{{ r.fase }}</div>
+                    <div class="ts-titulo">{{ r.titulo }}</div>
+                    <div class="ts-desc">{{ r.desc }}</div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            {# ============== LAYOUT: closing_chart (slide 9) ============== #}
+            {% elif s.layout == 'closing_chart' %}
+            <p class="slide-lead anim-2 center">{{ s.lead }}</p>
+            <div class="visual-zone flush anim-3">
+              <div class="visual-head">
+                <span><i class="bi bi-graph-up-arrow me-1"></i>Trayectoria del proyecto</span>
+                <span class="dots-3"><span></span><span></span><span></span></span>
+              </div>
+              <div class="chart-wrap h-260">
+                <canvas data-chart="line_trayectoria"
+                        data-labels='{{ s.chart.labels|safe }}'
+                        data-valores='{{ s.chart.valores|safe }}'></canvas>
+              </div>
+            </div>
+            <div class="closing-grid anim-3">
+              {% for c in s.closing_items %}
+              <div class="concl-card">
+                <div class="cn">{{ c.n }}</div>
+                <div class="ct">{{ c.titulo }}</div>
+                <div class="cd">{{ c.desc }}</div>
+              </div>
+              {% endfor %}
+            </div>
+
+            {% endif %}
           </article>
           {% endfor %}
         </div>
@@ -1022,6 +862,277 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   (function () {
+    /* =========== CHART HELPERS =========== */
+    const GOLD = '#d4a574';
+    const GOLD_DEEP = '#8b5a2e';
+    const ACCENT = '#c9a06a';
+    const BLUE = '#6c8cc7';
+    const BLUE_BRIGHT = '#8eb1ee';
+    const MUTED = '#9ca3af';
+    const TEXT = '#e8dcc8';
+    const GRID = 'rgba(255,255,255,0.06)';
+
+    if (window.Chart) {
+      Chart.defaults.color = MUTED;
+      Chart.defaults.font.family = "Inter, 'Segoe UI', system-ui, sans-serif";
+      Chart.defaults.font.size = 11;
+      Chart.defaults.borderColor = GRID;
+    }
+
+    function parseJsonAttr(el, attr) {
+      const raw = el.getAttribute(attr);
+      if (!raw) return null;
+      try { return JSON.parse(raw.replace(/'/g, '"')); }
+      catch (_) {
+        try { return JSON.parse(raw); }
+        catch (__) { return null; }
+      }
+    }
+
+    const chartBuilders = {
+      donut_avance: (canvas) => {
+        const usados = Number(canvas.dataset.usados || 0);
+        const requeridos = Number(canvas.dataset.requeridos || 1);
+        const restantes = Math.max(0, requeridos - usados);
+        const pct = Math.round((usados / requeridos) * 100);
+        const pctEl = document.getElementById('donutHeroPct');
+        if (pctEl) pctEl.textContent = pct + '%';
+        return new Chart(canvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['Usados', 'Restantes'],
+            datasets: [{
+              data: [usados, restantes],
+              backgroundColor: [GOLD, 'rgba(255,255,255,0.08)'],
+              borderColor: ['rgba(0,0,0,0.4)', 'rgba(0,0,0,0.4)'],
+              borderWidth: 2,
+              hoverOffset: 6,
+            }],
+          },
+          options: {
+            cutout: '72%',
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { animateRotate: true, duration: 1400, easing: 'easeOutCubic' },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.label + ': ' + ctx.parsed + ' cr.'
+                }
+              },
+            },
+          },
+        });
+      },
+
+      bar_tiempo: (canvas) => {
+        const labels = parseJsonAttr(canvas, 'data-labels') || [];
+        const antes = parseJsonAttr(canvas, 'data-antes') || [];
+        const despues = parseJsonAttr(canvas, 'data-despues') || [];
+        return new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Antes (min)',
+                data: antes,
+                backgroundColor: 'rgba(219, 78, 78, 0.7)',
+                borderColor: 'rgba(219, 78, 78, 1)',
+                borderWidth: 1,
+                borderRadius: 8,
+              },
+              {
+                label: 'Con plataforma (min)',
+                data: despues,
+                backgroundColor: 'rgba(212, 165, 116, 0.85)',
+                borderColor: GOLD,
+                borderWidth: 1,
+                borderRadius: 8,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            animation: { duration: 1300, easing: 'easeOutQuart' },
+            scales: {
+              x: {
+                beginAtZero: true,
+                grid: { color: GRID, drawBorder: false },
+                ticks: { color: MUTED },
+                title: { display: true, text: 'minutos', color: MUTED, font: { size: 10 } },
+              },
+              y: { grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
+            },
+            plugins: {
+              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12 } },
+              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
+            },
+          },
+        });
+      },
+
+      radar_fundamento: (canvas) => {
+        const labels = parseJsonAttr(canvas, 'data-labels') || [];
+        const valores = parseJsonAttr(canvas, 'data-valores') || [];
+        return new Chart(canvas, {
+          type: 'radar',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Cobertura del proyecto',
+                data: valores,
+                backgroundColor: 'rgba(212, 165, 116, 0.22)',
+                borderColor: GOLD,
+                borderWidth: 2,
+                pointBackgroundColor: GOLD,
+                pointBorderColor: '#0c0c0c',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: GOLD,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1400, easing: 'easeOutBack' },
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: 100,
+                grid: { color: 'rgba(255,255,255,0.07)' },
+                angleLines: { color: 'rgba(212, 165, 116, 0.18)' },
+                pointLabels: { color: TEXT, font: { size: 11, weight: '600' } },
+                ticks: { color: MUTED, backdropColor: 'transparent', font: { size: 9 }, stepSize: 25 },
+              },
+            },
+            plugins: {
+              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 10 } },
+              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
+            },
+          },
+        });
+      },
+
+      bar_impacto: (canvas) => {
+        const labels = parseJsonAttr(canvas, 'data-labels') || [];
+        const antes = parseJsonAttr(canvas, 'data-antes') || [];
+        const despues = parseJsonAttr(canvas, 'data-despues') || [];
+        return new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Antes',
+                data: antes,
+                backgroundColor: 'rgba(108, 140, 199, 0.55)',
+                borderColor: BLUE_BRIGHT,
+                borderWidth: 1,
+                borderRadius: 8,
+              },
+              {
+                label: 'Con plataforma',
+                data: despues,
+                backgroundColor: 'rgba(212, 165, 116, 0.85)',
+                borderColor: GOLD,
+                borderWidth: 1,
+                borderRadius: 8,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1400, easing: 'easeOutQuart' },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
+              y: {
+                beginAtZero: true, max: 100,
+                grid: { color: GRID, drawBorder: false },
+                ticks: { color: MUTED, callback: (v) => v + ' %' },
+              },
+            },
+            plugins: {
+              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12 } },
+              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1,
+                callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } },
+            },
+          },
+        });
+      },
+
+      line_trayectoria: (canvas) => {
+        const labels = parseJsonAttr(canvas, 'data-labels') || [];
+        const valores = parseJsonAttr(canvas, 'data-valores') || [];
+        const ctx2d = canvas.getContext('2d');
+        const grad = ctx2d.createLinearGradient(0, 0, 0, 260);
+        grad.addColorStop(0, 'rgba(212, 165, 116, 0.45)');
+        grad.addColorStop(1, 'rgba(212, 165, 116, 0)');
+        return new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Madurez del proyecto',
+                data: valores,
+                fill: true,
+                backgroundColor: grad,
+                borderColor: GOLD,
+                borderWidth: 2.5,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: GOLD,
+                pointBorderColor: '#0c0c0c',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1600, easing: 'easeOutCubic' },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: TEXT, font: { weight: '600', size: 11 } } },
+              y: {
+                beginAtZero: true, max: 100,
+                grid: { color: GRID, drawBorder: false },
+                ticks: { color: MUTED, callback: (v) => v + '%' },
+              },
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
+            },
+          },
+        });
+      },
+    };
+
+    const chartInstances = new WeakMap();
+    function ensureCharts(slideEl) {
+      slideEl.querySelectorAll('canvas[data-chart]').forEach((canvas) => {
+        if (chartInstances.has(canvas)) return;
+        const kind = canvas.dataset.chart;
+        const builder = chartBuilders[kind];
+        if (!builder) return;
+        try {
+          const instance = builder(canvas);
+          chartInstances.set(canvas, instance);
+        } catch (e) {
+          console.error('chart build error', kind, e);
+        }
+      });
+    }
+
+    /* =========== NAVIGATION =========== */
     const stage = document.getElementById('stage');
     const slides = Array.from(stage.querySelectorAll('.slide'));
     const dots = Array.from(document.querySelectorAll('.dot'));
@@ -1046,32 +1157,25 @@
       nextBtn.disabled = idx === total - 1;
       prevBtn.style.opacity = idx === 0 ? 0.45 : 1;
       nextBtn.style.opacity = idx === total - 1 ? 0.45 : 1;
+      // Build charts on demand (after layout reflow)
+      requestAnimationFrame(() => ensureCharts(slides[idx]));
     }
 
     prevBtn.addEventListener('click', () => show(current - 1));
     nextBtn.addEventListener('click', () => show(current + 1));
-    dots.forEach(d => d.addEventListener('click', () => {
+    dots.forEach((d) => d.addEventListener('click', () => {
       show(parseInt(d.dataset.dotIndex, 10) || 0);
     }));
 
     document.addEventListener('keydown', (e) => {
       if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
-        e.preventDefault();
-        show(current + 1);
+        e.preventDefault(); show(current + 1);
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        show(current - 1);
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        show(0);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        show(total - 1);
-      } else if (e.key === 'f' || e.key === 'F') {
-        e.preventDefault();
-        toggleFs();
-      }
+        e.preventDefault(); show(current - 1);
+      } else if (e.key === 'Home') { e.preventDefault(); show(0); }
+      else if (e.key === 'End') { e.preventDefault(); show(total - 1); }
+      else if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFs(); }
     });
 
     function syncFsUi() {
@@ -1079,6 +1183,13 @@
       document.body.classList.toggle('is-fullscreen', on);
       if (fsIcon) fsIcon.className = on ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen';
       if (fsLabel) fsLabel.textContent = on ? 'Salir' : 'Pantalla completa';
+      // Resize charts after layout change.
+      setTimeout(() => {
+        slides[current].querySelectorAll('canvas[data-chart]').forEach((canvas) => {
+          const inst = chartInstances.get(canvas);
+          if (inst) inst.resize();
+        });
+      }, 220);
     }
     function toggleFs() {
       if (!document.fullscreenElement) {
@@ -1089,6 +1200,13 @@
     }
     fsBtn.addEventListener('click', toggleFs);
     document.addEventListener('fullscreenchange', syncFsUi);
+
+    window.addEventListener('resize', () => {
+      slides[current].querySelectorAll('canvas[data-chart]').forEach((canvas) => {
+        const inst = chartInstances.get(canvas);
+        if (inst) inst.resize();
+      });
+    });
 
     show(0);
   })();
