@@ -2219,23 +2219,36 @@ def expo_cierre_view(request):
             ],
         },
         {
-            # Slide 2: fenómeno con barras tiempo de consulta antes vs después
+            # Slide 2: fenómeno con vista docente — distribución de calificaciones
+            # Cálculo Actuarial (lo que un profesor vería en su dashboard).
             'demo': 'cierre_fenomeno',
             'layout': 'split_chart',
             'titulo': 'Información sin lectura',
             'subtitulo_slide': 'El fenómeno',
-            'lead': 'Los datos existen, pero están dispersos. Resultado: tiempo perdido y decisiones con visión parcial.',
+            'lead': (
+                'Hoy la información académica vive dispersa entre planes, '
+                'sistemas escolares y normativas. Existe, pero pocas veces '
+                'se convierte en lectura útil para decidir a tiempo.'
+            ),
             'bullets': [
-                'Estudiante: tarda en saber qué le bloquea.',
-                'Docente: lee al grupo desde percepciones.',
-                'Coordinación: detecta rezago tarde.',
+                'El estudiante tarda en identificar qué bloquea su trayectoria.',
+                'El docente lee al grupo desde percepciones, no desde datos.',
+                'La coordinación detecta el rezago tarde, no durante el ciclo.',
+                'Sin lectura común: criterios y decisiones distintos por actor.',
             ],
-            'side_kind': 'tiempo_bar',
+            'side_kind': 'docente_calculo',
             'chart': {
-                'kind': 'bar_tiempo',
-                'labels': ['Estudiante', 'Docente', 'Coordinación'],
-                'antes': [28, 22, 38],
-                'despues': [4, 5, 9],
+                'kind': 'stacked_calificaciones',
+                'labels': ['Parcial 1', 'Parcial 2', 'Parcial 3', 'Final'],
+                'series': [
+                    {'name': 'Sobresaliente (9-10)', 'data': [3, 5, 7, 9]},
+                    {'name': 'Bueno (8-9)', 'data': [8, 11, 13, 13]},
+                    {'name': 'Aceptable (7-8)', 'data': [8, 8, 6, 5]},
+                    {'name': 'Riesgo (6-7)', 'data': [5, 3, 2, 1]},
+                    {'name': 'No aprobado (<6)', 'data': [4, 1, 0, 0]},
+                ],
+                'titulo': 'Cálculo Actuarial · Distribución de calificaciones',
+                'subtitulo': 'Vista del docente · 28 alumnos · 5to semestre',
             },
         },
         {
@@ -2256,76 +2269,86 @@ def expo_cierre_view(request):
             ],
         },
         {
-            # Slide 4: usuarios - tres personas, sin chart, layout 3 columnas
+            # Slide 4: tres casos de uso reales con la misma estructura visual.
             'demo': 'cierre_usuarios',
             'layout': 'persona_full',
-            'titulo': 'Tres lecturas, una sola fuente',
-            'subtitulo_slide': 'Para quién y cómo ayuda',
-            'lead': 'Beneficios distintos por rol sobre los mismos datos curriculares.',
+            'titulo': 'Tres momentos donde cambia la decisión',
+            'subtitulo_slide': 'Casos de uso reales',
+            'lead': (
+                'Escenarios concretos donde una lectura integrada de '
+                'los datos curriculares transforma una decisión académica '
+                'cotidiana.'
+            ),
             'bullets': [],
             'side_kind': 'persona_cards',
             'personas': [
                 {
-                    'rol': 'Estudiante',
-                    'icon': 'person-badge',
-                    'kpi': '+85%',
-                    'kpi_label': 'claridad de avance',
+                    'rol': 'Planeación de inscripción',
+                    'icon': 'calendar-check',
+                    'kpi': '−65%',
+                    'kpi_label': 'tiempo para elegir materias',
                     'puntos': [
-                        'Avance contra meta del plan.',
-                        'Requisitos críticos visibles.',
-                        'Planea carga con evidencia.',
+                        'Trayectoria visible en una sola pantalla.',
+                        'Seriaciones y requisitos al instante.',
+                        'Carga semestral balanceada con evidencia.',
                     ],
                 },
                 {
-                    'rol': 'Docente',
-                    'icon': 'easel2',
-                    'kpi': '−70%',
-                    'kpi_label': 'tiempo de lectura del grupo',
+                    'rol': 'Tutoría semanal',
+                    'icon': 'chat-square-text',
+                    'kpi': '100%',
+                    'kpi_label': 'del grupo revisado antes de tutoría',
                     'puntos': [
-                        'Lee al grupo en segundos.',
-                        'Prioriza intervenciones.',
-                        'Documenta con datos.',
+                        'Riesgos académicos detectados en segundos.',
+                        'Conversación caso por caso con datos.',
+                        'Bitácora de seguimiento documentada.',
                     ],
                 },
                 {
-                    'rol': 'Coordinación',
-                    'icon': 'diagram-3',
+                    'rol': 'Comité académico',
+                    'icon': 'graph-up-arrow',
                     'kpi': '+60%',
-                    'kpi_label': 'decisiones con evidencia',
+                    'kpi_label': 'decisiones con evidencia agregada',
                     'puntos': [
-                        'Patrones por generación.',
-                        'Ajusta acompañamiento.',
-                        'Soporta decisiones.',
+                        'Patrones de avance por generación.',
+                        'Comparativas entre cohortes y áreas.',
+                        'Acompañamiento ajustado por indicadores.',
                     ],
                 },
             ],
         },
         {
-            # Slide 5: fundamento con radar chart
+            # Slide 5: fundamento con vista coordinación — distribución por
+            # generación (gráfico que sí podría ver el administrativo).
             'demo': 'cierre_fundamento',
             'layout': 'chart_full_top',
             'titulo': 'Cinco ejes que sostienen el proyecto',
-            'subtitulo_slide': 'Fundamento teórico',
-            'lead': 'Necesidad institucional + literatura de analítica educativa.',
+            'subtitulo_slide': 'Fundamento teórico · vista coordinación',
+            'lead': (
+                'Cinco principios que conectan la necesidad institucional '
+                'con literatura de analítica educativa, ilustrados con '
+                'una vista típica del panel de coordinación.'
+            ),
             'bullets': [],
-            'side_kind': 'fundamento_radar',
+            'side_kind': 'fundamento_coord',
             'chart': {
-                'kind': 'radar_fundamento',
-                'labels': [
-                    'Trayectoria',
-                    'Learning Analytics',
-                    'Dashboard',
-                    'Autorregulación',
-                    'Responsabilidad',
+                'kind': 'stacked_generaciones',
+                'labels': ['Generación 2022', 'Generación 2023', 'Generación 2024', 'Generación 2025'],
+                'series': [
+                    {'name': 'Al corriente', 'data': [78, 71, 65, 58]},
+                    {'name': 'Rezago leve', 'data': [15, 19, 22, 26]},
+                    {'name': 'Rezago alto', 'data': [5, 7, 9, 11]},
+                    {'name': 'Irregular', 'data': [2, 3, 4, 5]},
                 ],
-                'valores': [88, 82, 92, 78, 86],
+                'titulo': 'Estado académico por generación',
+                'subtitulo': 'Vista de coordinación · % de alumnos por cohorte',
             },
             'pillars': [
-                {'n': '01', 'titulo': 'Trayectoria', 'desc': 'Avance como ruta curricular.'},
-                {'n': '02', 'titulo': 'Analítica', 'desc': 'Descriptiva-diagnóstica.'},
-                {'n': '03', 'titulo': 'Dashboard', 'desc': 'Accionable, no decorativo.'},
-                {'n': '04', 'titulo': 'Autorregulación', 'desc': 'Información clara para decidir.'},
-                {'n': '05', 'titulo': 'Responsabilidad', 'desc': 'Datos sensibles y reglas claras.'},
+                {'n': '01', 'titulo': 'Trayectoria académica', 'desc': 'El avance como ruta curricular completa, no como suma aislada de materias.'},
+                {'n': '02', 'titulo': 'Analítica del aprendizaje', 'desc': 'Lectura descriptiva-diagnóstica para comprender, no para predecir invasivamente.'},
+                {'n': '03', 'titulo': 'Dashboard accionable', 'desc': 'Mostrar lleva a decidir; visualizar es solo el primer paso.'},
+                {'n': '04', 'titulo': 'Autorregulación', 'desc': 'Información clara mejora la planeación del propio estudiante.'},
+                {'n': '05', 'titulo': 'Uso responsable', 'desc': 'Datos académicos sensibles requieren reglas claras de acceso y propósito.'},
             ],
         },
         {
@@ -2350,62 +2373,92 @@ def expo_cierre_view(request):
             ],
         },
         {
-            # Slide 7: conclusiones con barras antes/después de impacto
+            # Slide 7: conclusiones con combo dashboard (barras + línea).
             'demo': 'cierre_conclusiones',
             'layout': 'chart_full_top',
             'titulo': 'A qué se concluye',
             'subtitulo_slide': 'Conclusiones del proyecto',
-            'lead': 'Impacto medible en tiempo, claridad y soporte a decisiones.',
+            'lead': (
+                'Las conclusiones se ven mejor en un mini-dashboard: '
+                'consultas mensuales por rol y porcentaje global de '
+                'adopción de la plataforma.'
+            ),
             'bullets': [],
-            'side_kind': 'impacto_bar',
+            'side_kind': 'dashboard_combo',
             'chart': {
-                'kind': 'bar_impacto',
-                'labels': ['Tiempo de consulta', 'Claridad del avance', 'Decisiones con evidencia'],
-                'antes': [100, 38, 35],
-                'despues': [28, 90, 78],
+                'kind': 'combo_adopcion',
+                'labels': ['Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'],
+                'series': [
+                    {'name': 'Estudiantes', 'data': [120, 180, 240, 300, 340, 380]},
+                    {'name': 'Docentes', 'data': [40, 65, 90, 110, 130, 145]},
+                    {'name': 'Coordinación', 'data': [10, 18, 28, 35, 42, 48]},
+                ],
+                'line': {'name': 'Adopción global (%)', 'data': [22, 38, 55, 68, 78, 86]},
+                'titulo': 'Consultas mensuales y adopción global',
+                'subtitulo': 'Proyección estimada del piloto · Feb–Jul',
             },
             'conclusiones': [
-                {'n': '1', 'titulo': 'Tesis', 'desc': 'Datos sí; falta lectura.'},
-                {'n': '2', 'titulo': 'Capa', 'desc': 'Organiza sin sustituir.'},
-                {'n': '3', 'titulo': 'Impacto', 'desc': 'Menos tiempo, más claridad.'},
-                {'n': '4', 'titulo': 'Alcance', 'desc': 'Prototipo viable e iterable.'},
+                {'n': '1', 'titulo': 'Tesis', 'desc': 'Datos sí; lo que faltaba era una lectura integrada.'},
+                {'n': '2', 'titulo': 'Capa', 'desc': 'Organiza sin sustituir a los sistemas oficiales.'},
+                {'n': '3', 'titulo': 'Impacto', 'desc': 'Menos tiempo de consulta y más claridad para decidir.'},
+                {'n': '4', 'titulo': 'Alcance', 'desc': 'Prototipo viable, iterable y listo para piloto.'},
             ],
         },
         {
-            # Slide 8: roadmap timeline horizontal animado en SVG
+            # Slide 8: roadmap timeline horizontal con barra de carga animada
+            # (avanza una sola vez, los hitos quedan iluminados de forma persistente).
             'demo': 'cierre_siguiente',
             'layout': 'timeline_full',
-            'titulo': 'Hacia dónde puede crecer',
-            'subtitulo_slide': 'Próximos pasos',
-            'lead': 'Piloto controlado, integración respetuosa y métricas de adopción.',
+            'titulo': 'Del prototipo al despliegue institucional',
+            'subtitulo_slide': 'Plan de iteraciones',
+            'lead': (
+                'Cuatro fases para llevar el prototipo a una herramienta '
+                'institucional adoptada, con métricas claras en cada paso.'
+            ),
             'bullets': [],
             'side_kind': 'roadmap_timeline',
             'roadmap': [
                 {'fase': 'Fase 1', 'titulo': 'Validación', 'desc': 'Sesiones con docentes y coordinación.', 'icon': 'people'},
                 {'fase': 'Fase 2', 'titulo': 'Integración', 'desc': 'Conector institucional no destructivo.', 'icon': 'plug'},
-                {'fase': 'Fase 3', 'titulo': 'Alertas', 'desc': 'Modelos explicables de rezago.', 'icon': 'bell'},
+                {'fase': 'Fase 3', 'titulo': 'Alertas', 'desc': 'Modelos explicables de rezago temprano.', 'icon': 'bell'},
                 {'fase': 'Fase 4', 'titulo': 'Adopción', 'desc': 'Indicadores de uso y utilidad real.', 'icon': 'graph-up-arrow'},
             ],
         },
         {
-            # Slide 9: cierre - 4 ideas a llevarse, con sparkline / línea evolutiva
+            # Slide 9: cierre — mini visualización de la plataforma que se
+            # auto-conduce + 4 ideas a llevarse, con textos más explicativos.
             'demo': 'cierre_final',
             'layout': 'closing_chart',
             'titulo': 'Una versión inicial, no un punto final',
             'subtitulo_slide': 'Cierre',
-            'lead': 'Datos + lectura + decisiones responsables.',
+            'lead': (
+                'Lo que queda al final: una capa visual sobre datos que '
+                'ya existían, decisiones académicas mejor informadas y un '
+                'punto de partida abierto a iteración.'
+            ),
             'bullets': [],
-            'side_kind': 'closing_summary',
-            'chart': {
-                'kind': 'line_trayectoria',
-                'labels': ['Idea', 'Diseño', 'Prototipo', 'Iteración', 'Piloto', 'Adopción'],
-                'valores': [10, 28, 55, 70, 82, 95],
-            },
+            'side_kind': 'closing_mock',
             'closing_items': [
-                {'n': '1', 'titulo': 'Tesis', 'desc': 'Falta lectura, no datos.'},
-                {'n': '2', 'titulo': 'Plataforma', 'desc': 'Capa sobre lo existente.'},
-                {'n': '3', 'titulo': 'Impacto', 'desc': 'Decisiones habilitadas.'},
-                {'n': '4', 'titulo': 'Camino', 'desc': 'Iterar con quienes la usan.'},
+                {
+                    'n': '1',
+                    'titulo': 'Tesis verificada',
+                    'desc': 'La información académica ya existía: el aporte está en convertirla en una lectura útil para decidir.',
+                },
+                {
+                    'n': '2',
+                    'titulo': 'Plataforma como capa',
+                    'desc': 'No sustituye sistemas oficiales: los organiza, los conecta y los presenta con sentido.',
+                },
+                {
+                    'n': '3',
+                    'titulo': 'Impacto medible',
+                    'desc': 'Menos tiempo de consulta, más claridad del avance y decisiones académicas con evidencia.',
+                },
+                {
+                    'n': '4',
+                    'titulo': 'Camino abierto',
+                    'desc': 'Próximo paso: iterar con quienes la usan y medir su adopción real en piloto institucional.',
+                },
             ],
         },
     ]

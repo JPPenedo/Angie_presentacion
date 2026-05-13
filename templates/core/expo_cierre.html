@@ -139,20 +139,6 @@
     }
     .topbar-meta strong { color: #e8dcc8; font-weight: 600; }
 
-    .section-title {
-      display: flex; align-items: center; gap: 0.7rem;
-      margin-bottom: 0.85rem;
-      color: var(--muted); font-size: 0.78rem;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
-    .badge-pill {
-      display: inline-flex; align-items: center;
-      padding: 0.25rem 0.7rem; border-radius: 999px;
-      background: var(--pf-accent-soft); color: var(--pf-accent);
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
-      border: 1px solid rgba(201, 160, 106, 0.3);
-    }
-
     /* ============ SLIDES SHELL ============ */
     .slides-shell {
       position: relative;
@@ -165,7 +151,7 @@
     .progress-rail { height: 4px; width: 100%; background: rgba(255, 255, 255, 0.05); border-radius: 999px; overflow: hidden; margin-bottom: 0.9rem; }
     .progress-bar-x { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--pf-accent)); border-radius: 999px; transition: width 0.4s ease; }
 
-    .stage { position: relative; min-height: 560px; }
+    .stage { position: relative; min-height: 600px; }
     .slide { display: none; animation: fadeInUp 0.5s ease both; }
     .slide.active { display: block; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
@@ -174,22 +160,22 @@
     .anim-3 { animation: fadeInUp 0.6s 0.25s ease both; }
 
     .slide .subtitle {
-      font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+      font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--muted); font-weight: 600;
     }
     .slide .subtitle .dot-sep { color: rgba(201, 160, 106, 0.5); margin: 0 0.4rem; }
     .slide h2 {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: clamp(1.55rem, 2.5vw, 2rem);
+      font-size: clamp(1.7rem, 2.7vw, 2.15rem);
       line-height: 1.18; font-weight: 700;
       color: #fdf6ea;
-      margin: 0.4rem 0 0.5rem;
+      margin: 0.4rem 0 0.55rem;
       letter-spacing: -0.01em;
     }
     .slide h2 .accent { color: var(--gold); }
     .slide .slide-lead {
-      color: #d1d5db; font-size: 0.92rem; line-height: 1.5; margin: 0 0 0.7rem;
-      max-width: 70ch;
+      color: #d1d5db; font-size: 1.02rem; line-height: 1.55; margin: 0 0 0.85rem;
+      max-width: 72ch;
     }
     .slide .slide-lead.center { margin-left: auto; margin-right: auto; text-align: center; }
 
@@ -197,29 +183,35 @@
     .grid-2 {
       display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem;
     }
-    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
+    .grid-2.text-heavy { grid-template-columns: 1.05fr 1fr; }
+    @media (max-width: 980px) { .grid-2, .grid-2.text-heavy { grid-template-columns: 1fr; } }
     .stack { display: flex; flex-direction: column; gap: 0.85rem; }
 
     .copy-zone {
       background: rgba(255, 255, 255, 0.025);
       border: 1px solid var(--border);
       border-radius: 1.05rem;
-      padding: 1rem 1.1rem;
+      padding: 1.15rem 1.25rem;
     }
+    .copy-zone.large { padding: 1.4rem 1.5rem; }
     .copy-zone .lead {
-      font-size: 0.95rem; color: #e8dcc8; line-height: 1.55; margin: 0 0 0.7rem;
+      font-size: 1rem; color: #e8dcc8; line-height: 1.6; margin: 0 0 0.85rem;
     }
     .copy-zone ul.visible-bullets { list-style: none; padding: 0; margin: 0; }
     .copy-zone ul.visible-bullets li {
-      position: relative; padding-left: 1.3rem; margin-bottom: 0.45rem;
-      font-size: 0.84rem; color: #d1d5db; line-height: 1.5;
+      position: relative; padding-left: 1.55rem; margin-bottom: 0.85rem;
+      font-size: 1.02rem; color: #e1e2e6; line-height: 1.6;
+    }
+    .copy-zone.large ul.visible-bullets li {
+      font-size: 1.12rem; line-height: 1.65; margin-bottom: 1rem; padding-left: 1.75rem;
     }
     .copy-zone ul.visible-bullets li::before {
-      content: ""; position: absolute; left: 0; top: 0.55rem;
-      width: 0.5rem; height: 0.5rem; border-radius: 50%;
+      content: ""; position: absolute; left: 0; top: 0.6rem;
+      width: 0.6rem; height: 0.6rem; border-radius: 50%;
       background: linear-gradient(135deg, var(--gold), var(--pf-accent));
-      box-shadow: 0 0 0 2px rgba(201, 160, 106, 0.2);
+      box-shadow: 0 0 0 3px rgba(201, 160, 106, 0.18);
     }
+    .copy-zone.large ul.visible-bullets li::before { width: 0.7rem; height: 0.7rem; top: 0.7rem; }
 
     .visual-zone {
       background: linear-gradient(160deg, #1c1a15 0%, #15130f 100%);
@@ -228,42 +220,43 @@
       padding: 1rem 1.1rem;
       display: flex; flex-direction: column; gap: 0.7rem;
     }
-    .visual-zone.flush { padding: 0.9rem 1rem 1rem; }
+    .visual-zone.flush { padding: 0.95rem 1.1rem 1.15rem; }
     .visual-head {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.74rem; color: var(--gold); font-weight: 700;
+      font-size: 0.78rem; color: var(--gold); font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase;
     }
+    .visual-head .vh-sub { color: var(--muted); font-size: 0.7rem; font-weight: 500; text-transform: none; letter-spacing: 0.02em; margin-left: 0.5rem; }
     .visual-head .dots-3 { display: inline-flex; gap: 0.3rem; }
-    .visual-head .dots-3 span { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: rgba(201, 160, 106, 0.35); }
+    .visual-head .dots-3 span { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: rgba(201, 160, 106, 0.35); }
     .visual-head .dots-3 span:last-child { background: rgba(108, 140, 199, 0.45); }
 
     /* ============ HERO METRICS ============ */
-    .hero-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; }
+    .hero-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
     .metric-card {
       background: rgba(201, 160, 106, 0.07);
       border: 1px solid rgba(201, 160, 106, 0.22);
-      border-radius: 0.85rem;
-      padding: 0.75rem 0.8rem;
+      border-radius: 0.9rem;
+      padding: 0.85rem 0.9rem;
       text-align: center;
     }
     .metric-card .value {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: 1.3rem; font-weight: 700; color: var(--gold); letter-spacing: -0.01em;
+      font-size: 1.45rem; font-weight: 700; color: var(--gold); letter-spacing: -0.01em;
     }
-    .metric-card .label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.15rem; }
+    .metric-card .label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem; }
 
     /* ============ CHART WRAPS ============ */
     .chart-wrap { position: relative; width: 100%; }
     .chart-wrap.h-260 { height: 260px; }
     .chart-wrap.h-300 { height: 300px; }
     .chart-wrap.h-340 { height: 340px; }
-    .chart-wrap.h-180 { height: 180px; }
+    .chart-wrap.h-380 { height: 380px; }
 
     .donut-hero {
       position: relative;
       width: 100%;
-      height: 260px;
+      height: 280px;
     }
     .donut-center {
       position: absolute; inset: 0;
@@ -273,239 +266,419 @@
     }
     .donut-center .pct {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: 2.2rem; font-weight: 700;
+      font-size: 2.6rem; font-weight: 700;
       color: var(--gold); line-height: 1;
     }
     .donut-center .pct-label {
-      font-size: 0.7rem; color: var(--muted);
+      font-size: 0.75rem; color: var(--muted);
       letter-spacing: 0.06em; text-transform: uppercase;
       margin-top: 0.3rem;
     }
     .donut-center .pct-sub {
-      font-size: 0.78rem; color: #e8dcc8; margin-top: 0.2rem;
+      font-size: 0.85rem; color: #e8dcc8; margin-top: 0.2rem;
     }
 
-    /* ============ MODULE / PAIN / PERSONA CARDS ============ */
+    /* ============ MODULE CARDS (slide 3) GRANDES Y CON ANIMACIÓN ============ */
     .module-grid-5 {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem;
-    }
-    .module-grid-5 .mod-card:nth-child(4),
-    .module-grid-5 .mod-card:nth-child(5) {
-      grid-column: span 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 0.85rem;
     }
     @media (max-width: 880px) { .module-grid-5 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .module-grid-5 { grid-template-columns: 1fr; } }
     .mod-card {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--border);
-      border-radius: 0.95rem;
-      padding: 0.85rem 0.9rem;
-      display: flex; flex-direction: column; gap: 0.35rem;
-      transition: border-color 0.18s ease, transform 0.18s ease;
+      background: linear-gradient(155deg, rgba(201, 160, 106, 0.07) 0%, rgba(255, 255, 255, 0.025) 100%);
+      border: 1px solid rgba(201, 160, 106, 0.22);
+      border-radius: 1.1rem;
+      padding: 1.35rem 1.25rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
       position: relative; overflow: hidden;
+      min-height: 170px;
+      opacity: 0;
+      transform: translateY(18px) scale(0.97);
+    }
+    .slide.active .mod-card { animation: modIn 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
+    .slide.active .mod-card:nth-child(1) { animation-delay: 0.18s; }
+    .slide.active .mod-card:nth-child(2) { animation-delay: 0.30s; }
+    .slide.active .mod-card:nth-child(3) { animation-delay: 0.42s; }
+    .slide.active .mod-card:nth-child(4) { animation-delay: 0.54s; }
+    .slide.active .mod-card:nth-child(5) { animation-delay: 0.66s; }
+    @keyframes modIn {
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .mod-card::after {
       content: ""; position: absolute; top: 0; left: 0;
-      width: 36px; height: 36px;
-      background: radial-gradient(circle at 0 0, rgba(201,160,106,0.25), transparent 70%);
+      width: 80px; height: 80px;
+      background: radial-gradient(circle at 0 0, rgba(201, 160, 106, 0.30), transparent 70%);
+      pointer-events: none;
     }
     .mod-card:hover {
-      border-color: rgba(201, 160, 106, 0.5);
-      transform: translateY(-2px);
+      border-color: rgba(201, 160, 106, 0.55);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }
     .mod-card .mod-head {
-      display: flex; align-items: center; gap: 0.4rem;
-      color: var(--gold); font-weight: 600; font-size: 0.85rem;
+      display: flex; align-items: center; gap: 0.55rem;
+      color: var(--gold); font-weight: 700; font-size: 1.08rem;
+      letter-spacing: -0.005em;
     }
-    .mod-card .mod-desc { font-size: 0.76rem; color: #c4c4c8; line-height: 1.45; }
+    .mod-card .mod-head i { font-size: 1.4rem; }
+    .mod-card .mod-desc { font-size: 0.96rem; color: #c4c4c8; line-height: 1.55; }
 
-    .persona-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+    /* ============ PERSONA CARDS (slide 4) MÁS GRANDES ============ */
+    .persona-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
     @media (max-width: 1100px) { .persona-grid-3 { grid-template-columns: 1fr; } }
     .persona-card-full {
-      background: linear-gradient(180deg, rgba(201,160,106,0.08), rgba(255,255,255,0.025));
-      border: 1px solid rgba(201, 160, 106, 0.25);
-      border-radius: 1.1rem;
-      padding: 1rem 1.05rem;
+      background: linear-gradient(180deg, rgba(201,160,106,0.10), rgba(255,255,255,0.025));
+      border: 1px solid rgba(201, 160, 106, 0.28);
+      border-radius: 1.2rem;
+      padding: 1.4rem 1.35rem 1.45rem;
       position: relative; overflow: hidden;
+      min-height: 320px;
+      display: flex; flex-direction: column;
+      opacity: 0; transform: translateY(18px);
+    }
+    .slide.active .persona-card-full { animation: modIn 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
+    .slide.active .persona-card-full:nth-child(1) { animation-delay: 0.18s; }
+    .slide.active .persona-card-full:nth-child(2) { animation-delay: 0.32s; }
+    .slide.active .persona-card-full:nth-child(3) { animation-delay: 0.46s; }
+    .persona-card-full::after {
+      content: ""; position: absolute; top: 0; right: 0;
+      width: 110px; height: 110px;
+      background: radial-gradient(circle at 100% 0%, rgba(201, 160, 106, 0.25), transparent 70%);
+      pointer-events: none;
     }
     .persona-card-full .ph {
-      display: flex; align-items: center; gap: 0.5rem;
-      color: var(--gold); font-weight: 700; font-size: 0.95rem;
-      margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 0.55rem;
+      color: var(--gold); font-weight: 700; font-size: 1.12rem;
+      margin-bottom: 0.85rem;
+      letter-spacing: -0.005em;
     }
-    .persona-card-full .ph i { font-size: 1.1rem; }
+    .persona-card-full .ph i { font-size: 1.35rem; }
     .persona-card-full .kpi-block {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(201, 160, 106, 0.25);
-      border-radius: 0.7rem;
-      padding: 0.55rem 0.7rem;
-      margin-bottom: 0.7rem;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(201, 160, 106, 0.3);
+      border-radius: 0.85rem;
+      padding: 0.85rem 0.9rem;
+      margin-bottom: 1rem;
       text-align: center;
     }
     .persona-card-full .kpi-block .kpi {
       font-family: "Sora", "Inter", sans-serif;
-      color: var(--gold); font-size: 1.4rem; font-weight: 700; line-height: 1;
+      color: var(--gold); font-size: 1.85rem; font-weight: 700; line-height: 1;
     }
     .persona-card-full .kpi-block .kpi-label {
-      color: var(--muted); font-size: 0.66rem;
+      color: var(--muted); font-size: 0.75rem;
       letter-spacing: 0.04em; text-transform: uppercase;
-      margin-top: 0.25rem;
+      margin-top: 0.35rem;
     }
     .persona-card-full ul { list-style: none; padding: 0; margin: 0; }
     .persona-card-full ul li {
-      position: relative; padding-left: 1rem; font-size: 0.78rem;
-      color: #d1d5db; line-height: 1.5; margin-bottom: 0.35rem;
+      position: relative; padding-left: 1.2rem; font-size: 0.95rem;
+      color: #d8d8df; line-height: 1.6; margin-bottom: 0.55rem;
     }
     .persona-card-full ul li::before {
-      content: ""; position: absolute; left: 0; top: 0.52rem;
-      width: 0.35rem; height: 0.35rem; border-radius: 50%;
+      content: ""; position: absolute; left: 0; top: 0.6rem;
+      width: 0.45rem; height: 0.45rem; border-radius: 50%;
       background: var(--gold);
     }
 
-    /* ============ PILLARS (5 ejes) - chip row ============ */
+    /* ============ PILLARS (5 ejes) MÁS GRANDES (slide 5) ============ */
     .pillars-row {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.45rem; margin-top: 0.75rem;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.6rem; margin-top: 0.95rem;
     }
-    @media (max-width: 1100px) { .pillars-row { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 1100px) { .pillars-row { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px)  { .pillars-row { grid-template-columns: repeat(2, 1fr); } }
     .pillar-chip {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--border);
-      border-radius: 0.7rem;
-      padding: 0.55rem 0.6rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(201, 160, 106, 0.22);
+      border-radius: 0.85rem;
+      padding: 0.85rem 0.9rem;
+      min-height: 130px;
+      opacity: 0; transform: translateY(14px);
     }
+    .slide.active .pillar-chip { animation: modIn 0.6s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
+    .slide.active .pillar-chip:nth-child(1) { animation-delay: 0.20s; }
+    .slide.active .pillar-chip:nth-child(2) { animation-delay: 0.30s; }
+    .slide.active .pillar-chip:nth-child(3) { animation-delay: 0.40s; }
+    .slide.active .pillar-chip:nth-child(4) { animation-delay: 0.50s; }
+    .slide.active .pillar-chip:nth-child(5) { animation-delay: 0.60s; }
     .pillar-chip .pn {
       font-family: "Sora", "Inter", sans-serif;
-      font-size: 0.85rem; color: var(--gold); font-weight: 700;
+      font-size: 1rem; color: var(--gold); font-weight: 700;
     }
-    .pillar-chip .pt { color: #f3eada; font-size: 0.74rem; font-weight: 600; margin-top: 0.15rem; }
-    .pillar-chip .pd { color: #b8b8be; font-size: 0.68rem; line-height: 1.4; margin-top: 0.15rem; }
+    .pillar-chip .pt { color: #f3eada; font-size: 0.92rem; font-weight: 600; margin-top: 0.2rem; }
+    .pillar-chip .pd { color: #c4c4c8; font-size: 0.82rem; line-height: 1.5; margin-top: 0.25rem; }
 
-    /* ============ IMPROVE TABLE ============ */
-    .improve-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; color: #d1d5db; }
+    /* ============ IMPROVE TABLE (slide 6) GRANDE + ANIMACIÓN POR FILA ============ */
+    .improve-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; color: #d1d5db; }
     .improve-table thead th {
-      text-align: left; font-weight: 600; color: var(--gold);
-      padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(201, 160, 106, 0.25);
-      font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase;
+      text-align: left; font-weight: 700; color: var(--gold);
+      padding: 0.75rem 0.7rem; border-bottom: 1px solid rgba(201, 160, 106, 0.3);
+      font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase;
     }
     .improve-table tbody td {
-      padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.85rem 0.7rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       vertical-align: top;
+      font-size: 0.92rem; line-height: 1.55;
     }
+    .improve-table tbody tr {
+      opacity: 0;
+      transform: translateX(-12px);
+    }
+    .slide.active .improve-table tbody tr { animation: rowIn 0.6s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
+    .slide.active .improve-table tbody tr:nth-child(1) { animation-delay: 0.22s; }
+    .slide.active .improve-table tbody tr:nth-child(2) { animation-delay: 0.34s; }
+    .slide.active .improve-table tbody tr:nth-child(3) { animation-delay: 0.46s; }
+    .slide.active .improve-table tbody tr:nth-child(4) { animation-delay: 0.58s; }
+    .slide.active .improve-table tbody tr:nth-child(5) { animation-delay: 0.70s; }
+    @keyframes rowIn { to { opacity: 1; transform: translateX(0); } }
     .improve-table tbody tr:last-child td { border-bottom: none; }
-    .improve-table .reto { color: #f3eada; font-weight: 600; }
+    .improve-table .reto { color: #f9efde; font-weight: 700; }
     .improve-table .estado {
-      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px;
+      display: inline-block; padding: 0.25rem 0.65rem; border-radius: 999px;
       background: rgba(255, 179, 71, 0.12); color: var(--warning);
-      font-size: 0.66rem; border: 1px solid rgba(255, 179, 71, 0.3);
+      font-size: 0.78rem; border: 1px solid rgba(255, 179, 71, 0.32); font-weight: 600;
     }
 
-    /* ============ CONCLUSION CARDS (slide 7) ============ */
+    /* ============ CONCLUSION CARDS (slides 7 y 9) MÁS GRANDES ============ */
     .concl-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.55rem;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;
     }
     @media (max-width: 980px) { .concl-row { grid-template-columns: repeat(2, 1fr); } }
     .concl-card {
-      background: linear-gradient(160deg, rgba(201, 160, 106, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%);
-      border: 1px solid rgba(201, 160, 106, 0.25);
-      border-radius: 0.85rem;
-      padding: 0.7rem 0.8rem;
+      background: linear-gradient(160deg, rgba(201, 160, 106, 0.10) 0%, rgba(255, 255, 255, 0.025) 100%);
+      border: 1px solid rgba(201, 160, 106, 0.28);
+      border-radius: 1rem;
+      padding: 1.1rem 1.15rem;
       position: relative;
+      min-height: 150px;
+      opacity: 0; transform: translateY(12px);
     }
+    .slide.active .concl-card { animation: modIn 0.6s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
+    .slide.active .concl-card:nth-child(1) { animation-delay: 0.28s; }
+    .slide.active .concl-card:nth-child(2) { animation-delay: 0.40s; }
+    .slide.active .concl-card:nth-child(3) { animation-delay: 0.52s; }
+    .slide.active .concl-card:nth-child(4) { animation-delay: 0.64s; }
     .concl-card::before {
       content: ""; position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px;
+      width: 4px;
       background: linear-gradient(180deg, var(--gold), var(--pf-accent));
-      border-radius: 0.85rem 0 0 0.85rem;
+      border-radius: 1rem 0 0 1rem;
     }
     .concl-card .cn {
       font-family: "Sora", "Inter", sans-serif;
-      color: var(--gold); font-size: 1rem; font-weight: 700;
+      color: var(--gold); font-size: 1.25rem; font-weight: 700;
     }
-    .concl-card .ct { color: #f3eada; font-size: 0.82rem; font-weight: 600; margin-top: 0.15rem; }
-    .concl-card .cd { color: #c4c4c8; font-size: 0.72rem; line-height: 1.4; margin-top: 0.2rem; }
+    .concl-card .ct { color: #f9efde; font-size: 1rem; font-weight: 700; margin-top: 0.25rem; letter-spacing: -0.005em; }
+    .concl-card .cd { color: #cccdd2; font-size: 0.88rem; line-height: 1.55; margin-top: 0.4rem; }
 
-    /* ============ ROADMAP TIMELINE (slide 8) ============ */
+    /* ============ ROADMAP TIMELINE CONTROLADA POR JS (slide 8) ============ */
     .timeline-wrap {
-      position: relative; padding: 1.2rem 0.7rem 0.6rem;
+      position: relative; padding: 1.5rem 1rem 1rem;
     }
-    .timeline-line {
-      position: absolute; top: 56px; left: 6%; right: 6%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--pf-accent), var(--blue-soft));
+    .timeline-track {
+      position: absolute; top: 56px; left: 6%; right: 6%; height: 4px;
+      background: rgba(201, 160, 106, 0.18);
       border-radius: 999px;
-      box-shadow: 0 0 12px rgba(201, 160, 106, 0.4);
+      box-shadow: inset 0 0 0 1px rgba(201, 160, 106, 0.08);
     }
-    .timeline-line::before {
-      content: ""; position: absolute; left: 0; top: -2px; bottom: -2px;
-      width: 0%; background: rgba(212, 165, 116, 0.5); border-radius: 999px;
-      animation: timelinePulse 5s ease-in-out infinite;
+    .timeline-fill {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--pf-accent));
+      border-radius: 999px;
+      box-shadow: 0 0 18px rgba(212, 165, 116, 0.55), 0 0 36px rgba(212, 165, 116, 0.25);
+      transition: width 9s linear;
     }
-    @keyframes timelinePulse {
-      0% { width: 0%; opacity: 0.5; }
-      45% { width: 100%; opacity: 0.7; }
-      100% { width: 100%; opacity: 0; }
-    }
+    .timeline-fill.run { width: 100%; }
     .timeline-stops {
       position: relative; display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 0.6rem;
+      gap: 0.7rem;
     }
     .timeline-stop {
       display: flex; flex-direction: column; align-items: center;
-      text-align: center; padding-top: 30px;
+      text-align: center; padding-top: 80px;
       position: relative;
     }
     .timeline-dot {
-      width: 50px; height: 50px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, var(--gold) 0%, var(--gold-deep) 100%);
+      width: 60px; height: 60px; border-radius: 50%;
+      background: rgba(40, 32, 22, 0.85);
+      border: 2px solid rgba(201, 160, 106, 0.35);
       display: flex; align-items: center; justify-content: center;
-      color: #1d1410; font-size: 1.2rem;
-      box-shadow: 0 0 0 4px rgba(201, 160, 106, 0.18), 0 6px 24px rgba(201, 160, 106, 0.3);
-      position: absolute; top: 6px;
-      animation: dotPulse 3.4s ease-in-out infinite;
+      color: rgba(212, 165, 116, 0.55); font-size: 1.4rem;
+      position: absolute; top: 16px;
+      transition: background 0.45s ease, color 0.45s ease, border-color 0.45s ease,
+                  box-shadow 0.45s ease, transform 0.4s ease;
     }
-    .timeline-stop:nth-child(2) .timeline-dot { animation-delay: -0.85s; }
-    .timeline-stop:nth-child(3) .timeline-dot { animation-delay: -1.7s; }
-    .timeline-stop:nth-child(4) .timeline-dot { animation-delay: -2.55s; }
-    @keyframes dotPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(201, 160, 106, 0.18), 0 6px 24px rgba(201, 160, 106, 0.3); }
-      50%      { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(201, 160, 106, 0.25), 0 8px 30px rgba(201, 160, 106, 0.45); }
+    .timeline-stop.activated .timeline-dot {
+      background: radial-gradient(circle at 30% 30%, var(--gold) 0%, var(--gold-deep) 100%);
+      color: #1d1410;
+      border-color: rgba(212, 165, 116, 0.9);
+      box-shadow: 0 0 0 6px rgba(201, 160, 106, 0.22), 0 8px 28px rgba(201, 160, 106, 0.35);
+      transform: scale(1.08);
     }
     .timeline-stop .ts-fase {
-      font-size: 0.66rem; color: var(--gold); font-weight: 700;
+      font-size: 0.74rem; color: rgba(201, 160, 106, 0.6); font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
-      margin-top: 0.5rem;
+      margin-top: 0.55rem;
+      transition: color 0.4s ease;
     }
+    .timeline-stop.activated .ts-fase { color: var(--gold); }
     .timeline-stop .ts-titulo {
-      color: #f3eada; font-size: 0.92rem; font-weight: 600; margin-top: 0.2rem;
+      color: #e0d6c4; font-size: 1.05rem; font-weight: 700; margin-top: 0.25rem;
+      transition: color 0.4s ease;
     }
+    .timeline-stop.activated .ts-titulo { color: #fdf6ea; }
     .timeline-stop .ts-desc {
-      color: #b8b8be; font-size: 0.74rem; line-height: 1.45;
-      margin-top: 0.25rem; max-width: 90%;
+      color: #a8a8b0; font-size: 0.85rem; line-height: 1.5;
+      margin-top: 0.3rem; max-width: 90%;
+      transition: color 0.4s ease;
     }
+    .timeline-stop.activated .ts-desc { color: #d1d5db; }
     @media (max-width: 880px) {
-      .timeline-stops { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
-      .timeline-line { display: none; }
+      .timeline-stops { grid-template-columns: repeat(2, 1fr); gap: 1.3rem; }
+      .timeline-track { display: none; }
     }
 
-    /* ============ CLOSING (slide 9) ============ */
-    .closing-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem;
-      margin-top: 0.9rem;
+    /* ============ SLIDE 9 · MOCK PLATFORM PREVIEW (auto-running) ============ */
+    .mock-platform {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
     }
-    @media (max-width: 880px) { .closing-grid { grid-template-columns: repeat(2, 1fr); } }
+    .mock-frame {
+      background: linear-gradient(180deg, #1a1612 0%, #0e0d0b 100%);
+      border: 1px solid rgba(201, 160, 106, 0.32);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(201, 160, 106, 0.08);
+    }
+    .mock-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 0.85rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid rgba(201, 160, 106, 0.18);
+    }
+    .mock-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .mock-dot.r { background: #db4e4e; }
+    .mock-dot.y { background: #f0b840; }
+    .mock-dot.g { background: #4cba68; }
+    .mock-url {
+      flex: 1; margin: 0 0.5rem; padding: 0.25rem 0.7rem;
+      font-size: 0.74rem; color: var(--gold);
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      background: rgba(212, 165, 116, 0.06);
+      border-radius: 999px;
+      border: 1px solid rgba(212, 165, 116, 0.18);
+      text-align: center;
+    }
+    .mock-body {
+      display: grid; grid-template-columns: 130px 1fr;
+      min-height: 280px;
+    }
+    .mock-side {
+      background: rgba(0, 0, 0, 0.25);
+      border-right: 1px solid rgba(201, 160, 106, 0.12);
+      padding: 0.85rem 0.5rem;
+      display: flex; flex-direction: column; gap: 0.25rem;
+    }
+    .mock-side-item {
+      display: flex; align-items: center; gap: 0.45rem;
+      padding: 0.45rem 0.6rem; border-radius: 0.55rem;
+      font-size: 0.78rem; color: #b8b8be;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+    .mock-side-item i { font-size: 0.95rem; }
+    .mock-side-item.active {
+      background: rgba(212, 165, 116, 0.12);
+      color: var(--gold);
+      box-shadow: inset 2px 0 0 var(--gold);
+    }
+    .mock-content { padding: 0.85rem 0.95rem; display: flex; flex-direction: column; gap: 0.7rem; }
+    .mock-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .mock-kpi {
+      background: rgba(212, 165, 116, 0.07);
+      border: 1px solid rgba(212, 165, 116, 0.25);
+      border-radius: 0.7rem;
+      padding: 0.55rem 0.6rem;
+      text-align: center;
+    }
+    .mock-kpi .mk-num {
+      font-family: "Sora", "Inter", sans-serif;
+      font-size: 1.3rem; font-weight: 700; color: var(--gold); line-height: 1;
+    }
+    .mock-kpi .mk-label { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.25rem; }
+
+    .mock-bars { display: flex; align-items: flex-end; gap: 0.35rem; height: 90px; padding: 0.35rem 0.2rem 0; }
+    .mock-bars .mb {
+      flex: 1;
+      background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+      border-radius: 0.35rem 0.35rem 0 0;
+      box-shadow: 0 -2px 8px rgba(212, 165, 116, 0.25);
+      animation: barRise 5.5s ease-in-out infinite;
+    }
+    .mock-bars .mb:nth-child(1) { animation-delay: 0s; }
+    .mock-bars .mb:nth-child(2) { animation-delay: -0.6s; }
+    .mock-bars .mb:nth-child(3) { animation-delay: -1.2s; }
+    .mock-bars .mb:nth-child(4) { animation-delay: -1.8s; }
+    .mock-bars .mb:nth-child(5) { animation-delay: -2.4s; }
+    .mock-bars .mb:nth-child(6) { animation-delay: -3.0s; }
+    .mock-bars .mb:nth-child(7) { animation-delay: -3.6s; }
+    .mock-bars .mb:nth-child(8) { animation-delay: -4.2s; }
+    @keyframes barRise {
+      0%, 100% { height: 30%; opacity: 0.65; }
+      50%      { height: 95%; opacity: 1; }
+    }
+
+    .mock-progress {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .mock-progress-fill {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold), var(--pf-accent));
+      border-radius: 999px;
+      animation: progressLoop 5s ease-in-out infinite;
+    }
+    @keyframes progressLoop {
+      0%   { width: 0%; }
+      55%  { width: 90%; }
+      80%  { width: 90%; }
+      100% { width: 0%; }
+    }
+    .mock-progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.72rem; color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    .mock-progress-label strong { color: var(--gold); font-weight: 700; }
+
+    @media (max-width: 760px) {
+      .mock-body { grid-template-columns: 1fr; }
+      .mock-side { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid rgba(201, 160, 106, 0.12); }
+    }
 
     /* ============ CONTROLS ============ */
     .controls {
-      margin-top: 1rem;
+      margin-top: 1.1rem;
       display: flex; align-items: center; justify-content: space-between;
       gap: 0.75rem; flex-wrap: wrap;
     }
     .controls .ctrl-side { display: inline-flex; align-items: center; gap: 0.5rem; }
     .btn-dark {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      padding: 0.55rem 1.05rem; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.1rem; border-radius: 999px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
-      color: #e5e7eb; font-size: 0.82rem; font-weight: 600;
+      color: #e5e7eb; font-size: 0.85rem; font-weight: 600;
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
     }
@@ -530,29 +703,88 @@
       box-shadow: 0 0 0 3px rgba(201, 160, 106, 0.18);
     }
     .dot:hover:not(.active) { background: rgba(201, 160, 106, 0.5); }
-    .kbd-hint { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.03em; }
+    .kbd-hint { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.03em; }
     .kbd-hint kbd {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border);
-      padding: 0.05rem 0.35rem; border-radius: 4px;
+      padding: 0.05rem 0.4rem; border-radius: 4px;
       font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-      color: #e5e7eb; font-size: 0.7rem;
+      color: #e5e7eb; font-size: 0.72rem;
     }
 
-    /* ============ FULLSCREEN ============ */
-    body.is-fullscreen .wrap { max-width: none; padding: 1rem 2rem 2rem; }
-    body.is-fullscreen .stage { min-height: calc(100vh - 240px); }
-    body.is-fullscreen .slide h2 { font-size: clamp(1.9rem, 3vw, 2.4rem); }
-    body.is-fullscreen .topbar { margin-bottom: 0.5rem; }
-    body.is-fullscreen .chart-wrap.h-260,
-    body.is-fullscreen .donut-hero { height: 320px; }
-    body.is-fullscreen .chart-wrap.h-300 { height: 360px; }
-    body.is-fullscreen .chart-wrap.h-340 { height: 400px; }
+    /* ============ FULLSCREEN — escala generosa ============ */
+    body.is-fullscreen .wrap { max-width: none; padding: 1.2rem 3rem 2.4rem; }
+    body.is-fullscreen .stage { min-height: calc(100vh - 230px); }
+    body.is-fullscreen .slide h2 { font-size: clamp(2.2rem, 3.3vw, 2.8rem); margin-top: 0.6rem; }
+    body.is-fullscreen .slide .subtitle { font-size: 0.92rem; }
+    body.is-fullscreen .slide .slide-lead { font-size: 1.2rem; line-height: 1.6; max-width: 92ch; margin-bottom: 1.1rem; }
+    body.is-fullscreen .topbar { margin-bottom: 0.7rem; }
+
+    body.is-fullscreen .copy-zone { padding: 1.6rem 1.7rem; }
+    body.is-fullscreen .copy-zone ul.visible-bullets li { font-size: 1.22rem; line-height: 1.7; margin-bottom: 1.1rem; padding-left: 1.8rem; }
+    body.is-fullscreen .copy-zone.large ul.visible-bullets li { font-size: 1.32rem; }
+    body.is-fullscreen .copy-zone ul.visible-bullets li::before { width: 0.75rem; height: 0.75rem; top: 0.78rem; }
+
+    body.is-fullscreen .chart-wrap.h-260 { height: 340px; }
+    body.is-fullscreen .chart-wrap.h-300 { height: 380px; }
+    body.is-fullscreen .chart-wrap.h-340 { height: 420px; }
+    body.is-fullscreen .chart-wrap.h-380 { height: 460px; }
+    body.is-fullscreen .donut-hero { height: 360px; }
+    body.is-fullscreen .donut-center .pct { font-size: 3.6rem; }
+    body.is-fullscreen .donut-center .pct-label { font-size: 0.9rem; }
+    body.is-fullscreen .donut-center .pct-sub { font-size: 1rem; }
+
+    body.is-fullscreen .metric-card { padding: 1.05rem 1rem; }
+    body.is-fullscreen .metric-card .value { font-size: 1.85rem; }
+    body.is-fullscreen .metric-card .label { font-size: 0.84rem; }
+
+    body.is-fullscreen .mod-card { padding: 1.7rem 1.55rem; min-height: 210px; }
+    body.is-fullscreen .mod-card .mod-head { font-size: 1.32rem; }
+    body.is-fullscreen .mod-card .mod-head i { font-size: 1.7rem; }
+    body.is-fullscreen .mod-card .mod-desc { font-size: 1.12rem; line-height: 1.6; }
+
+    body.is-fullscreen .persona-card-full { padding: 1.7rem 1.6rem 1.8rem; min-height: 400px; }
+    body.is-fullscreen .persona-card-full .ph { font-size: 1.3rem; margin-bottom: 1.05rem; }
+    body.is-fullscreen .persona-card-full .ph i { font-size: 1.55rem; }
+    body.is-fullscreen .persona-card-full .kpi-block { padding: 1.05rem 1rem; margin-bottom: 1.25rem; }
+    body.is-fullscreen .persona-card-full .kpi-block .kpi { font-size: 2.4rem; }
+    body.is-fullscreen .persona-card-full .kpi-block .kpi-label { font-size: 0.85rem; }
+    body.is-fullscreen .persona-card-full ul li { font-size: 1.1rem; line-height: 1.65; margin-bottom: 0.7rem; }
+
+    body.is-fullscreen .pillar-chip { padding: 1.1rem 1.15rem; min-height: 160px; }
+    body.is-fullscreen .pillar-chip .pn { font-size: 1.15rem; }
+    body.is-fullscreen .pillar-chip .pt { font-size: 1.05rem; margin-top: 0.3rem; }
+    body.is-fullscreen .pillar-chip .pd { font-size: 0.95rem; line-height: 1.6; margin-top: 0.35rem; }
+
+    body.is-fullscreen .improve-table { font-size: 1.05rem; }
+    body.is-fullscreen .improve-table thead th { font-size: 0.92rem; padding: 0.95rem 0.85rem; }
+    body.is-fullscreen .improve-table tbody td { padding: 1.05rem 0.85rem; font-size: 1.05rem; line-height: 1.6; }
+    body.is-fullscreen .improve-table .estado { font-size: 0.9rem; padding: 0.35rem 0.8rem; }
+
+    body.is-fullscreen .concl-card { padding: 1.4rem 1.4rem; min-height: 180px; }
+    body.is-fullscreen .concl-card .cn { font-size: 1.55rem; }
+    body.is-fullscreen .concl-card .ct { font-size: 1.18rem; }
+    body.is-fullscreen .concl-card .cd { font-size: 1.02rem; line-height: 1.6; }
+
+    body.is-fullscreen .timeline-wrap { padding: 1.85rem 1rem 1rem; }
+    body.is-fullscreen .timeline-track { top: 64px; }
+    body.is-fullscreen .timeline-stop { padding-top: 96px; }
+    body.is-fullscreen .timeline-dot { width: 74px; height: 74px; top: 24px; font-size: 1.65rem; }
+    body.is-fullscreen .timeline-stop .ts-fase { font-size: 0.9rem; }
+    body.is-fullscreen .timeline-stop .ts-titulo { font-size: 1.3rem; }
+    body.is-fullscreen .timeline-stop .ts-desc { font-size: 1.02rem; }
+
+    body.is-fullscreen .mock-platform { max-width: 880px; }
+    body.is-fullscreen .mock-body { min-height: 360px; grid-template-columns: 170px 1fr; }
+    body.is-fullscreen .mock-bars { height: 120px; }
+    body.is-fullscreen .mock-side-item { font-size: 0.92rem; padding: 0.55rem 0.7rem; }
+    body.is-fullscreen .mock-kpi .mk-num { font-size: 1.6rem; }
+    body.is-fullscreen .mock-kpi .mk-label { font-size: 0.72rem; }
 
     @media (max-width: 700px) {
       .wrap { padding: 1rem 0.85rem 2.5rem; }
       .topbar-meta { display: none; }
-      .grid-2 { gap: 0.75rem; }
+      .grid-2 { gap: 0.85rem; }
     }
   </style>
 </head>
@@ -581,11 +813,6 @@
       </div>
     </div>
 
-    <div class="section-title">
-      <span class="badge-pill">Slides</span>
-      <span>Cierre del proyecto en {{ slides|length }} pasos · ~7 min</span>
-    </div>
-
     <div class="slides-section">
       <div class="slides-shell">
         <div class="progress-rail"><div class="progress-bar-x" id="progressBar"></div></div>
@@ -609,7 +836,7 @@
             <div class="grid-2 anim-3">
               <div class="visual-zone flush">
                 <div class="visual-head">
-                  <span><i class="bi bi-pie-chart-fill me-1"></i>Avance ejemplo</span>
+                  <span><i class="bi bi-pie-chart-fill me-1"></i>Avance del plan (ejemplo)</span>
                   <span class="dots-3"><span></span><span></span><span></span></span>
                 </div>
                 <div class="donut-hero">
@@ -617,7 +844,7 @@
                           data-usados="{{ s.chart.usados }}"
                           data-requeridos="{{ s.chart.requeridos }}"></canvas>
                   <div class="donut-center">
-                    <div class="pct" id="donutHeroPct">—</div>
+                    <div class="pct" data-donut-pct>0%</div>
                     <div class="pct-label">avance</div>
                     <div class="pct-sub">{{ s.chart.usados }} / {{ s.chart.requeridos }} cr.</div>
                   </div>
@@ -633,7 +860,7 @@
                   </div>
                   {% endfor %}
                 </div>
-                <div class="copy-zone">
+                <div class="copy-zone large">
                   <ul class="visible-bullets">
                     {% for b in s.bullets %}<li>{{ b }}</li>{% endfor %}
                   </ul>
@@ -641,25 +868,26 @@
               </div>
             </div>
 
-            {# ============== LAYOUT: split_chart (slide 2) ============== #}
+            {# ============== LAYOUT: split_chart (slide 2 — vista docente) ============== #}
             {% elif s.layout == 'split_chart' %}
             <p class="slide-lead anim-2">{{ s.lead }}</p>
-            <div class="grid-2 anim-3">
-              <div class="copy-zone">
+            <div class="grid-2 text-heavy anim-3">
+              <div class="copy-zone large">
                 <ul class="visible-bullets">
                   {% for b in s.bullets %}<li>{{ b }}</li>{% endfor %}
                 </ul>
               </div>
               <div class="visual-zone flush">
                 <div class="visual-head">
-                  <span><i class="bi bi-bar-chart-line me-1"></i>Minutos para consultar info académica</span>
-                  <span class="dots-3"><span></span><span></span><span></span></span>
+                  <span>
+                    <i class="bi bi-mortarboard me-1"></i>{{ s.chart.titulo }}
+                    <span class="vh-sub">· {{ s.chart.subtitulo }}</span>
+                  </span>
                 </div>
-                <div class="chart-wrap h-260">
-                  <canvas data-chart="bar_tiempo"
+                <div class="chart-wrap h-300">
+                  <canvas data-chart="stacked_calificaciones"
                           data-labels='{{ s.chart.labels|safe }}'
-                          data-antes='{{ s.chart.antes|safe }}'
-                          data-despues='{{ s.chart.despues|safe }}'></canvas>
+                          data-series='{{ s.chart.series|safe }}'></canvas>
                 </div>
               </div>
             </div>
@@ -667,7 +895,7 @@
             {# ============== LAYOUT: full_cards (slide 3) ============== #}
             {% elif s.layout == 'full_cards' %}
             <p class="slide-lead anim-2 center">{{ s.lead }}</p>
-            <div class="module-grid-5 anim-3">
+            <div class="module-grid-5">
               {% for m in s.modules %}
               <div class="mod-card">
                 <div class="mod-head"><i class="bi bi-{{ m.icon }}"></i>{{ m.titulo }}</div>
@@ -676,10 +904,10 @@
               {% endfor %}
             </div>
 
-            {# ============== LAYOUT: persona_full (slide 4) ============== #}
+            {# ============== LAYOUT: persona_full (slide 4 — casos de uso) ============== #}
             {% elif s.layout == 'persona_full' %}
             <p class="slide-lead anim-2 center">{{ s.lead }}</p>
-            <div class="persona-grid-3 anim-3">
+            <div class="persona-grid-3">
               {% for p in s.personas %}
               <div class="persona-card-full">
                 <div class="ph"><i class="bi bi-{{ p.icon }}"></i>{{ p.rol }}</div>
@@ -699,28 +927,34 @@
             <p class="slide-lead anim-2 center">{{ s.lead }}</p>
             <div class="visual-zone flush anim-3">
               <div class="visual-head">
-                {% if s.chart.kind == 'radar_fundamento' %}
-                <span><i class="bi bi-bookmark-star me-1"></i>Cobertura por eje</span>
-                {% else %}
-                <span><i class="bi bi-bar-chart-steps me-1"></i>Antes vs Después</span>
+                {% if s.chart.kind == 'stacked_generaciones' %}
+                <span>
+                  <i class="bi bi-diagram-3 me-1"></i>{{ s.chart.titulo }}
+                  <span class="vh-sub">· {{ s.chart.subtitulo }}</span>
+                </span>
+                {% elif s.chart.kind == 'combo_adopcion' %}
+                <span>
+                  <i class="bi bi-bar-chart-line me-1"></i>{{ s.chart.titulo }}
+                  <span class="vh-sub">· {{ s.chart.subtitulo }}</span>
+                </span>
                 {% endif %}
                 <span class="dots-3"><span></span><span></span><span></span></span>
               </div>
-              <div class="chart-wrap h-300">
-                {% if s.chart.kind == 'radar_fundamento' %}
-                <canvas data-chart="radar_fundamento"
+              <div class="chart-wrap {% if s.chart.kind == 'combo_adopcion' %}h-340{% else %}h-300{% endif %}">
+                {% if s.chart.kind == 'stacked_generaciones' %}
+                <canvas data-chart="stacked_generaciones"
                         data-labels='{{ s.chart.labels|safe }}'
-                        data-valores='{{ s.chart.valores|safe }}'></canvas>
-                {% elif s.chart.kind == 'bar_impacto' %}
-                <canvas data-chart="bar_impacto"
+                        data-series='{{ s.chart.series|safe }}'></canvas>
+                {% elif s.chart.kind == 'combo_adopcion' %}
+                <canvas data-chart="combo_adopcion"
                         data-labels='{{ s.chart.labels|safe }}'
-                        data-antes='{{ s.chart.antes|safe }}'
-                        data-despues='{{ s.chart.despues|safe }}'></canvas>
+                        data-series='{{ s.chart.series|safe }}'
+                        data-line='{{ s.chart.line|safe }}'></canvas>
                 {% endif %}
               </div>
             </div>
             {% if s.pillars %}
-            <div class="pillars-row anim-3">
+            <div class="pillars-row">
               {% for p in s.pillars %}
               <div class="pillar-chip">
                 <div class="pn">{{ p.n }}</div>
@@ -731,7 +965,7 @@
             </div>
             {% endif %}
             {% if s.conclusiones %}
-            <div class="concl-row anim-3" style="margin-top:0.85rem;">
+            <div class="concl-row" style="margin-top:0.95rem;">
               {% for c in s.conclusiones %}
               <div class="concl-card">
                 <div class="cn">{{ c.n }}</div>
@@ -745,7 +979,7 @@
             {# ============== LAYOUT: split_table (slide 6) ============== #}
             {% elif s.layout == 'split_table' %}
             <p class="slide-lead anim-2">{{ s.lead }}</p>
-            <div class="grid-2 anim-3">
+            <div class="grid-2 anim-3" style="grid-template-columns: 1.25fr 1fr;">
               <div class="visual-zone">
                 <div class="visual-head">
                   <span><i class="bi bi-tools me-1"></i>Hoja de mejora</span>
@@ -772,9 +1006,9 @@
                   </table>
                 </div>
               </div>
-              <div class="copy-zone">
-                <div style="color:var(--gold);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.55rem;">
-                  <i class="bi bi-compass me-1"></i>Tres principios
+              <div class="copy-zone large">
+                <div style="color:var(--gold);font-weight:700;font-size:0.86rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.85rem;">
+                  <i class="bi bi-compass me-1"></i>Tres principios guía
                 </div>
                 <ul class="visible-bullets">
                   {% for b in s.bullets %}<li>{{ b }}</li>{% endfor %}
@@ -787,14 +1021,14 @@
             <p class="slide-lead anim-2 center">{{ s.lead }}</p>
             <div class="visual-zone flush anim-3">
               <div class="visual-head">
-                <span><i class="bi bi-map me-1"></i>Roadmap de evolución</span>
+                <span><i class="bi bi-map me-1"></i>Roadmap del prototipo</span>
                 <span class="dots-3"><span></span><span></span><span></span></span>
               </div>
-              <div class="timeline-wrap">
-                <div class="timeline-line"></div>
+              <div class="timeline-wrap" data-timeline>
+                <div class="timeline-track"><div class="timeline-fill" data-timeline-fill></div></div>
                 <div class="timeline-stops">
                   {% for r in s.roadmap %}
-                  <div class="timeline-stop">
+                  <div class="timeline-stop" data-timeline-stop>
                     <div class="timeline-dot"><i class="bi bi-{{ r.icon }}"></i></div>
                     <div class="ts-fase">{{ r.fase }}</div>
                     <div class="ts-titulo">{{ r.titulo }}</div>
@@ -805,21 +1039,61 @@
               </div>
             </div>
 
-            {# ============== LAYOUT: closing_chart (slide 9) ============== #}
+            {# ============== LAYOUT: closing_chart (slide 9 — mock platform) ============== #}
             {% elif s.layout == 'closing_chart' %}
             <p class="slide-lead anim-2 center">{{ s.lead }}</p>
             <div class="visual-zone flush anim-3">
               <div class="visual-head">
-                <span><i class="bi bi-graph-up-arrow me-1"></i>Trayectoria del proyecto</span>
+                <span><i class="bi bi-display me-1"></i>La plataforma en una pantalla</span>
                 <span class="dots-3"><span></span><span></span><span></span></span>
               </div>
-              <div class="chart-wrap h-260">
-                <canvas data-chart="line_trayectoria"
-                        data-labels='{{ s.chart.labels|safe }}'
-                        data-valores='{{ s.chart.valores|safe }}'></canvas>
+              <div class="mock-platform">
+                <div class="mock-frame">
+                  <div class="mock-bar">
+                    <span class="mock-dot r"></span>
+                    <span class="mock-dot y"></span>
+                    <span class="mock-dot g"></span>
+                    <span class="mock-url">trayectoria.anahuac.mx / perfil</span>
+                  </div>
+                  <div class="mock-body">
+                    <div class="mock-side">
+                      <div class="mock-side-item active"><i class="bi bi-graph-up"></i> Avance</div>
+                      <div class="mock-side-item"><i class="bi bi-list-check"></i> Materias</div>
+                      <div class="mock-side-item"><i class="bi bi-exclamation-triangle"></i> Alertas</div>
+                      <div class="mock-side-item"><i class="bi bi-clipboard-data"></i> Reportes</div>
+                    </div>
+                    <div class="mock-content">
+                      <div class="mock-kpis">
+                        <div class="mock-kpi">
+                          <div class="mk-num" data-mock-num data-target="90" data-suffix="%">0%</div>
+                          <div class="mk-label">avance</div>
+                        </div>
+                        <div class="mock-kpi">
+                          <div class="mk-num" data-mock-num data-target="330" data-suffix=" cr.">0 cr.</div>
+                          <div class="mk-label">usados</div>
+                        </div>
+                        <div class="mock-kpi">
+                          <div class="mk-num" data-mock-num data-target="85" data-suffix="">0</div>
+                          <div class="mk-label">materias</div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="mock-progress-label">
+                          <span>Progreso del semestre</span><strong>en vivo</strong>
+                        </div>
+                        <div class="mock-progress"><div class="mock-progress-fill"></div></div>
+                      </div>
+                      <div class="mock-bars" aria-hidden="true">
+                        <div class="mb"></div><div class="mb"></div><div class="mb"></div>
+                        <div class="mb"></div><div class="mb"></div><div class="mb"></div>
+                        <div class="mb"></div><div class="mb"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="closing-grid anim-3">
+            <div class="concl-row" style="margin-top:1rem;">
               {% for c in s.closing_items %}
               <div class="concl-card">
                 <div class="cn">{{ c.n }}</div>
@@ -837,7 +1111,7 @@
         <div class="controls">
           <div class="ctrl-side">
             <button class="btn-dark" id="prevSlide" type="button"><i class="bi bi-arrow-left"></i>Anterior</button>
-            <button class="btn-dark primary" id="toggleFullscreen" type="button" title="Pantalla completa (Esc para salir)">
+            <button class="btn-dark primary" id="toggleFullscreen" type="button" title="Pantalla completa (F · Esc para salir)">
               <i class="bi bi-fullscreen" id="fullscreenIcon"></i><span id="fullscreenLabel">Pantalla completa</span>
             </button>
           </div>
@@ -862,7 +1136,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   (function () {
-    /* =========== CHART HELPERS =========== */
+    /* =========== THEME / CHART HELPERS =========== */
     const GOLD = '#d4a574';
     const GOLD_DEEP = '#8b5a2e';
     const ACCENT = '#c9a06a';
@@ -870,14 +1144,29 @@
     const BLUE_BRIGHT = '#8eb1ee';
     const MUTED = '#9ca3af';
     const TEXT = '#e8dcc8';
-    const GRID = 'rgba(255,255,255,0.06)';
+    const GRID = 'rgba(255,255,255,0.07)';
 
     if (window.Chart) {
       Chart.defaults.color = MUTED;
       Chart.defaults.font.family = "Inter, 'Segoe UI', system-ui, sans-serif";
-      Chart.defaults.font.size = 11;
+      Chart.defaults.font.size = 12;
       Chart.defaults.borderColor = GRID;
     }
+
+    // Gama tonal para series apiladas / múltiples.
+    const PALETTE_STACK = [
+      '#d4a574', // gold
+      '#b88550', // gold medium
+      '#8b5a2e', // gold deep
+      '#6c8cc7', // blue soft
+      '#db7878', // soft red (para "no aprobado", etc.)
+    ];
+    const PALETTE_GENS = [
+      '#1f9a6b', // verde — al corriente
+      '#ffb347', // amarillo — rezago leve
+      '#e57b3b', // naranja — rezago alto
+      '#db4e4e', // rojo — irregular
+    ];
 
     function parseJsonAttr(el, attr) {
       const raw = el.getAttribute(attr);
@@ -889,226 +1178,198 @@
       }
     }
 
+    /* =========== COUNT-UP HELPERS =========== */
+    function animateCountUp(el, from, to, duration, formatter) {
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+        const v = from + (to - from) * eased;
+        el.textContent = formatter ? formatter(v) : String(Math.round(v));
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /* =========== CHART BUILDERS =========== */
     const chartBuilders = {
       donut_avance: (canvas) => {
         const usados = Number(canvas.dataset.usados || 0);
         const requeridos = Number(canvas.dataset.requeridos || 1);
         const restantes = Math.max(0, requeridos - usados);
         const pct = Math.round((usados / requeridos) * 100);
-        const pctEl = document.getElementById('donutHeroPct');
-        if (pctEl) pctEl.textContent = pct + '%';
-        return new Chart(canvas, {
+        const pctEl = canvas.closest('.visual-zone').querySelector('[data-donut-pct]');
+
+        const chart = new Chart(canvas, {
           type: 'doughnut',
           data: {
             labels: ['Usados', 'Restantes'],
             datasets: [{
               data: [usados, restantes],
-              backgroundColor: [GOLD, 'rgba(255,255,255,0.08)'],
-              borderColor: ['rgba(0,0,0,0.4)', 'rgba(0,0,0,0.4)'],
+              backgroundColor: [GOLD, 'rgba(255,255,255,0.07)'],
+              borderColor: ['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)'],
               borderWidth: 2,
-              hoverOffset: 6,
+              hoverOffset: 8,
             }],
           },
           options: {
-            cutout: '72%',
+            cutout: '70%',
+            rotation: -90,
+            circumference: 360,
             responsive: true,
             maintainAspectRatio: false,
-            animation: { animateRotate: true, duration: 1400, easing: 'easeOutCubic' },
+            animation: { animateRotate: true, animateScale: false, duration: 2400, easing: 'easeOutCubic' },
             plugins: {
               legend: { display: false },
               tooltip: {
-                callbacks: {
-                  label: (ctx) => ctx.label + ': ' + ctx.parsed + ' cr.'
-                }
+                callbacks: { label: (ctx) => ctx.label + ': ' + ctx.parsed + ' cr.' },
+                backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1,
               },
             },
           },
         });
+        // Counter sincronizado en duración.
+        if (pctEl) animateCountUp(pctEl, 0, pct, 2400, v => Math.round(v) + '%');
+        // expón un "reset" para re-disparar la animación si la slide vuelve a verse.
+        chart._restart = () => {
+          chart.reset();
+          if (pctEl) { pctEl.textContent = '0%'; animateCountUp(pctEl, 0, pct, 2400, v => Math.round(v) + '%'); }
+          chart.update();
+        };
+        return chart;
       },
 
-      bar_tiempo: (canvas) => {
+      stacked_calificaciones: (canvas) => {
         const labels = parseJsonAttr(canvas, 'data-labels') || [];
-        const antes = parseJsonAttr(canvas, 'data-antes') || [];
-        const despues = parseJsonAttr(canvas, 'data-despues') || [];
+        const series = parseJsonAttr(canvas, 'data-series') || [];
+        const datasets = series.map((s, i) => ({
+          label: s.name,
+          data: s.data,
+          backgroundColor: PALETTE_STACK[i % PALETTE_STACK.length],
+          borderColor: 'rgba(0,0,0,0.4)',
+          borderWidth: 1,
+          borderRadius: 6,
+          stack: 'cal',
+        }));
         return new Chart(canvas, {
           type: 'bar',
-          data: {
-            labels,
-            datasets: [
-              {
-                label: 'Antes (min)',
-                data: antes,
-                backgroundColor: 'rgba(219, 78, 78, 0.7)',
-                borderColor: 'rgba(219, 78, 78, 1)',
-                borderWidth: 1,
-                borderRadius: 8,
-              },
-              {
-                label: 'Con plataforma (min)',
-                data: despues,
-                backgroundColor: 'rgba(212, 165, 116, 0.85)',
-                borderColor: GOLD,
-                borderWidth: 1,
-                borderRadius: 8,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y',
-            animation: { duration: 1300, easing: 'easeOutQuart' },
-            scales: {
-              x: {
-                beginAtZero: true,
-                grid: { color: GRID, drawBorder: false },
-                ticks: { color: MUTED },
-                title: { display: true, text: 'minutos', color: MUTED, font: { size: 10 } },
-              },
-              y: { grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
-            },
-            plugins: {
-              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12 } },
-              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
-            },
-          },
-        });
-      },
-
-      radar_fundamento: (canvas) => {
-        const labels = parseJsonAttr(canvas, 'data-labels') || [];
-        const valores = parseJsonAttr(canvas, 'data-valores') || [];
-        return new Chart(canvas, {
-          type: 'radar',
-          data: {
-            labels,
-            datasets: [
-              {
-                label: 'Cobertura del proyecto',
-                data: valores,
-                backgroundColor: 'rgba(212, 165, 116, 0.22)',
-                borderColor: GOLD,
-                borderWidth: 2,
-                pointBackgroundColor: GOLD,
-                pointBorderColor: '#0c0c0c',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: GOLD,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 1400, easing: 'easeOutBack' },
-            scales: {
-              r: {
-                beginAtZero: true,
-                max: 100,
-                grid: { color: 'rgba(255,255,255,0.07)' },
-                angleLines: { color: 'rgba(212, 165, 116, 0.18)' },
-                pointLabels: { color: TEXT, font: { size: 11, weight: '600' } },
-                ticks: { color: MUTED, backdropColor: 'transparent', font: { size: 9 }, stepSize: 25 },
-              },
-            },
-            plugins: {
-              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 10 } },
-              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
-            },
-          },
-        });
-      },
-
-      bar_impacto: (canvas) => {
-        const labels = parseJsonAttr(canvas, 'data-labels') || [];
-        const antes = parseJsonAttr(canvas, 'data-antes') || [];
-        const despues = parseJsonAttr(canvas, 'data-despues') || [];
-        return new Chart(canvas, {
-          type: 'bar',
-          data: {
-            labels,
-            datasets: [
-              {
-                label: 'Antes',
-                data: antes,
-                backgroundColor: 'rgba(108, 140, 199, 0.55)',
-                borderColor: BLUE_BRIGHT,
-                borderWidth: 1,
-                borderRadius: 8,
-              },
-              {
-                label: 'Con plataforma',
-                data: despues,
-                backgroundColor: 'rgba(212, 165, 116, 0.85)',
-                borderColor: GOLD,
-                borderWidth: 1,
-                borderRadius: 8,
-              },
-            ],
-          },
+          data: { labels, datasets },
           options: {
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 1400, easing: 'easeOutQuart' },
             scales: {
-              x: { grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
-              y: {
-                beginAtZero: true, max: 100,
-                grid: { color: GRID, drawBorder: false },
-                ticks: { color: MUTED, callback: (v) => v + ' %' },
-              },
+              x: { stacked: true, grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
+              y: { stacked: true, beginAtZero: true, max: 28,
+                   grid: { color: GRID, drawBorder: false },
+                   ticks: { color: MUTED, stepSize: 4 },
+                   title: { display: true, text: 'estudiantes', color: MUTED, font: { size: 11 } } },
             },
             plugins: {
-              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12 } },
-              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1,
-                callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } },
+              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12, font: { size: 12 } } },
+              tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
             },
           },
         });
       },
 
-      line_trayectoria: (canvas) => {
+      stacked_generaciones: (canvas) => {
         const labels = parseJsonAttr(canvas, 'data-labels') || [];
-        const valores = parseJsonAttr(canvas, 'data-valores') || [];
+        const series = parseJsonAttr(canvas, 'data-series') || [];
+        const datasets = series.map((s, i) => ({
+          label: s.name,
+          data: s.data,
+          backgroundColor: PALETTE_GENS[i % PALETTE_GENS.length],
+          borderColor: 'rgba(0,0,0,0.4)',
+          borderWidth: 1,
+          borderRadius: 6,
+          stack: 'gen',
+        }));
+        return new Chart(canvas, {
+          type: 'bar',
+          data: { labels, datasets },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1500, easing: 'easeOutQuart' },
+            scales: {
+              x: { stacked: true, beginAtZero: true, max: 100,
+                   grid: { color: GRID, drawBorder: false },
+                   ticks: { color: MUTED, callback: (v) => v + ' %' } },
+              y: { stacked: true, grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
+            },
+            plugins: {
+              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12, font: { size: 12 } } },
+              tooltip: {
+                backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1,
+                callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.parsed.x + '%' },
+              },
+            },
+          },
+        });
+      },
+
+      combo_adopcion: (canvas) => {
+        const labels = parseJsonAttr(canvas, 'data-labels') || [];
+        const series = parseJsonAttr(canvas, 'data-series') || [];
+        const lineData = parseJsonAttr(canvas, 'data-line') || { name: 'Adopción', data: [] };
+        const datasets = series.map((s, i) => ({
+          type: 'bar',
+          label: s.name,
+          data: s.data,
+          backgroundColor: PALETTE_STACK[i % PALETTE_STACK.length],
+          borderColor: 'rgba(0,0,0,0.35)',
+          borderWidth: 1,
+          borderRadius: 6,
+          stack: 'cons',
+          yAxisID: 'y',
+          order: 2,
+        }));
+        // Línea encima.
         const ctx2d = canvas.getContext('2d');
-        const grad = ctx2d.createLinearGradient(0, 0, 0, 260);
+        const grad = ctx2d.createLinearGradient(0, 0, 0, 340);
         grad.addColorStop(0, 'rgba(212, 165, 116, 0.45)');
         grad.addColorStop(1, 'rgba(212, 165, 116, 0)');
-        return new Chart(canvas, {
+        datasets.push({
           type: 'line',
-          data: {
-            labels,
-            datasets: [
-              {
-                label: 'Madurez del proyecto',
-                data: valores,
-                fill: true,
-                backgroundColor: grad,
-                borderColor: GOLD,
-                borderWidth: 2.5,
-                tension: 0.4,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                pointBackgroundColor: GOLD,
-                pointBorderColor: '#0c0c0c',
-              },
-            ],
-          },
+          label: lineData.name,
+          data: lineData.data,
+          borderColor: GOLD,
+          backgroundColor: grad,
+          borderWidth: 3,
+          tension: 0.4,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointBackgroundColor: GOLD,
+          pointBorderColor: '#0c0c0c',
+          fill: true,
+          yAxisID: 'y2',
+          order: 1,
+        });
+        return new Chart(canvas, {
+          data: { labels, datasets },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
             animation: { duration: 1600, easing: 'easeOutCubic' },
             scales: {
-              x: { grid: { display: false }, ticks: { color: TEXT, font: { weight: '600', size: 11 } } },
+              x: { stacked: true, grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
               y: {
-                beginAtZero: true, max: 100,
+                stacked: true, beginAtZero: true,
                 grid: { color: GRID, drawBorder: false },
-                ticks: { color: MUTED, callback: (v) => v + '%' },
+                ticks: { color: MUTED },
+                title: { display: true, text: 'consultas', color: MUTED, font: { size: 11 } },
+              },
+              y2: {
+                position: 'right', beginAtZero: true, max: 100,
+                grid: { display: false }, ticks: { color: GOLD, callback: (v) => v + '%' },
+                title: { display: true, text: 'adopción', color: GOLD, font: { size: 11, weight: '600' } },
               },
             },
             plugins: {
-              legend: { display: false },
+              legend: { position: 'bottom', labels: { color: TEXT, boxWidth: 12, padding: 12, font: { size: 12 } } },
               tooltip: { backgroundColor: '#0c0c0c', titleColor: GOLD, bodyColor: TEXT, borderColor: ACCENT, borderWidth: 1 },
             },
           },
@@ -1119,7 +1380,12 @@
     const chartInstances = new WeakMap();
     function ensureCharts(slideEl) {
       slideEl.querySelectorAll('canvas[data-chart]').forEach((canvas) => {
-        if (chartInstances.has(canvas)) return;
+        if (chartInstances.has(canvas)) {
+          // Re-disparar count-up del donut si vuelve a entrar.
+          const inst = chartInstances.get(canvas);
+          if (inst && typeof inst._restart === 'function') inst._restart();
+          return;
+        }
         const kind = canvas.dataset.chart;
         const builder = chartBuilders[kind];
         if (!builder) return;
@@ -1129,6 +1395,65 @@
         } catch (e) {
           console.error('chart build error', kind, e);
         }
+      });
+    }
+
+    /* =========== TIMELINE (slide 8) =========== */
+    // Avanza una sola vez (la primera vez que se ve esta slide).
+    // Conforme la luz cruza cada hito, se "activa" y QUEDA activado.
+    const timelineState = new WeakMap();
+    function runTimeline(slideEl) {
+      const wrap = slideEl.querySelector('[data-timeline]');
+      if (!wrap) return;
+      const fill = wrap.querySelector('[data-timeline-fill]');
+      const stops = Array.from(wrap.querySelectorAll('[data-timeline-stop]'));
+      const state = timelineState.get(wrap) || { started: false, completed: false };
+
+      if (state.completed) {
+        // Mantén estado final sin re-animar.
+        if (fill) { fill.style.transition = 'none'; fill.style.width = '100%'; }
+        stops.forEach((s) => s.classList.add('activated'));
+        return;
+      }
+      if (state.started) return; // ya corriendo
+
+      state.started = true;
+      timelineState.set(wrap, state);
+
+      // Reset visual antes de animar.
+      stops.forEach((s) => s.classList.remove('activated'));
+      if (fill) {
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+        // forzar reflow para que la transición tome efecto.
+        void fill.offsetWidth;
+        fill.style.transition = '';
+        requestAnimationFrame(() => { fill.classList.add('run'); });
+      }
+
+      const totalMs = 9000; // lento, como una barra de carga.
+      const n = stops.length;
+      // Activar cada hito conforme la luz lo pasa: t = i / (n - 1) aprox.
+      stops.forEach((stop, i) => {
+        const ratio = n > 1 ? i / (n - 1) : 0;
+        const delay = Math.max(120, Math.round(totalMs * ratio));
+        setTimeout(() => {
+          stop.classList.add('activated');
+          if (i === n - 1) {
+            state.completed = true;
+            timelineState.set(wrap, state);
+          }
+        }, delay);
+      });
+    }
+
+    /* =========== MOCK PLATFORM COUNTERS (slide 9) =========== */
+    function runMockCounters(slideEl) {
+      const nums = slideEl.querySelectorAll('[data-mock-num]');
+      nums.forEach((el) => {
+        const target = Number(el.dataset.target || 0);
+        const suffix = el.dataset.suffix || '';
+        animateCountUp(el, 0, target, 1800, v => Math.round(v) + suffix);
       });
     }
 
@@ -1157,8 +1482,13 @@
       nextBtn.disabled = idx === total - 1;
       prevBtn.style.opacity = idx === 0 ? 0.45 : 1;
       nextBtn.style.opacity = idx === total - 1 ? 0.45 : 1;
-      // Build charts on demand (after layout reflow)
-      requestAnimationFrame(() => ensureCharts(slides[idx]));
+      // Hooks por slide.
+      const active = slides[idx];
+      requestAnimationFrame(() => {
+        ensureCharts(active);
+        runTimeline(active);
+        runMockCounters(active);
+      });
     }
 
     prevBtn.addEventListener('click', () => show(current - 1));
@@ -1183,13 +1513,13 @@
       document.body.classList.toggle('is-fullscreen', on);
       if (fsIcon) fsIcon.className = on ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen';
       if (fsLabel) fsLabel.textContent = on ? 'Salir' : 'Pantalla completa';
-      // Resize charts after layout change.
+      // Resize charts después de cambiar layout.
       setTimeout(() => {
         slides[current].querySelectorAll('canvas[data-chart]').forEach((canvas) => {
           const inst = chartInstances.get(canvas);
           if (inst) inst.resize();
         });
-      }, 220);
+      }, 240);
     }
     function toggleFs() {
       if (!document.fullscreenElement) {
