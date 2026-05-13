@@ -468,22 +468,35 @@
       background: rgba(201, 160, 106, 0.18); border-radius: 999px;
       box-shadow: inset 0 0 0 1px rgba(201, 160, 106, 0.08);
     }
+    /* Luz de progreso en tono verde: la barra que cruza la línea es verde,
+       pero los hitos que va activando conservan el dorado original. */
     .timeline-fill {
       position: absolute; top: 0; left: 0; bottom: 0; width: 0%;
-      background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--pf-accent));
+      background: linear-gradient(90deg, #0f7a52 0%, #1f9a6b 50%, #4cd29a 100%);
       border-radius: 999px;
-      box-shadow: 0 0 18px rgba(212, 165, 116, 0.55), 0 0 36px rgba(212, 165, 116, 0.25);
+      box-shadow: 0 0 18px rgba(76, 210, 154, 0.55), 0 0 36px rgba(76, 210, 154, 0.25);
       transition: width 9s linear;
     }
     .timeline-fill.run { width: 100%; }
     .timeline-stops { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
-    .timeline-stop { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 80px; position: relative; }
+    .timeline-stop {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding-top: 80px; position: relative;
+      /* Estado por defecto: bloqueado / al 50% como "deshabilitado". */
+      opacity: 0.45;
+      filter: grayscale(0.55);
+      transition: opacity 0.55s ease, filter 0.55s ease;
+    }
+    .timeline-stop.activated {
+      opacity: 1;
+      filter: none;
+    }
     .timeline-dot {
       width: 60px; height: 60px; border-radius: 50%;
-      background: rgba(40, 32, 22, 0.85);
-      border: 2px solid rgba(201, 160, 106, 0.35);
+      background: rgba(18, 18, 22, 0.92);
+      border: 2px solid rgba(255, 255, 255, 0.10);
       display: flex; align-items: center; justify-content: center;
-      color: rgba(212, 165, 116, 0.55); font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.22); font-size: 1.4rem;
       position: absolute; top: 16px;
       transition: background 0.45s ease, color 0.45s ease, border-color 0.45s ease,
                   box-shadow 0.45s ease, transform 0.4s ease;
@@ -495,11 +508,24 @@
       box-shadow: 0 0 0 6px rgba(201, 160, 106, 0.22), 0 8px 28px rgba(201, 160, 106, 0.35);
       transform: scale(1.08);
     }
-    .timeline-stop .ts-fase { font-size: 0.86rem; color: rgba(201, 160, 106, 0.6); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.7rem; transition: color 0.4s ease; }
+    .timeline-stop .ts-fase {
+      font-size: 0.86rem;
+      color: rgba(255, 255, 255, 0.15);
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-top: 0.7rem; transition: color 0.4s ease;
+    }
     .timeline-stop.activated .ts-fase { color: var(--gold); }
-    .timeline-stop .ts-titulo { color: #e0d6c4; font-size: 1.2rem; font-weight: 700; margin-top: 0.3rem; transition: color 0.4s ease; letter-spacing: -0.005em; }
+    .timeline-stop .ts-titulo {
+      color: rgba(255, 255, 255, 0.28);
+      font-size: 1.2rem; font-weight: 700; margin-top: 0.3rem;
+      transition: color 0.4s ease; letter-spacing: -0.005em;
+    }
     .timeline-stop.activated .ts-titulo { color: #fdf6ea; }
-    .timeline-stop .ts-desc { color: #b6b6bf; font-size: 1rem; line-height: 1.55; margin-top: 0.4rem; max-width: 100%; transition: color 0.4s ease; }
+    .timeline-stop .ts-desc {
+      color: rgba(255, 255, 255, 0.20);
+      font-size: 1rem; line-height: 1.55; margin-top: 0.4rem; max-width: 100%;
+      transition: color 0.4s ease;
+    }
     .timeline-stop.activated .ts-desc { color: #d8d8df; }
     @media (max-width: 880px) {
       .timeline-stops { grid-template-columns: repeat(2, 1fr); gap: 1.3rem; }
@@ -537,11 +563,139 @@
     .mock-side-item { display: flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.6rem; border-radius: 0.55rem; font-size: 0.78rem; color: #b8b8be; transition: background 0.35s ease, color 0.35s ease; }
     .mock-side-item i { font-size: 0.95rem; }
     .mock-side-item.active { background: rgba(212, 165, 116, 0.12); color: var(--gold); box-shadow: inset 2px 0 0 var(--gold); }
-    .mock-content { padding: 0.75rem 0.85rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .mock-content {
+      padding: 0.75rem 0.85rem;
+      display: flex; flex-direction: column;
+      position: relative; min-height: 240px;
+      overflow: hidden;
+    }
+    .mock-view {
+      display: none;
+      flex-direction: column; gap: 0.55rem;
+    }
+    .mock-view.is-active {
+      display: flex;
+      animation: viewFade 0.45s ease both;
+    }
+    @keyframes viewFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .mv-title {
+      color: var(--gold); font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .mv-title small { color: var(--muted); font-weight: 500; font-size: 0.66rem; letter-spacing: 0.04em; text-transform: none; }
+
     .mock-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; }
     .mock-kpi { background: rgba(212, 165, 116, 0.07); border: 1px solid rgba(212, 165, 116, 0.25); border-radius: 0.7rem; padding: 0.5rem 0.55rem; text-align: center; }
     .mock-kpi .mk-num { font-family: "Sora", "Inter", sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--gold); line-height: 1; }
     .mock-kpi .mk-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.25rem; }
+    /* --- Vista Materias --- */
+    .mv-list { display: flex; flex-direction: column; gap: 0.3rem; }
+    .mock-view.is-active .mv-list .mv-row {
+      animation: rowSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .mock-view.is-active .mv-list .mv-row:nth-child(1) { animation-delay: 0.10s; }
+    .mock-view.is-active .mv-list .mv-row:nth-child(2) { animation-delay: 0.22s; }
+    .mock-view.is-active .mv-list .mv-row:nth-child(3) { animation-delay: 0.34s; }
+    .mock-view.is-active .mv-list .mv-row:nth-child(4) { animation-delay: 0.46s; }
+    .mock-view.is-active .mv-list .mv-row:nth-child(5) { animation-delay: 0.58s; }
+    @keyframes rowSlideIn {
+      from { opacity: 0; transform: translateX(-14px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .mv-row {
+      display: grid; grid-template-columns: 72px 1fr auto;
+      align-items: center; gap: 0.45rem;
+      padding: 0.45rem 0.6rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.55rem;
+    }
+    .mv-code {
+      color: var(--gold); font-weight: 700; font-size: 0.72rem;
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      letter-spacing: 0.01em;
+    }
+    .mv-name { color: #d8d8df; font-size: 0.78rem; line-height: 1.3; }
+    .mv-status {
+      font-size: 0.65rem; padding: 0.15rem 0.55rem; border-radius: 999px;
+      font-weight: 700; letter-spacing: 0.02em;
+    }
+    .mv-status.pass { background: rgba(31,154,107,0.18); color: #4ad29c; border: 1px solid rgba(31,154,107,0.35); }
+    .mv-status.current { background: rgba(108,140,199,0.18); color: #8eb1ee; border: 1px solid rgba(108,140,199,0.35); }
+    .mv-status.pending { background: rgba(255,179,71,0.15); color: var(--warning); border: 1px solid rgba(255,179,71,0.35); }
+
+    /* --- Vista Alertas --- */
+    .mv-alerts { display: flex; flex-direction: column; gap: 0.38rem; }
+    .mock-view.is-active .mv-alerts .mv-alert {
+      animation: alertIn 0.55s cubic-bezier(0.22, 1.1, 0.36, 1) both;
+    }
+    .mock-view.is-active .mv-alerts .mv-alert:nth-child(1) { animation-delay: 0.12s; }
+    .mock-view.is-active .mv-alerts .mv-alert:nth-child(2) { animation-delay: 0.28s; }
+    .mock-view.is-active .mv-alerts .mv-alert:nth-child(3) { animation-delay: 0.44s; }
+    @keyframes alertIn {
+      from { opacity: 0; transform: translateX(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    .mv-alert {
+      display: flex; gap: 0.55rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-left: 3px solid;
+      border-radius: 0.55rem;
+    }
+    .mv-alert.sev-high { border-left-color: #db4e4e; background: rgba(219, 78, 78, 0.06); }
+    .mv-alert.sev-mid  { border-left-color: #ffb347; background: rgba(255, 179, 71, 0.06); }
+    .mv-alert.sev-low  { border-left-color: #8eb1ee; background: rgba(108, 140, 199, 0.06); }
+    .mv-alert-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      flex: 0 0 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+    }
+    .sev-high .mv-alert-icon { background: rgba(219, 78, 78, 0.18); color: #db4e4e; }
+    .sev-mid  .mv-alert-icon { background: rgba(255, 179, 71, 0.18); color: var(--warning); }
+    .sev-low  .mv-alert-icon { background: rgba(108, 140, 199, 0.18); color: #8eb1ee; }
+    .mv-alert-body { flex: 1; min-width: 0; }
+    .mv-alert-title { color: #f3eada; font-size: 0.82rem; font-weight: 700; }
+    .mv-alert-desc  { color: #b8b8be; font-size: 0.72rem; margin-top: 0.12rem; line-height: 1.4; }
+
+    /* --- Vista Reportes --- */
+    .mv-rep { display: flex; flex-direction: column; gap: 0.4rem; }
+    .mv-rep-row { display: grid; grid-template-columns: 92px 1fr 42px; align-items: center; gap: 0.55rem; }
+    .mv-rep-label { font-size: 0.74rem; color: #d8d8df; font-weight: 600; }
+    .mv-rep-bar { height: 9px; background: rgba(255, 255, 255, 0.05); border-radius: 999px; overflow: hidden; position: relative; }
+    .mv-rep-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+      border-radius: 999px;
+      transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mv-rep-fill.green { background: linear-gradient(90deg, #0f7a52, #4cd29a); }
+    .mv-rep-fill.blue  { background: linear-gradient(90deg, #3a5d96, #8eb1ee); }
+    .mv-rep-fill.amber { background: linear-gradient(90deg, #b86c1b, var(--warning)); }
+    .mv-rep-val { color: var(--gold); font-weight: 700; font-size: 0.76rem; font-family: "Sora", sans-serif; text-align: right; }
+    .mv-rep-foot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; margin-top: 0.35rem; }
+    .mock-view.is-active .mv-rep-foot .mv-rep-stat {
+      animation: statIn 0.55s ease both;
+    }
+    .mock-view.is-active .mv-rep-foot .mv-rep-stat:nth-child(1) { animation-delay: 0.35s; }
+    .mock-view.is-active .mv-rep-foot .mv-rep-stat:nth-child(2) { animation-delay: 0.5s; }
+    .mock-view.is-active .mv-rep-foot .mv-rep-stat:nth-child(3) { animation-delay: 0.65s; }
+    @keyframes statIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .mv-rep-stat {
+      background: rgba(212, 165, 116, 0.07);
+      border: 1px solid rgba(212, 165, 116, 0.22);
+      border-radius: 0.55rem;
+      padding: 0.45rem 0.5rem;
+      text-align: center;
+    }
+    .mv-rep-stat-num { font-family: "Sora", sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--gold); display: block; line-height: 1; }
+    .mv-rep-stat-lab { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.25rem; display: block; line-height: 1.3; }
+
     .mock-bars { display: flex; align-items: flex-end; gap: 0.3rem; height: 70px; padding: 0.25rem 0.2rem 0; }
     .mock-bars .mb {
       flex: 1;
@@ -1031,46 +1185,158 @@
                 <span><i class="bi bi-display me-1"></i>La plataforma en una pantalla</span>
                 <span class="dots-3"><span></span><span></span><span></span></span>
               </div>
-              <div class="mock-platform">
+              <div class="mock-platform" data-mock-platform>
                 <div class="mock-frame">
                   <div class="mock-bar">
                     <span class="mock-dot r"></span>
                     <span class="mock-dot y"></span>
                     <span class="mock-dot g"></span>
-                    <span class="mock-url">trayectoria.anahuac.mx / perfil</span>
+                    <span class="mock-url" data-mock-url>trayectoria.anahuac.mx / avance</span>
                   </div>
                   <div class="mock-body">
                     <div class="mock-side">
-                      <div class="mock-side-item active"><i class="bi bi-graph-up"></i> Avance</div>
-                      <div class="mock-side-item"><i class="bi bi-list-check"></i> Materias</div>
-                      <div class="mock-side-item"><i class="bi bi-exclamation-triangle"></i> Alertas</div>
-                      <div class="mock-side-item"><i class="bi bi-clipboard-data"></i> Reportes</div>
+                      <div class="mock-side-item active" data-mock-target="avance"><i class="bi bi-graph-up"></i> Avance</div>
+                      <div class="mock-side-item" data-mock-target="materias"><i class="bi bi-list-check"></i> Materias</div>
+                      <div class="mock-side-item" data-mock-target="alertas"><i class="bi bi-exclamation-triangle"></i> Alertas</div>
+                      <div class="mock-side-item" data-mock-target="reportes"><i class="bi bi-clipboard-data"></i> Reportes</div>
                     </div>
                     <div class="mock-content">
-                      <div class="mock-kpis">
-                        <div class="mock-kpi">
-                          <div class="mk-num" data-mock-num data-target="90" data-suffix="%">0%</div>
-                          <div class="mk-label">avance</div>
+                      {# Vista 1 — Avance #}
+                      <div class="mock-view is-active" data-mock-view="avance" data-mock-url="trayectoria.anahuac.mx / avance">
+                        <div class="mv-title">
+                          <i class="bi bi-graph-up"></i> Avance del plan
+                          <small>· vista del alumno</small>
                         </div>
-                        <div class="mock-kpi">
-                          <div class="mk-num" data-mock-num data-target="330" data-suffix=" cr.">0 cr.</div>
-                          <div class="mk-label">usados</div>
+                        <div class="mock-kpis">
+                          <div class="mock-kpi">
+                            <div class="mk-num" data-mock-num data-target="90" data-suffix="%">0%</div>
+                            <div class="mk-label">avance</div>
+                          </div>
+                          <div class="mock-kpi">
+                            <div class="mk-num" data-mock-num data-target="330" data-suffix=" cr.">0 cr.</div>
+                            <div class="mk-label">usados</div>
+                          </div>
+                          <div class="mock-kpi">
+                            <div class="mk-num" data-mock-num data-target="85" data-suffix="">0</div>
+                            <div class="mk-label">materias</div>
+                          </div>
                         </div>
-                        <div class="mock-kpi">
-                          <div class="mk-num" data-mock-num data-target="85" data-suffix="">0</div>
-                          <div class="mk-label">materias</div>
+                        <div>
+                          <div class="mock-progress-label">
+                            <span>Progreso del semestre</span><strong>en vivo</strong>
+                          </div>
+                          <div class="mock-progress"><div class="mock-progress-fill"></div></div>
+                        </div>
+                        <div class="mock-bars" aria-hidden="true">
+                          <div class="mb"></div><div class="mb"></div><div class="mb"></div>
+                          <div class="mb"></div><div class="mb"></div><div class="mb"></div>
+                          <div class="mb"></div><div class="mb"></div>
                         </div>
                       </div>
-                      <div>
-                        <div class="mock-progress-label">
-                          <span>Progreso del semestre</span><strong>en vivo</strong>
+
+                      {# Vista 2 — Materias #}
+                      <div class="mock-view" data-mock-view="materias" data-mock-url="trayectoria.anahuac.mx / materias">
+                        <div class="mv-title">
+                          <i class="bi bi-list-check"></i> Materias del periodo
+                          <small>· 5 materias activas</small>
                         </div>
-                        <div class="mock-progress"><div class="mock-progress-fill"></div></div>
+                        <div class="mv-list">
+                          <div class="mv-row">
+                            <span class="mv-code">MAT 4408</span>
+                            <span class="mv-name">Estadística inferencial</span>
+                            <span class="mv-status pass">Aprobada · 9.2</span>
+                          </div>
+                          <div class="mv-row">
+                            <span class="mv-code">ACT 4423</span>
+                            <span class="mv-name">Reservas técnicas</span>
+                            <span class="mv-status current">En curso</span>
+                          </div>
+                          <div class="mv-row">
+                            <span class="mv-code">FIN 3410</span>
+                            <span class="mv-name">Derivados financieros</span>
+                            <span class="mv-status pending">Por cursar</span>
+                          </div>
+                          <div class="mv-row">
+                            <span class="mv-code">INT 4428</span>
+                            <span class="mv-name">Proyecto actuarial II</span>
+                            <span class="mv-status current">En curso</span>
+                          </div>
+                          <div class="mv-row">
+                            <span class="mv-code">SOC 3401</span>
+                            <span class="mv-name">Responsabilidad social</span>
+                            <span class="mv-status pending">Por cursar</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="mock-bars" aria-hidden="true">
-                        <div class="mb"></div><div class="mb"></div><div class="mb"></div>
-                        <div class="mb"></div><div class="mb"></div><div class="mb"></div>
-                        <div class="mb"></div><div class="mb"></div>
+
+                      {# Vista 3 — Alertas #}
+                      <div class="mock-view" data-mock-view="alertas" data-mock-url="trayectoria.anahuac.mx / alertas">
+                        <div class="mv-title">
+                          <i class="bi bi-exclamation-triangle"></i> Alertas activas
+                          <small>· 3 señales detectadas</small>
+                        </div>
+                        <div class="mv-alerts">
+                          <div class="mv-alert sev-high">
+                            <div class="mv-alert-icon"><i class="bi bi-exclamation-octagon"></i></div>
+                            <div class="mv-alert-body">
+                              <div class="mv-alert-title">Seriación pendiente</div>
+                              <div class="mv-alert-desc">FIN 3410 requiere MAT 3404 aprobada antes del próximo periodo.</div>
+                            </div>
+                          </div>
+                          <div class="mv-alert sev-mid">
+                            <div class="mv-alert-icon"><i class="bi bi-clock-history"></i></div>
+                            <div class="mv-alert-body">
+                              <div class="mv-alert-title">Inscripción próxima</div>
+                              <div class="mv-alert-desc">Periodo de inscripción cierra en 7 días para titulación 2026.</div>
+                            </div>
+                          </div>
+                          <div class="mv-alert sev-low">
+                            <div class="mv-alert-icon"><i class="bi bi-chat-square-text"></i></div>
+                            <div class="mv-alert-body">
+                              <div class="mv-alert-title">Tutoría académica</div>
+                              <div class="mv-alert-desc">Tutoría con avance del grupo y revisión de carga del próximo ciclo.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {# Vista 4 — Reportes #}
+                      <div class="mock-view" data-mock-view="reportes" data-mock-url="trayectoria.anahuac.mx / reportes">
+                        <div class="mv-title">
+                          <i class="bi bi-clipboard-data"></i> Reportes estratégicos
+                          <small>· generación 2024</small>
+                        </div>
+                        <div class="mv-rep">
+                          <div class="mv-rep-row">
+                            <span class="mv-rep-label">Al corriente</span>
+                            <div class="mv-rep-bar"><div class="mv-rep-fill green" data-mock-fill="72"></div></div>
+                            <span class="mv-rep-val">72%</span>
+                          </div>
+                          <div class="mv-rep-row">
+                            <span class="mv-rep-label">Rezago leve</span>
+                            <div class="mv-rep-bar"><div class="mv-rep-fill amber" data-mock-fill="19"></div></div>
+                            <span class="mv-rep-val">19%</span>
+                          </div>
+                          <div class="mv-rep-row">
+                            <span class="mv-rep-label">Rezago alto</span>
+                            <div class="mv-rep-bar"><div class="mv-rep-fill" data-mock-fill="9"></div></div>
+                            <span class="mv-rep-val">9%</span>
+                          </div>
+                        </div>
+                        <div class="mv-rep-foot">
+                          <div class="mv-rep-stat">
+                            <span class="mv-rep-stat-num">85</span>
+                            <span class="mv-rep-stat-lab">materias evaluadas</span>
+                          </div>
+                          <div class="mv-rep-stat">
+                            <span class="mv-rep-stat-num">28</span>
+                            <span class="mv-rep-stat-lab">alumnos del corte</span>
+                          </div>
+                          <div class="mv-rep-stat">
+                            <span class="mv-rep-stat-num">8.6</span>
+                            <span class="mv-rep-stat-lab">promedio general</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1434,14 +1700,66 @@
       });
     }
 
-    /* =========== MOCK COUNTERS =========== */
-    function runMockCounters(slideEl) {
-      const nums = slideEl.querySelectorAll('[data-mock-num]');
-      nums.forEach((el) => {
+    /* =========== MOCK PLATFORM (slide 9) ===========
+       Rotación automática de las 4 vistas (Avance → Materias → Alertas →
+       Reportes) cada 10 segundos, simulando que el usuario navega entre
+       secciones del sidebar. Reinicia animaciones cada vez que una vista
+       se activa para que se sienta "viva" en cada ciclo.
+    */
+    const MOCK_INTERVAL_MS = 10000;
+    let mockPlatformTimer = null;
+
+    function reanimateActiveView(view) {
+      // Re-disparar contadores de "Avance".
+      view.querySelectorAll('[data-mock-num]').forEach((el) => {
         const target = Number(el.dataset.target || 0);
         const suffix = el.dataset.suffix || '';
-        animateCountUp(el, 0, target, 1800, v => Math.round(v) + suffix);
+        el.textContent = '0' + suffix;
+        animateCountUp(el, 0, target, 1500, v => Math.round(v) + suffix);
       });
+      // Re-disparar barras de "Reportes".
+      view.querySelectorAll('[data-mock-fill]').forEach((el) => {
+        const target = Number(el.dataset.mockFill || 0) + '%';
+        el.style.transition = 'none';
+        el.style.width = '0%';
+        void el.offsetWidth;
+        el.style.transition = '';
+        el.style.width = target;
+      });
+    }
+
+    function activateMockView(platform, idx) {
+      const views = Array.from(platform.querySelectorAll('[data-mock-view]'));
+      const sides = Array.from(platform.querySelectorAll('[data-mock-target]'));
+      const urlEl = platform.querySelector('[data-mock-url]');
+      if (!views.length) return;
+      const i = ((idx % views.length) + views.length) % views.length;
+      views.forEach((v, k) => v.classList.toggle('is-active', k === i));
+      sides.forEach((s, k) => s.classList.toggle('active', k === i));
+      const active = views[i];
+      if (urlEl && active.dataset.mockUrl) urlEl.textContent = active.dataset.mockUrl;
+      // Forzar reflow para que la animación CSS se reinicie.
+      void active.offsetWidth;
+      reanimateActiveView(active);
+      platform._mockIndex = i;
+    }
+
+    function stopMockPlatform() {
+      if (mockPlatformTimer) {
+        clearInterval(mockPlatformTimer);
+        mockPlatformTimer = null;
+      }
+    }
+
+    function runMockPlatform(slideEl) {
+      stopMockPlatform();
+      const platform = slideEl.querySelector('[data-mock-platform]');
+      if (!platform) return;
+      activateMockView(platform, 0);
+      mockPlatformTimer = setInterval(() => {
+        const next = (platform._mockIndex || 0) + 1;
+        activateMockView(platform, next);
+      }, MOCK_INTERVAL_MS);
     }
 
     /* =========== NAVIGATION =========== */
@@ -1473,7 +1791,13 @@
       requestAnimationFrame(() => {
         ensureCharts(active);
         runTimeline(active);
-        runMockCounters(active);
+        // Si entra al slide 9 lanza la rotación; en cualquier otro slide
+        // se asegura de detenerla para no malgastar recursos.
+        if (active.querySelector('[data-mock-platform]')) {
+          runMockPlatform(active);
+        } else {
+          stopMockPlatform();
+        }
       });
     }
 
