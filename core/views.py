@@ -2231,10 +2231,11 @@ def expo_cierre_view(request):
                 'se convierte en lectura útil para decidir a tiempo.'
             ),
             'bullets': [
-                'Coordinación arma los reportes por generación con datos dispersos y a mano.',
-                'Cada área toma decisiones con criterios distintos: no hay un tablero común.',
-                'El rezago se detecta al cierre del ciclo, no durante el periodo activo.',
-                'En paralelo, el estudiante tarda en identificar qué bloquea su trayectoria.',
+                'Coordinación puede afinar la oferta de materias con datos reales de demanda y avance por cohorte.',
+                'La atención al alumnado se vuelve proactiva: se anticipa a la solicitud individual con datos del grupo.',
+                'Disminuye la fricción administrativa: menos consultas duplicadas y validaciones repetidas.',
+                'Los procesos de tutoría e inscripción se apoyan en una sola lectura compartida.',
+                'En paralelo, el estudiante identifica con claridad qué bloquea su trayectoria.',
             ],
             'side_kind': 'docente_calculo',
             'chart': {
@@ -2418,10 +2419,30 @@ def expo_cierre_view(request):
             'bullets': [],
             'side_kind': 'roadmap_timeline',
             'roadmap': [
-                {'fase': 'Fase 1', 'titulo': 'Validación', 'desc': 'Sesiones con docentes y coordinación.', 'icon': 'people'},
-                {'fase': 'Fase 2', 'titulo': 'Integración', 'desc': 'Conector institucional no destructivo.', 'icon': 'plug'},
-                {'fase': 'Fase 3', 'titulo': 'Alertas', 'desc': 'Modelos explicables de rezago temprano.', 'icon': 'bell'},
-                {'fase': 'Fase 4', 'titulo': 'Adopción', 'desc': 'Indicadores de uso y utilidad real.', 'icon': 'graph-up-arrow'},
+                {
+                    'fase': 'Fase 1',
+                    'titulo': 'Validación con usuarios',
+                    'desc': 'Sesiones guiadas con docentes y coordinación para ajustar la visualización a su forma real de lectura del avance académico.',
+                    'icon': 'people',
+                },
+                {
+                    'fase': 'Fase 2',
+                    'titulo': 'Integración institucional',
+                    'desc': 'Conector en modo lectura con sistemas oficiales: el dato vive donde siempre vivió y la plataforma solo lo presenta.',
+                    'icon': 'plug',
+                },
+                {
+                    'fase': 'Fase 3',
+                    'titulo': 'Alertas diagnósticas',
+                    'desc': 'Modelos explicables de rezago temprano: señalan riesgo, dicen por qué y no se convierten en caja negra.',
+                    'icon': 'bell',
+                },
+                {
+                    'fase': 'Fase 4',
+                    'titulo': 'Adopción medida',
+                    'desc': 'Indicadores reales de uso continuo, utilidad percibida por rol y consistencia con los sistemas oficiales.',
+                    'icon': 'graph-up-arrow',
+                },
             ],
         },
         {

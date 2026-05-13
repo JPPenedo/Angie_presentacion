@@ -196,6 +196,7 @@
       border-radius: 1.05rem;
       padding: 1rem 1.1rem;
       display: flex; flex-direction: column; gap: 0.7rem;
+      overflow: hidden; /* clipa entradas desde fuera del slide (tabla, etc.) */
     }
     .visual-zone.flush { padding: 0.95rem 1.1rem 1.15rem; }
     .visual-head {
@@ -259,10 +260,10 @@
       background: linear-gradient(155deg, rgba(201, 160, 106, 0.07) 0%, rgba(255, 255, 255, 0.025) 100%);
       border: 1px solid rgba(201, 160, 106, 0.22);
       border-radius: 1.1rem;
-      padding: 1.25rem 1.2rem;
-      display: flex; flex-direction: column; gap: 0.5rem;
+      padding: 1.45rem 1.45rem 1.55rem;
+      display: flex; flex-direction: column; gap: 0.65rem;
       position: relative; overflow: hidden;
-      min-height: 160px;
+      min-height: 190px;
       opacity: 0; transform: translateY(18px) scale(0.97);
     }
     .slide.active .mod-card { animation: modIn 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
@@ -285,12 +286,12 @@
       transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }
     .mod-card .mod-head {
-      display: flex; align-items: center; gap: 0.55rem;
-      color: var(--gold); font-weight: 700; font-size: 1.05rem;
+      display: flex; align-items: center; gap: 0.6rem;
+      color: var(--gold); font-weight: 700; font-size: 1.22rem;
       letter-spacing: -0.005em;
     }
-    .mod-card .mod-head i { font-size: 1.35rem; }
-    .mod-card .mod-desc { font-size: 0.92rem; color: #c4c4c8; line-height: 1.55; }
+    .mod-card .mod-head i { font-size: 1.55rem; }
+    .mod-card .mod-desc { font-size: 1.05rem; color: #d1d1d6; line-height: 1.55; }
 
     /* ============ PERSONA CARDS (slide 4) ============ */
     .persona-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
@@ -299,15 +300,23 @@
       background: linear-gradient(180deg, rgba(201,160,106,0.10), rgba(255,255,255,0.025));
       border: 1px solid rgba(201, 160, 106, 0.28);
       border-radius: 1.2rem;
-      padding: 1.3rem 1.3rem 1.4rem;
+      padding: 1.55rem 1.5rem 1.6rem;
       position: relative; overflow: hidden;
       display: flex; flex-direction: column;
-      opacity: 0; transform: translateY(18px);
+      opacity: 0; transform: translateY(40px) scale(0.95);
     }
-    .slide.active .persona-card-full { animation: modIn 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards; }
-    .slide.active .persona-card-full:nth-child(1) { animation-delay: 0.18s; }
-    .slide.active .persona-card-full:nth-child(2) { animation-delay: 0.32s; }
-    .slide.active .persona-card-full:nth-child(3) { animation-delay: 0.46s; }
+    /* Entrada 1 por 1 muy marcada: cada card termina antes de que arranque la siguiente. */
+    .slide.active .persona-card-full {
+      animation: personaIn 0.85s cubic-bezier(0.22, 1.1, 0.36, 1) forwards;
+    }
+    .slide.active .persona-card-full:nth-child(1) { animation-delay: 0.20s; }
+    .slide.active .persona-card-full:nth-child(2) { animation-delay: 1.00s; }
+    .slide.active .persona-card-full:nth-child(3) { animation-delay: 1.80s; }
+    @keyframes personaIn {
+      0%   { opacity: 0; transform: translateY(40px) scale(0.95); }
+      60%  { opacity: 1; transform: translateY(-4px) scale(1.01); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
     .persona-card-full::after {
       content: ""; position: absolute; top: 0; right: 0;
       width: 110px; height: 110px;
@@ -315,39 +324,39 @@
       pointer-events: none;
     }
     .persona-card-full .ph {
-      display: flex; align-items: center; gap: 0.55rem;
-      color: var(--gold); font-weight: 700; font-size: 1.08rem;
-      margin-bottom: 0.85rem; letter-spacing: -0.005em;
+      display: flex; align-items: center; gap: 0.6rem;
+      color: var(--gold); font-weight: 700; font-size: 1.22rem;
+      margin-bottom: 1rem; letter-spacing: -0.005em;
     }
-    .persona-card-full .ph i { font-size: 1.3rem; }
+    .persona-card-full .ph i { font-size: 1.5rem; }
     .persona-card-full .kpi-block {
       background: rgba(0,0,0,0.28);
       border: 1px solid rgba(201, 160, 106, 0.3);
       border-radius: 0.85rem;
-      padding: 0.85rem 0.9rem;
-      margin-bottom: 1rem;
+      padding: 1rem 0.9rem;
+      margin-bottom: 1.1rem;
       text-align: center;
     }
     .persona-card-full .kpi-block .kpi {
       font-family: "Sora", "Inter", sans-serif;
       color: var(--gold);
-      font-size: clamp(1.25rem, 1.5vw, 1.55rem);
+      font-size: clamp(1.45rem, 1.85vw, 1.85rem);
       font-weight: 700; line-height: 1.1;
       letter-spacing: 0.005em;
     }
     .persona-card-full .kpi-block .kpi-label {
-      color: var(--muted); font-size: 0.78rem;
+      color: var(--muted); font-size: 0.85rem;
       letter-spacing: 0.04em; text-transform: uppercase;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
     }
     .persona-card-full ul { list-style: none; padding: 0; margin: 0; }
     .persona-card-full ul li {
-      position: relative; padding-left: 1.2rem; font-size: 0.94rem;
-      color: #d8d8df; line-height: 1.6; margin-bottom: 0.5rem;
+      position: relative; padding-left: 1.35rem; font-size: 1.06rem;
+      color: #e0e1e8; line-height: 1.6; margin-bottom: 0.7rem;
     }
     .persona-card-full ul li::before {
-      content: ""; position: absolute; left: 0; top: 0.6rem;
-      width: 0.45rem; height: 0.45rem; border-radius: 50%;
+      content: ""; position: absolute; left: 0; top: 0.7rem;
+      width: 0.5rem; height: 0.5rem; border-radius: 50%;
       background: var(--gold);
     }
 
@@ -393,36 +402,36 @@
       background: rgba(255, 179, 71, 0.12); color: var(--warning);
       font-size: 0.76rem; border: 1px solid rgba(255, 179, 71, 0.32); font-weight: 600;
     }
-    /* Cada fila entra desde una dirección distinta — efecto "burst". */
+    /* Cada fila entra desde fuera del slide (translate en vh/vw), lento y espaciado. */
     .slide.active .improve-table tbody tr:nth-child(1) {
-      animation: rowFromTop 0.7s cubic-bezier(0.22, 1.35, 0.4, 1) 0.22s forwards;
+      animation: rowFromTop 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.30s forwards;
     }
     .slide.active .improve-table tbody tr:nth-child(2) {
-      animation: rowFromRight 0.7s cubic-bezier(0.22, 1.35, 0.4, 1) 0.34s forwards;
+      animation: rowFromRight 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.85s forwards;
     }
     .slide.active .improve-table tbody tr:nth-child(3) {
-      animation: rowFromLeft 0.7s cubic-bezier(0.22, 1.35, 0.4, 1) 0.46s forwards;
+      animation: rowFromLeft 1.05s cubic-bezier(0.22, 1, 0.36, 1) 1.40s forwards;
     }
     .slide.active .improve-table tbody tr:nth-child(4) {
-      animation: rowFromBottom 0.7s cubic-bezier(0.22, 1.35, 0.4, 1) 0.58s forwards;
+      animation: rowFromBottom 1.05s cubic-bezier(0.22, 1, 0.36, 1) 1.95s forwards;
     }
     .slide.active .improve-table tbody tr:nth-child(5) {
-      animation: rowFromRight 0.7s cubic-bezier(0.22, 1.35, 0.4, 1) 0.70s forwards;
+      animation: rowFromRight 1.05s cubic-bezier(0.22, 1, 0.36, 1) 2.50s forwards;
     }
     @keyframes rowFromTop {
-      from { opacity: 0; transform: translate3d(0, -90px, 0) scale(0.94) rotate(-1.5deg); }
-      to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+      from { opacity: 0; transform: translate3d(0, -110vh, 0) scale(0.92); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
     @keyframes rowFromBottom {
-      from { opacity: 0; transform: translate3d(0, 90px, 0) scale(0.94) rotate(1.5deg); }
-      to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+      from { opacity: 0; transform: translate3d(0, 110vh, 0) scale(0.92); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
     @keyframes rowFromLeft {
-      from { opacity: 0; transform: translate3d(-120px, 0, 0) scale(0.94); }
+      from { opacity: 0; transform: translate3d(-120vw, 0, 0) scale(0.92); }
       to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
     @keyframes rowFromRight {
-      from { opacity: 0; transform: translate3d(120px, 0, 0) scale(0.94); }
+      from { opacity: 0; transform: translate3d(120vw, 0, 0) scale(0.92); }
       to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
 
@@ -486,12 +495,12 @@
       box-shadow: 0 0 0 6px rgba(201, 160, 106, 0.22), 0 8px 28px rgba(201, 160, 106, 0.35);
       transform: scale(1.08);
     }
-    .timeline-stop .ts-fase { font-size: 0.74rem; color: rgba(201, 160, 106, 0.6); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.55rem; transition: color 0.4s ease; }
+    .timeline-stop .ts-fase { font-size: 0.86rem; color: rgba(201, 160, 106, 0.6); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.7rem; transition: color 0.4s ease; }
     .timeline-stop.activated .ts-fase { color: var(--gold); }
-    .timeline-stop .ts-titulo { color: #e0d6c4; font-size: 1.05rem; font-weight: 700; margin-top: 0.25rem; transition: color 0.4s ease; }
+    .timeline-stop .ts-titulo { color: #e0d6c4; font-size: 1.2rem; font-weight: 700; margin-top: 0.3rem; transition: color 0.4s ease; letter-spacing: -0.005em; }
     .timeline-stop.activated .ts-titulo { color: #fdf6ea; }
-    .timeline-stop .ts-desc { color: #a8a8b0; font-size: 0.85rem; line-height: 1.5; margin-top: 0.3rem; max-width: 90%; transition: color 0.4s ease; }
-    .timeline-stop.activated .ts-desc { color: #d1d5db; }
+    .timeline-stop .ts-desc { color: #b6b6bf; font-size: 1rem; line-height: 1.55; margin-top: 0.4rem; max-width: 100%; transition: color 0.4s ease; }
+    .timeline-stop.activated .ts-desc { color: #d8d8df; }
     @media (max-width: 880px) {
       .timeline-stops { grid-template-columns: repeat(2, 1fr); gap: 1.3rem; }
       .timeline-track { display: none; }
@@ -704,21 +713,21 @@
       min-height: 0;
       padding: clamp(0.85rem, 1.8vh, 1.4rem) clamp(0.95rem, 1.7vh, 1.35rem);
     }
-    body.is-fullscreen .mod-card .mod-head { font-size: clamp(1.02rem, 1.85vh, 1.3rem); }
-    body.is-fullscreen .mod-card .mod-head i { font-size: clamp(1.2rem, 2vh, 1.55rem); }
-    body.is-fullscreen .mod-card .mod-desc { font-size: clamp(0.88rem, 1.5vh, 1.05rem); line-height: 1.5; }
+    body.is-fullscreen .mod-card .mod-head { font-size: clamp(1.2rem, 2.1vh, 1.55rem); }
+    body.is-fullscreen .mod-card .mod-head i { font-size: clamp(1.4rem, 2.3vh, 1.85rem); }
+    body.is-fullscreen .mod-card .mod-desc { font-size: clamp(1.02rem, 1.75vh, 1.22rem); line-height: 1.55; }
 
     /* Slide 4: persona-cards proporcional. */
     body.is-fullscreen .persona-card-full {
       min-height: 0;
       padding: clamp(1rem, 2vh, 1.5rem) clamp(1.05rem, 2vh, 1.45rem);
     }
-    body.is-fullscreen .persona-card-full .ph { font-size: clamp(1.05rem, 1.9vh, 1.3rem); margin-bottom: clamp(0.55rem, 1.2vh, 0.95rem); }
-    body.is-fullscreen .persona-card-full .ph i { font-size: clamp(1.2rem, 2vh, 1.5rem); }
-    body.is-fullscreen .persona-card-full .kpi-block { padding: clamp(0.65rem, 1.4vh, 1rem); margin-bottom: clamp(0.65rem, 1.4vh, 1.05rem); }
-    body.is-fullscreen .persona-card-full .kpi-block .kpi { font-size: clamp(1.3rem, 2.4vh, 1.95rem); }
-    body.is-fullscreen .persona-card-full .kpi-block .kpi-label { font-size: clamp(0.7rem, 1.1vh, 0.86rem); }
-    body.is-fullscreen .persona-card-full ul li { font-size: clamp(0.9rem, 1.6vh, 1.08rem); margin-bottom: clamp(0.4rem, 1vh, 0.7rem); }
+    body.is-fullscreen .persona-card-full .ph { font-size: clamp(1.2rem, 2.1vh, 1.55rem); margin-bottom: clamp(0.7rem, 1.4vh, 1.15rem); }
+    body.is-fullscreen .persona-card-full .ph i { font-size: clamp(1.4rem, 2.3vh, 1.8rem); }
+    body.is-fullscreen .persona-card-full .kpi-block { padding: clamp(0.8rem, 1.6vh, 1.25rem); margin-bottom: clamp(0.85rem, 1.6vh, 1.3rem); }
+    body.is-fullscreen .persona-card-full .kpi-block .kpi { font-size: clamp(1.6rem, 2.6vh, 2.25rem); }
+    body.is-fullscreen .persona-card-full .kpi-block .kpi-label { font-size: clamp(0.82rem, 1.35vh, 1rem); }
+    body.is-fullscreen .persona-card-full ul li { font-size: clamp(1.05rem, 1.85vh, 1.3rem); margin-bottom: clamp(0.55rem, 1.2vh, 0.9rem); }
 
     /* Slide 5: chart absorbe, pillars-row queda fijo abajo. */
     body.is-fullscreen .slide[data-layout="chart_full_top"] .visual-zone { flex: 1 1 auto; }
@@ -751,9 +760,9 @@
       top: clamp(14px, 2.4vh, 26px);
       font-size: clamp(1.1rem, 2vh, 1.6rem);
     }
-    body.is-fullscreen .timeline-stop .ts-fase { font-size: clamp(0.7rem, 1.2vh, 0.9rem); }
-    body.is-fullscreen .timeline-stop .ts-titulo { font-size: clamp(0.95rem, 1.8vh, 1.25rem); }
-    body.is-fullscreen .timeline-stop .ts-desc { font-size: clamp(0.78rem, 1.4vh, 1rem); }
+    body.is-fullscreen .timeline-stop .ts-fase { font-size: clamp(0.82rem, 1.4vh, 1.05rem); }
+    body.is-fullscreen .timeline-stop .ts-titulo { font-size: clamp(1.1rem, 2.1vh, 1.5rem); margin-top: 0.4rem; }
+    body.is-fullscreen .timeline-stop .ts-desc { font-size: clamp(0.92rem, 1.65vh, 1.18rem); line-height: 1.55; margin-top: 0.5rem; }
 
     /* Slide 9: mock platform escalado. */
     body.is-fullscreen .mock-platform { max-width: min(880px, 70vw); height: 100%; display: flex; flex-direction: column; }
@@ -1206,12 +1215,20 @@
           borderRadius: 6,
           stack: 'cal',
         }));
-        return new Chart(canvas, {
+        const chart = new Chart(canvas, {
           type: 'bar',
           data: { labels, datasets },
           options: {
             responsive: true, maintainAspectRatio: false,
-            animation: { duration: 1500, easing: 'easeOutQuart' },
+            // Entrada animada barra por barra y dataset por dataset.
+            animation: {
+              duration: 900,
+              easing: 'easeOutQuart',
+              delay: (ctx) => {
+                if (ctx.type !== 'data' || ctx.mode !== 'default') return 0;
+                return ctx.datasetIndex * 250 + ctx.dataIndex * 90;
+              },
+            },
             scales: {
               x: { stacked: true, grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
               y: { stacked: true, beginAtZero: true, suggestedMax: 28,
@@ -1225,6 +1242,8 @@
             },
           },
         });
+        chart._restart = () => { chart.reset(); chart.update(); };
+        return chart;
       },
 
       stacked_generaciones: (canvas) => {
@@ -1240,13 +1259,21 @@
           borderRadius: 6,
           stack: 'gen',
         }));
-        return new Chart(canvas, {
+        const chart = new Chart(canvas, {
           type: 'bar',
           data: { labels, datasets },
           options: {
             indexAxis: 'y',
             responsive: true, maintainAspectRatio: false,
-            animation: { duration: 1500, easing: 'easeOutQuart' },
+            // Entrada fila por fila: primero "Generación 2022", luego 2023, etc.
+            animation: {
+              duration: 900,
+              easing: 'easeOutQuart',
+              delay: (ctx) => {
+                if (ctx.type !== 'data' || ctx.mode !== 'default') return 0;
+                return ctx.dataIndex * 550;
+              },
+            },
             scales: {
               x: { stacked: true, beginAtZero: true, max: 100,
                    grid: { color: GRID, drawBorder: false },
@@ -1262,6 +1289,8 @@
             },
           },
         });
+        chart._restart = () => { chart.reset(); chart.update(); };
+        return chart;
       },
 
       combo_adopcion: (canvas) => {
@@ -1301,12 +1330,23 @@
           yAxisID: 'y2',
           order: 1,
         });
-        return new Chart(canvas, {
+        const chart = new Chart(canvas, {
           data: { labels, datasets },
           options: {
             responsive: true, maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
-            animation: { duration: 1600, easing: 'easeOutCubic' },
+            // Entrada por orden: primero las barras mes por mes, después la línea.
+            animation: {
+              duration: 900,
+              easing: 'easeOutCubic',
+              delay: (ctx) => {
+                if (ctx.type !== 'data' || ctx.mode !== 'default') return 0;
+                if (ctx.dataset && ctx.dataset.type === 'line') {
+                  return (labels.length * 200) + 400 + (ctx.dataIndex * 90);
+                }
+                return ctx.datasetIndex * 180 + ctx.dataIndex * 200;
+              },
+            },
             scales: {
               x: { stacked: true, grid: { display: false }, ticks: { color: TEXT, font: { weight: '600' } } },
               y: {
@@ -1327,6 +1367,8 @@
             },
           },
         });
+        chart._restart = () => { chart.reset(); chart.update(); };
+        return chart;
       },
     };
 
