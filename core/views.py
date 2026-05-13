@@ -2231,10 +2231,10 @@ def expo_cierre_view(request):
                 'se convierte en lectura útil para decidir a tiempo.'
             ),
             'bullets': [
-                'El estudiante tarda en identificar qué bloquea su trayectoria.',
-                'El docente lee al grupo desde percepciones, no desde datos.',
-                'La coordinación detecta el rezago tarde, no durante el ciclo.',
-                'Sin lectura común: criterios y decisiones distintos por actor.',
+                'Coordinación arma los reportes por generación con datos dispersos y a mano.',
+                'Cada área toma decisiones con criterios distintos: no hay un tablero común.',
+                'El rezago se detecta al cierre del ciclo, no durante el periodo activo.',
+                'En paralelo, el estudiante tarda en identificar qué bloquea su trayectoria.',
             ],
             'side_kind': 'docente_calculo',
             'chart': {
@@ -2285,34 +2285,34 @@ def expo_cierre_view(request):
                 {
                     'rol': 'Planeación de inscripción',
                     'icon': 'calendar-check',
-                    'kpi': '−65%',
-                    'kpi_label': 'tiempo para elegir materias',
+                    'kpi': 'Planear',
+                    'kpi_label': 'Antes del semestre',
                     'puntos': [
-                        'Trayectoria visible en una sola pantalla.',
-                        'Seriaciones y requisitos al instante.',
-                        'Carga semestral balanceada con evidencia.',
+                        'Trayectoria del alumno en una sola pantalla.',
+                        'Seriaciones y requisitos visibles al instante.',
+                        'Carga semestral planeada con evidencia.',
                     ],
                 },
                 {
                     'rol': 'Tutoría semanal',
                     'icon': 'chat-square-text',
-                    'kpi': '100%',
-                    'kpi_label': 'del grupo revisado antes de tutoría',
+                    'kpi': 'Acompañar',
+                    'kpi_label': 'Durante el ciclo',
                     'puntos': [
-                        'Riesgos académicos detectados en segundos.',
-                        'Conversación caso por caso con datos.',
-                        'Bitácora de seguimiento documentada.',
+                        'El docente revisa al grupo en segundos.',
+                        'Identifica riesgos para enfocar la sesión.',
+                        'Bitácora de seguimiento basada en datos.',
                     ],
                 },
                 {
                     'rol': 'Comité académico',
                     'icon': 'graph-up-arrow',
-                    'kpi': '+60%',
-                    'kpi_label': 'decisiones con evidencia agregada',
+                    'kpi': 'Diagnosticar',
+                    'kpi_label': 'Cierre del periodo',
                     'puntos': [
                         'Patrones de avance por generación.',
                         'Comparativas entre cohortes y áreas.',
-                        'Acompañamiento ajustado por indicadores.',
+                        'Decisiones de acompañamiento institucional.',
                     ],
                 },
             ],
@@ -2462,6 +2462,15 @@ def expo_cierre_view(request):
             ],
         },
     ]
+
+    # IMPORTANT: serializar el payload del chart a JSON aquí evita que Django
+    # imprima la repr de Python (con comillas simples) dentro del atributo HTML
+    # `data-payload`, lo que rompía el parse en JavaScript y dejaba los charts
+    # con ejes pero sin datos.
+    for slide in slides:
+        chart_data = slide.get('chart')
+        if chart_data:
+            slide['chart_json'] = json.dumps(chart_data, ensure_ascii=False)
 
     context = {
         'proyecto': proyecto,
