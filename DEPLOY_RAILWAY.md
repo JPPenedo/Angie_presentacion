@@ -117,6 +117,16 @@ python manage.py limpiar_cuentas
 
 En Railway: `railway run python manage.py limpiar_cuentas`
 
+**Ojo:** el comando actúa sobre la **misma base de datos** que usa ese entorno. Si solo lo ejecutaste en tu PC, **Railway sigue con las cuentas viejas** y el registro dirá «ese ID ya está registrado».
+
+Opciones:
+
+```bash
+python manage.py limpiar_cuentas --dry-run   # cuántas borraría (sin tocar datos)
+python manage.py limpiar_cuentas             # borra todas menos rol=director
+python manage.py limpiar_cuentas --all       # borra todas las filas CuentaAlumno
+```
+
 > El acceso demo director (`26000000` / contraseña de administrador) no está en esta tabla; vive en código.
 
 ---
@@ -134,3 +144,5 @@ En Railway: `railway run python manage.py limpiar_cuentas`
 **Mensaje en login: «No se pudo consultar cuentas registradas. Verifica que las migraciones…».** Significa que Django no pudo ejecutar la consulta a la tabla de cuentas: casi siempre falta **PostgreSQL enlazado** al servicio web, **`DATABASE_URL` vacío o incorrecto**, o el paso **`release`** no llegó a ejecutar `migrate` (revisa el log del último deploy en la pestaña *Deployments* → línea `release`). Comprueba que en **Variables** exista `DATABASE_URL` apuntando a Postgres, vuelve a desplegar, y si hace falta ejecuta en local vinculado al proyecto: `railway run python manage.py migrate`. Tras eso el login con cuentas creadas en el sitio debería funcionar.
 
 **El deploy queda en "crashed" pero los logs no muestran traceback.** Revisa la pestaña **Build Logs** primero (errores de instalación de paquetes), luego **Deploy Logs** (errores de runtime de gunicorn / Django).
+
+**Al crear cuenta: «Ese ID institucional ya está registrado» después de intentar vaciar usuarios.** Ese ID sigue existiendo en **Postgres de Railway**. Ejecuta ahí: `railway run python manage.py limpiar_cuentas` (o `--all` si quieres borrar también filas con rol director). Borrar solo en tu máquina local no cambia la base de producción.
