@@ -65,6 +65,20 @@ def _norm_num(s: str) -> Optional[float]:
         return None
 
 
+def _is_nan_like(value: str) -> bool:
+    v = (value or "").strip().lower()
+    return v in {"", "nan", "none", "null", "-", "n/a"}
+
+
+def _is_valid_grade_token(token: str) -> bool:
+    t = (token or "").strip().upper()
+    if not t or t == "NAN":
+        return False
+    if t == "AC":
+        return True
+    return _norm_num(t) is not None
+
+
 def _parse_total_required_block(m: re.Match[str]) -> Dict[str, Any]:
     met = m.group(1).strip().lower() == "yes"
     req = _norm_num(m.group(2))
@@ -235,29 +249,49 @@ def _parse_course_line(line: str) -> Optional[Dict[str, Any]]:
         return None
     title = " ".join(title_tokens)
 
-    grade_num = _norm_num(grade_raw)
-    grade_ok = grade_num is not None
-    credits_nan = credits_raw.lower() == "nan" or credits_raw == "-"
+    grade_raw_norm = "" if _is_nan_like(grade_raw) else grade_raw
+    grade_ok = _is_valid_grade_token(grade_raw_norm)
+    credits_num = _norm_num(credits_raw)
+    credits_nan = credits_num is None and _is_nan_like(credits_raw)
 
-    completed = bool(grade_ok or has_yes)
-    pending = bool(has_no_token and not has_yes and not grade_ok and not term)
-    if term and grade_ok:
+    has_term = bool(term)
+    has_code = True  # subj + cnum ya validado arriba
+
+    completed = bool(has_term and has_code and grade_ok)
+    pending = False
+    classification_reason = "invalid"
+
+    if completed:
+        classification_reason = "term+code+grade"
+    elif has_yes and (grade_ok or has_term):
+        completed = True
+        classification_reason = "yes_or_grade_signal"
+    elif has_no_token and not has_yes and not has_term and not grade_ok:
+        pending = True
+        classification_reason = "no_without_term_or_grade"
+    elif has_no_token and (has_term or grade_ok):
         completed = True
         pending = False
-    if grade_ok:
+        classification_reason = "no_but_with_term_code_grade"
+    elif grade_ok:
         completed = True
-        pending = False
+        classification_reason = "grade_present"
+    else:
+        classification_reason = "unclassified_course_row"
 
     return {
+        "area": "",
         "term": term or "",
         "code": f"{subj} {cnum}",
         "name": title.strip(),
         "credits_raw": credits_raw,
-        "grade": "" if grade_raw.lower() == "nan" else grade_raw,
+        "credits_num": credits_num,
+        "grade": grade_raw_norm,
         "source": source or "",
         "completed": completed,
         "pending": pending,
         "credits_nan_row": credits_nan,
+        "classification_reason": classification_reason,
     }
 
 
@@ -307,7 +341,15 @@ def _dedupe_cursos(courses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     seen = set()
     out: List[Dict[str, Any]] = []
     for c in courses:
-        key = (c.get('code'), c.get('term') or '', c.get('name') or '')
+        key = (
+            c.get('code'),
+            c.get('term') or '',
+            c.get('name') or '',
+            c.get('grade') or '',
+            c.get('credits_raw') or '',
+            bool(c.get('completed')),
+            bool(c.get('pending')),
+        )
         if key in seen:
             continue
         seen.add(key)
@@ -327,6 +369,23 @@ def parsear_cap_estructurado(texto_completo: str) -> Dict[str, Any]:
 
     completed_courses = [c for c in courses if c.get("completed")]
     pending_courses = [c for c in courses if c.get("pending")]
+    courses_normalized = [
+        {
+            "area": c.get("area", ""),
+            "term": c.get("term", ""),
+            "code": c.get("code", ""),
+            "name": c.get("name", ""),
+            "credits_raw": c.get("credits_raw", ""),
+            "credits_num": c.get("credits_num"),
+            "grade": c.get("grade", ""),
+            "completed": bool(c.get("completed")),
+            "classification_reason": c.get("classification_reason", ""),
+            "pending": bool(c.get("pending")),
+            "credits_nan_row": bool(c.get("credits_nan_row")),
+            "source": c.get("source", ""),
+        }
+        for c in courses
+    ]
 
     nan_completed = [c for c in courses if c.get("credits_nan_row") and c.get("completed")]
 
@@ -336,14 +395,30 @@ def parsear_cap_estructurado(texto_completo: str) -> Dict[str, Any]:
     if not courses:
         warnings.append("No se detectaron filas de materias en Detail Requirements (revisar formato del PDF).")
 
+    debug = {
+        "global_credits_source": "program_summary",
+        "credits_required": int(round(float(program_summary.get("credits_required") or 0))),
+        "credits_used": int(round(float(program_summary.get("credits_used") or 0))),
+        "courses_detected": len(courses),
+        "completed_courses_detected": len(completed_courses),
+        "courses_with_nan_credits": len([c for c in courses if c.get("credits_num") is None]),
+        "pending_requirements_detected": len(pending_courses),
+    }
+
     result: Dict[str, Any] = {
         "student": student,
         "program_summary": program_summary,
         "areas": areas,
         "courses": courses,
+        "courses_normalized": courses_normalized,
         "completed_courses": completed_courses,
         "pending_courses": pending_courses,
         "non_course_requirements": non_course,
+        "requirements": {
+            "non_course": non_course,
+            "pending_courses": pending_courses,
+        },
+        "debug": debug,
         "warnings": warnings,
     }
 
@@ -390,9 +465,20 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                 },
                 "areas": [],
                 "courses": [],
+                "courses_normalized": [],
                 "completed_courses": [],
                 "pending_courses": [],
                 "non_course_requirements": [],
+                "requirements": {"non_course": [], "pending_courses": []},
+                "debug": {
+                    "global_credits_source": "program_summary",
+                    "credits_required": 0,
+                    "credits_used": 0,
+                    "courses_detected": 0,
+                    "completed_courses_detected": 0,
+                    "courses_with_nan_credits": 0,
+                    "pending_requirements_detected": 0,
+                },
                 "warnings": ["PDF sin texto embebido (páginas: %s)." % pags],
             },
             "",
