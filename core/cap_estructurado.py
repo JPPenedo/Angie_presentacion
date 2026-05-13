@@ -30,15 +30,16 @@ TOTAL_REQUIRED_RE = re.compile(
 )
 
 AREA_HEADER_RE = re.compile(r"Area\s*:\s*([^\n\r]+?)\s*$", re.MULTILINE | re.IGNORECASE)
-TERM_SUBJECT_COURSE_RE = re.compile(r"\b(20\d{4})\s+([A-Z]{2,6})\s+(\d{4})\b")
-GRADE_TOKEN_RE = re.compile(r"\b(AC|\d{1,2}(?:\.\d+)?|NaN)\b", re.IGNORECASE)
+TERM_SUBJECT_COURSE_RE = re.compile(r"\b(20\d{4})\s+([A-Z]{2,5})\s+(\d{4})\b")
+COURSE_START_RE = re.compile(r"^(?:(20\d{4})\s+)?([A-Z]{2,5})\s+(\d{4})\b")
+GRADE_TOKEN_RE = re.compile(r"\b(AC|OU|E|\d{1,2}(?:\.\d+)?|NaN)\b", re.IGNORECASE)
 COURSE_TAIL_RE = re.compile(
     r"^(?P<title>.+?)\s+(?P<credits>(?:\d+(?:\.\d+)?|NaN|0|-))\s+"
-    r"(?P<grade>(?:AC|\d+(?:\.\d+)?|NaN))\s*(?P<source>[A-Za-z])?$",
+    r"(?P<grade>(?:AC|OU|E|\d+(?:\.\d+)?|NaN))\s*(?P<source>[A-Za-z])?$",
     re.IGNORECASE,
 )
 
-SPECIAL_TAG_TOKENS = {"CING", "CLIN", "ABPE", "ABAE", "ABIE", "TBIE", "MTBA"}
+SPECIAL_TAG_TOKENS = {"CING", "CLIN", "ABPE", "ABAE", "ABIE", "TBIE", "MTBA", "RING"}
 NOISE_TOKENS = {
     "CING",
     "CLIN",
@@ -57,39 +58,9 @@ NAME_CUT_MARKERS = [
     "Total Credits and GPA",
     "Area Requirements",
     "Detail Requirements",
+    "Total Required",
     "https://",
-    "Required",
-    "Source",
 ]
-COURSE_NAME_CORRECTIONS = {
-    "HUM 1402": "Antropología fundamental",
-    "HUM 1403": "Persona y trascendencia",
-    "HUM 1405": "Humanismo clásico contemporáneo",
-    "LDR 1401": "Liderazgo desarrollo personal",
-    "LDR 2401": "Liderazgo equipos alto desempeño",
-    "ACT 4401": "Matemáticas actuariales daños",
-    "ACT 4402": "Simulación seguros finanzas",
-    "FIN 2402": "Est financieros toma decisione",
-    "MAT 3411": "Estadística matemática",
-    "MAT 3410": "Ecuacione diferencia diferenci",
-    "MAT 4403": "Seminario de ciencia de datos",
-    "IIND 4412": "Big data para negocios",
-    "SIS 1401": "Algoritmos y programación",
-    "SIS 1402": "Lenguajes orientados a objetos",
-    "SIS 2407": "Programación en la nube",
-    "SIS 3403": "Programació dispositiv móviles",
-    "ISOC 1408": "Hombre y expresión artística",
-    "ESP 0401": "Hab univ para la comunicación",
-    "MAT 0402": "Matemáticas básicas ACT",
-    "CDA 0401": "Competencias Digitales general",
-    "CDA 0402": "Python apli a la Ciencia Datos",
-    "ELDR 0402": "Creación public interés perso",
-    "ELDR 0411": "Empresa a través método caso",
-    "ELDR 0423": "Prin fund análisis casos bioét",
-    "TACL 0436": "Expresarte",
-    "TDPR 0469": "Fútbol Rápido",
-    "TLDR 0413": "Hab pensam toma de decisiones",
-}
 
 
 def extraer_texto_pdf_solo_fitz(data: bytes) -> Tuple[str, int]:
@@ -134,7 +105,7 @@ def _is_valid_grade_token(token: str) -> bool:
     t = (token or "").strip().upper()
     if not t or t == "NAN":
         return False
-    if t == "AC":
+    if t in {"AC", "OU", "E"}:
         return True
     return _norm_num(t) is not None
 
@@ -194,8 +165,8 @@ def _all_total_required(text: str) -> List[Tuple[int, Dict[str, Any]]]:
 
 def _pick_program_summary(sections: Dict[str, str], full_text: str) -> Dict[str, Any]:
     """
-    Créditos globales: preferir Total Requirements en Program Evaluation;
-    si hay varios, elegir el de mayor credits_required dentro de esa sección.
+    Créditos globales: solo desde Program Evaluation.
+    Si hay varios, elegir el de mayor credits_required dentro de esa sección.
     """
     pe = sections.get("Program Evaluation", "")
     default: Dict[str, Any] = {
@@ -210,12 +181,7 @@ def _pick_program_summary(sections: Dict[str, str], full_text: str) -> Dict[str,
         for m in TOTAL_REQUIRED_RE.finditer(pe):
             candidates.append(_parse_total_required_block(m))
     if not candidates:
-        # Fallback: el bloque con mayor créditos requeridos en todo el documento
-        all_blocks = [d for _, d in _all_total_required(full_text)]
-        if not all_blocks:
-            return default
-        best = max(all_blocks, key=lambda d: d.get("credits_required") or 0)
-        candidates = [best]
+        return default
 
     best = max(candidates, key=lambda d: d.get("credits_required") or 0)
     req = float(best["credits_required"])
@@ -247,10 +213,12 @@ def _extract_areas(sections: Dict[str, str], full_text: str) -> List[Dict[str, A
         blk = _parse_total_required_block(tm)
         areas.append(
             {
+                "name": area_name,
                 "area": area_name,
                 "met": blk["met"],
                 "credits_required": blk["credits_required"],
                 "credits_used": blk["credits_used"],
+                "courses_required": None,
                 "courses_used": blk["courses_used"],
             }
         )
@@ -367,17 +335,10 @@ def _extract_courses_from_text(block: str) -> List[Dict[str, Any]]:
     return courses
 
 
-def _parse_course_candidate_block(block: str) -> Optional[Dict[str, Any]]:
+def _parse_course_candidate_block(block: str, area_name: str = "") -> Optional[Dict[str, Any]]:
     s = re.sub(r"\s+", " ", (block or "")).strip()
     if not s:
         return None
-    if re.match(
-        r"^(Area|Total Required|Program|Non Course|Detail|Courses Not|Rejected|Student|Name|ID)\b",
-        s,
-        re.I,
-    ):
-        return None
-
     m = TERM_SUBJECT_COURSE_RE.search(s)
     if not m:
         return None
@@ -386,8 +347,19 @@ def _parse_course_candidate_block(block: str) -> Optional[Dict[str, Any]]:
     tail = s[m.end():].strip()
     if not tail:
         return None
-    if TERM_SUBJECT_COURSE_RE.search(tail):
-        # Evitar bloques que accidentalmente juntan más de una materia.
+
+    # Corta contaminación por encabezados / links / otras filas
+    for marker in NAME_CUT_MARKERS:
+        pos = tail.lower().find(marker.lower())
+        if pos > 0:
+            tail = tail[:pos].strip()
+    m2 = TERM_SUBJECT_COURSE_RE.search(tail)
+    if m2:
+        tail = tail[:m2.start()].strip()
+    m3 = COURSE_START_RE.search(tail)
+    if m3:
+        tail = tail[:m3.start()].strip()
+    if not tail:
         return None
 
     tm = COURSE_TAIL_RE.match(tail)
@@ -401,79 +373,94 @@ def _parse_course_candidate_block(block: str) -> Optional[Dict[str, Any]]:
     if not title:
         return None
 
-    grade_raw_norm = "" if _is_nan_like(grade_raw) else grade_raw
+    grade_raw_norm = "" if _is_nan_like(grade_raw) else grade_raw.upper()
     grade_ok = _is_valid_grade_token(grade_raw_norm)
     credits_num = _norm_num(credits_raw)
     credits_nan = credits_num is None and _is_nan_like(credits_raw)
-
-    completed = bool(term and grade_ok)
-    pending = False
-    classification_reason = "term_code_grade" if completed else "course_candidate_not_completed"
+    parse_confidence = "high" if grade_ok else "medium"
 
     return {
-        "area": "",
+        "area": area_name or "",
         "term": term,
         "code": f"{subj} {cnum}",
+        "subject": subj,
+        "course_number": cnum,
         "name": title,
         "credits_raw": credits_raw,
         "credits_num": credits_num,
         "grade": grade_raw_norm,
         "source": source,
-        "completed": completed,
-        "pending": pending,
+        "completed": bool(term and grade_ok),
+        "pending": False,
         "credits_nan_row": credits_nan,
-        "classification_reason": classification_reason,
+        "classification_reason": "term_code_grade" if grade_ok else "course_candidate_incomplete",
+        "tags": [],
+        "parse_confidence": parse_confidence,
     }
-
-
-def _build_course_candidate_blocks(full_text: str) -> List[str]:
-    lines = [ln.strip() for ln in re.sub(r"\r\n?", "\n", full_text).split("\n") if ln.strip()]
-    candidates: List[str] = []
-    seen = set()
-    for i in range(len(lines)):
-        if not TERM_SUBJECT_COURSE_RE.search(lines[i]):
-            continue
-        block = lines[i]
-        if block not in seen:
-            seen.add(block)
-            candidates.append(block)
-        for j in range(i + 1, min(i + 4, len(lines))):
-            if TERM_SUBJECT_COURSE_RE.search(lines[j]):
-                break
-            block = f"{block} {lines[j]}".strip()
-            if block in seen:
-                continue
-            seen.add(block)
-            candidates.append(block)
-    return candidates
 
 
 def _extract_courses_from_detail(
     sections: Dict[str, str], full_text: str
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    det = sections.get("Detail Requirements", "")
-    candidates = _build_course_candidate_blocks(full_text)
-    parsed: List[Dict[str, Any]] = []
-    for cand in candidates:
-        p = _parse_course_candidate_block(cand)
-        if p:
-            parsed.append(p)
+    lines = [ln.strip() for ln in re.sub(r"\r\n?", "\n", full_text).split("\n") if ln.strip()]
+    courses: List[Dict[str, Any]] = []
+    raw_candidates: List[str] = []
+    active_section = ""
+    active_area = ""
 
-    # fallback legacy parser over detail block for rows not captured by multiline matcher
+    for i, line in enumerate(lines):
+        low = line.lower()
+        if low in {h.lower() for h in SECTION_HEADERS}:
+            active_section = line
+            continue
+
+        am = re.match(r"^Area\s*:\s*(.+)$", line, re.I)
+        if am:
+            active_area = am.group(1).strip()
+            continue
+
+        if not TERM_SUBJECT_COURSE_RE.search(line):
+            continue
+
+        block = line
+        for j in range(i + 1, min(i + 4, len(lines))):
+            nxt = lines[j]
+            nxt_low = nxt.lower()
+            if nxt_low in {h.lower() for h in SECTION_HEADERS}:
+                break
+            if re.match(r"^Area\s*:\s*(.+)$", nxt, re.I):
+                break
+            if TERM_SUBJECT_COURSE_RE.search(nxt):
+                break
+            block = f"{block} {nxt}".strip()
+
+        raw_candidates.append(block)
+        parsed = _parse_course_candidate_block(block, area_name=active_area)
+        if parsed:
+            parsed["section"] = active_section
+            courses.append(parsed)
+
+    # fallback para casos no capturados en multiline
+    det = sections.get("Detail Requirements", "")
     legacy = _extract_courses_from_text(det) if det else []
-    all_courses = parsed + legacy
+    for c in legacy:
+        c.setdefault("subject", (c.get("code", " ").split(" ", 1)[0] if c.get("code") else ""))
+        c.setdefault("course_number", (c.get("code", " ").split(" ", 1)[1] if " " in c.get("code", "") else ""))
+        c.setdefault("parse_confidence", "low")
+        c.setdefault("tags", [])
+        courses.append(c)
 
     debug = {
         "area_blocks_detected": len(re.findall(r"(?mi)^\s*Area Requirements\s*$", full_text)),
         "detail_blocks_detected": len(re.findall(r"(?mi)^\s*Detail Requirements\s*$", full_text)),
-        "course_candidate_blocks": len(candidates),
+        "course_candidate_blocks": len(raw_candidates),
         "course_candidates_with_period_code": len(
-            [c for c in candidates if TERM_SUBJECT_COURSE_RE.search(c)]
+            [c for c in raw_candidates if TERM_SUBJECT_COURSE_RE.search(c)]
         ),
-        "course_candidates_with_grade": len([c for c in candidates if GRADE_TOKEN_RE.search(c)]),
-        "debug_raw_candidates_sample": candidates[:30],
+        "course_candidates_with_grade": len([c for c in raw_candidates if GRADE_TOKEN_RE.search(c)]),
+        "debug_raw_candidates_sample": raw_candidates[:30],
     }
-    return all_courses, debug
+    return courses, debug
 
 
 def _student_stub(sections: Dict[str, str], full_text: str) -> Dict[str, Any]:
@@ -498,6 +485,31 @@ def _non_course_lines(sections: Dict[str, str]) -> List[str]:
     return [ln.strip() for ln in nc.split("\n") if ln.strip() and len(ln.strip()) > 2]
 
 
+def _pending_requirement_lines(sections: Dict[str, str], full_text: str) -> List[str]:
+    out: List[str] = []
+    for key in ("Non Course Requirements", "Area Requirements"):
+        block = sections.get(key, "")
+        if not block:
+            continue
+        for raw in block.split("\n"):
+            line = raw.strip()
+            if not line:
+                continue
+            if TERM_SUBJECT_COURSE_RE.search(line) and GRADE_TOKEN_RE.search(line):
+                continue
+            if re.search(r"\bNo\b", line) and not re.search(r"\bNo\s+AND\b", line):
+                out.append(line)
+    # dedupe stable
+    seen = set()
+    cleaned = []
+    for line in out:
+        if line in seen:
+            continue
+        seen.add(line)
+        cleaned.append(line)
+    return cleaned
+
+
 def _clean_course_name(name: str) -> Tuple[str, List[str], bool]:
     original = re.sub(r"\s+", " ", (name or "")).strip()
     cleaned = original
@@ -509,6 +521,15 @@ def _clean_course_name(name: str) -> Tuple[str, List[str], bool]:
         if pos > 0:
             cleaned = cleaned[:pos].strip()
             trimmed = True
+
+    cut_term = re.search(r"\b20\d{4}\b", cleaned)
+    if cut_term and cut_term.start() > 0:
+        cleaned = cleaned[:cut_term.start()].strip()
+        trimmed = True
+    cut_code = re.search(r"\b[A-Z]{2,5}\s+\d{4}\b", cleaned)
+    if cut_code and cut_code.start() > 0:
+        cleaned = cleaned[:cut_code.start()].strip()
+        trimmed = True
 
     tokens = cleaned.split()
     kept: List[str] = []
@@ -531,29 +552,41 @@ def _has_valid_grade(grade: str) -> bool:
     return _is_valid_grade_token((grade or "").strip())
 
 
+def _is_special_area(area_name: str) -> bool:
+    n = (area_name or "").lower()
+    return any(k in n for k in ("ingl", "linea", "línea", "online", "special", "especial"))
+
+
+def _candidate_dedupe_key(course: Dict[str, Any]) -> Tuple[str, str]:
+    term = (course.get("term") or "").strip()
+    code = (course.get("code") or "").strip()
+    if term:
+        return term, code
+    return "", f"{code}|{(course.get('grade') or '').strip()}"
+
+
 def normalize_cap_courses_final(courses: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
     debug_final = {
         "raw_courses": len(courses),
         "after_dedup": 0,
         "duplicates_removed": 0,
-        "names_fixed_by_dictionary": 0,
         "names_trimmed_by_noise_rules": 0,
         "nan_credit_completed_courses": 0,
     }
-    by_code: Dict[str, List[Dict[str, Any]]] = {}
-    for c in courses:
-        code = (c.get("code") or "").strip()
+    stage_one: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
+    for row in courses:
+        code = (row.get("code") or "").strip()
         if not code:
             continue
-        by_code.setdefault(code, []).append(c)
+        k = _candidate_dedupe_key(row)
+        stage_one.setdefault(k, []).append(row)
 
-    normalized: List[Dict[str, Any]] = []
-
-    for code, rows in by_code.items():
+    dedup_one: List[Dict[str, Any]] = []
+    for _, rows in stage_one.items():
         prepared = []
         for r in rows:
             name_clean, tags, trimmed = _clean_course_name(r.get("name", ""))
-            grade = (r.get("grade") or "").strip()
+            grade = (r.get("grade") or "").strip().upper()
             grade_valid = _has_valid_grade(grade)
             term = (r.get("term") or "").strip()
             credits_raw = (r.get("credits_raw") or "").strip()
@@ -561,14 +594,15 @@ def normalize_cap_courses_final(courses: List[Dict[str, Any]]) -> Tuple[List[Dic
             if credits_num is None:
                 credits_num = _norm_num(credits_raw)
             is_nan_credit = credits_num is None
-            noise_penalty = len(re.findall(r"(Total Credits and GPA|Area Requirements|Detail Requirements|https://|Source)", r.get("name", ""), re.I))
+            noise_hits = len(re.findall(r"(Total Credits and GPA|Total Required|Area Requirements|Detail Requirements|https://)", r.get("name", ""), re.I))
             score = 0
-            score += 40 if not tags else 0
-            score += 30 if grade_valid else 0
-            score += 20 if term else 0
+            score += 35 if grade_valid else 0
+            score += 25 if term else 0
+            score += 20 if not _is_special_area(r.get("area", "")) else 0
+            score += 8 if (r.get("area") or "").strip() else 0
             score += 10 if len(name_clean) >= 8 else 0
-            score -= 5 * noise_penalty
-            score -= max(0, len((r.get("name") or "").split()) - len(name_clean.split()))
+            score -= 8 * noise_hits
+            score -= len(tags)
             prepared.append(
                 {
                     "row": r,
@@ -576,57 +610,86 @@ def normalize_cap_courses_final(courses: List[Dict[str, Any]]) -> Tuple[List[Dic
                     "tags": tags,
                     "trimmed": trimmed,
                     "grade_valid": grade_valid,
-                    "term": term,
-                    "credits_num": credits_num,
                     "credits_raw": credits_raw,
+                    "credits_num": credits_num,
                     "is_nan_credit": is_nan_credit,
                     "score": score,
+                    "noise_hits": noise_hits,
                 }
             )
+        best = sorted(prepared, key=lambda x: (x["score"], len(x["name_clean"])), reverse=True)[0]
+        row = dict(best["row"])
+        row["name"] = best["name_clean"]
+        row["tags"] = sorted(set((row.get("tags") or []) + best["tags"]))
+        row["credits_raw"] = best["credits_raw"]
+        row["credits_num"] = best["credits_num"]
+        row["credits_nan_row"] = best["is_nan_credit"]
+        if best["trimmed"] or best["noise_hits"] > 0:
+            debug_final["names_trimmed_by_noise_rules"] += 1
+        dedup_one.append(row)
 
+    # Segunda dedupe: code + grade para colapsar cruces área principal/especial
+    stage_two: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
+    for r in dedup_one:
+        key = ((r.get("code") or "").strip(), (r.get("grade") or "").strip().upper())
+        stage_two.setdefault(key, []).append(r)
+
+    normalized: List[Dict[str, Any]] = []
+    for _, rows in stage_two.items():
         best = sorted(
-            prepared,
-            key=lambda x: (
-                x["score"],
-                -len(x["tags"]),
-                len(x["name_clean"]),
+            rows,
+            key=lambda r: (
+                1 if _has_valid_grade(r.get("grade", "")) else 0,
+                1 if (r.get("term") or "").strip() else 0,
+                1 if not _is_special_area(r.get("area", "")) else 0,
+                1 if (r.get("area") or "").strip() else 0,
+                len((r.get("name") or "").strip()),
             ),
             reverse=True,
         )[0]
-        row = dict(best["row"])
-        final_name = best["name_clean"]
-        if best["trimmed"]:
-            debug_final["names_trimmed_by_noise_rules"] += 1
-        if code in COURSE_NAME_CORRECTIONS:
-            if final_name != COURSE_NAME_CORRECTIONS[code]:
-                debug_final["names_fixed_by_dictionary"] += 1
-            final_name = COURSE_NAME_CORRECTIONS[code]
-
-        completed = bool(row.get("completed")) or (
-            bool((row.get("term") or "").strip()) and _has_valid_grade(row.get("grade", ""))
-        )
-        if completed and best["is_nan_credit"]:
+        tags_agg = set(best.get("tags") or [])
+        for r in rows:
+            tags_agg.update(r.get("tags") or [])
+        code = (best.get("code") or "").strip()
+        subject = (best.get("subject") or code.split(" ", 1)[0]).strip()
+        cnum = (best.get("course_number") or (code.split(" ", 1)[1] if " " in code else "")).strip()
+        grade = (best.get("grade") or "").strip().upper()
+        completed = bool((best.get("term") or "").strip() and _has_valid_grade(grade))
+        credits_num = best.get("credits_num")
+        if credits_num is None:
+            credits_num = _norm_num(best.get("credits_raw", ""))
+        is_nan_credit = credits_num is None
+        if completed and is_nan_credit:
             debug_final["nan_credit_completed_courses"] += 1
+
+        confidence = "high"
+        if not completed:
+            confidence = "medium"
+        if not (best.get("name") or "").strip():
+            confidence = "low"
 
         normalized.append(
             {
-                "area": row.get("area", ""),
-                "term": row.get("term", ""),
+                "area": best.get("area", ""),
+                "term": best.get("term", ""),
                 "code": code,
-                "name": final_name,
-                "credits_raw": best["credits_raw"] if best["credits_raw"] else row.get("credits_raw", ""),
-                "credits_num": best["credits_num"],
-                "grade": row.get("grade", ""),
-                "source": row.get("source", ""),
+                "subject": subject,
+                "course_number": cnum,
+                "name": best.get("name", ""),
+                "credits_raw": best.get("credits_raw", ""),
+                "credits_num": credits_num,
+                "grade": grade,
+                "source": best.get("source", ""),
                 "completed": completed,
-                "pending": bool(row.get("pending")) and not completed,
-                "credits_nan_row": best["is_nan_credit"],
-                "classification_reason": row.get("classification_reason", ""),
-                "tags": best["tags"],
+                "pending": bool(best.get("pending")) and not completed,
+                "credits_nan_row": is_nan_credit,
+                "classification_reason": best.get("classification_reason", ""),
+                "tags": sorted(tags_agg),
+                "parse_confidence": confidence,
             }
         )
 
-    normalized.sort(key=lambda c: (c.get("code") or "", c.get("term") or ""))
+    normalized.sort(key=lambda c: ((c.get("term") or ""), (c.get("code") or "")))
     debug_final["after_dedup"] = len(normalized)
     debug_final["duplicates_removed"] = max(0, debug_final["raw_courses"] - debug_final["after_dedup"])
     return normalized, debug_final
@@ -642,6 +705,7 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     courses, debug_normalization_final = normalize_cap_courses_final(courses_pre)
     student = _student_stub(sections, texto_completo)
     non_course = _non_course_lines(sections)
+    pending_requirements = _pending_requirement_lines(sections, texto_completo)
 
     completed_courses = [c for c in courses if c.get("completed")]
     pending_courses = [c for c in courses if c.get("pending")]
@@ -672,13 +736,15 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
         warnings.append("No se detectaron filas de materias en Detail Requirements (revisar formato del PDF).")
 
     debug = {
-        "global_credits_source": "program_summary",
-        "credits_required": int(round(float(program_summary.get("credits_required") or 0))),
-        "credits_used": int(round(float(program_summary.get("credits_used") or 0))),
-        "courses_detected": len(courses),
-        "completed_courses_detected": len(completed_courses),
+        "total_courses_raw": len(courses_pre),
+        "total_courses_normalized": len(courses),
+        "duplicates_removed": int(debug_normalization_final.get("duplicates_removed", 0)),
         "courses_with_nan_credits": len([c for c in courses if c.get("credits_num") is None]),
-        "pending_requirements_detected": len(pending_courses),
+        "courses_with_noise_trimmed": int(
+            debug_normalization_final.get("names_trimmed_by_noise_rules", 0)
+        ),
+        "area_totals_detected": len(areas),
+        "global_summary_detected": bool(program_summary.get("credits_required")),
     }
     debug_extraction = {
         "pages_read": int(pages_read),
@@ -701,10 +767,12 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
         "courses_normalized": courses_normalized,
         "completed_courses": completed_courses,
         "pending_courses": pending_courses,
+        "pending_requirements": pending_requirements,
         "non_course_requirements": non_course,
         "requirements": {
             "non_course": non_course,
             "pending_courses": pending_courses,
+            "pending_requirements": pending_requirements,
         },
         "debug": debug,
         "debug_extraction": debug_extraction,
@@ -759,16 +827,21 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                 "courses_normalized": [],
                 "completed_courses": [],
                 "pending_courses": [],
+                "pending_requirements": [],
                 "non_course_requirements": [],
-                "requirements": {"non_course": [], "pending_courses": []},
+                "requirements": {
+                    "non_course": [],
+                    "pending_courses": [],
+                    "pending_requirements": [],
+                },
                 "debug": {
-                    "global_credits_source": "program_summary",
-                    "credits_required": 0,
-                    "credits_used": 0,
-                    "courses_detected": 0,
-                    "completed_courses_detected": 0,
+                    "total_courses_raw": 0,
+                    "total_courses_normalized": 0,
+                    "duplicates_removed": 0,
                     "courses_with_nan_credits": 0,
-                    "pending_requirements_detected": 0,
+                    "courses_with_noise_trimmed": 0,
+                    "area_totals_detected": 0,
+                    "global_summary_detected": False,
                 },
                 "debug_extraction": {
                     "pages_read": int(pags),
@@ -784,7 +857,6 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                     "raw_courses": 0,
                     "after_dedup": 0,
                     "duplicates_removed": 0,
-                    "names_fixed_by_dictionary": 0,
                     "names_trimmed_by_noise_rules": 0,
                     "nan_credit_completed_courses": 0,
                 },
