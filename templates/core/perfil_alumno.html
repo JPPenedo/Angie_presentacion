@@ -796,7 +796,7 @@
   </div>
 
   <div class="chart-card mb-4" style="border-radius:1.25rem;">
-    <div class="chart-title"><i class="bi bi-graph-up me-2" style="color:var(--pf-accent);"></i>Evolución del promedio por semestre</div>
+    <div class="chart-title"><i class="bi bi-graph-up me-2" style="color:#7BA7CC;"></i>Evolución del promedio por semestre</div>
     <canvas id="chartEvolucion" height="70"></canvas>
   </div>
 
@@ -853,7 +853,7 @@
 <script>
   const bloquesLabels = {{ bloques_labels_json|safe }};
   const bloquesData = {{ bloques_creditos_json|safe }};
-  const colorsBar = ['#c9a06a', '#d4874a', '#e8b896', '#a67c52'];
+  const colorsBar = ['#4A7BA6', '#7BA7CC', '#A8C5DC', '#E8E8E5'];
 
   const ctxB = document.getElementById('chartBloques');
   const legend = document.getElementById('pfLegend');
@@ -914,10 +914,10 @@
       datasets: [{
         label: 'Promedio del semestre',
         data: promediosSem,
-        borderColor: 'rgba(201,160,106,0.95)',
-        backgroundColor: 'rgba(201,160,106,0.08)',
-        pointBackgroundColor: '#d4a574',
-        pointBorderColor: '#111',
+        borderColor: 'rgba(123,167,204,0.95)',
+        backgroundColor: 'rgba(123,167,204,0.1)',
+        pointBackgroundColor: '#A8C5DC',
+        pointBorderColor: '#0f0f0f',
         pointBorderWidth: 2,
         pointRadius: 5, pointHoverRadius: 7,
         fill: true, tension: 0.38, borderWidth: 2.5,

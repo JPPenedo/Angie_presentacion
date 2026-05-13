@@ -1387,11 +1387,11 @@
   <script>
   (function () {
     /* =========== THEME =========== */
-    const GOLD = '#d4a574';
-    const GOLD_DEEP = '#8b5a2e';
-    const ACCENT = '#c9a06a';
+    const GOLD = '#7BA7CC';
+    const GOLD_DEEP = '#2F5A87';
+    const ACCENT = '#A8C5DC';
     const MUTED = '#9ca3af';
-    const TEXT = '#e8dcc8';
+    const TEXT = '#E8E8E5';
     const GRID = 'rgba(255,255,255,0.07)';
 
     if (window.Chart) {
@@ -1401,8 +1401,8 @@
       Chart.defaults.borderColor = GRID;
     }
 
-    const PALETTE_STACK = ['#d4a574', '#b88550', '#8b5a2e', '#6c8cc7', '#db7878'];
-    const PALETTE_GENS  = ['#1f9a6b', '#ffb347', '#e57b3b', '#db4e4e'];
+    const PALETTE_STACK = ['#7BA7CC', '#4A7BA6', '#2F5A87', '#A8C5DC', '#E8E8E5'];
+    const PALETTE_GENS  = ['#2F5A87', '#4A7BA6', '#7BA7CC', '#A8C5DC'];
 
     function readPayload(canvas) {
       const raw = canvas.dataset.payload;
@@ -1578,8 +1578,8 @@
         }));
         const ctx2d = canvas.getContext('2d');
         const grad = ctx2d.createLinearGradient(0, 0, 0, 340);
-        grad.addColorStop(0, 'rgba(212, 165, 116, 0.45)');
-        grad.addColorStop(1, 'rgba(212, 165, 116, 0)');
+        grad.addColorStop(0, 'rgba(123, 167, 204, 0.45)');
+        grad.addColorStop(1, 'rgba(123, 167, 204, 0)');
         datasets.push({
           type: 'line',
           label: lineData.name,

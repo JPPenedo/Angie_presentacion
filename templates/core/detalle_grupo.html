@@ -90,7 +90,7 @@
   <div class="col-lg-8">
     <div class="chart-card h-100">
       <div class="chart-title">
-        <i class="bi bi-bar-chart-steps me-2" style="color:var(--accent);"></i>Calificación por Alumno
+        <i class="bi bi-bar-chart-steps me-2" style="color:#7BA7CC;"></i>Calificación por Alumno
       </div>
       <canvas id="chartAlumnos" height="200"></canvas>
     </div>
@@ -98,13 +98,13 @@
   <div class="col-lg-4">
     <div class="chart-card h-100 d-flex flex-column">
       <div class="chart-title">
-        <i class="bi bi-pie-chart-fill me-2" style="color:var(--gold);"></i>Aprobados vs Reprobados
+        <i class="bi bi-pie-chart-fill me-2" style="color:#A8C5DC;"></i>Aprobados vs Reprobados
       </div>
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
         <canvas id="chartAprobados" style="max-height:180px;"></canvas>
         <div style="display:flex;gap:1rem;margin-top:0.75rem;font-size:0.78rem;">
-          <span style="color:var(--success);"><i class="bi bi-circle-fill me-1"></i>Aprob.: {{ stats.aprobados }}</span>
-          <span style="color:var(--danger);"><i class="bi bi-circle-fill me-1"></i>Repro.: {{ stats.reprobados }}</span>
+          <span style="color:#E8E8E5;"><i class="bi bi-circle-fill me-1"></i>Aprob.: {{ stats.aprobados }}</span>
+          <span style="color:#4A7BA6;"><i class="bi bi-circle-fill me-1"></i>Repro.: {{ stats.reprobados }}</span>
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@
   const califs  = [{% for a in grupo.alumnos %}{{ a.calificacion }}{% if not forloop.last %},{% endif %}{% endfor %}];
   // Profesor: semáforo visual por calificación para detectar casos críticos más rápido.
   const bgBars  = califs.map(c =>
-    c < 6 ? 'rgba(248,113,113,0.75)' : c < 7.5 ? 'rgba(251,191,36,0.75)' : 'rgba(52,211,153,0.75)'
+    c < 6 ? 'rgba(74,123,166,0.85)' : c < 7.5 ? 'rgba(123,167,204,0.85)' : 'rgba(240,237,233,0.7)'
   );
 
   // Profesor: barra horizontal mejora legibilidad cuando los nombres son largos.
@@ -216,8 +216,8 @@
       labels: ['Aprobados', 'Reprobados'],
       datasets: [{
         data: [{{ stats.aprobados }}, {{ stats.reprobados }}],
-        backgroundColor: ['rgba(52,211,153,0.8)', 'rgba(248,113,113,0.8)'],
-        borderColor: ['#1a1714', '#1a1714'],
+        backgroundColor: ['rgba(240,237,233,0.78)', 'rgba(74,123,166,0.9)'],
+        borderColor: ['#0f0f0f', '#0f0f0f'],
         borderWidth: 3, hoverOffset: 6,
       }]
     },

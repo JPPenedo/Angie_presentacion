@@ -151,7 +151,7 @@
   <div class="col-lg-8">
     <div class="chart-card h-100">
       <div class="chart-title">
-        <i class="bi bi-bar-chart-fill me-2" style="color:var(--accent);"></i>Promedio & Aprobación por Grupo
+        <i class="bi bi-bar-chart-fill me-2" style="color:#7BA7CC;"></i>Promedio & Aprobación por Grupo
       </div>
       <canvas id="chartPromedios" height="140"></canvas>
     </div>
@@ -159,7 +159,7 @@
   <div class="col-lg-4">
     <div class="chart-card h-100 d-flex flex-column">
       <div class="chart-title">
-        <i class="bi bi-pie-chart-fill me-2" style="color:var(--gold);"></i>Distribución de Riesgo
+        <i class="bi bi-pie-chart-fill me-2" style="color:#A8C5DC;"></i>Distribución de Riesgo
       </div>
       <div style="flex:1;display:flex;align-items:center;justify-content:center;">
         <canvas id="chartRiesgo" style="max-height:190px;"></canvas>
@@ -270,13 +270,13 @@
         {
           label: 'Promedio',
           data: promedios,
-          backgroundColor: 'rgba(201,160,106,0.75)',
+          backgroundColor: 'rgba(123,167,204,0.85)',
           borderRadius: 7, borderSkipped: false,
         },
         {
           label: '% Aprob. ÷ 10',
           data: pctAprob.map(v => v / 10),
-          backgroundColor: 'rgba(74,222,128,0.65)',
+          backgroundColor: 'rgba(240,237,233,0.55)',
           borderRadius: 7, borderSkipped: false,
         }
       ]
@@ -307,8 +307,8 @@
       labels: ['Riesgo Alto', 'Riesgo Medio', 'Sin Riesgo'],
       datasets: [{
         data: [riesgoAlto, riesgoMedio, riesgoBajo],
-        backgroundColor: ['rgba(248,113,113,0.8)', 'rgba(251,191,36,0.8)', 'rgba(52,211,153,0.8)'],
-        borderColor: ['#1a1714','#1a1714','#1a1714'],
+        backgroundColor: ['rgba(74,123,166,0.92)', 'rgba(123,167,204,0.88)', 'rgba(240,237,233,0.75)'],
+        borderColor: ['#0f0f0f','#0f0f0f','#0f0f0f'],
         borderWidth: 3, hoverOffset: 6,
       }]
     },

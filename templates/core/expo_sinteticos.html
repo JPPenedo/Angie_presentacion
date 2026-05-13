@@ -2591,7 +2591,7 @@
       return {
         label: (labelExtra != null ? labelExtra : 'Ref'),
         data: [{ x, y: y0 }, { x, y: y1 }],
-        borderColor: 'rgba(255,100,80,0.65)',
+        borderColor: 'rgba(240,237,233,0.6)',
         borderDash: [4, 4],
         borderWidth: 1.3,
         pointRadius: 0,
@@ -2918,8 +2918,8 @@
             if (ds && ds.fill && typeof ds.fill === 'object') {
               if (chart._formaFillAbove == null) chart._formaFillAbove = ds.fill.above;
               if (chart._formaFillBelow == null) chart._formaFillBelow = ds.fill.below;
-              ds.fill.above = 'rgba(160,150,255,0.08)';
-              ds.fill.below = 'rgba(255,70,100,0.1)';
+              ds.fill.above = 'rgba(168,197,220,0.1)';
+              ds.fill.below = 'rgba(74,123,166,0.12)';
             }
           });
         }
@@ -3018,12 +3018,12 @@
             {
               label: 'Buy straddle (intuición)',
               data: comb,
-              borderColor: 'rgba(255,55,20,1)',
-              backgroundColor: 'rgba(255,55,20,0.16)',
+              borderColor: 'rgba(123,167,204,1)',
+              backgroundColor: 'rgba(123,167,204,0.18)',
               borderWidth: 2.8,
               tension: 0,
               pointRadius: 0,
-              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.2)', below: 'rgba(255,70,100,0.26)' },
+              fill: { target: { value: 0 }, above: 'rgba(168,197,220,0.22)', below: 'rgba(74,123,166,0.28)' },
             },
             ...anatomyLineSet(yMin, yMax, true),
           ],
@@ -3058,12 +3058,12 @@
               {
                 label: 'Straddle largo (combinado)',
                 data: comb,
-                borderColor: 'rgba(255,55,20,1)',
-                backgroundColor: 'rgba(255,55,20,0.14)',
+                borderColor: 'rgba(123,167,204,1)',
+                backgroundColor: 'rgba(123,167,204,0.16)',
                 borderWidth: 2.9,
                 tension: 0,
                 pointRadius: 0,
-                fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.18)', below: 'rgba(255,70,100,0.22)' },
+                fill: { target: { value: 0 }, above: 'rgba(168,197,220,0.2)', below: 'rgba(74,123,166,0.24)' },
               },
               ...anatomyLineSet(yMin, yMax, true),
             ],
@@ -3085,9 +3085,9 @@
             {
               label: 'Call · compra (paga c)',
               data: callData,
-              borderColor: 'rgba(175,155,255,1)',
-              backgroundColor: 'rgba(175,155,255,0.16)',
-              fill: { target: { value: 0 }, above: 'rgba(175,155,255,0.22)', below: 'rgba(255,95,120,0.18)' },
+              borderColor: 'rgba(168,197,220,1)',
+              backgroundColor: 'rgba(168,197,220,0.18)',
+              fill: { target: { value: 0 }, above: 'rgba(168,197,220,0.24)', below: 'rgba(74,123,166,0.18)' },
               borderWidth: 2.4, pointRadius: 0, tension: 0.05,
             },
             ...anatomyLineSet(-10, 30, false),
@@ -3104,9 +3104,9 @@
             {
               label: 'Put · compra (paga p)',
               data: putData,
-              borderColor: 'rgba(255,195,110,1)',
-              backgroundColor: 'rgba(255,195,110,0.14)',
-              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.14)', below: 'rgba(255,95,120,0.14)' },
+              borderColor: 'rgba(240,237,233,1)',
+              backgroundColor: 'rgba(240,237,233,0.14)',
+              fill: { target: { value: 0 }, above: 'rgba(168,197,220,0.14)', below: 'rgba(74,123,166,0.14)' },
               borderWidth: 2.4, pointRadius: 0, tension: 0.05,
             },
             ...anatomyLineSet(-10, 30, false),
@@ -3183,7 +3183,7 @@
             {
               label: 'Comprador straddle',
               data: buyer,
-              borderColor: 'rgba(255,55,20,1)',
+              borderColor: 'rgba(123,167,204,1)',
               borderWidth: 2.8,
               tension: 0,
               pointRadius: 0,
@@ -3192,7 +3192,7 @@
             {
               label: 'Vendedor call',
               data: wCall,
-              borderColor: 'rgba(175,155,255,0.98)',
+              borderColor: 'rgba(168,197,220,0.95)',
               borderDash: [6, 4],
               borderWidth: 2.3,
               tension: 0,
@@ -3202,7 +3202,7 @@
             {
               label: 'Vendedor put',
               data: wPut,
-              borderColor: 'rgba(255,195,110,0.95)',
+              borderColor: 'rgba(240,237,233,0.85)',
               borderDash: [4, 4],
               borderWidth: 2.3,
               tension: 0,
@@ -3240,25 +3240,25 @@
             {
               label: 'Call largo (K)',
               data: legC,
-              borderColor: 'rgba(175,155,255,0.92)',
+              borderColor: 'rgba(168,197,220,0.92)',
               borderDash: [6, 4], borderWidth: 1.9,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Put largo (K)',
               data: legP,
-              borderColor: 'rgba(255,195,110,0.9)',
+              borderColor: 'rgba(240,237,233,0.8)',
               borderDash: [4, 3], borderWidth: 1.9,
               pointRadius: 0, tension: 0, fill: false,
             },
             {
               label: 'Straddle (resultado)',
               data: comb,
-              borderColor: 'rgba(255,55,20,1)',
-              backgroundColor: 'rgba(255,55,20,0.1)',
+              borderColor: 'rgba(123,167,204,1)',
+              backgroundColor: 'rgba(123,167,204,0.12)',
               borderWidth: 3.1,
               pointRadius: 0, tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(160,150,255,0.16)', below: 'rgba(255,85,110,0.22)' },
+              fill: { target: { value: 0 }, above: 'rgba(168,197,220,0.18)', below: 'rgba(74,123,166,0.24)' },
             },
             ...anatomyLineSet(yMin, yMax, true),
           ],
@@ -3289,12 +3289,12 @@
             {
               label: 'Sell Straddle (resultado)',
               data: sellStraddle,
-              borderColor: 'rgba(255,55,20,1)',
-              backgroundColor: 'rgba(255,55,20,0.1)',
+              borderColor: 'rgba(123,167,204,1)',
+              backgroundColor: 'rgba(123,167,204,0.12)',
               borderWidth: 3.1,
               pointRadius: 0,
               tension: 0,
-              fill: { target: { value: 0 }, above: 'rgba(120,255,160,0.15)', below: 'rgba(255,90,110,0.2)' },
+              fill: { target: { value: 0 }, above: 'rgba(168,197,220,0.18)', below: 'rgba(74,123,166,0.22)' },
             },
             ...anatomyLineSet(yMin, yMax, true),
           ],
@@ -3473,19 +3473,19 @@
             {
               label: 'Buy Straddle (precio simulado)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piS })),
-              borderColor: 'rgba(230,72,24,1)',
-              backgroundColor: 'rgba(230,72,24,0.16)',
+              borderColor: 'rgba(123,167,204,1)',
+              backgroundColor: 'rgba(123,167,204,0.18)',
               borderWidth: 3.0,
               tension: 0.25,
               pointRadius: 0,
               pointHoverRadius: 0,
-              fill: { target: { value: 0 }, above: 'rgba(230,72,24,0.24)', below: 'rgba(220,84,94,0.18)' },
+              fill: { target: { value: 0 }, above: 'rgba(123,167,204,0.26)', below: 'rgba(74,123,166,0.2)' },
             },
             {
               label: 'Sell Straddle (inverso)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piSell })),
-              borderColor: 'rgba(30, 142, 95, 0.98)',
-              backgroundColor: 'rgba(30, 142, 95, 0.12)',
+              borderColor: 'rgba(74,123,166,0.98)',
+              backgroundColor: 'rgba(74,123,166,0.14)',
               borderDash: [4, 3],
               borderWidth: 2.5,
               tension: 0.2,
@@ -3495,7 +3495,7 @@
             {
               label: 'Solo call (referencia)',
               data: liveHistory.map((h) => ({ x: h.x, y: h.piC })),
-              borderColor: 'rgba(90, 96, 195, 0.98)',
+              borderColor: 'rgba(240,237,233,0.85)',
               borderDash: [6, 4],
               borderWidth: 2.3,
               tension: 0.2,
