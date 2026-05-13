@@ -21,7 +21,7 @@ https://<tu-subdominio>.up.railway.app/denuncia-verde/
 Estos archivos ya están en el repo y son los que Railway usará:
 
 - `Procfile` — define los procesos `release` (migrate + collectstatic) y `web` (gunicorn).
-- `requirements.txt` — incluye `gunicorn`, `whitenoise`, `psycopg2-binary`, `dj-database-url`, `python-decouple`.
+- `requirements.txt` — **debe guardarse en UTF-8** (si está en UTF-16, el build falla en `pip install`). Incluye `gunicorn`, `whitenoise`, `psycopg[binary]`, `dj-database-url`, `python-decouple`, lectura de CAP (`pypdf`, `pymupdf`, `pdfplumber`, `pdfminer.six`, `openpyxl`).
 - `.python-version` y `runtime.txt` — fijan Python 3.12.
 - `Angie_presentacion/settings.py` — preparado para producción (WhiteNoise, `DATABASE_URL`, `ALLOWED_HOSTS` con `.up.railway.app`, `CSRF_TRUSTED_ORIGINS`, `SECURE_PROXY_SSL_HEADER`).
 - `.env.example` — referencia de variables; **no subas tu `.env`**.

@@ -757,9 +757,7 @@ def perfil_alumno(request):
         'bloques_creditos_json': json.dumps(chunks),
         'cap_ok': cap_ok,
         'cap_message': cap_message,
-        'cap_texto_preview': (
-            (cuenta_db.cap_texto_extraido or '')[:2500] if cuenta_db else ''
-        ),
+        'cap_extraccion_resumen': (cuenta_db.cap_extraccion_resumen or '') if cuenta_db else '',
         'cap_lectura_error': cuenta_db.cap_error_lectura if cuenta_db else '',
     }
     return render(request, 'core/perfil_alumno.html', context)
@@ -781,10 +779,11 @@ def subir_cap_alumno(request):
     archivo = request.FILES.get('cap_file')
     texto_extraido = ''
     error_lectura = ''
+    resumen = ''
     if archivo:
         raw = archivo.read()
         nombre = (archivo.name or '')[:260]
-        texto_extraido, error_lectura = extraer_texto_cap(raw, nombre)
+        texto_extraido, error_lectura, resumen = extraer_texto_cap(raw, nombre)
     else:
         nombre = (request.POST.get('nombre_simulado') or 'CAP_simulado.pdf').strip()[:260]
         error_lectura = 'Simulación sin archivo: no se ejecutó lectura automática.'
@@ -794,6 +793,7 @@ def subir_cap_alumno(request):
     cuenta.cap_nombre_archivo = nombre
     cuenta.cap_texto_extraido = (texto_extraido or '')[:500000]
     cuenta.cap_error_lectura = (error_lectura or '')[:500]
+    cuenta.cap_extraccion_resumen = (resumen or '')[:240]
     cuenta.cap_ultima_lectura_en = now
     cuenta.save()
 
@@ -802,6 +802,7 @@ def subir_cap_alumno(request):
         nombre_archivo=nombre,
         texto_extraido=cuenta.cap_texto_extraido[:500000],
         error_lectura=cuenta.cap_error_lectura,
+        extraccion_resumen=cuenta.cap_extraccion_resumen,
     )
     return redirect('core:perfil_alumno')
 

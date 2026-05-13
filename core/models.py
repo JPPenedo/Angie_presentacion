@@ -28,6 +28,11 @@ class CuentaAlumno(models.Model):
     cap_nombre_archivo = models.CharField(max_length=260, default="", blank=True)
     cap_texto_extraido = models.TextField(blank=True)
     cap_error_lectura = models.CharField(max_length=500, blank=True)
+    cap_extraccion_resumen = models.CharField(
+        max_length=240,
+        blank=True,
+        help_text="Motor elegido y estadísticas de la última lectura local del CAP.",
+    )
     cap_ultima_lectura_en = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -110,6 +115,7 @@ class CapLectura(models.Model):
     nombre_archivo = models.CharField(max_length=260)
     texto_extraido = models.TextField(blank=True)
     error_lectura = models.CharField(max_length=500, blank=True)
+    extraccion_resumen = models.CharField(max_length=240, blank=True)
     subido_en = models.DateTimeField(auto_now_add=True)
 
     class Meta:

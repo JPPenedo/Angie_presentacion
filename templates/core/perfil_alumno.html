@@ -55,7 +55,78 @@
     border: 1px dashed rgba(184,242,74,0.35); border-radius: 1rem; padding: 1.1rem;
     background: rgba(184,242,74,0.04); margin-top: 0.75rem;
   }
-  .pf-note-list { margin: 0; padding-left: 1.1rem; color: #9ca3af; font-size: 0.82rem; line-height: 1.55; }
+  .pf-cap-reader {
+    margin-top: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(201, 160, 106, 0.28);
+    background: linear-gradient(180deg, #121212 0%, #0c0c0c 100%);
+    overflow: hidden;
+  }
+  .pf-cap-reader-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: rgba(201, 160, 106, 0.07);
+    border-bottom: 1px solid rgba(201, 160, 106, 0.15);
+  }
+  .pf-cap-reader-head h3 {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #e8dcc8;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .pf-cap-reader-meta {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    max-width: 42rem;
+    line-height: 1.4;
+  }
+  .pf-cap-reader-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .pf-cap-reader-tools .btn-cap {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: #1a1a1a;
+    color: #d4d4d8;
+  }
+  .pf-cap-reader-tools .btn-cap:hover { background: #252525; color: #fafafa; }
+  .pf-cap-reader-tools .btn-cap-primary {
+    border-color: rgba(201,160,106,0.45);
+    background: rgba(201,160,106,0.12);
+    color: #c9a06a;
+  }
+  .pf-cap-reader-body {
+    max-height: min(70vh, 640px);
+    overflow: auto;
+    padding: 1rem 1.15rem 1.25rem;
+    margin: 0;
+    font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+    color: #c4c4c8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    tab-size: 4;
+  }
+  .pf-cap-reader-hint {
+    font-size: 0.68rem;
+    color: #6b7280;
+    padding: 0.35rem 1rem 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
   .pf-table-card { background: #1c1c1c; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 1.5rem; }
   .pf-table-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
   .pf-buy-pill {
@@ -189,10 +260,41 @@
       </div>
     </div>
     {% if cuenta_db and cuenta_db.cap_texto_extraido and not es_demo_alumno %}
-    <div class="mt-3 p-3 rounded-3" style="background:#0f0f0f;border:1px solid rgba(201,160,106,0.2);max-height:280px;overflow:auto;">
-      <div class="small fw-bold mb-2" style="color:#c9a06a;"><i class="bi bi-file-text me-1"></i>Lectura automática del CAP (texto extraído)</div>
-      <pre class="text-secondary small mb-0" style="white-space:pre-wrap;font-size:0.78rem;">{{ cap_texto_preview }}{% if cuenta_db.cap_texto_extraido|length > 2500 %}…{% endif %}</pre>
+    <div class="pf-cap-reader">
+      <div class="pf-cap-reader-head">
+        <div>
+          <h3><i class="bi bi-file-earmark-text"></i> Texto extraído del CAP</h3>
+          {% if cap_extraccion_resumen %}
+          <p class="pf-cap-reader-meta mb-0 mt-1"><i class="bi bi-cpu me-1"></i>{{ cap_extraccion_resumen }}</p>
+          {% endif %}
+        </div>
+        <div class="pf-cap-reader-tools">
+          <button type="button" class="btn-cap btn-cap-primary" id="cap-copy-btn" title="Copiar todo el texto">
+            <i class="bi bi-clipboard me-1"></i>Copiar texto
+          </button>
+          <span class="small text-secondary" style="font-size:0.7rem;">{{ cuenta_db.cap_texto_extraido|length }} caracteres</span>
+        </div>
+      </div>
+      <pre class="pf-cap-reader-body" id="cap-reader-full">{{ cuenta_db.cap_texto_extraido }}</pre>
+      <div class="pf-cap-reader-hint">
+        Lectura local (PyMuPDF, pdfplumber, pdfminer y pypdf). Si el PDF es escaneo sin texto embebido, sube XLSX/CSV o un PDF generado desde el sistema académico.
+      </div>
     </div>
+    <script>
+    (function () {
+      var btn = document.getElementById('cap-copy-btn');
+      var el = document.getElementById('cap-reader-full');
+      if (!btn || !el) return;
+      btn.addEventListener('click', function () {
+        var t = el.textContent || '';
+        navigator.clipboard.writeText(t).then(function () {
+          var o = btn.innerHTML;
+          btn.innerHTML = '<i class="bi bi-check2"></i> Copiado';
+          setTimeout(function () { btn.innerHTML = o; }, 1800);
+        }).catch(function () { alert('No se pudo copiar. Selecciona el texto manualmente.'); });
+      });
+    })();
+    </script>
     {% endif %}
     {% if cuenta_db and cuenta_db.cap_error_lectura and not es_demo_alumno %}
     <p class="small mb-0 mt-2" style="color:#e57373;"><i class="bi bi-exclamation-triangle me-1"></i>{{ cuenta_db.cap_error_lectura }}</p>
