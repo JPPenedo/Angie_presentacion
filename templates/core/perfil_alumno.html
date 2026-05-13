@@ -47,6 +47,44 @@
   }
   .pf-btn-light:hover { color: #1e3a8a; opacity: 0.92; }
   .pf-kpi-grid .stat-card { border-radius: 1.1rem; background: #1c1c1c; border: 1px solid rgba(255,255,255,0.06); }
+  .pf-kpi-card-btn {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    border: 1px solid transparent;
+    user-select: none;
+  }
+  .pf-kpi-card-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+  }
+  .pf-kpi-card-btn:focus-visible {
+    outline: 2px solid rgba(201,160,106,0.55);
+    outline-offset: 2px;
+  }
+  .pf-kpi-card-btn.pf-kpi-active {
+    border-color: rgba(201,160,106,0.45);
+    box-shadow: 0 0 0 2px rgba(201,160,106,0.15);
+  }
+  .pf-kpi-panels-wrap {
+    margin-bottom: 1.5rem;
+  }
+  .pf-kpi-panel {
+    display: none;
+    border-radius: 1rem;
+    border: 1px solid rgba(201,160,106,0.22);
+    background: linear-gradient(180deg, #141210 0%, #0c0c0c 100%);
+    padding: 1rem 1.15rem 1.2rem;
+  }
+  .pf-kpi-panel.pf-kpi-panel-open { display: block; }
+  .pf-kpi-panel h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #e8dcc8;
+    margin: 0 0 0.75rem;
+  }
+  .pf-kpi-panel .table { font-size: 0.78rem; margin-bottom: 0; }
+  .pf-kpi-panel .table thead th { color: #9ca3af; border-color: rgba(255,255,255,0.08); }
+  .pf-kpi-panel .table td { border-color: rgba(255,255,255,0.06); vertical-align: middle; }
   .pf-cap-card {
     background: #1c1c1c; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06);
     padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
@@ -190,9 +228,9 @@
     </div>
   </div>
 
-  <div class="row g-3 mb-4 pf-kpi-grid">
+  <div class="row g-3 mb-2 pf-kpi-grid">
     <div class="col-sm-6 col-xl-3">
-      <div class="stat-card d-flex justify-content-between align-items-center">
+      <div class="stat-card d-flex justify-content-between align-items-center {% if kpi_interactive %}pf-kpi-card-btn{% endif %}" {% if kpi_interactive %}data-pf-kpi="promedio" role="button" tabindex="0" title="Ver calificaciones por materia"{% endif %}>
         <div>
           <div class="stat-value" style="color:var(--pf-accent);">{% if promedio_global is not None %}{{ promedio_global }}{% else %}—{% endif %}</div>
           <div class="stat-label">Promedio</div>
@@ -202,7 +240,7 @@
       </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-      <div class="stat-card d-flex justify-content-between align-items-center">
+      <div class="stat-card d-flex justify-content-between align-items-center {% if kpi_interactive %}pf-kpi-card-btn{% endif %}" {% if kpi_interactive %}data-pf-kpi="creditos" role="button" tabindex="0" title="Ver materias agrupadas por créditos"{% endif %}>
         <div>
           <div class="stat-value" style="color:var(--success);">{{ total_creditos_hist }}</div>
           <div class="stat-label">Créditos contabilizados</div>
@@ -212,7 +250,7 @@
       </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-      <div class="stat-card d-flex justify-content-between align-items-center">
+      <div class="stat-card d-flex justify-content-between align-items-center {% if kpi_interactive %}pf-kpi-card-btn{% endif %}" {% if kpi_interactive %}data-pf-kpi="avance" role="button" tabindex="0" title="Ver resumen del plan y áreas"{% endif %}>
         <div>
           <div class="stat-value" style="color:var(--gold);">{{ pct_avance }}%</div>
           <div class="stat-label">Avance del plan</div>
@@ -222,7 +260,7 @@
       </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-      <div class="stat-card d-flex justify-content-between align-items-center">
+      <div class="stat-card d-flex justify-content-between align-items-center {% if kpi_interactive %}pf-kpi-card-btn{% endif %}" {% if kpi_interactive %}data-pf-kpi="materias" role="button" tabindex="0" title="Ver listado de materias del CAP"{% endif %}>
         <div>
           <div class="stat-value" style="color:var(--blue);">{% if cap_estructurado.program_summary.courses_used %}{{ cap_estructurado.program_summary.courses_used }}{% else %}{{ materias_actuales|length }}{% endif %}</div>
           <div class="stat-label">{% if cap_estructurado.program_summary.courses_used %}Materias usadas (CAP){% else %}Materias en curso{% endif %}</div>
@@ -232,6 +270,125 @@
       </div>
     </div>
   </div>
+
+  {% if kpi_interactive %}
+  <p class="small text-secondary mb-2 mt-0"><i class="bi bi-hand-index-thumb me-1"></i>Toca una tarjeta para ver el detalle (promedio por materia, créditos agrupados, avance o listado completo).</p>
+  <div class="pf-kpi-panels-wrap" id="pf-kpi-panels-root">
+    <div id="pf-kpi-panel-promedio" class="pf-kpi-panel" data-pf-panel="promedio">
+      <h4><i class="bi bi-bar-chart-line-fill me-2"></i>Promedio — materias con calificación</h4>
+      {% if kpi_promedio_filas %}
+      <div class="table-responsive">
+        <table class="table table-dark table-sm">
+          <thead>
+            <tr><th>Periodo</th><th>Código</th><th>Materia</th><th>Cr.</th><th>Calif.</th></tr>
+          </thead>
+          <tbody>
+            {% for c in kpi_promedio_filas %}
+            <tr>
+              <td>{{ c.term|default:"—" }}</td>
+              <td>{{ c.code|default:"—" }}</td>
+              <td>{{ c.name }}</td>
+              <td>{% if c.credits_nan_row %}<span class="text-warning">NaN</span>{% else %}{{ c.credits_raw|default:"—" }}{% endif %}</td>
+              <td class="fw-semibold" style="color:var(--pf-accent);">{{ c.grade }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="small text-secondary mb-0 mt-2">Promedio global mostrado en la tarjeta: {% if promedio_global is not None %}<strong class="text-light">{{ promedio_global }}</strong>{% else %}no disponible{% endif %} (ponderado sobre filas con calificación válida donde aplique).</p>
+      {% else %}
+      <p class="small text-secondary mb-0">No hay materias con calificación numérica en el CAP parseado o en el historial demo. Sube un PDF con filas en «Detail Requirements» o revisa la extracción.</p>
+      {% endif %}
+    </div>
+    <div id="pf-kpi-panel-creditos" class="pf-kpi-panel" data-pf-panel="creditos">
+      <h4><i class="bi bi-check-circle-fill me-2 text-success"></i>Créditos — materias agrupadas por valor de créditos</h4>
+      {% if kpi_grupos_credito %}
+      {% for g in kpi_grupos_credito %}
+      <h5 class="small text-info mt-3 mb-2">{{ g.label }} <span class="text-secondary">({{ g.cursos|length }} curso{{ g.cursos|length|pluralize }})</span></h5>
+      <div class="table-responsive mb-3">
+        <table class="table table-dark table-sm">
+          <thead>
+            <tr><th>Periodo</th><th>Código</th><th>Materia</th><th>Calif.</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            {% for c in g.cursos %}
+            <tr>
+              <td>{{ c.term|default:"—" }}</td>
+              <td>{{ c.code|default:"—" }}</td>
+              <td>{{ c.name }}</td>
+              <td>{{ c.grade|default:"—" }}</td>
+              <td>{% if c.completed %}Hecha{% elif c.pending %}Pendiente{% else %}—{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+      <p class="small text-secondary mb-0">Total contabilizado en tarjeta: <strong class="text-light">{{ total_creditos_hist }}</strong> cr. hacia meta <strong class="text-light">{{ meta_creditos }}</strong> (según resumen global del CAP cuando existe).</p>
+      {% else %}
+      <p class="small text-secondary mb-0">No se pudo agrupar por créditos: no hay filas de materias en el JSON del CAP. Verifica que el PDF tenga texto en «Detail Requirements» o revisa las advertencias de lectura estructurada más abajo.</p>
+      {% endif %}
+    </div>
+    <div id="pf-kpi-panel-avance" class="pf-kpi-panel" data-pf-panel="avance">
+      <h4><i class="bi bi-hourglass-split me-2" style="color:var(--gold);"></i>Avance del plan</h4>
+      {% if kpi_program_summary %}
+      <div class="row g-2 small mb-3" style="color:#d1d5db;">
+        <div class="col-md-4"><strong class="text-white">Créditos requeridos:</strong> {{ kpi_program_summary.credits_required|floatformat:2 }}</div>
+        <div class="col-md-4"><strong class="text-white">Créditos usados (resumen):</strong> {{ kpi_program_summary.credits_used|floatformat:2 }}</div>
+        <div class="col-md-4"><strong class="text-white">Avance:</strong> {{ kpi_program_summary.progress_percent|floatformat:2 }}% · <strong class="text-white">Cursos (resumen):</strong> {{ kpi_program_summary.courses_used|default:"—" }}</div>
+      </div>
+      {% else %}
+      <p class="small text-secondary mb-3">Sin bloque «Total Required» en el CAP parseado. Los valores de la tarjeta pueden ser ilustrativos hasta registrar un PDF completo.</p>
+      {% endif %}
+      {% if kpi_areas_cap %}
+      <p class="small text-secondary mb-1">Áreas del plan (Area Requirements)</p>
+      <div class="table-responsive">
+        <table class="table table-dark table-sm">
+          <thead><tr><th>Área</th><th>Met</th><th>Req.</th><th>Usados</th><th>Cursos</th></tr></thead>
+          <tbody>
+            {% for a in kpi_areas_cap %}
+            <tr>
+              <td>{{ a.area }}</td>
+              <td>{% if a.met %}Sí{% else %}No{% endif %}</td>
+              <td>{{ a.credits_required|floatformat:2 }}</td>
+              <td>{{ a.credits_used|floatformat:2 }}</td>
+              <td>{{ a.courses_used }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+    <div id="pf-kpi-panel-materias" class="pf-kpi-panel" data-pf-panel="materias">
+      <h4><i class="bi bi-journal-bookmark-fill me-2 text-primary"></i>Materias del CAP (detalle completo)</h4>
+      {% if kpi_todas_materias %}
+      <div class="table-responsive">
+        <table class="table table-dark table-sm">
+          <thead>
+            <tr><th>Periodo</th><th>Código</th><th>Materia</th><th>Cr.</th><th>Calif.</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            {% for c in kpi_todas_materias %}
+            <tr>
+              <td>{{ c.term|default:"—" }}</td>
+              <td>{{ c.code|default:"—" }}</td>
+              <td>{{ c.name }}</td>
+              <td>{% if c.credits_nan_row %}<span class="text-warning">NaN</span>{% else %}{{ c.credits_raw|default:"—" }}{% endif %}</td>
+              <td>{{ c.grade|default:"—" }}</td>
+              <td>{% if c.completed %}Hecha{% elif c.pending %}Pendiente{% else %}—{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="small text-secondary mb-0 mt-2">{{ kpi_todas_materias|length }} fila{{ kpi_todas_materias|length|pluralize }} en el parseo.</p>
+      {% else %}
+      <p class="small text-secondary mb-0">No hay listado de materias en el CAP estructurado. El número de la tarjeta puede venir solo del resumen global (<code>courses_used</code>) o de la carga en curso.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 
   <div class="pf-cap-card">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
@@ -582,6 +739,34 @@
       }
     }
   });
+  {% endif %}
+
+  {% if kpi_interactive %}
+  (function () {
+    var cards = document.querySelectorAll('[data-pf-kpi]');
+    var panels = document.querySelectorAll('.pf-kpi-panel');
+    function showPanel(id) {
+      panels.forEach(function (p) {
+        p.classList.toggle('pf-kpi-panel-open', p.id === 'pf-kpi-panel-' + id);
+      });
+      cards.forEach(function (c) {
+        c.classList.toggle('pf-kpi-active', c.getAttribute('data-pf-kpi') === id);
+      });
+      var open = document.getElementById('pf-kpi-panel-' + id);
+      if (open) open.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    cards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        showPanel(card.getAttribute('data-pf-kpi'));
+      });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          showPanel(card.getAttribute('data-pf-kpi'));
+        }
+      });
+    });
+  })();
   {% endif %}
 </script>
 {% endblock %}

@@ -20,6 +20,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST, require_http_methods
 import copy
 import json
+from collections import defaultdict
 
 from .cap_estructurado import procesar_pdf_cap_estructurado
 from .cap_lectura import extraer_texto_cap
@@ -671,6 +672,129 @@ def detalle_grupo(request, grupo_id):
     return render(request, 'core/detalle_grupo.html', context)
 
 
+def _kpi_cap_detail_context(
+    es_demo_alumno: bool,
+    historial: list,
+    cap_estructurado: dict,
+    meta_creditos: int,
+    total_creditos_hist: int,
+    pct_avance: float,
+) -> dict:
+    """
+    Agrupa materias del CAP (o historial demo) para paneles al hacer clic en las tarjetas KPI.
+    """
+    cap_estructurado = cap_estructurado or {}
+    courses = list(cap_estructurado.get('courses') or [])
+    ps = dict(cap_estructurado.get('program_summary') or {})
+    areas = list(cap_estructurado.get('areas') or [])
+
+    grupos_credito: list = []
+    promedio_filas: list = []
+    todas_materias: list = []
+
+    if courses:
+        by_cred = defaultdict(list)
+        for c in courses:
+            raw = (c.get('credits_raw') or '').strip()
+            if not raw or str(raw).lower() == 'nan':
+                label = 'NaN (sin valor en fila)'
+            else:
+                label = f'{raw} cr.'
+            by_cred[label].append(c)
+
+        def _cred_sort_key(item):
+            lbl = item[0]
+            if 'NaN' in lbl:
+                return (2, lbl)
+            try:
+                num = float(lbl.replace(' cr.', '').strip())
+                return (0, -num)
+            except ValueError:
+                return (1, lbl)
+
+        grupos_credito = [{'label': g, 'cursos': lst} for g, lst in sorted(by_cred.items(), key=_cred_sort_key)]
+
+        for c in courses:
+            g = c.get('grade')
+            if not g or str(g).lower() == 'nan':
+                continue
+            try:
+                float(g)
+            except (TypeError, ValueError):
+                continue
+            promedio_filas.append(c)
+        promedio_filas.sort(key=lambda x: float(x['grade']), reverse=True)
+
+        todas_materias = courses
+
+    elif es_demo_alumno and historial:
+        by_cred = defaultdict(list)
+        for sem in historial:
+            for m in sem.get('materias', []):
+                cr = m.get('creditos', 0)
+                label = f'{cr} cr.'
+                by_cred[label].append(
+                    {
+                        'term': '',
+                        'code': '',
+                        'name': m.get('nombre', ''),
+                        'credits_raw': str(cr),
+                        'grade': str(m.get('calificacion', '')),
+                        'source': '',
+                        'completed': True,
+                        'pending': False,
+                        'credits_nan_row': False,
+                    }
+                )
+
+        def _cred_sort_key_demo(item):
+            try:
+                num = float(item[0].replace(' cr.', ''))
+                return (0, -num)
+            except ValueError:
+                return (1, item[0])
+
+        grupos_credito = [{'label': g, 'cursos': lst} for g, lst in sorted(by_cred.items(), key=_cred_sort_key_demo)]
+
+        for sem in historial:
+            for m in sem.get('materias', []):
+                promedio_filas.append(
+                    {
+                        'term': '',
+                        'code': '',
+                        'name': m.get('nombre', ''),
+                        'credits_raw': str(m.get('creditos', '')),
+                        'grade': str(m.get('calificacion', '')),
+                        'source': '',
+                        'completed': True,
+                        'pending': False,
+                        'credits_nan_row': False,
+                    }
+                )
+        promedio_filas.sort(key=lambda x: float(x['grade']), reverse=True)
+        todas_materias = [c for g in grupos_credito for c in g['cursos']]
+
+        if not ps.get('credits_required'):
+            ps = {
+                'credits_required': float(meta_creditos),
+                'credits_used': float(total_creditos_hist),
+                'progress_percent': float(pct_avance),
+                'courses_used': len(todas_materias),
+            }
+
+    has_summary_or_areas = bool(ps) or bool(areas)
+    enabled = bool(grupos_credito or todas_materias or has_summary_or_areas)
+
+    return {
+        'kpi_grupos_credito': grupos_credito,
+        'kpi_promedio_filas': promedio_filas,
+        'kpi_areas_cap': areas,
+        'kpi_program_summary': ps,
+        'kpi_todas_materias': todas_materias,
+        'kpi_panel_enabled': enabled,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Vista alumno: perfil
 # ---------------------------------------------------------------------------
@@ -774,6 +898,19 @@ def perfil_alumno(request):
     else:
         chunks = [0, 0, 0, meta_creditos]
 
+    cap_struct_ctx = (cuenta_db.cap_estructurado or {}) if cuenta_db else {}
+    kpi_cap = _kpi_cap_detail_context(
+        es_demo_alumno,
+        historial,
+        cap_struct_ctx,
+        meta_creditos,
+        total_creditos_hist,
+        float(pct_avance) if pct_avance is not None else 0.0,
+    )
+    kpi_interactive = kpi_cap['kpi_panel_enabled'] or es_demo_alumno or bool(
+        cuenta_db and cuenta_db.cap_subido_en
+    )
+
     context = {
         'usuario': usuario,
         'grupos_nav': [],
@@ -790,8 +927,10 @@ def perfil_alumno(request):
         'cap_ok': cap_ok,
         'cap_message': cap_message,
         'cap_extraccion_resumen': (cuenta_db.cap_extraccion_resumen or '') if cuenta_db else '',
-        'cap_estructurado': (cuenta_db.cap_estructurado or {}) if cuenta_db else {},
+        'cap_estructurado': cap_struct_ctx,
         'cap_lectura_error': cuenta_db.cap_error_lectura if cuenta_db else '',
+        'kpi_interactive': kpi_interactive,
+        **kpi_cap,
     }
     return render(request, 'core/perfil_alumno.html', context)
 
