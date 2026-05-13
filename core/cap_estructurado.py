@@ -728,6 +728,23 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     ]
 
     nan_completed = [c for c in courses if c.get("credits_nan_row") and c.get("completed")]
+    numeric_credits_sum_detected = round(
+        sum(float(c.get("credits_num")) for c in completed_courses if c.get("credits_num") is not None),
+        2,
+    )
+    nan_credit_courses = 0
+    zero_credit_courses = 0
+    missing_credit_courses = 0
+    for c in courses:
+        credits_raw = (c.get("credits_raw") or "").strip()
+        credits_num = c.get("credits_num")
+        if credits_num is None:
+            if credits_raw.lower() == "nan":
+                nan_credit_courses += 1
+            else:
+                missing_credit_courses += 1
+        elif float(credits_num) == 0.0:
+            zero_credit_courses += 1
 
     warnings: List[str] = []
     if not program_summary.get("credits_required"):
@@ -735,11 +752,25 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     if not courses:
         warnings.append("No se detectaron filas de materias en Detail Requirements (revisar formato del PDF).")
 
+    official_summary = {
+        "credits_required_reported": float(program_summary.get("credits_required") or 0.0),
+        "credits_used_reported": float(program_summary.get("credits_used") or 0.0),
+        "courses_used_reported": int(program_summary.get("courses_used") or 0),
+    }
+    parser_extraction_summary = {
+        "courses_detected": len(courses),
+        "completed_courses_detected": len(completed_courses),
+        "numeric_credits_sum_detected": numeric_credits_sum_detected,
+        "nan_credit_courses": nan_credit_courses,
+        "zero_credit_courses": zero_credit_courses,
+        "missing_credit_courses": missing_credit_courses,
+    }
+
     debug = {
         "total_courses_raw": len(courses_pre),
         "total_courses_normalized": len(courses),
         "duplicates_removed": int(debug_normalization_final.get("duplicates_removed", 0)),
-        "courses_with_nan_credits": len([c for c in courses if c.get("credits_num") is None]),
+        "courses_with_nan_credits": nan_credit_courses,
         "courses_with_noise_trimmed": int(
             debug_normalization_final.get("names_trimmed_by_noise_rules", 0)
         ),
@@ -762,6 +793,8 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     result: Dict[str, Any] = {
         "student": student,
         "program_summary": program_summary,
+        "official_summary": official_summary,
+        "parser_extraction_summary": parser_extraction_summary,
         "areas": areas,
         "courses": courses,
         "courses_normalized": courses_normalized,
@@ -821,6 +854,19 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                     "credits_used": 0,
                     "courses_used": 0,
                     "progress_percent": 0,
+                },
+                "official_summary": {
+                    "credits_required_reported": 0,
+                    "credits_used_reported": 0,
+                    "courses_used_reported": 0,
+                },
+                "parser_extraction_summary": {
+                    "courses_detected": 0,
+                    "completed_courses_detected": 0,
+                    "numeric_credits_sum_detected": 0,
+                    "nan_credit_courses": 0,
+                    "zero_credit_courses": 0,
+                    "missing_credit_courses": 0,
                 },
                 "areas": [],
                 "courses": [],

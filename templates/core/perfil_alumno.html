@@ -434,12 +434,29 @@
     {% if cap_estructurado.courses or cap_estructurado.areas or cap_estructurado.program_summary.credits_required %}
     <div class="pf-cap-struct mt-3">
       <h3><i class="bi bi-diagram-3 me-1"></i>Lectura estructurada (solo texto embebido, PyMuPDF)</h3>
-      {% if cap_estructurado.program_summary.credits_required %}
+      {% if cap_estructurado.program_summary.credits_required or cap_estructurado.official_summary.credits_required_reported %}
       <div class="row g-2 pf-cap-stat mb-3">
-        <div class="col-md-4"><strong>Créditos requeridos:</strong> {{ cap_estructurado.program_summary.credits_required|floatformat:2 }}</div>
-        <div class="col-md-4"><strong>Créditos usados (resumen global):</strong> {{ cap_estructurado.program_summary.credits_used|floatformat:2 }}</div>
-        <div class="col-md-4"><strong>Avance:</strong> {{ cap_estructurado.program_summary.progress_percent|floatformat:2 }}% · <strong>Cursos en resumen:</strong> {{ cap_estructurado.program_summary.courses_used }}</div>
-        <div class="col-12 small text-secondary">Totales del bloque «Total Required» del PDF (no suma de filas con NaN).</div>
+        <div class="col-12"><strong class="text-white">CAP oficial</strong></div>
+        <div class="col-md-4"><strong>Créditos reportados:</strong> {{ cap_estructurado.official_summary.credits_used_reported|default:cap_estructurado.program_summary.credits_used|floatformat:2 }} / {{ cap_estructurado.official_summary.credits_required_reported|default:cap_estructurado.program_summary.credits_required|floatformat:2 }}</div>
+        <div class="col-md-4"><strong>Cursos reportados:</strong> {{ cap_estructurado.official_summary.courses_used_reported|default:cap_estructurado.program_summary.courses_used }}</div>
+        <div class="col-md-4"><strong>Avance oficial:</strong> {{ cap_estructurado.program_summary.progress_percent|floatformat:2 }}%</div>
+
+        <div class="col-12 mt-2"><strong class="text-white">Lectura del parser</strong></div>
+        <div class="col-md-4"><strong>Materias detectadas:</strong> {{ cap_estructurado.parser_extraction_summary.courses_detected|default:0 }}</div>
+        <div class="col-md-4"><strong>Créditos numéricos sumados:</strong> {{ cap_estructurado.parser_extraction_summary.numeric_credits_sum_detected|default:0|floatformat:2 }}</div>
+        <div class="col-md-4"><strong>Materias con NaN:</strong> {{ cap_estructurado.parser_extraction_summary.nan_credit_courses|default:0 }}</div>
+        <div class="col-md-4"><strong>Materias con 0 créditos:</strong> {{ cap_estructurado.parser_extraction_summary.zero_credit_courses|default:0 }}</div>
+        <div class="col-md-4"><strong>Completadas detectadas:</strong> {{ cap_estructurado.parser_extraction_summary.completed_courses_detected|default:0 }}</div>
+        <div class="col-md-4"><strong>Crédito faltante/ilegible:</strong> {{ cap_estructurado.parser_extraction_summary.missing_credit_courses|default:0 }}</div>
+
+        {% if cap_estructurado.official_summary.credits_used_reported and cap_estructurado.official_summary.credits_used_reported != cap_estructurado.parser_extraction_summary.numeric_credits_sum_detected %}
+        <div class="col-12">
+          <div class="alert alert-warning py-2 px-3 small mb-0 mt-2">
+            El CAP reporta {{ cap_estructurado.official_summary.credits_used_reported|floatformat:2 }} créditos, pero el parser solo pudo sumar {{ cap_estructurado.parser_extraction_summary.numeric_credits_sum_detected|floatformat:2 }} desde filas individuales porque varias materias tienen créditos NaN o no fueron detectadas.
+          </div>
+        </div>
+        {% endif %}
+        <div class="col-12 small text-secondary">Separación diagnóstica: el resumen oficial sale de «Total Required»; la suma del parser sale solo de filas de materias detectadas.</div>
       </div>
       {% endif %}
       {% if cap_estructurado.areas %}
