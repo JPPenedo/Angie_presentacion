@@ -13,6 +13,11 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import DatabaseError
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+import copy
+import json
+
 from .models import CuentaAlumno
 
 # ---------------------------------------------------------------------------
@@ -35,8 +40,14 @@ USUARIOS = {
         'nombre': 'Juan Pablo Penedo',
         'matricula': 'AU210034',
         'semestre_actual': 10,
-        'creditos_totales': 240,
-        'creditos_acreditados': 208,
+        'creditos_totales': 360,
+        'creditos_acreditados': 273,
+    },
+    '26000000': {
+        'password': 'ADMINISTRACION26',
+        'rol': 'director',
+        'nombre': 'Dirección Académica',
+        'cargo': 'Administración — registros, CAP y visión global',
     },
     '90000003': {
         'password': 'demo123',
@@ -364,6 +375,15 @@ def _usuario_sesion(request):
     return request.session.get('usuario')
 
 
+def _redirect_home_for_rol(rol):
+    """Tras login o cuando una vista no aplica al rol del usuario."""
+    if rol == 'alumno':
+        return redirect('core:perfil_alumno')
+    if rol == 'director':
+        return redirect('core:panel_director')
+    return redirect('core:dashboard')
+
+
 def _require_login(request):
     """
     Profesor: guardia de acceso.
@@ -388,7 +408,7 @@ def login_view(request):
     """
     if _usuario_sesion(request):
         u = _usuario_sesion(request)
-        return redirect('core:perfil_alumno' if u['rol'] == 'alumno' else 'core:dashboard')
+        return _redirect_home_for_rol(u['rol'])
 
     error = None
     info = None
@@ -412,9 +432,7 @@ def login_view(request):
                 **({k: usuario[k] for k in ('matricula', 'semestre_actual', 'creditos_totales', 'creditos_acreditados')}
                    if usuario['rol'] == 'alumno' else {'cargo': usuario.get('cargo', '')}),
             }
-            if usuario['rol'] == 'alumno':
-                return redirect('core:perfil_alumno')
-            return redirect('core:dashboard')
+            return _redirect_home_for_rol(usuario['rol'])
 
         try:
             cuenta = CuentaAlumno.objects.filter(id_institucional=dato_acceso).first()
@@ -437,11 +455,11 @@ def login_view(request):
                 'nombre': cuenta.nombre_completo,
                 'matricula': cuenta.id_institucional,
                 'semestre_actual': 1 if cuenta.rol == 'alumno' else None,
-                'creditos_totales': 240,
+                'creditos_totales': 360 if cuenta.rol == 'alumno' else None,
                 'creditos_acreditados': 0 if cuenta.rol == 'alumno' else None,
                 'cargo': 'Coordinación Académica' if cuenta.rol == 'coordinacion' else ('Docente' if cuenta.rol == 'docente' else ''),
             }
-            return redirect('core:perfil_alumno' if cuenta.rol == 'alumno' else 'core:dashboard')
+            return _redirect_home_for_rol(cuenta.rol)
         else:
             error = 'ID institucional o contraseña incorrectos.'
 
@@ -463,7 +481,7 @@ def crear_cuenta_view(request):
     """
     if _usuario_sesion(request):
         u = _usuario_sesion(request)
-        return redirect('core:perfil_alumno' if u['rol'] == 'alumno' else 'core:dashboard')
+        return _redirect_home_for_rol(u['rol'])
 
     error = None
     form_data = {
@@ -545,7 +563,7 @@ def dashboard(request):
 
     usuario = _usuario_sesion(request)
     if usuario['rol'] == 'alumno':
-        return redirect('core:perfil_alumno')
+        return _redirect_home_for_rol(usuario['rol'])
 
     grupos_con_stats = []
     total_alumnos = 0
@@ -604,7 +622,7 @@ def detalle_grupo(request, grupo_id):
 
     usuario = _usuario_sesion(request)
     if usuario['rol'] == 'alumno':
-        return redirect('core:perfil_alumno')
+        return _redirect_home_for_rol(usuario['rol'])
 
     # Profesor: validación defensiva para no renderizar IDs inválidos.
     if grupo_id not in GRUPOS:
@@ -628,8 +646,7 @@ def detalle_grupo(request, grupo_id):
 
 def perfil_alumno(request):
     """
-    Profesor: tablero personal del alumno.
-    Resume avance curricular, materias en curso y desempeño histórico.
+    Tablero personal del alumno: avance hacia 360 cr., CAP, historial y coherencia con la expo actuarial.
     """
     redir = _require_login(request)
     if redir:
@@ -637,38 +654,133 @@ def perfil_alumno(request):
 
     usuario = _usuario_sesion(request)
     if usuario['rol'] != 'alumno':
-        return redirect('core:dashboard')
+        return _redirect_home_for_rol(usuario['rol'])
 
-    # Profesor: calcula un único promedio acumulado para la tarjeta principal del perfil.
-    todas_califs = [
-        m['calificacion']
-        for sem in HISTORIAL_ALUMNO
-        for m in sem['materias']
-    ]
-    promedio_global = round(sum(todas_califs) / len(todas_califs), 2)
-    total_creditos_hist = sum(
-        m['creditos']
-        for sem in HISTORIAL_ALUMNO
-        for m in sem['materias']
-    )
-    pct_avance = round(total_creditos_hist / usuario['creditos_totales'] * 100)
+    es_demo_alumno = usuario['correo'] == '90000002'
+    cuenta_db = None
+    try:
+        cuenta_db = CuentaAlumno.objects.filter(id_institucional=usuario['matricula']).first()
+    except DatabaseError:
+        cuenta_db = None
 
-    # Profesor: enriquece cada semestre con `prom_semestre` para evitar recalcular en template.
-    for sem in HISTORIAL_ALUMNO:
-        califs_sem = [m['calificacion'] for m in sem['materias']]
-        sem['prom_semestre'] = round(sum(califs_sem) / len(califs_sem), 2)
+    meta_creditos = usuario.get('creditos_totales') or 360
 
-    # Profesor: último paso: empaquetar todo en `context` y renderizar.
+    if es_demo_alumno:
+        historial = copy.deepcopy(HISTORIAL_ALUMNO)
+        materias_actuales = copy.deepcopy(MATERIAS_ACTUALES)
+        todas_califs = [
+            m['calificacion'] for sem in historial for m in sem['materias']
+        ]
+        promedio_global = round(sum(todas_califs) / len(todas_califs), 2)
+        total_creditos_hist = sum(m['creditos'] for sem in historial for m in sem['materias'])
+        pct_avance = min(100, round(total_creditos_hist / meta_creditos * 100))
+        for sem in historial:
+            califs_sem = [m['calificacion'] for m in sem['materias']]
+            sem['prom_semestre'] = round(sum(califs_sem) / len(califs_sem), 2)
+        cap_ok = True
+        cap_message = 'Cuenta demo con historial precargado (sin flujo de subida de CAP).'
+    else:
+        historial = []
+        materias_actuales = []
+        promedio_global = None
+        total_creditos_hist = 0
+        pct_avance = 0
+        if cuenta_db and cuenta_db.cap_subido_en:
+            total_creditos_hist = 48
+            pct_avance = min(100, round(total_creditos_hist / meta_creditos * 100))
+            promedio_global = 8.4
+            cap_ok = True
+            cap_message = (
+                'CAP registrado en plataforma. En el producto completo aquí aparecerían créditos '
+                'oficiales, materias desbloqueadas (grafo de prerrequisitos) y proyección hacia los '
+                '360 cr., como en la exposición actuarial.'
+            )
+        else:
+            cap_ok = bool(cuenta_db and cuenta_db.cap_subido_en)
+            cap_message = (
+                'Sube tu CAP para alinear esta vista con el flujo de la exposición: diagnóstico, '
+                'red de desbloqueos y métricas tipo Bernoulli / Normal sobre tu historial.'
+            )
+
+    # Bloques de créditos por etapa del plan (gráfico tipo portafolio)
+    bloques_labels = ['1°–3° sem.', '4°–6° sem.', '7°–9° sem.', 'En curso / meta']
+    if es_demo_alumno:
+        chunks = [
+            sum(m['creditos'] for sem in historial[0:3] for m in sem['materias']),
+            sum(m['creditos'] for sem in historial[3:6] for m in sem['materias']),
+            sum(m['creditos'] for sem in historial[6:9] for m in sem['materias']),
+            max(0, meta_creditos - sum(m['creditos'] for sem in historial for m in sem['materias'])),
+        ]
+    elif cuenta_db and cuenta_db.cap_subido_en:
+        chunks = [12, 14, 14, meta_creditos - 48]
+        chunks = [max(0, c) for c in chunks]
+    else:
+        chunks = [0, 0, 0, meta_creditos]
+
     context = {
         'usuario': usuario,
         'grupos_nav': [],
-        'historial': HISTORIAL_ALUMNO,
-        'materias_actuales': MATERIAS_ACTUALES,
+        'historial': historial,
+        'materias_actuales': materias_actuales,
         'promedio_global': promedio_global,
         'total_creditos_hist': total_creditos_hist,
         'pct_avance': pct_avance,
+        'cuenta_db': cuenta_db,
+        'es_demo_alumno': es_demo_alumno,
+        'meta_creditos': meta_creditos,
+        'bloques_labels_json': json.dumps(bloques_labels),
+        'bloques_creditos_json': json.dumps(chunks),
+        'cap_ok': cap_ok,
+        'cap_message': cap_message,
     }
     return render(request, 'core/perfil_alumno.html', context)
+
+
+@require_POST
+def subir_cap_alumno(request):
+    """Registra en base de datos la subida simulada del CAP (cuentas creadas en el sitio)."""
+    redir = _require_login(request)
+    if redir:
+        return redir
+    usuario = _usuario_sesion(request)
+    if usuario['rol'] != 'alumno':
+        return _redirect_home_for_rol(usuario['rol'])
+    try:
+        cuenta = CuentaAlumno.objects.filter(id_institucional=usuario['matricula']).first()
+    except DatabaseError:
+        return redirect('core:perfil_alumno')
+    if cuenta and cuenta.rol == 'alumno':
+        archivo = request.FILES.get('cap_file')
+        nombre = (getattr(archivo, 'name', '') or '').strip()
+        if not nombre:
+            nombre = (request.POST.get('nombre_simulado') or 'CAP_academico.pdf').strip()[:260]
+        cuenta.cap_subido_en = timezone.now()
+        cuenta.cap_nombre_archivo = nombre[:260]
+        cuenta.save()
+    return redirect('core:perfil_alumno')
+
+
+def panel_director(request):
+    """Panel administrativo: cuentas registradas y estado de subida de CAP."""
+    redir = _require_login(request)
+    if redir:
+        return redir
+    usuario = _usuario_sesion(request)
+    if usuario['rol'] != 'director':
+        return _redirect_home_for_rol(usuario['rol'])
+    try:
+        cuentas = list(CuentaAlumno.objects.all().order_by('-created_at'))
+    except DatabaseError:
+        cuentas = []
+    context = {
+        'usuario': usuario,
+        'grupos_nav': _grupos_nav(),
+        'cuentas': cuentas,
+        'stat_total': len(cuentas),
+        'stat_con_cap': sum(1 for c in cuentas if c.cap_subido_en),
+        'stat_alumnos': sum(1 for c in cuentas if c.rol == 'alumno'),
+    }
+    return render(request, 'core/panel_director.html', context)
 
 
 def expo_actuaria_view(request):

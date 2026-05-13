@@ -11,6 +11,7 @@ class CuentaAlumno(models.Model):
         ("alumno", "Alumno"),
         ("docente", "Docente"),
         ("coordinacion", "Coordinación académica"),
+        ("director", "Dirección / Administración"),
     )
 
     correo_institucional = models.EmailField(unique=True)
@@ -23,6 +24,8 @@ class CuentaAlumno(models.Model):
     reset_token = models.CharField(max_length=64, default="", blank=True, db_index=True)
     reset_token_expires_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    cap_subido_en = models.DateTimeField(null=True, blank=True)
+    cap_nombre_archivo = models.CharField(max_length=260, default="", blank=True)
 
     class Meta:
         ordering = ["-created_at"]

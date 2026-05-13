@@ -36,6 +36,7 @@ urlpatterns = [
     ),
     # Cierre de sesión y limpieza de datos de autenticación.
     path('logout/',              views.logout_view,    name='logout'),
-    # Vista principal del alumno (perfil académico).
+    path('panel-director/',      views.panel_director, name='panel_director'),
+    path('mi-perfil/subir-cap/', views.subir_cap_alumno, name='subir_cap'),
     path('mi-perfil/',           views.perfil_alumno,  name='perfil_alumno'),
 ]

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Panel administrativo{% endblock %}
+
+{% block content %}
+<div class="pd-header mb-4 d-flex flex-wrap justify-content-between align-items-start gap-3">
+  <div>
+    <p class="text-muted small mb-1"><i class="bi bi-shield-lock me-1"></i>Administración · visión de registros</p>
+    <h1 class="h3 fw-bold mb-0 text-white">Panel administrativo</h1>
+    <p class="text-muted small mt-2 mb-0" style="max-width:36rem;">
+      Usuarios que crearon cuenta en la plataforma y estado de la subida del CAP (prototipo).
+      Los accesos demo internos no aparecen aquí; solo filas en base de datos.
+    </p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <div class="pd-stat-pill"><span class="pd-stat-n">{{ stat_total }}</span><span class="pd-stat-l">cuentas</span></div>
+    <div class="pd-stat-pill"><span class="pd-stat-n">{{ stat_alumnos }}</span><span class="pd-stat-l">alumnos</span></div>
+    <div class="pd-stat-pill accent"><span class="pd-stat-n">{{ stat_con_cap }}</span><span class="pd-stat-l">con CAP</span></div>
+  </div>
+</div>
+
+<div class="card-dark pd-table-card overflow-hidden">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 px-4 py-3 border-bottom border-secondary border-opacity-25">
+    <span class="fw-semibold text-white"><i class="bi bi-people-fill me-2 text-success"></i>Registros y estado del CAP</span>
+    <a href="{% url 'core:expo_actuaria' %}" class="btn btn-sm btn-outline-secondary rounded-pill">Ver exposición actuarial</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-dark table-hover mb-0 align-middle pd-table">
+      <thead>
+        <tr class="pd-thead-row">
+          <th>Nombre</th>
+          <th>ID institucional</th>
+          <th>Rol</th>
+          <th>Correo (registro)</th>
+          <th>Verificado</th>
+          <th>CAP</th>
+          <th>Alta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in cuentas %}
+        <tr>
+          <td class="fw-semibold">{{ c.nombre_completo }}</td>
+          <td><code class="text-info">{{ c.id_institucional }}</code></td>
+          <td><span class="badge rounded-pill pd-badge-{{ c.rol }}">{{ c.get_rol_display }}</span></td>
+          <td class="small text-muted">{{ c.correo_institucional }}</td>
+          <td>{% if c.is_verified %}<span class="text-success"><i class="bi bi-check-circle-fill"></i></span>{% else %}<span class="text-warning"><i class="bi bi-clock"></i></span>{% endif %}</td>
+          <td>
+            {% if c.cap_subido_en %}
+            <span class="text-success small"><i class="bi bi-file-earmark-check me-1"></i>{{ c.cap_nombre_archivo|default:"archivo" }}</span>
+            <div class="text-muted" style="font-size:0.7rem;">{{ c.cap_subido_en|date:"d/m/Y H:i" }}</div>
+            {% else %}
+            <span class="text-muted small">Sin subir</span>
+            {% endif %}
+          </td>
+          <td class="small text-muted">{{ c.created_at|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-5">Aún no hay cuentas registradas. Cuando un usuario cree cuenta y suba su CAP, aparecerá aquí.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .pd-stat-pill {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    min-width: 5.5rem;
+  }
+  .pd-stat-pill.accent { border-color: rgba(74,222,128,0.35); background: rgba(74,222,128,0.08); }
+  .pd-stat-n { display: block; font-size: 1.35rem; font-weight: 700; color: #fff; line-height: 1.1; }
+  .pd-stat-l { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .pd-table-card { border-radius: 1.15rem; }
+  .pd-thead-row th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted) !important; border: none; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  .pd-table td { border-color: rgba(255,255,255,0.06); font-size: 0.85rem; }
+  .pd-badge-alumno { background: rgba(74,222,128,0.15); color: #86efac; }
+  .pd-badge-docente { background: rgba(96,165,250,0.15); color: #93c5fd; }
+  .pd-badge-coordinacion { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .pd-badge-director { background: rgba(167,139,250,0.12); color: #c4b5fd; }
+</style>
+{% endblock %}

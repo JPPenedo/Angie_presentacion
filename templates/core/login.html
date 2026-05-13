@@ -193,10 +193,12 @@
 
       <div class="helper-box">
         <div style="margin-bottom:0.35rem;"><strong>Acceso demo rápido</strong></div>
-        <button class="quick-btn" onclick="fillDemo('90000001','demo123')">Docente demo</button>
-        <button class="quick-btn" onclick="fillDemo('90000002','demo123')">Alumno demo</button>
-        <button class="quick-btn" onclick="fillDemo('90000003','demo123')">Coordinación demo</button>
+        <button type="button" class="quick-btn" onclick="fillDemo('90000001','demo123')">Docente demo</button>
+        <button type="button" class="quick-btn" onclick="fillDemo('90000002','demo123')">Alumno demo</button>
+        <button type="button" class="quick-btn" onclick="fillDemo('90000003','demo123')">Coordinación demo</button>
+        <button type="button" class="quick-btn" onclick="fillDemo('26000000','ADMINISTRACION26')" style="border-color:rgba(167,139,250,0.45);">Director (admin)</button>
       </div>
+      <p style="font-size:0.72rem;color:var(--muted);margin:0.6rem 0 0;text-align:center;">Director: ID <code style="color:var(--gold);">26000000</code> · contraseña indicada en el botón</p>
 
       <a href="{% url 'core:crear_cuenta' %}" class="helper-link">
         <i class="bi bi-person-plus me-1"></i>¿No tienes cuenta? Crear cuenta

@@ -1,257 +1,380 @@
 {% extends "base.html" %}
-{% block title %}Mi Perfil Académico{% endblock %}
+{% block title %}Mi portafolio académico{% endblock %}
 
-{% block content %}
-
-<!-- Profesor: identificación académica del alumno.
-     Primer bloque para confirmar persona, semestre y periodo evaluado. -->
-<!-- Header -->
-<div class="d-flex justify-content-between align-items-start mb-4">
-  <div>
-    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.2rem;">
-      <i class="bi bi-person-badge me-1"></i>{{ usuario.matricula }}
-      <span style="margin:0 0.4rem;color:var(--text-subtle);">/</span>
-      {{ usuario.semestre_actual }}° Semestre
-      <span style="margin:0 0.4rem;color:var(--text-subtle);">/</span>
-      Ene–May 2026
-    </div>
-    <h1 style="font-size:1.35rem;font-weight:700;color:var(--text);margin:0;">Mi Perfil Académico</h1>
-  </div>
-  <span class="riesgo-badge badge-accent" style="font-size:0.78rem;">
-    <i class="bi bi-award-fill"></i>Licenciatura en Actuaría
-  </span>
-</div>
-
-<!-- Profesor: KPIs personales.
-     Estos indicadores responden: ¿cómo voy?, ¿cuánto me falta?, ¿qué estoy cursando? -->
-<!-- Métricas -->
-<div class="row g-3 mb-4">
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card d-flex justify-content-between align-items-center">
-      <div>
-        <div class="stat-value" style="color:var(--accent);">{{ promedio_global }}</div>
-        <div class="stat-label">Promedio Acumulado</div>
-        <div class="stat-delta" style="color:var(--text-muted);">semestres 1°–9°</div>
-      </div>
-      <div class="stat-icon" style="background:var(--accent-dim);color:var(--accent);">
-        <i class="bi bi-bar-chart-line-fill"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card d-flex justify-content-between align-items-center">
-      <div>
-        <div class="stat-value" style="color:var(--success);">{{ total_creditos_hist }}</div>
-        <div class="stat-label">Créditos Acreditados</div>
-        <div class="stat-delta" style="color:var(--text-muted);">de {{ usuario.creditos_totales }} totales</div>
-      </div>
-      <div class="stat-icon" style="background:var(--success-dim);color:var(--success);">
-        <i class="bi bi-check-circle-fill"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card d-flex justify-content-between align-items-center">
-      <div>
-        <div class="stat-value" style="color:var(--gold);">{{ pct_avance }}%</div>
-        <div class="stat-label">Avance de la Carrera</div>
-        <div class="stat-delta" style="color:var(--text-muted);">hacia la titulación</div>
-      </div>
-      <div class="stat-icon" style="background:var(--gold-dim);color:var(--gold);">
-        <i class="bi bi-hourglass-split"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="stat-card d-flex justify-content-between align-items-center">
-      <div>
-        <div class="stat-value" style="color:var(--blue);">{{ materias_actuales|length }}</div>
-        <div class="stat-label">Materias en Curso</div>
-        <div class="stat-delta" style="color:var(--text-muted);">10° semestre</div>
-      </div>
-      <div class="stat-icon" style="background:var(--blue-dim);color:var(--blue);">
-        <i class="bi bi-journal-bookmark-fill"></i>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Profesor: progreso contra plan de estudios.
-     Convierte créditos acumulados en una lectura visual de avance real. -->
-<!-- Progreso carrera -->
-<div class="card-dark" style="padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
-    <span style="font-size:0.88rem;font-weight:600;color:var(--text);">
-      <i class="bi bi-mortarboard me-2" style="color:var(--accent);"></i>Progreso hacia la titulación
-    </span>
-    <span style="font-size:0.78rem;color:var(--text-muted);">
-      {{ total_creditos_hist }} / {{ usuario.creditos_totales }} créditos
-    </span>
-  </div>
-  <div class="prog-track" style="height:12px;">
-    <div class="prog-fill prog-accent" style="width:{{ pct_avance }}%;"></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;margin-top:0.4rem;font-size:0.7rem;color:var(--text-subtle);">
-    <span>1° Semestre</span><span>5° Semestre</span><span>10° Semestre</span>
-  </div>
-</div>
-
-
-<!-- Profesor: vista táctica del semestre actual.
-     Cada tarjeta te muestra desempeño parcial y cumplimiento de entregas. -->
-<!-- ══ MATERIAS EN CURSO ══ -->
-<div class="section-header">
-  <span class="pillar-badge" style="background:var(--gold-dim);color:var(--gold);border-color:rgba(74,222,128,0.3);">
-    10° Sem
-  </span>
-  <h2 class="section-title">Materias en Curso — Ene–May 2026</h2>
-</div>
-
-<div class="row g-3 mb-4">
-  <!-- Profesor: loop sobre `materias_actuales`.
-       La plantilla no calcula notas; solo presenta lo que envía la vista. -->
-  {% for m in materias_actuales %}
-  <div class="col-md-6">
-    <div class="materia-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.9rem;">
-        <div style="flex:1;min-width:0;padding-right:0.75rem;">
-          <div style="font-size:0.9rem;font-weight:700;color:var(--text);">{{ m.nombre }}</div>
-          <div style="font-size:0.73rem;color:var(--text-muted);">{{ m.docente }}</div>
-        </div>
-        <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);
-              color:var(--text-muted);border-radius:0.4rem;padding:0.15rem 0.5rem;
-              font-size:0.7rem;white-space:nowrap;">{{ m.creditos }} créditos</span>
-      </div>
-
-      <div style="margin-bottom:0.85rem;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:0.72rem;color:var(--text-muted);">Avance del curso</span>
-          <span style="font-size:0.72rem;font-weight:700;color:var(--accent);">{{ m.avance }}%</span>
-        </div>
-        <div class="prog-track">
-          <div class="prog-fill prog-accent" style="width:{{ m.avance }}%;"></div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
-        <div class="mini-stat">
-          <div style="font-size:1.1rem;font-weight:700;
-            color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}var(--success){% elif m.calificacion_parcial >= 7 %}var(--accent){% else %}var(--warning){% endif %}{% else %}var(--text-subtle){% endif %};">
-            {% if m.calificacion_parcial %}{{ m.calificacion_parcial }}{% else %}—{% endif %}
-          </div>
-          <div style="font-size:0.64rem;color:var(--text-muted);">Cal. parcial</div>
-        </div>
-        <div class="mini-stat">
-          <div style="font-size:1.1rem;font-weight:700;color:var(--text-muted);">
-            {{ m.entregas }}/{{ m.total_entregas }}
-          </div>
-          <div style="font-size:0.64rem;color:var(--text-muted);">Entregas</div>
-        </div>
-        <div class="mini-stat">
-          <div style="font-size:1.1rem;font-weight:700;color:var(--blue);">
-            {% widthratio m.entregas m.total_entregas 100 %}%
-          </div>
-          <div style="font-size:0.64rem;color:var(--text-muted);">Entregado</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
-
-
-<!-- Profesor: visión histórica para detectar tendencias (mejora, estabilidad o caída). -->
-<!-- ══ HISTORIAL ACADÉMICO ══ -->
-<div class="section-header">
-  <span class="pillar-badge">Historial</span>
-  <h2 class="section-title">Historial Académico</h2>
-  <span style="margin-left:auto;font-size:0.78rem;color:var(--text-muted);">
-    Semestres 1°–9° · Materias acreditadas
-  </span>
-</div>
-
-<!-- Profesor: gráfica longitudinal.
-     Úsala para analizar evolución, no solo foto instantánea del semestre. -->
-<!-- Gráfica evolución -->
-<div class="chart-card mb-4">
-  <div class="chart-title">
-    <i class="bi bi-graph-up me-2" style="color:var(--accent);"></i>Evolución del Promedio por Semestre
-  </div>
-  <canvas id="chartEvolucion" height="70"></canvas>
-</div>
-
-<!-- Profesor: acordeón por semestre.
-     Mantiene detalle completo sin saturar la pantalla principal. -->
-<!-- Acordeón historial -->
-<div id="historialAcordeon" style="margin-bottom:2rem;">
-  {% for sem in historial %}
-  <div class="acc-item">
-    <button class="acc-btn {% if not forloop.last %}collapsed{% endif %}"
-            data-bs-toggle="collapse"
-            data-bs-target="#sem{{ forloop.counter }}">
-      <span style="min-width:120px;">{{ sem.semestre }}</span>
-      <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">{{ sem.periodo }}</span>
-      <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);
-            color:var(--text-muted);border-radius:0.35rem;padding:0.1rem 0.5rem;font-size:0.7rem;
-            margin-left:0.5rem;font-weight:400;">
-        {{ sem.materias|length }} materias
-      </span>
-      <span class="riesgo-badge badge-accent" style="font-size:0.72rem;padding:0.15rem 0.55rem;margin-left:0.4rem;">
-        {{ sem.prom_semestre }}
-      </span>
-    </button>
-    <div id="sem{{ forloop.counter }}" class="acc-body collapse {% if forloop.last %}show{% endif %}">
-      <table class="dark-table" style="width:100%;">
-        <thead>
-          <tr>
-            <th style="padding-left:1.1rem;">Materia</th>
-            <th style="text-align:center;">Créditos</th>
-            <th style="text-align:center;">Calificación</th>
-            <th style="text-align:center;padding-right:1.1rem;">Estatus</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for m in sem.materias %}
-          <tr>
-            <td style="padding-left:1.1rem;font-weight:600;color:var(--text);">{{ m.nombre }}</td>
-            <td style="text-align:center;color:var(--text-muted);">{{ m.creditos }}</td>
-            <td style="text-align:center;">
-              <span style="font-weight:700;
-                color:{% if m.calificacion >= 9 %}var(--success){% elif m.calificacion >= 7.5 %}var(--accent){% else %}var(--warning){% endif %};">
-                {{ m.calificacion }}
-              </span>
-            </td>
-            <td style="text-align:center;padding-right:1.1rem;">
-              <span class="riesgo-badge badge-success" style="font-size:0.72rem;padding:0.18rem 0.6rem;">
-                <i class="bi bi-check-circle-fill"></i>{{ m.estatus }}
-              </span>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-  {% endfor %}
-</div>
-
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  .pf-wrap { font-family: 'Inter', system-ui, sans-serif; }
+  .pf-bg { --pf-page: #121212; --pf-card: #1c1c1c; --pf-lime: #b8f24a; --pf-lime-dim: rgba(184,242,74,0.12); }
+  .pf-topbar {
+    display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pf-title { font-size: 1.65rem; font-weight: 700; color: #fafafa; margin: 0; letter-spacing: -0.02em; }
+  .pf-sub { font-size: 0.8rem; color: #9ca3af; margin: 0.35rem 0 0; }
+  .pf-actions { display: flex; align-items: center; gap: 0.5rem; }
+  .pf-icon-btn {
+    width: 40px; height: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+    background: #1c1c1c; color: #a1a1aa; display: flex; align-items: center; justify-content: center;
+    cursor: default;
+  }
+  .pf-avatar-sm {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--pf-lime), #22c55e); display: flex; align-items: center; justify-content: center;
+    color: #111; font-weight: 700; font-size: 0.85rem;
+  }
+  .pf-row-top { margin-bottom: 1.5rem; }
+  .pf-card-xl {
+    background: var(--pf-card); border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06);
+    padding: 1.25rem 1.35rem; height: 100%;
+  }
+  .pf-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .pf-card-head span { font-size: 0.72rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; }
+  .pf-val-mono { font-size: 1.15rem; font-weight: 700; color: #fafafa; }
+  .pf-promo {
+    border-radius: 1.25rem; padding: 1.35rem 1.5rem; min-height: 220px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 40%, #0f172a 100%);
+    border: 1px solid rgba(37,99,235,0.35); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .pf-promo h3 { color: #fff; font-size: 1.05rem; font-weight: 700; margin: 0 0 0.5rem; max-width: 20rem; line-height: 1.35; }
+  .pf-promo p { color: rgba(255,255,255,0.78); font-size: 0.82rem; margin: 0 0 1rem; max-width: 22rem; line-height: 1.45; }
+  .pf-btn-light {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #fff; color: #1e3a8a; font-weight: 600; font-size: 0.85rem;
+    border: none; border-radius: 999px; padding: 0.55rem 1.25rem; text-decoration: none; width: fit-content;
+  }
+  .pf-btn-light:hover { color: #1e3a8a; opacity: 0.92; }
+  .pf-kpi-grid .stat-card { border-radius: 1.1rem; background: #1c1c1c; border: 1px solid rgba(255,255,255,0.06); }
+  .pf-cap-card {
+    background: #1c1c1c; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06);
+    padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+  }
+  .pf-cap-drop {
+    border: 1px dashed rgba(184,242,74,0.35); border-radius: 1rem; padding: 1.1rem;
+    background: rgba(184,242,74,0.04); margin-top: 0.75rem;
+  }
+  .pf-expo-list { margin: 0; padding-left: 1.1rem; color: #9ca3af; font-size: 0.82rem; line-height: 1.55; }
+  .pf-table-card { background: #1c1c1c; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 1.5rem; }
+  .pf-table-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .pf-buy-pill {
+    border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.75rem; font-weight: 600;
+    border: 1px solid rgba(184,242,74,0.4); background: var(--pf-lime-dim); color: var(--pf-lime);
+  }
+</style>
 {% endblock %}
 
+{% block content %}
+<div class="pf-wrap pf-bg">
+
+  <div class="pf-topbar">
+    <div>
+      <h1 class="pf-title">Mi portafolio académico</h1>
+      <p class="pf-sub">
+        <i class="bi bi-mortarboard me-1"></i>{{ usuario.matricula }}
+        <span class="mx-2 opacity-50">/</span> {{ usuario.semestre_actual }}° semestre
+        <span class="mx-2 opacity-50">/</span> Meta plan: {{ meta_creditos }} créditos (exposición actuarial)
+      </p>
+    </div>
+    <div class="pf-actions">
+      <div class="pf-icon-btn" title="Búsqueda (demo)"><i class="bi bi-search"></i></div>
+      <div class="pf-icon-btn" title="Notificaciones (demo)"><i class="bi bi-bell"></i></div>
+      <div class="pf-avatar-sm" title="Perfil">{{ usuario.nombre|slice:":1"|upper }}</div>
+    </div>
+  </div>
+
+  <div class="row pf-row-top g-3">
+    <div class="col-lg-7">
+      <div class="pf-card-xl">
+        <div class="pf-card-head">
+          <span>Avance por etapas del plan</span>
+          <span class="pf-val-mono">{{ total_creditos_hist }} <span style="font-size:0.72rem;color:#6b7280;font-weight:500;">/ {{ meta_creditos }} cr.</span></span>
+        </div>
+        <p class="small text-secondary mb-2">Distribución de créditos (reales en demo, ilustrativa tras CAP en cuentas nuevas). Conecta con la slide de <em>F̂(c)</em> y supervivencia académica hacia la titulación.</p>
+        <div style="height:180px;"><canvas id="chartBloques"></canvas></div>
+        <div class="d-flex flex-wrap gap-2 mt-2 justify-content-center" id="pfLegend"></div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="pf-promo">
+        <h3>¿Cómo encaja esto con Actuaría?</h3>
+        <p>
+          La exposición enlaza tu CAP con distribuciones empíricas, prerrequisitos como grafos, aprobación Bernoulli,
+          Z bajo Normal y proyección de tiempo a los 360 créditos. Abre la exposición para ver el mapa completo del prototipo.
+        </p>
+        <a class="pf-btn-light" href="{% url 'core:expo_actuaria' %}"><i class="bi bi-easel me-2"></i>Ir a la exposición actuarial</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4 pf-kpi-grid">
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:var(--pf-lime);">{% if promedio_global is not None %}{{ promedio_global }}{% else %}—{% endif %}</div>
+          <div class="stat-label">Promedio</div>
+          <div class="stat-delta text-secondary">Slide Normal / Z-score</div>
+        </div>
+        <div class="stat-icon" style="background:var(--pf-lime-dim);color:var(--pf-lime);"><i class="bi bi-bar-chart-line-fill"></i></div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:var(--success);">{{ total_creditos_hist }}</div>
+          <div class="stat-label">Créditos contabilizados</div>
+          <div class="stat-delta text-secondary">Hacia {{ meta_creditos }} cr.</div>
+        </div>
+        <div class="stat-icon" style="background:var(--success-dim);color:var(--success);"><i class="bi bi-check-circle-fill"></i></div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:var(--gold);">{{ pct_avance }}%</div>
+          <div class="stat-label">Avance del plan</div>
+          <div class="stat-delta text-secondary">Función de supervivencia académica</div>
+        </div>
+        <div class="stat-icon" style="background:var(--gold-dim);color:var(--gold);"><i class="bi bi-hourglass-split"></i></div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card d-flex justify-content-between align-items-center">
+        <div>
+          <div class="stat-value" style="color:var(--blue);">{{ materias_actuales|length }}</div>
+          <div class="stat-label">Materias en curso</div>
+          <div class="stat-delta text-secondary">Bernoulli por evaluación</div>
+        </div>
+        <div class="stat-icon" style="background:var(--blue-dim);color:var(--blue);"><i class="bi bi-journal-bookmark-fill"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pf-cap-card">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+      <div>
+        <h2 class="h6 fw-bold text-white mb-1"><i class="bi bi-file-earmark-arrow-up text-success me-2"></i>Tu CAP y el análisis</h2>
+        <p class="small text-secondary mb-0" style="max-width:42rem;">{{ cap_message }}</p>
+      </div>
+      {% if cuenta_db and not es_demo_alumno %}
+      <span class="pf-buy-pill"><i class="bi bi-database me-1"></i>Cuenta registrada</span>
+      {% elif es_demo_alumno %}
+      <span class="badge rounded-pill bg-secondary bg-opacity-25 text-secondary border border-secondary border-opacity-25">Demo precargada</span>
+      {% endif %}
+    </div>
+    {% if cuenta_db and not es_demo_alumno %}
+    <div class="pf-cap-drop">
+      <form action="{% url 'core:subir_cap' %}" method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+        {% csrf_token %}
+        <div class="col-md-8">
+          <label class="form-label small text-secondary">Archivo CAP (PDF, CSV o XLSX — prototipo)</label>
+          <input type="file" name="cap_file" class="form-control form-control-sm bg-dark text-light border-secondary" accept=".pdf,.csv,.xlsx,.xls" />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button type="submit" class="btn btn-success flex-grow-1 rounded-pill fw-semibold" style="background:var(--pf-lime);border:none;color:#14532d;">
+            <i class="bi bi-cloud-upload me-1"></i>Registrar CAP
+          </button>
+        </div>
+      </form>
+      <div class="small text-muted mt-2 mb-0">
+        Sin archivo real:
+        <form action="{% url 'core:subir_cap' %}" method="post" class="d-inline">{% csrf_token %}
+          <button type="submit" name="nombre_simulado" value="CAP_simulado.pdf" class="btn btn-link btn-sm p-0 align-baseline text-info">simular subida</button>
+        </form>.
+      </div>
+    </div>
+    {% elif not es_demo_alumno %}
+    <p class="small text-warning mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Solo los usuarios dados de alta en <em>Crear cuenta</em> pueden registrar CAP en base de datos.</p>
+    {% endif %}
+    <ul class="pf-expo-list mt-3">
+      <li><strong class="text-light">360 créditos:</strong> mismo marco que la slide de distribución empírica y percentiles.</li>
+      <li><strong class="text-light">Prerrequisitos:</strong> el producto completo desbloquearía materias como en la slide de grafos / Markov.</li>
+      <li><strong class="text-light">Aprobación:</strong> agregación Binomial por materia (tasa y bandas) al estilo de la expo.</li>
+    </ul>
+  </div>
+
+  <div class="card-dark mb-4" style="padding:1.25rem 1.5rem;border-radius:1.25rem;background:#1c1c1c;border:1px solid rgba(255,255,255,0.06);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+      <span style="font-size:0.88rem;font-weight:600;color:var(--text);">
+        <i class="bi bi-mortarboard me-2" style="color:var(--pf-lime);"></i>Progreso hacia la titulación
+      </span>
+      <span style="font-size:0.78rem;color:var(--text-muted);">{{ total_creditos_hist }} / {{ meta_creditos }} créditos</span>
+    </div>
+    <div class="prog-track" style="height:12px;">
+      <div class="prog-fill prog-accent" style="width:{{ pct_avance }}%;background:linear-gradient(90deg,var(--pf-lime),#22c55e);"></div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="pillar-badge" style="background:var(--gold-dim);color:var(--gold);">En curso</span>
+    <h2 class="section-title">Materias activas</h2>
+  </div>
+
+  {% if materias_actuales %}
+  <div class="row g-3 mb-4">
+    {% for m in materias_actuales %}
+    <div class="col-md-6">
+      <div class="materia-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.9rem;">
+          <div style="flex:1;min-width:0;padding-right:0.75rem;">
+            <div style="font-size:0.9rem;font-weight:700;color:var(--text);">{{ m.nombre }}</div>
+            <div style="font-size:0.73rem;color:var(--text-muted);">{{ m.docente }}</div>
+          </div>
+          <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-muted);border-radius:0.4rem;padding:0.15rem 0.5rem;font-size:0.7rem;white-space:nowrap;">{{ m.creditos }} créditos</span>
+        </div>
+        <div style="margin-bottom:0.85rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:0.72rem;color:var(--text-muted);">Avance del curso</span>
+            <span style="font-size:0.72rem;font-weight:700;color:var(--pf-lime);">{{ m.avance }}%</span>
+          </div>
+          <div class="prog-track">
+            <div class="prog-fill prog-accent" style="width:{{ m.avance }}%;background:linear-gradient(90deg,var(--pf-lime),#22c55e);"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
+          <div class="mini-stat">
+            <div style="font-size:1.1rem;font-weight:700;color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}var(--success){% elif m.calificacion_parcial >= 7 %}var(--pf-lime){% else %}var(--warning){% endif %}{% else %}var(--text-subtle){% endif %};">
+              {% if m.calificacion_parcial %}{{ m.calificacion_parcial }}{% else %}—{% endif %}
+            </div>
+            <div style="font-size:0.64rem;color:var(--text-muted);">Cal. parcial</div>
+          </div>
+          <div class="mini-stat">
+            <div style="font-size:1.1rem;font-weight:700;color:var(--text-muted);">{{ m.entregas }}/{{ m.total_entregas }}</div>
+            <div style="font-size:0.64rem;color:var(--text-muted);">Entregas</div>
+          </div>
+          <div class="mini-stat">
+            <div style="font-size:1.1rem;font-weight:700;color:var(--blue);">{% widthratio m.entregas m.total_entregas 100 %}%</div>
+            <div style="font-size:0.64rem;color:var(--text-muted);">Entregado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="pf-table-card p-4 text-center text-secondary mb-4">Aún no hay materias en curso en esta vista. Sube y procesa tu CAP para poblar esta sección en el producto completo.</div>
+  {% endif %}
+
+  {% if historial %}
+  <div class="section-header">
+    <span class="pillar-badge">Historial</span>
+    <h2 class="section-title">Historial académico</h2>
+    <span style="margin-left:auto;font-size:0.78rem;color:var(--text-muted);">Materias acreditadas · p̂ como tasa de éxito aprobatoria</span>
+  </div>
+
+  <div class="chart-card mb-4" style="border-radius:1.25rem;">
+    <div class="chart-title"><i class="bi bi-graph-up me-2" style="color:var(--pf-lime);"></i>Evolución del promedio por semestre</div>
+    <canvas id="chartEvolucion" height="70"></canvas>
+  </div>
+
+  <div class="pf-table-card mb-4">
+    <div class="pf-table-head">
+      <span class="fw-semibold text-white"><i class="bi bi-table me-2"></i>Rendimiento por periodo</span>
+      <span class="text-secondary small">{{ total_creditos_hist }} cr. acumulados</span>
+    </div>
+    <div id="historialAcordeon" class="p-2">
+      {% for sem in historial %}
+      <div class="acc-item">
+        <button class="acc-btn {% if not forloop.last %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#sem{{ forloop.counter }}">
+          <span style="min-width:120px;">{{ sem.semestre }}</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">{{ sem.periodo }}</span>
+          <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-muted);border-radius:0.35rem;padding:0.1rem 0.5rem;font-size:0.7rem;margin-left:0.5rem;">{{ sem.materias|length }} materias</span>
+          <span class="riesgo-badge badge-accent ms-2" style="font-size:0.72rem;">{{ sem.prom_semestre }}</span>
+        </button>
+        <div id="sem{{ forloop.counter }}" class="acc-body collapse {% if forloop.last %}show{% endif %}">
+          <table class="dark-table w-100 mb-0">
+            <thead>
+              <tr>
+                <th style="padding-left:1.1rem;">Materia</th>
+                <th class="text-center">Créditos</th>
+                <th class="text-center">Calificación</th>
+                <th class="text-center pe-3">Estatus</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for m in sem.materias %}
+              <tr>
+                <td style="padding-left:1.1rem;font-weight:600;color:var(--text);">{{ m.nombre }}</td>
+                <td class="text-center text-secondary">{{ m.creditos }}</td>
+                <td class="text-center">
+                  <span style="font-weight:700;color:{% if m.calificacion >= 9 %}var(--success){% elif m.calificacion >= 7.5 %}var(--pf-lime){% else %}var(--warning){% endif %};">{{ m.calificacion }}</span>
+                </td>
+                <td class="text-center pe-3">
+                  <span class="riesgo-badge badge-success" style="font-size:0.72rem;"><i class="bi bi-check-circle-fill"></i>{{ m.estatus }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
 
 {% block scripts %}
 <script>
-  // Profesor: eje X (semestres) construido con datos que vienen del backend.
+  const bloquesLabels = {{ bloques_labels_json|safe }};
+  const bloquesData = {{ bloques_creditos_json|safe }};
+  const colorsBar = ['#a78bfa', '#fb923c', '#38bdf8', '#fbbf24'];
+
+  const ctxB = document.getElementById('chartBloques');
+  const legend = document.getElementById('pfLegend');
+  if (legend && bloquesLabels.length) {
+    bloquesLabels.forEach((lb, i) => {
+      const d = document.createElement('span');
+      d.className = 'pf-buy-pill';
+      d.style.fontSize = '0.68rem';
+      d.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${colorsBar[i % colorsBar.length]};margin-right:6px;"></span>${lb}`;
+      legend.appendChild(d);
+    });
+  }
+
+  if (ctxB) {
+    new Chart(ctxB, {
+      type: 'bar',
+      data: {
+        labels: bloquesLabels,
+        datasets: [{
+          label: 'Créditos',
+          data: bloquesData,
+          backgroundColor: colorsBar,
+          borderRadius: 10,
+          borderSkipped: false,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ${ctx.parsed.y} créditos`,
+            },
+          },
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+        },
+      },
+    });
+  }
+
+  {% if historial %}
   const semestres = [{% for sem in historial %}"{{ sem.semestre }}"{% if not forloop.last %},{% endif %}{% endfor %}];
-  // Profesor: calculamos promedio por semestre para visualizar tendencia.
-  // (En una versión productiva, esto podría venir precalculado desde backend.)
   const promediosSem = [
     {% for sem in historial %}
-    +({% for m in sem.materias %}{{ m.calificacion }}{% if not forloop.last %}+{% endif %}{% endfor %}) / {{ sem.materias|length }}
-    {% if not forloop.last %},{% endif %}
+    +({% for m in sem.materias %}{{ m.calificacion }}{% if not forloop.last %}+{% endif %}{% endfor %}) / {{ sem.materias|length }}{% if not forloop.last %},{% endif %}
     {% endfor %}
   ].map(v => Math.round(v * 100) / 100);
 
-  // Profesor: línea de tendencia; ideal para conversaciones de seguimiento académico.
   new Chart(document.getElementById('chartEvolucion'), {
     type: 'line',
     data: {
@@ -259,30 +382,24 @@
       datasets: [{
         label: 'Promedio del semestre',
         data: promediosSem,
-        borderColor: 'rgba(34,197,94,0.9)',
-        backgroundColor: 'rgba(34,197,94,0.08)',
-        pointBackgroundColor: '#4ade80',
-        pointBorderColor: '#1a1714',
+        borderColor: 'rgba(184,242,74,0.95)',
+        backgroundColor: 'rgba(184,242,74,0.1)',
+        pointBackgroundColor: '#b8f24a',
+        pointBorderColor: '#111',
         pointBorderWidth: 2,
-        pointRadius: 6, pointHoverRadius: 8,
+        pointRadius: 5, pointHoverRadius: 7,
         fill: true, tension: 0.38, borderWidth: 2.5,
       }]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` Promedio: ${ctx.parsed.y.toFixed(2)}` } }
-      },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` Promedio: ${ctx.parsed.y.toFixed(2)}` } } },
       scales: {
-        y: {
-          min: 7.5, max: 10,
-          grid: { color: 'rgba(255,255,255,0.06)' },
-          ticks: { font: { size: 10 } }
-        },
+        y: { min: 6, max: 10, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { font: { size: 10 } } },
         x: { grid: { display: false }, ticks: { font: { size: 10 } } }
       }
     }
   });
+  {% endif %}
 </script>
 {% endblock %}
