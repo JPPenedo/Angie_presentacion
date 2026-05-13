@@ -16,22 +16,23 @@
   <!-- Profesor: CSS base del sistema (tema + componentes comunes). -->
   <style>
     /* ════════════════════════════════════
-       DESIGN TOKENS — Dark Green Theme
+       DESIGN TOKENS — negro dominante, acento naranja muy suave
     ════════════════════════════════════ */
     :root {
-      --bg:           #090e0c;
-      --bg-card:      #111a16;
-      --bg-card-alt:  #172118;
-      --bg-sidebar:   #080e0b;
-      --bg-navbar:    #060c09;
+      --bg:           #060606;
+      --bg-card:      #0f0f0f;
+      --bg-card-alt:  #131211;
+      --bg-sidebar:   #050505;
+      --bg-navbar:    #040404;
       --border:       rgba(255,255,255,0.07);
-      --border-hover: rgba(255,255,255,0.13);
+      --border-hover: rgba(255,255,255,0.12);
 
-      --accent:       #22c55e;
-      --accent-dim:   rgba(34,197,94,0.15);
-      --accent-glow:  rgba(34,197,94,0.35);
-      --gold:         #4ade80;
-      --gold-dim:     rgba(74,222,128,0.15);
+      --accent:       #c9a06a;
+      --accent-dim:   rgba(201,160,106,0.12);
+      --accent-glow:  rgba(201,160,106,0.22);
+      --accent-line:  rgba(201,160,106,0.26);
+      --gold:         #e8c9a3;
+      --gold-dim:     rgba(232,201,163,0.09);
 
       --text:         #f0ede9;
       --text-muted:   #7a7470;
@@ -55,12 +56,35 @@
     /* ─── Reset & Base ─── */
     *, *::before, *::after { box-sizing: border-box; }
     body {
-      background: var(--bg);
+      background:
+        radial-gradient(ellipse 120% 70% at 50% -15%, rgba(185,95,45,0.055), transparent 52%),
+        radial-gradient(ellipse 90% 55% at 100% 90%, rgba(160,75,40,0.04), transparent 48%),
+        var(--bg);
       color: var(--text);
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       font-size: 0.9rem;
       line-height: 1.5;
       min-height: 100vh;
+    }
+
+    /* Alertas tipo banner (error / aviso) */
+    .alert-banner {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.83rem;
+      line-height: 1.45;
+    }
+    .alert-banner .bi { flex-shrink: 0; margin-top: 0.12rem; font-size: 1.05rem; opacity: 0.95; }
+    .alert-banner-error {
+      background: rgba(55,28,28,0.55);
+      border: 1px solid rgba(140,65,65,0.45);
+      color: #f0ada5;
+    }
+    .alert-banner-info {
+      background: rgba(42,38,34,0.75);
+      border: 1px solid rgba(201,160,106,0.2);
+      color: #d8c8b4;
     }
     a { color: inherit; text-decoration: none; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -100,8 +124,8 @@
       padding: 0.18rem 0.55rem; border-radius: 99px;
     }
     .nav-role-badge.docente { background: var(--blue-dim);    color: var(--blue);    border: 1px solid rgba(96,165,250,0.25); }
-    .nav-role-badge.alumno  { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(74,222,128,0.25); }
-    .nav-role-badge.coordinacion { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(34,197,94,0.25); }
+    .nav-role-badge.alumno  { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(232,201,163,0.22); }
+    .nav-role-badge.coordinacion { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-line); }
     .nav-role-badge.director { background: rgba(167,139,250,0.15); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.35); }
     .nav-username { font-size: 0.82rem; color: var(--text); }
     .btn-logout {
@@ -138,7 +162,7 @@
     .sidebar-link.active {
       background: var(--accent-dim);
       color: var(--accent);
-      border: 1px solid rgba(34,197,94,0.2);
+      border: 1px solid rgba(201,160,106,0.18);
     }
     .sidebar-link .s-icon {
       width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
@@ -170,8 +194,8 @@
     .sidebar-help {
       margin: auto 0.75rem 0.75rem;
       padding: 0.9rem;
-      background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(74,222,128,0.08));
-      border: 1px solid rgba(34,197,94,0.2);
+      background: linear-gradient(135deg, rgba(201,160,106,0.07), rgba(120,65,40,0.04));
+      border: 1px solid rgba(201,160,106,0.14);
       border-radius: var(--radius-sm);
     }
 
@@ -224,7 +248,7 @@
     .pillar-badge {
       font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
       text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 99px;
-      background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(34,197,94,0.25);
+      background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-line);
     }
     .section-title { font-weight: 700; font-size: 1rem; color: var(--text); margin: 0; }
 
@@ -245,8 +269,8 @@
     .badge-danger  { background: var(--danger-dim);  color: var(--danger);  border: 1px solid rgba(248,113,113,0.25); }
     .badge-warning { background: var(--warning-dim); color: var(--warning); border: 1px solid rgba(251,191,36,0.25);  }
     .badge-success { background: var(--success-dim); color: var(--success); border: 1px solid rgba(52,211,153,0.25);  }
-    .badge-accent  { background: var(--accent-dim);  color: var(--accent);  border: 1px solid rgba(34,197,94,0.25);   }
-    .badge-gold    { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(74,222,128,0.25);  }
+    .badge-accent  { background: var(--accent-dim);  color: var(--accent);  border: 1px solid var(--accent-line);   }
+    .badge-gold    { background: var(--gold-dim);    color: var(--gold);    border: 1px solid rgba(232,201,163,0.2);  }
 
     .riesgo-badge {
       display: inline-flex; align-items: center; gap: 0.3rem;
@@ -292,7 +316,7 @@
       height: 100%;
       transition: border-color 0.2s, transform 0.2s;
     }
-    .grupo-card:hover { border-color: rgba(34,197,94,0.3); transform: translateY(-2px); }
+    .grupo-card:hover { border-color: rgba(201,160,106,0.22); transform: translateY(-2px); }
     .mini-stat {
       background: rgba(255,255,255,0.04);
       border: 1px solid var(--border);

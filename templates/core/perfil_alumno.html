@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   .pf-wrap { font-family: 'Inter', system-ui, sans-serif; }
-  .pf-bg { --pf-page: #121212; --pf-card: #1c1c1c; --pf-lime: #b8f24a; --pf-lime-dim: rgba(184,242,74,0.12); }
+  .pf-bg { --pf-page: #0a0a0a; --pf-card: #161616; --pf-accent: #c9a06a; --pf-accent-dim: rgba(201,160,106,0.11); }
   .pf-topbar {
     display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;
     margin-bottom: 1.5rem;
@@ -21,7 +21,7 @@
   }
   .pf-avatar-sm {
     width: 40px; height: 40px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--pf-lime), #22c55e); display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #d4a574, #8b5a2e); display: flex; align-items: center; justify-content: center;
     color: #111; font-weight: 700; font-size: 0.85rem;
   }
   .pf-row-top { margin-bottom: 1.5rem; }
@@ -60,7 +60,7 @@
   .pf-table-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
   .pf-buy-pill {
     border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.75rem; font-weight: 600;
-    border: 1px solid rgba(184,242,74,0.4); background: var(--pf-lime-dim); color: var(--pf-lime);
+    border: 1px solid rgba(201,160,106,0.35); background: var(--pf-accent-dim); color: var(--pf-accent);
   }
 </style>
 {% endblock %}
@@ -112,11 +112,11 @@
     <div class="col-sm-6 col-xl-3">
       <div class="stat-card d-flex justify-content-between align-items-center">
         <div>
-          <div class="stat-value" style="color:var(--pf-lime);">{% if promedio_global is not None %}{{ promedio_global }}{% else %}—{% endif %}</div>
+          <div class="stat-value" style="color:var(--pf-accent);">{% if promedio_global is not None %}{{ promedio_global }}{% else %}—{% endif %}</div>
           <div class="stat-label">Promedio</div>
           <div class="stat-delta text-secondary">Slide Normal / Z-score</div>
         </div>
-        <div class="stat-icon" style="background:var(--pf-lime-dim);color:var(--pf-lime);"><i class="bi bi-bar-chart-line-fill"></i></div>
+        <div class="stat-icon" style="background:var(--pf-accent-dim);color:var(--pf-accent);"><i class="bi bi-bar-chart-line-fill"></i></div>
       </div>
     </div>
     <div class="col-sm-6 col-xl-3">
@@ -154,7 +154,7 @@
   <div class="pf-cap-card">
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
       <div>
-        <h2 class="h6 fw-bold text-white mb-1"><i class="bi bi-file-earmark-arrow-up text-success me-2"></i>Tu CAP y el análisis</h2>
+        <h2 class="h6 fw-bold text-white mb-1"><i class="bi bi-file-earmark-arrow-up me-2" style="color:var(--pf-accent);"></i>Tu CAP y el análisis</h2>
         <p class="small text-secondary mb-0" style="max-width:42rem;">{{ cap_message }}</p>
       </div>
       {% if cuenta_db and not es_demo_alumno %}
@@ -172,7 +172,7 @@
           <input type="file" name="cap_file" class="form-control form-control-sm bg-dark text-light border-secondary" accept=".pdf,.csv,.xlsx,.xls" />
         </div>
         <div class="col-md-4 d-flex gap-2">
-          <button type="submit" class="btn btn-success flex-grow-1 rounded-pill fw-semibold" style="background:var(--pf-lime);border:none;color:#14532d;">
+          <button type="submit" class="btn flex-grow-1 rounded-pill fw-semibold" style="background:linear-gradient(135deg,#a87b4a,#6e4328);border:none;color:#faf7f2;">
             <i class="bi bi-cloud-upload me-1"></i>Registrar CAP
           </button>
         </div>
@@ -197,12 +197,12 @@
   <div class="card-dark mb-4" style="padding:1.25rem 1.5rem;border-radius:1.25rem;background:#1c1c1c;border:1px solid rgba(255,255,255,0.06);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
       <span style="font-size:0.88rem;font-weight:600;color:var(--text);">
-        <i class="bi bi-mortarboard me-2" style="color:var(--pf-lime);"></i>Progreso hacia la titulación
+        <i class="bi bi-mortarboard me-2" style="color:var(--pf-accent);"></i>Progreso hacia la titulación
       </span>
       <span style="font-size:0.78rem;color:var(--text-muted);">{{ total_creditos_hist }} / {{ meta_creditos }} créditos</span>
     </div>
     <div class="prog-track" style="height:12px;">
-      <div class="prog-fill prog-accent" style="width:{{ pct_avance }}%;background:linear-gradient(90deg,var(--pf-lime),#22c55e);"></div>
+      <div class="prog-fill prog-accent" style="width:{{ pct_avance }}%;background:linear-gradient(90deg,#d4a574,var(--pf-accent));"></div>
     </div>
   </div>
 
@@ -226,15 +226,15 @@
         <div style="margin-bottom:0.85rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
             <span style="font-size:0.72rem;color:var(--text-muted);">Avance del curso</span>
-            <span style="font-size:0.72rem;font-weight:700;color:var(--pf-lime);">{{ m.avance }}%</span>
+            <span style="font-size:0.72rem;font-weight:700;color:var(--pf-accent);">{{ m.avance }}%</span>
           </div>
           <div class="prog-track">
-            <div class="prog-fill prog-accent" style="width:{{ m.avance }}%;background:linear-gradient(90deg,var(--pf-lime),#22c55e);"></div>
+            <div class="prog-fill prog-accent" style="width:{{ m.avance }}%;background:linear-gradient(90deg,#d4a574,var(--pf-accent));"></div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;">
           <div class="mini-stat">
-            <div style="font-size:1.1rem;font-weight:700;color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}var(--success){% elif m.calificacion_parcial >= 7 %}var(--pf-lime){% else %}var(--warning){% endif %}{% else %}var(--text-subtle){% endif %};">
+            <div style="font-size:1.1rem;font-weight:700;color:{% if m.calificacion_parcial %}{% if m.calificacion_parcial >= 9 %}var(--success){% elif m.calificacion_parcial >= 7 %}var(--pf-accent){% else %}var(--warning){% endif %}{% else %}var(--text-subtle){% endif %};">
               {% if m.calificacion_parcial %}{{ m.calificacion_parcial }}{% else %}—{% endif %}
             </div>
             <div style="font-size:0.64rem;color:var(--text-muted);">Cal. parcial</div>
@@ -264,7 +264,7 @@
   </div>
 
   <div class="chart-card mb-4" style="border-radius:1.25rem;">
-    <div class="chart-title"><i class="bi bi-graph-up me-2" style="color:var(--pf-lime);"></i>Evolución del promedio por semestre</div>
+    <div class="chart-title"><i class="bi bi-graph-up me-2" style="color:var(--pf-accent);"></i>Evolución del promedio por semestre</div>
     <canvas id="chartEvolucion" height="70"></canvas>
   </div>
 
@@ -298,7 +298,7 @@
                 <td style="padding-left:1.1rem;font-weight:600;color:var(--text);">{{ m.nombre }}</td>
                 <td class="text-center text-secondary">{{ m.creditos }}</td>
                 <td class="text-center">
-                  <span style="font-weight:700;color:{% if m.calificacion >= 9 %}var(--success){% elif m.calificacion >= 7.5 %}var(--pf-lime){% else %}var(--warning){% endif %};">{{ m.calificacion }}</span>
+                  <span style="font-weight:700;color:{% if m.calificacion >= 9 %}var(--success){% elif m.calificacion >= 7.5 %}var(--pf-accent){% else %}var(--warning){% endif %};">{{ m.calificacion }}</span>
                 </td>
                 <td class="text-center pe-3">
                   <span class="riesgo-badge badge-success" style="font-size:0.72rem;"><i class="bi bi-check-circle-fill"></i>{{ m.estatus }}</span>
@@ -321,7 +321,7 @@
 <script>
   const bloquesLabels = {{ bloques_labels_json|safe }};
   const bloquesData = {{ bloques_creditos_json|safe }};
-  const colorsBar = ['#a78bfa', '#fb923c', '#38bdf8', '#fbbf24'];
+  const colorsBar = ['#c9a06a', '#d4874a', '#e8b896', '#a67c52'];
 
   const ctxB = document.getElementById('chartBloques');
   const legend = document.getElementById('pfLegend');
@@ -382,9 +382,9 @@
       datasets: [{
         label: 'Promedio del semestre',
         data: promediosSem,
-        borderColor: 'rgba(184,242,74,0.95)',
-        backgroundColor: 'rgba(184,242,74,0.1)',
-        pointBackgroundColor: '#b8f24a',
+        borderColor: 'rgba(201,160,106,0.95)',
+        backgroundColor: 'rgba(201,160,106,0.08)',
+        pointBackgroundColor: '#d4a574',
         pointBorderColor: '#111',
         pointBorderWidth: 2,
         pointRadius: 5, pointHoverRadius: 7,

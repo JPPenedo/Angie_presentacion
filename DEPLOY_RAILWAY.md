@@ -119,4 +119,6 @@ railway run python manage.py createsuperuser
 
 **psycopg2 error / connection refused.** El servicio web no tiene `DATABASE_URL`. Vuelve al paso 4 y verifica que el plugin de Postgres esté linkeado.
 
+**Mensaje en login: «No se pudo consultar cuentas registradas. Verifica que las migraciones…».** Significa que Django no pudo ejecutar la consulta a la tabla de cuentas: casi siempre falta **PostgreSQL enlazado** al servicio web, **`DATABASE_URL` vacío o incorrecto**, o el paso **`release`** no llegó a ejecutar `migrate` (revisa el log del último deploy en la pestaña *Deployments* → línea `release`). Comprueba que en **Variables** exista `DATABASE_URL` apuntando a Postgres, vuelve a desplegar, y si hace falta ejecuta en local vinculado al proyecto: `railway run python manage.py migrate`. Tras eso el login con cuentas creadas en el sitio debería funcionar.
+
 **El deploy queda en "crashed" pero los logs no muestran traceback.** Revisa la pestaña **Build Logs** primero (errores de instalación de paquetes), luego **Deploy Logs** (errores de runtime de gunicorn / Django).

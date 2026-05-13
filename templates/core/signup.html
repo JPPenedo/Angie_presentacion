@@ -8,18 +8,21 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0e0c0b;
-      --card: #1a1714;
+      --bg: #050505;
+      --card: #111111;
       --border: rgba(255,255,255,0.08);
-      --accent: #22c55e;
-      --gold: #4ade80;
+      --accent: #c9a06a;
+      --gold: #e8c9a3;
       --text: #f0ede9;
       --muted: #7a7470;
     }
     *, *::before, *::after { box-sizing: border-box; }
     body {
       min-height: 100vh;
-      background: var(--bg);
+      background:
+        radial-gradient(ellipse 120% 70% at 50% -15%, rgba(185,95,45,0.055), transparent 52%),
+        radial-gradient(ellipse 90% 55% at 0% 100%, rgba(160,75,40,0.04), transparent 48%),
+        var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -37,7 +40,7 @@
       box-shadow: 0 24px 64px rgba(0,0,0,0.5);
     }
     .top {
-      background: linear-gradient(135deg, rgba(34,197,94,0.14), rgba(74,222,128,0.08));
+      background: linear-gradient(135deg, rgba(201,160,106,0.1), rgba(120,65,40,0.06));
       border-bottom: 1px solid var(--border);
       padding: 1.8rem;
       text-align: center;
@@ -51,7 +54,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 24px rgba(34,197,94,0.35);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px rgba(201,160,106,0.08);
     }
     .input-group-dark {
       display: flex;
@@ -93,30 +96,35 @@
       outline: none;
     }
     .input-group-dark select option {
-      background: #1a1714;
+      background: #111111;
       color: #f0ede9;
     }
     .btn-main {
       width: 100%;
       border: none;
       border-radius: 0.65rem;
-      background: linear-gradient(135deg, var(--accent), #c94d0c);
-      color: white;
+      background: linear-gradient(135deg, #a87b4a, #7a4a2a);
+      color: #faf7f2;
       font-weight: 700;
       padding: 0.72rem;
     }
-    .error-box {
-      background: rgba(248,113,113,0.1);
-      border: 1px solid rgba(248,113,113,0.25);
-      color: #f87171;
-      border-radius: 0.6rem;
-      padding: 0.65rem 0.85rem;
+    .alert-banner {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
       font-size: 0.83rem;
+      line-height: 1.45;
+    }
+    .alert-banner .bi { flex-shrink: 0; margin-top: 0.12rem; font-size: 1.05rem; }
+    .alert-banner-error {
+      background: rgba(55,28,28,0.55);
+      border: 1px solid rgba(140,65,65,0.45);
+      color: #f0ada5;
     }
     .note-box {
       margin-top: 0.95rem;
-      background: rgba(251,191,36,0.08);
-      border: 1px solid rgba(251,191,36,0.2);
+      background: rgba(201,160,106,0.06);
+      border: 1px solid rgba(201,160,106,0.14);
       border-radius: 0.6rem;
       padding: 0.75rem 0.85rem;
       color: var(--muted);
@@ -145,8 +153,8 @@
 
     <div style="padding:1.5rem 1.75rem;">
       {% if error %}
-      <div class="error-box mb-3">
-        <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+      <div class="alert-banner alert-banner-error mb-3" role="alert">
+        <i class="bi bi-exclamation-circle-fill"></i><span>{{ error }}</span>
       </div>
       {% endif %}
 
@@ -196,7 +204,7 @@
             <input type="password" name="password_confirm" id="passConfirmInput" minlength="6" placeholder="Repite la contraseña" required />
           </div>
           <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:var(--muted);margin-top:0.45rem;cursor:pointer;">
-            <input type="checkbox" id="showPassSignup" style="accent-color:#22c55e;" />
+            <input type="checkbox" id="showPassSignup" style="accent-color:#c9a06a;" />
             Mostrar contraseñas
           </label>
         </div>
