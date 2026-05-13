@@ -1064,29 +1064,57 @@ def _construir_reporte_cap_completo(cuenta_db, cap_estructurado) -> str:
             lines.append(f'- {w}')
 
     non_course = cap_estructurado.get('non_course_requirements') or []
-    pending_reqs = cap_estructurado.get('pending_requirements') or []
+    non_course_pending = cap_estructurado.get('non_course_pending') or []
     _sep(
-        f'7. REQUISITOS PENDIENTES NO-CURSO ({len(non_course)}) Y PENDIENTES ({len(pending_reqs)})'
+        f'7. REQUISITOS NO-CURSO ({len(non_course)}) '
+        f'· PENDIENTES NO-CURSO ({len(non_course_pending)})'
     )
     if non_course:
-        lines.append('— No-curso —')
-        for r in non_course:
-            lines.append(f'- {r}')
-    if pending_reqs:
-        lines.append('— Pendientes —')
-        for r in pending_reqs:
-            lines.append(f'- {r}')
-    if not non_course and not pending_reqs:
-        lines.append('Sin requisitos pendientes registrados.')
+        for it in non_course:
+            if isinstance(it, dict):
+                nombre = it.get('name', '')
+                met = 'cumplido' if it.get('met') else 'pendiente'
+                lines.append(f'- {nombre}: {met}')
+            else:
+                lines.append(f'- {it}')
+    else:
+        lines.append('Sin requisitos no-curso registrados.')
 
-    _sep('8. TEXTO LITERAL EXTRAÍDO DEL PDF')
+    rejected = cap_estructurado.get('rejected_courses') or []
+    not_used = cap_estructurado.get('courses_not_used') or []
+    _sep(
+        f'8. CURSOS RECHAZADOS / NO USADOS '
+        f'(rechazados={len(rejected)} · no usados={len(not_used)})'
+    )
+    if rejected:
+        lines.append('— Rechazados —')
+        for c in rejected:
+            term = c.get('term') or '—'
+            code = c.get('code') or '—'
+            name = c.get('name') or ''
+            reason = c.get('reason') or ''
+            grade = c.get('grade') or '—'
+            lines.append(f'- {term} {code} | {name} | calif: {grade} | motivo: {reason}')
+    if not_used:
+        lines.append('— No usados —')
+        for c in not_used:
+            term = c.get('term') or '—'
+            code = c.get('code') or '—'
+            name = c.get('name') or ''
+            reason = c.get('reason') or ''
+            grade = c.get('grade') or '—'
+            lines.append(f'- {term} {code} | {name} | calif: {grade} | motivo: {reason}')
+    if not rejected and not not_used:
+        lines.append('Sin registros en cursos rechazados / no usados.')
+
+    _sep('9. TEXTO LITERAL EXTRAÍDO DEL PDF')
     texto_pdf = cuenta_db.cap_texto_extraido or ''
     if texto_pdf:
         lines.append(texto_pdf)
     else:
         lines.append('(no hay texto extraído almacenado)')
 
-    _sep('9. JSON CRUDO COMPLETO (cap_estructurado)')
+    _sep('10. JSON CRUDO COMPLETO (cap_estructurado)')
     try:
         lines.append(
             json.dumps(cap_estructurado, ensure_ascii=False, indent=2, default=str)

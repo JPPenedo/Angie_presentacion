@@ -550,7 +550,7 @@
         </form>.
       </div>
     </div>
-    {% if cap_estructurado.courses or cap_estructurado.areas or cap_estructurado.program_summary.credits_required %}
+    {% if cap_estructurado.courses or cap_estructurado.areas or cap_estructurado.program_summary.credits_required or cap_estructurado.non_course_requirements or cap_estructurado.rejected_courses or cap_estructurado.courses_not_used %}
     <div class="pf-cap-struct mt-3">
       <h3><i class="bi bi-diagram-3 me-1"></i>Lectura estructurada (solo texto embebido, PyMuPDF)</h3>
       {% if cap_estructurado.program_summary.credits_required or cap_estructurado.official_summary.credits_required_reported %}
@@ -613,6 +613,55 @@
                 <td>{% if c.credits_nan_row %}<span class="text-warning">NaN</span>{% else %}{{ c.credits_raw }}{% endif %}</td>
                 <td>{{ c.grade|default:"—" }}</td>
                 <td>{% if c.completed %}Hecha{% elif c.pending %}Pendiente{% else %}—{% endif %}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      {% endif %}
+      {% if cap_estructurado.non_course_requirements %}
+      <p class="small text-secondary mb-1 mt-2">Requisitos no-curso: {{ cap_estructurado.non_course_requirements|length }} · Pendientes: {{ cap_estructurado.non_course_pending|length }}</p>
+      <div class="table-responsive mb-3">
+        <table class="table table-dark table-sm">
+          <thead><tr><th>Requisito</th><th>Estado</th></tr></thead>
+          <tbody>
+            {% for it in cap_estructurado.non_course_requirements %}
+            <tr>
+              <td>{{ it.name }}</td>
+              <td>{% if it.met %}<span class="text-success">Cumplido</span>{% else %}<span class="text-warning">Pendiente</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+      {% if cap_estructurado.rejected_courses or cap_estructurado.courses_not_used %}
+      <p class="small text-secondary mb-1">Cursos rechazados: {{ cap_estructurado.rejected_courses|length }} · No usados: {{ cap_estructurado.courses_not_used|length }}</p>
+      <details class="mb-2">
+        <summary class="small text-info" style="cursor:pointer;">Ver cursos rechazados / no usados</summary>
+        <div class="table-responsive mt-2">
+          <table class="table table-dark table-sm">
+            <thead><tr><th>Tipo</th><th>Periodo</th><th>Código</th><th>Nombre</th><th>Calif.</th><th>Motivo</th></tr></thead>
+            <tbody>
+              {% for c in cap_estructurado.rejected_courses %}
+              <tr>
+                <td><span class="text-danger">Rechazado</span></td>
+                <td>{{ c.term|default:"—" }}</td>
+                <td>{{ c.code }}</td>
+                <td>{{ c.name }}</td>
+                <td>{{ c.grade|default:"—" }}</td>
+                <td>{{ c.reason|default:"—" }}</td>
+              </tr>
+              {% endfor %}
+              {% for c in cap_estructurado.courses_not_used %}
+              <tr>
+                <td><span class="text-muted">No usado</span></td>
+                <td>{{ c.term|default:"—" }}</td>
+                <td>{{ c.code }}</td>
+                <td>{{ c.name }}</td>
+                <td>{{ c.grade|default:"—" }}</td>
+                <td>{{ c.reason|default:"—" }}</td>
               </tr>
               {% endfor %}
             </tbody>
