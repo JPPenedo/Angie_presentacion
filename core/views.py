@@ -901,6 +901,202 @@ def _kpi_cap_detail_context(
 # Vista alumno: perfil
 # ---------------------------------------------------------------------------
 
+
+def _construir_reporte_cap_completo(cuenta_db, cap_estructurado) -> str:
+    """
+    Devuelve un único bloque de texto con TODA la información que se reporta y
+    guarda de la lectura del CAP del alumno: metadatos del archivo, resumen
+    oficial reportado por el CAP, resumen propio del parser, áreas detectadas,
+    materias detectadas (créditos, calificación, estado), advertencias, texto
+    literal extraído del PDF y JSON crudo de la estructura.
+
+    Pensado para que el alumno lo copie y pegue completo en otro lugar.
+    """
+    if not cuenta_db:
+        return ''
+    cap_estructurado = cap_estructurado or {}
+
+    lines: list = []
+
+    def _sep(title: str) -> None:
+        lines.append('')
+        lines.append('=' * 72)
+        lines.append(title)
+        lines.append('=' * 72)
+
+    def _fmt_dt(dt) -> str:
+        if not dt:
+            return '—'
+        try:
+            return timezone.localtime(dt).strftime('%Y-%m-%d %H:%M:%S')
+        except Exception:
+            return str(dt)
+
+    def _num(value, default='—'):
+        if value is None or value == '':
+            return default
+        try:
+            return f'{float(value):g}'
+        except (TypeError, ValueError):
+            return str(value)
+
+    lines.append('REPORTE COMPLETO DE LECTURA DEL CAP')
+    lines.append('Generado: ' + _fmt_dt(timezone.now()))
+    lines.append('Alumno: ' + (cuenta_db.nombre_completo or '—'))
+    lines.append('ID institucional: ' + (cuenta_db.id_institucional or '—'))
+    lines.append('Correo: ' + (cuenta_db.correo_institucional or '—'))
+
+    _sep('1. ARCHIVO Y EXTRACCIÓN')
+    lines.append(f'Nombre del archivo: {cuenta_db.cap_nombre_archivo or "—"}')
+    lines.append(f'Subido en: {_fmt_dt(cuenta_db.cap_subido_en)}')
+    lines.append(f'Última lectura: {_fmt_dt(cuenta_db.cap_ultima_lectura_en)}')
+    lines.append(f'Resumen de extracción: {cuenta_db.cap_extraccion_resumen or "—"}')
+    lines.append(f'Error de lectura: {cuenta_db.cap_error_lectura or "—"}')
+    lines.append(
+        f'Caracteres en texto extraído: {len(cuenta_db.cap_texto_extraido or "")}'
+    )
+
+    program_summary = cap_estructurado.get('program_summary') or {}
+    official_summary = cap_estructurado.get('official_summary') or {}
+    parser_summary = cap_estructurado.get('parser_extraction_summary') or {}
+
+    _sep('2. RESUMEN OFICIAL DEL CAP (bloque Total Required)')
+    if not (program_summary or official_summary):
+        lines.append(
+            'Sin datos. No se detectó bloque Program Evaluation / Total Required.'
+        )
+    else:
+        cred_req = official_summary.get('credits_required_reported') or program_summary.get(
+            'credits_required'
+        )
+        cred_used = official_summary.get('credits_used_reported') or program_summary.get(
+            'credits_used'
+        )
+        cursos_used = official_summary.get('courses_used_reported') or program_summary.get(
+            'courses_used'
+        )
+        lines.append(f'Créditos requeridos reportados: {_num(cred_req)}')
+        lines.append(f'Créditos usados reportados: {_num(cred_used)}')
+        lines.append(f'Cursos usados reportados: {_num(cursos_used)}')
+        lines.append(
+            f'Avance oficial (%): {_num(program_summary.get("progress_percent"))}'
+        )
+
+    _sep('3. RESUMEN DE EXTRACCIÓN DEL PARSER')
+    if not parser_summary:
+        lines.append('Sin datos del parser.')
+    else:
+        etiquetas_parser = [
+            ('courses_detected', 'Materias detectadas'),
+            ('completed_courses_detected', 'Completadas detectadas'),
+            ('numeric_credits_sum_detected', 'Créditos numéricos sumados'),
+            ('nan_credit_courses', 'Materias con créditos NaN'),
+            ('zero_credit_courses', 'Materias con 0 créditos'),
+            ('missing_credit_courses', 'Materias con crédito ilegible'),
+        ]
+        for key, label in etiquetas_parser:
+            lines.append(f'{label}: {_num(parser_summary.get(key), default="0")}')
+
+    areas = cap_estructurado.get('areas') or []
+    _sep(f'4. ÁREAS DETECTADAS ({len(areas)})')
+    if not areas:
+        lines.append('Sin áreas detectadas.')
+    else:
+        lines.append(
+            f'{"#":>3}  {"Cumple":<6}  {"Req.":>7}  {"Usado":>7}  {"Cursos":>6}  Área'
+        )
+        for i, a in enumerate(areas, 1):
+            try:
+                req = float(a.get('credits_required') or 0)
+            except (TypeError, ValueError):
+                req = 0.0
+            try:
+                used = float(a.get('credits_used') or 0)
+            except (TypeError, ValueError):
+                used = 0.0
+            try:
+                cursos = int(a.get('courses_used') or 0)
+            except (TypeError, ValueError):
+                cursos = 0
+            met = 'Sí' if a.get('met') else 'No'
+            area_nombre = (a.get('area') or '').strip()
+            lines.append(
+                f'{i:>3}  {met:<6}  {req:>7.2f}  {used:>7.2f}  {cursos:>6}  {area_nombre}'
+            )
+
+    courses = cap_estructurado.get('courses') or []
+    completed = cap_estructurado.get('completed_courses') or []
+    pending = cap_estructurado.get('pending_courses') or []
+
+    _sep(f'5. MATERIAS DETECTADAS ({len(courses)})')
+    lines.append(f'Completadas: {len(completed)}  ·  Pendientes: {len(pending)}')
+    if courses:
+        lines.append('')
+        lines.append(
+            f'{"#":>3}  {"Periodo":<10}  {"Código":<10}  {"Créd":>6}  {"Calif":<7}  {"Estado":<10}  Nombre'
+        )
+        for i, c in enumerate(courses, 1):
+            term = (c.get('term') or '').strip() or '—'
+            code = (c.get('code') or '').strip() or '—'
+            name = (c.get('name') or '').strip()
+            credits_raw = (c.get('credits_raw') or '').strip()
+            if c.get('credits_nan_row'):
+                credits_disp = 'NaN'
+            else:
+                credits_disp = credits_raw or '—'
+            grade = (c.get('grade') or '').strip() or '—'
+            if c.get('completed'):
+                estado = 'Hecha'
+            elif c.get('pending'):
+                estado = 'Pendiente'
+            else:
+                estado = '—'
+            lines.append(
+                f'{i:>3}  {term:<10}  {code:<10}  {credits_disp:>6}  {grade:<7}  {estado:<10}  {name}'
+            )
+
+    warnings = cap_estructurado.get('warnings') or []
+    _sep(f'6. ADVERTENCIAS DEL PARSER ({len(warnings)})')
+    if not warnings:
+        lines.append('Sin advertencias.')
+    else:
+        for w in warnings:
+            lines.append(f'- {w}')
+
+    non_course = cap_estructurado.get('non_course_requirements') or []
+    pending_reqs = cap_estructurado.get('pending_requirements') or []
+    _sep(
+        f'7. REQUISITOS PENDIENTES NO-CURSO ({len(non_course)}) Y PENDIENTES ({len(pending_reqs)})'
+    )
+    if non_course:
+        lines.append('— No-curso —')
+        for r in non_course:
+            lines.append(f'- {r}')
+    if pending_reqs:
+        lines.append('— Pendientes —')
+        for r in pending_reqs:
+            lines.append(f'- {r}')
+    if not non_course and not pending_reqs:
+        lines.append('Sin requisitos pendientes registrados.')
+
+    _sep('8. TEXTO LITERAL EXTRAÍDO DEL PDF')
+    texto_pdf = cuenta_db.cap_texto_extraido or ''
+    if texto_pdf:
+        lines.append(texto_pdf)
+    else:
+        lines.append('(no hay texto extraído almacenado)')
+
+    _sep('9. JSON CRUDO COMPLETO (cap_estructurado)')
+    try:
+        lines.append(
+            json.dumps(cap_estructurado, ensure_ascii=False, indent=2, default=str)
+        )
+    except Exception as exc:
+        lines.append(f'(no se pudo serializar JSON: {exc})')
+
+    return '\n'.join(lines)
+
+
 def perfil_alumno(request):
     """
     Tablero personal del alumno: avance hacia 360 cr., CAP e historial académico.
@@ -1001,6 +1197,20 @@ def perfil_alumno(request):
         chunks = [0, 0, 0, meta_creditos]
 
     cap_struct_ctx = (cuenta_db.cap_estructurado or {}) if cuenta_db else {}
+    hay_datos_cap = bool(
+        cuenta_db
+        and not es_demo_alumno
+        and (
+            cuenta_db.cap_subido_en
+            or cuenta_db.cap_texto_extraido
+            or cap_struct_ctx
+        )
+    )
+    cap_reporte_completo = (
+        _construir_reporte_cap_completo(cuenta_db, cap_struct_ctx)
+        if hay_datos_cap
+        else ''
+    )
     kpi_cap = _kpi_cap_detail_context(
         es_demo_alumno,
         historial,
@@ -1030,6 +1240,7 @@ def perfil_alumno(request):
         'cap_message': cap_message,
         'cap_extraccion_resumen': (cuenta_db.cap_extraccion_resumen or '') if cuenta_db else '',
         'cap_estructurado': cap_struct_ctx,
+        'cap_reporte_completo': cap_reporte_completo,
         'cap_lectura_error': cuenta_db.cap_error_lectura if cuenta_db else '',
         'kpi_interactive': kpi_interactive,
         **kpi_cap,

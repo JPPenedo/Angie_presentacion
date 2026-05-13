@@ -178,6 +178,54 @@
     border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.75rem; font-weight: 600;
     border: 1px solid rgba(201,160,106,0.35); background: var(--pf-accent-dim); color: var(--pf-accent);
   }
+  .pf-cap-report-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.72rem; font-weight: 600;
+    padding: 0.4rem 0.85rem; border-radius: 999px;
+    border: 1px solid rgba(201,160,106,0.35);
+    background: rgba(201,160,106,0.08);
+    color: #c9a06a;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .pf-cap-report-btn:hover {
+    background: rgba(201,160,106,0.18);
+    color: #e8c89b;
+    border-color: rgba(201,160,106,0.6);
+    transform: translateY(-1px);
+  }
+  .pf-cap-report-btn:focus-visible {
+    outline: 2px solid rgba(201,160,106,0.55);
+    outline-offset: 2px;
+  }
+  .pf-cap-report-modal {
+    background: #111111;
+    border: 1px solid rgba(201,160,106,0.25);
+    color: #d4d4d8;
+    border-radius: 1rem;
+  }
+  .pf-cap-report-modal .modal-header {
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(201,160,106,0.05);
+  }
+  .pf-cap-report-modal .modal-title { color: #e8dcc8; font-weight: 700; font-size: 0.95rem; }
+  .pf-cap-report-modal .modal-footer { border-top: 1px solid rgba(255,255,255,0.06); }
+  .pf-cap-reporte-body {
+    max-height: 60vh;
+    overflow: auto;
+    background: #0c0c0c;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 0.75rem;
+    padding: 0.9rem 1rem;
+    margin: 0;
+    font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: #c4c4c8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    tab-size: 4;
+  }
 </style>
 {% endblock %}
 
@@ -225,8 +273,79 @@
         </p>
         <a class="pf-btn-light" href="{% url 'core:esquemas_evaluacion_lista' %}"><i class="bi bi-table me-2"></i>Ver esquema de evaluación</a>
       </div>
+      {% if cap_reporte_completo %}
+      <div class="d-flex justify-content-end mt-2">
+        <button type="button" class="pf-cap-report-btn" data-bs-toggle="modal" data-bs-target="#modalCapReporte" title="Ver y copiar todo lo extraído del CAP">
+          <i class="bi bi-clipboard-data"></i>
+          Ver reporte completo del CAP
+        </button>
+      </div>
+      {% endif %}
     </div>
   </div>
+
+  {% if cap_reporte_completo %}
+  <div class="modal fade" id="modalCapReporte" tabindex="-1" aria-labelledby="modalCapReporteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+      <div class="modal-content pf-cap-report-modal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCapReporteLabel">
+            <i class="bi bi-clipboard-data me-2"></i>Reporte completo de lectura del CAP
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-secondary mb-2">
+            Texto único copiable con TODA la información que se reporta y guarda al leer tu CAP: archivo, resumen oficial, resumen del parser, áreas, materias por criterio (créditos, calificación, estado), texto literal del PDF y JSON crudo.
+          </p>
+          <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+            <button type="button" class="btn-cap btn-cap-primary" id="cap-reporte-copy-btn">
+              <i class="bi bi-clipboard me-1"></i>Copiar todo
+            </button>
+            <span class="small text-secondary" style="font-size:0.72rem;">{{ cap_reporte_completo|length }} caracteres</span>
+          </div>
+          <pre class="pf-cap-reporte-body" id="cap-reporte-full">{{ cap_reporte_completo }}</pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cap" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    var btn = document.getElementById('cap-reporte-copy-btn');
+    var el = document.getElementById('cap-reporte-full');
+    if (!btn || !el) return;
+    btn.addEventListener('click', function () {
+      var t = el.textContent || '';
+      var afterCopy = function () {
+        var o = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2"></i> Copiado';
+        setTimeout(function () { btn.innerHTML = o; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t).then(afterCopy).catch(function () {
+          try {
+            var r = document.createRange();
+            r.selectNodeContents(el);
+            var s = window.getSelection();
+            s.removeAllRanges();
+            s.addRange(r);
+            document.execCommand('copy');
+            s.removeAllRanges();
+            afterCopy();
+          } catch (e) {
+            alert('No se pudo copiar. Selecciona el texto manualmente.');
+          }
+        });
+      } else {
+        alert('Tu navegador no soporta copia automática. Selecciona el texto manualmente.');
+      }
+    });
+  })();
+  </script>
+  {% endif %}
 
   <div class="row g-3 mb-2 pf-kpi-grid">
     <div class="col-sm-6 col-xl-3">
