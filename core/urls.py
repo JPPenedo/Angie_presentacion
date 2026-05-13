@@ -19,8 +19,6 @@ urlpatterns = [
     path('login/',               views.login_view,     name='login'),
     # Pantalla para registro de una nueva cuenta de alumno.
     path('crear-cuenta/',        views.crear_cuenta_view, name='crear_cuenta'),
-    # Página de exposición con slides actuariales y demo simplificada.
-    path('expo-actuaria/', views.expo_actuaria_view, name='expo_actuaria'),
     # Página pedagógica sobre opciones: Bull Call Spread y Bear Put Spread.
     path('expo-opciones/', views.expo_opciones_view, name='expo_opciones'),
     # Posiciones sintéticas: larga (bull) y corta (bear) con call y put al mismo strike.

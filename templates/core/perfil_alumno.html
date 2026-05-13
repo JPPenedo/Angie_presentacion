@@ -55,7 +55,7 @@
     border: 1px dashed rgba(184,242,74,0.35); border-radius: 1rem; padding: 1.1rem;
     background: rgba(184,242,74,0.04); margin-top: 0.75rem;
   }
-  .pf-expo-list { margin: 0; padding-left: 1.1rem; color: #9ca3af; font-size: 0.82rem; line-height: 1.55; }
+  .pf-note-list { margin: 0; padding-left: 1.1rem; color: #9ca3af; font-size: 0.82rem; line-height: 1.55; }
   .pf-table-card { background: #1c1c1c; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 1.5rem; }
   .pf-table-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
   .pf-buy-pill {
@@ -96,19 +96,18 @@
           <span>Avance por etapas del plan</span>
           <span class="pf-val-mono">{{ total_creditos_hist }} <span style="font-size:0.72rem;color:#6b7280;font-weight:500;">/ {{ meta_creditos }} cr.</span></span>
         </div>
-        <p class="small text-secondary mb-2">Distribución de créditos (reales en demo, ilustrativa tras CAP en cuentas nuevas). Conecta con la slide de <em>F̂(c)</em> y supervivencia académica hacia la titulación.</p>
+        <p class="small text-secondary mb-2">Distribución de créditos por etapas del plan (datos de demostración o ilustrativos cuando registras tu CAP).</p>
         <div style="height:180px;"><canvas id="chartBloques"></canvas></div>
         <div class="d-flex flex-wrap gap-2 mt-2 justify-content-center" id="pfLegend"></div>
       </div>
     </div>
     <div class="col-lg-5">
       <div class="pf-promo">
-        <h3>¿Cómo encaja esto con Actuaría?</h3>
+        <h3>Tu CAP y el seguimiento del plan</h3>
         <p>
-          La exposición enlaza tu CAP con distribuciones empíricas, prerrequisitos como grafos, aprobación Bernoulli,
-          Z bajo Normal y proyección de tiempo a los 360 créditos. Abre la exposición para ver el mapa completo del prototipo.
+          Sube tu CAP para reflejar mejor tu avance, créditos y materias. Desde aquí también puedes armar tu esquema de evaluación por materia.
         </p>
-        <a class="pf-btn-light" href="{% url 'core:expo_actuaria' %}"><i class="bi bi-easel me-2"></i>Ir a la exposición actuarial</a>
+        <a class="pf-btn-light" href="{% url 'core:esquemas_evaluacion_lista' %}"><i class="bi bi-table me-2"></i>Ver esquema de evaluación</a>
       </div>
     </div>
   </div>
@@ -119,7 +118,7 @@
         <div>
           <div class="stat-value" style="color:var(--pf-accent);">{% if promedio_global is not None %}{{ promedio_global }}{% else %}—{% endif %}</div>
           <div class="stat-label">Promedio</div>
-          <div class="stat-delta text-secondary">Slide Normal / Z-score</div>
+          <div class="stat-delta text-secondary">Respecto al historial</div>
         </div>
         <div class="stat-icon" style="background:var(--pf-accent-dim);color:var(--pf-accent);"><i class="bi bi-bar-chart-line-fill"></i></div>
       </div>
@@ -139,7 +138,7 @@
         <div>
           <div class="stat-value" style="color:var(--gold);">{{ pct_avance }}%</div>
           <div class="stat-label">Avance del plan</div>
-          <div class="stat-delta text-secondary">Función de supervivencia académica</div>
+          <div class="stat-delta text-secondary">Avance respecto a la meta</div>
         </div>
         <div class="stat-icon" style="background:var(--gold-dim);color:var(--gold);"><i class="bi bi-hourglass-split"></i></div>
       </div>
@@ -149,7 +148,7 @@
         <div>
           <div class="stat-value" style="color:var(--blue);">{{ materias_actuales|length }}</div>
           <div class="stat-label">Materias en curso</div>
-          <div class="stat-delta text-secondary">Bernoulli por evaluación</div>
+          <div class="stat-delta text-secondary">Carga del semestre</div>
         </div>
         <div class="stat-icon" style="background:var(--blue-dim);color:var(--blue);"><i class="bi bi-journal-bookmark-fill"></i></div>
       </div>
@@ -201,10 +200,10 @@
     {% elif not es_demo_alumno %}
     <p class="small text-warning mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Solo los usuarios dados de alta en <em>Crear cuenta</em> pueden registrar CAP en base de datos.</p>
     {% endif %}
-    <ul class="pf-expo-list mt-3">
-      <li><strong class="text-light">360 créditos:</strong> mismo marco que la slide de distribución empírica y percentiles.</li>
-      <li><strong class="text-light">Prerrequisitos:</strong> el producto completo desbloquearía materias como en la slide de grafos / Markov.</li>
-      <li><strong class="text-light">Aprobación:</strong> agregación Binomial por materia (tasa y bandas) al estilo de la expo.</li>
+    <ul class="pf-note-list mt-3">
+      <li><strong class="text-light">360 créditos:</strong> referencia del plan de estudios para medir avance y metas.</li>
+      <li><strong class="text-light">Prerrequisitos:</strong> en el producto completo, encadenar materias aprobadas con nuevas inscripciones.</li>
+      <li><strong class="text-light">Aprobación:</strong> tasas por materia para priorizar seguimiento y apoyo académico.</li>
     </ul>
   </div>
 

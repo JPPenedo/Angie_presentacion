@@ -9,6 +9,7 @@ Guía de lectura (tipo profesor):
 3) Finalmente sigue el flujo de vistas: login -> dashboard/docente o perfil/alumno.
 """
 
+import logging
 from decimal import Decimal, InvalidOperation
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -28,6 +29,8 @@ from .models import (
     EsquemaEvaluacionMateria,
     RubroEvaluacion,
 )
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Usuarios demo (sin modelos, autenticación por sesión)
@@ -548,7 +551,11 @@ def crear_cuenta_view(request):
                     password_hash=make_password(password),
                     is_verified=True,
                 )
-            except DatabaseError:
+            except DatabaseError as exc:
+                logger.exception(
+                    'crear_cuenta: fallo al guardar CuentaAlumno (revisa migraciones y logs): %s',
+                    exc,
+                )
                 return render(
                     request,
                     'core/signup.html',
@@ -669,7 +676,7 @@ def detalle_grupo(request, grupo_id):
 
 def perfil_alumno(request):
     """
-    Tablero personal del alumno: avance hacia 360 cr., CAP, historial y coherencia con la expo actuarial.
+    Tablero personal del alumno: avance hacia 360 cr., CAP e historial académico.
     """
     redir = _require_login(request)
     if redir:
@@ -716,8 +723,8 @@ def perfil_alumno(request):
         else:
             cap_ok = bool(cuenta_db and cuenta_db.cap_subido_en)
             cap_message = (
-                'Sube tu CAP para alinear esta vista con el flujo de la exposición: diagnóstico, '
-                'red de desbloqueos y métricas tipo Bernoulli / Normal sobre tu historial.'
+                'Sube tu CAP para completar tu diagnóstico académico: créditos acumulados, '
+                'materias en curso y proyección hacia la meta del plan.'
             )
 
     # Bloques de créditos por etapa del plan (gráfico tipo portafolio)
@@ -989,194 +996,11 @@ def panel_director(request):
     return render(request, 'core/panel_director.html', context)
 
 
-def expo_actuaria_view(request):
-    """
-    Vista pública de exposición:
-    - Slides sobre enfoques matemáticos actuariales implícitos en el proyecto.
-    - Prototipo demo simplificado con estilo consistente.
-    """
-    slides = [
-        {
-            'titulo': 'Avance Curricular hacia los 360 Créditos',
-            'idea': (
-                'La plataforma muestra cuántos créditos lleva cada alumno sobre los '
-                '360 que exige el plan. Observar la distribución del grupo revela '
-                'dónde se concentra la masa del alumnado y dónde aparecen brechas '
-                'que frenan el camino a la titulación.'
-            ),
-            'modelo': (
-                r'\hat F(c) \;=\; \frac{1}{n}\sum_{i=1}^{n} \mathbb{1}\{C_i \le c\}'
-                r'\qquad P_{50} \;=\; \inf\!\bigl\{c : \hat F(c) \ge 0.5\bigr\}'
-                r'\qquad S(c) \;=\; 1 - F(c)'
-            ),
-            'enfoque': (
-                'Función de distribución empírica y función de supervivencia S(c): '
-                'el mismo instrumento con el que un actuario construye tablas de '
-                'mortalidad, trasladado al "tiempo vivido" en créditos académicos.'
-            ),
-            'conceptos': [
-                'Distribución empírica F̂ y percentiles del avance',
-                'Función de supervivencia académica S(c)=P(aún en curso)',
-                'Detección de rezago: colas izquierdas de la distribución',
-            ],
-            'demo': 'bernoulli',
-        },
-        {
-            'titulo': 'Red de Prerrequisitos y Desbloqueo',
-            'idea': (
-                'El plan no es lineal: muchas materias exigen haber aprobado otras '
-                'antes. Dos concatenaciones típicas del plan son '
-                'Cálculo I → II → Ecs. Diferenciales y '
-                'Probabilidad I → II → Procesos Estocásticos; ambas convergen '
-                'en las Matemáticas Actuariales.'
-            ),
-            'modelo': (
-                r'\text{abierto}(i) \iff \forall\, j \in \text{pre}(i): \text{aprobado}(j)'
-                r'\qquad P(\text{avanza a } i) \;=\; \prod_{j \in \text{pre}(i)} P\!\bigl(\text{aprobar}\ j\bigr)'
-            ),
-            'enfoque': (
-                'Teoría de grafos y modelos multi-estado tipo Markov — la misma '
-                'estructura con la que Actuaría de vida describe transiciones '
-                '(activo → inválido → fallecido), aplicada a estados curriculares.'
-            ),
-            'conceptos': [
-                'Orden topológico y camino crítico del plan',
-                'Probabilidad multiplicativa sobre la cadena de materias',
-                'Cadenas de Markov sobre estados "materia aprobada"',
-            ],
-            'demo': 'curriculo',
-        },
-        {
-            'titulo': 'Aprobación como Ensayo Bernoulli',
-            'idea': (
-                'Cada evaluación final es un ensayo Bernoulli: el alumno '
-                'aprueba o no aprueba. Al agregar los n alumnos que cursan '
-                'una materia obtenemos una Binomial, y con ella una '
-                'estimación limpia de la tasa de aprobación y su '
-                'incertidumbre.'
-            ),
-            'modelo': (
-                r'X_i \sim \operatorname{Bernoulli}(p)'
-                r'\qquad S_n = \sum_{i=1}^{n} X_i \sim \operatorname{Binomial}(n,p)'
-                r'\qquad \mathbb{E}[S_n] = np,\ \ \operatorname{Var}(S_n) = np(1-p)'
-            ),
-            'enfoque': (
-                'Misma estructura con la que un actuario mide la frecuencia '
-                'siniestral en una cartera: número de éxitos sobre expuestos, '
-                'con su varianza binomial — base del Exam P de la SOA.'
-            ),
-            'conceptos': [
-                'Bernoulli/Binomial: éxito = aprobación, fracaso = reprobación',
-                'Estimador p̂ = A/n y su error estándar √(p̂(1−p̂)/n)',
-                'Banda de 1σ sobre p̂ por materia para priorizar revisión',
-            ],
-            'demo': 'binomial',
-        },
-        {
-            'titulo': 'Z-score bajo el Modelo Normal',
-            'idea': (
-                'Si suponemos que las calificaciones del grupo se '
-                'distribuyen aproximadamente Normal, estandarizar con Z '
-                'nos dice — en desviaciones estándar — qué tan arriba o '
-                'abajo del promedio está cada alumno y en qué percentil '
-                'queda del grupo.'
-            ),
-            'modelo': (
-                r'X \sim \mathcal{N}(\mu,\sigma^{2})'
-                r'\qquad Z = \frac{X-\mu}{\sigma} \sim \mathcal{N}(0,1)'
-                r'\qquad P(X \le x) = \Phi\!\left(\tfrac{x-\mu}{\sigma}\right)'
-            ),
-            'enfoque': (
-                'El mismo score estandarizado con el que la actuaría '
-                'clasifica riesgos — cuántos σ por encima/abajo del '
-                'promedio cae el caso — sobre la distribución Normal y la '
-                'FDA Φ, pilares del Exam P.'
-            ),
-            'conceptos': [
-                'Ajuste (μ, σ) por momentos sobre calificaciones del grupo',
-                'Estandarización Z y percentil vía Φ(Z)',
-                'Colas: alumnos en |Z| > 1 marcados para seguimiento',
-            ],
-            'demo': 'zscore',
-        },
-        {
-            'titulo': 'Tiempo hasta los 360 Créditos',
-            'idea': (
-                'Si los créditos se acumulan a una tasa λ por semestre, '
-                'el tiempo para cubrir los créditos que faltan hasta los '
-                '360 se modela como Gamma (suma de ciclos Exponenciales). '
-                'De ahí sale una proyección concreta: cuántos semestres '
-                'faltan para titular al ritmo actual.'
-            ),
-            'modelo': (
-                r'T = \tfrac{360 - C}{\lambda}'
-                r'\qquad \lambda = \bar r\ \text{cr/sem}'
-                r'\qquad T \sim \operatorname{Gamma}\!\left(\tfrac{360-C}{45},\, \tfrac{1}{\lambda}\right)'
-            ),
-            'enfoque': (
-                'Mismas distribuciones Exponencial y Gamma del Exam P que '
-                'usa la actuaría para tiempos entre siniestros; trasladadas '
-                'al "tiempo restante" hasta terminar la carrera: una '
-                'esperanza de vida académica residual eₓ.'
-            ),
-            'conceptos': [
-                'λ̂ = créditos promedio ganados por semestre',
-                'E[T] = (360 − C)/λ̂ como proyección al ritmo actual',
-                'Banda de incertidumbre usando √Var(T) de la Gamma',
-            ],
-            'demo': 'titulacion',
-        },
-        {
-            'titulo': 'Simulador: de tu CAP a la decisión',
-            'idea': (
-                'Así viviría un alumno la plataforma: inicia sesión, sube su '
-                'CAP — el documento oficial con su avance académico — y en '
-                'segundos obtiene un diagnóstico de su situación, qué materias '
-                'se le desbloquean y una proyección hacia los 360 créditos.'
-            ),
-            'modelo': (
-                r'\text{Impacto} \;=\; \Delta\text{retención} '
-                r'\;+\; \Delta\text{tiempo}_{\text{titulación}} '
-                r'\;+\; \Delta\text{calidad docente}'
-            ),
-            'enfoque': (
-                '¿Por qué importa? La información ya existe en el CAP, pero sirve '
-                'poco si no se analiza. Este prototipo convierte ese documento '
-                'en decisiones concretas para tres actores: el alumno (qué cursar '
-                'y dónde enfocarse), coordinación (a quién apoyar primero) y la '
-                'facultad (qué materias revisar o reforzar).'
-            ),
-            'conceptos': [
-                'Alumno: diagnóstico inmediato y materias desbloqueadas',
-                'Coordinación: detección temprana de rezago y cuellos de botella',
-                'Facultad: evidencia para ajustar el plan y asignar recursos',
-            ],
-            'demo': 'simulador',
-        },
-    ]
-
-    demo_alumnos = [
-        {'nombre': 'A. García', 'calificacion': 8.7, 'riesgo': 'Bajo'},
-        {'nombre': 'C. Mendoza', 'calificacion': 6.1, 'riesgo': 'Medio'},
-        {'nombre': 'S. Ramírez', 'calificacion': 5.4, 'riesgo': 'Alto'},
-        {'nombre': 'D. Flores', 'calificacion': 9.0, 'riesgo': 'Bajo'},
-    ]
-
-    context = {
-        'slides': slides,
-        'demo_alumnos': demo_alumnos,
-        'demo_promedio': round(sum(a['calificacion'] for a in demo_alumnos) / len(demo_alumnos), 2),
-        'demo_aprobacion': round(sum(1 for a in demo_alumnos if a['calificacion'] >= 6) / len(demo_alumnos) * 100),
-        'demo_riesgo_alto': sum(1 for a in demo_alumnos if a['riesgo'] == 'Alto'),
-    }
-    return render(request, 'core/expo_actuaria.html', context)
-
-
 def expo_opciones_view(request):
     """
     Vista pública pedagógica:
     - Slides que explican Bull Call Spread y Bear Put Spread.
-    - Reutiliza el formato visual de `expo_actuaria`, pero con demos propias
+    - Formato tipo presentación con demos propias
       (diagramas de payoff al vencimiento y escenarios numéricos).
     """
     slides = [

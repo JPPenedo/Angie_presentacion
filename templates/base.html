@@ -444,9 +444,6 @@
     <a href="{% url 'core:perfil_alumno' %}" class="sidebar-link {% if request.path == '/mi-perfil/' %}active{% endif %}">
       <span class="s-icon"><i class="bi bi-person-circle"></i></span>Mi Perfil Académico
     </a>
-    <a href="{% url 'core:expo_actuaria' %}" class="sidebar-link {% if request.path == '/expo-actuaria/' %}active{% endif %}">
-      <span class="s-icon"><i class="bi bi-easel2"></i></span>Exposición actuarial
-    </a>
     <a href="{% url 'core:esquemas_evaluacion_lista' %}" class="sidebar-link {% if '/esquemas-evaluacion/' in request.path %}active{% endif %}">
       <span class="s-icon"><i class="bi bi-table"></i></span>Esquema de evaluación
     </a>
@@ -462,7 +459,7 @@
       <div style="font-size:0.75rem;font-weight:700;color:var(--accent);margin-bottom:0.25rem;">
         <i class="bi bi-lightbulb-fill me-1"></i>¿Necesitas ayuda?
       </div>
-      <div style="font-size:0.7rem;color:var(--text-muted);">Proyecto Actuarial II · Prototipo v1.0</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">Plataforma académica · Prototipo v1.0</div>
     </div>
   </nav>
 
