@@ -30,6 +30,13 @@ TOTAL_REQUIRED_RE = re.compile(
 )
 
 AREA_HEADER_RE = re.compile(r"Area\s*:\s*([^\n\r]+?)\s*$", re.MULTILINE | re.IGNORECASE)
+TERM_SUBJECT_COURSE_RE = re.compile(r"\b(20\d{4})\s+([A-Z]{2,6})\s+(\d{4})\b")
+GRADE_TOKEN_RE = re.compile(r"\b(AC|\d{1,2}(?:\.\d+)?|NaN)\b", re.IGNORECASE)
+COURSE_TAIL_RE = re.compile(
+    r"^(?P<title>.+?)\s+(?P<credits>(?:\d+(?:\.\d+)?|NaN|0|-))\s+"
+    r"(?P<grade>(?:AC|\d+(?:\.\d+)?|NaN))\s*(?P<source>[A-Za-z])?$",
+    re.IGNORECASE,
+)
 
 
 def extraer_texto_pdf_solo_fitz(data: bytes) -> Tuple[str, int]:
@@ -38,7 +45,7 @@ def extraer_texto_pdf_solo_fitz(data: bytes) -> Tuple[str, int]:
 
     doc = fitz.open(stream=data, filetype="pdf")
     try:
-        lim = min(len(doc), MAX_PDF_PAGES)
+        lim = min(len(doc), min(MAX_PDF_PAGES, 8))
         partes: List[str] = []
         for i in range(lim):
             page = doc[i]
@@ -307,12 +314,113 @@ def _extract_courses_from_text(block: str) -> List[Dict[str, Any]]:
     return courses
 
 
-def _extract_courses_from_detail(sections: Dict[str, str], full_text: str) -> List[Dict[str, Any]]:
+def _parse_course_candidate_block(block: str) -> Optional[Dict[str, Any]]:
+    s = re.sub(r"\s+", " ", (block or "")).strip()
+    if not s:
+        return None
+    if re.match(
+        r"^(Area|Total Required|Program|Non Course|Detail|Courses Not|Rejected|Student|Name|ID)\b",
+        s,
+        re.I,
+    ):
+        return None
+
+    m = TERM_SUBJECT_COURSE_RE.search(s)
+    if not m:
+        return None
+
+    term, subj, cnum = m.group(1), m.group(2), m.group(3)
+    tail = s[m.end():].strip()
+    if not tail:
+        return None
+    if TERM_SUBJECT_COURSE_RE.search(tail):
+        # Evitar bloques que accidentalmente juntan más de una materia.
+        return None
+
+    tm = COURSE_TAIL_RE.match(tail)
+    if not tm:
+        return None
+
+    title = (tm.group("title") or "").strip()
+    credits_raw = (tm.group("credits") or "").strip()
+    grade_raw = (tm.group("grade") or "").strip()
+    source = (tm.group("source") or "").strip()
+    if not title:
+        return None
+
+    grade_raw_norm = "" if _is_nan_like(grade_raw) else grade_raw
+    grade_ok = _is_valid_grade_token(grade_raw_norm)
+    credits_num = _norm_num(credits_raw)
+    credits_nan = credits_num is None and _is_nan_like(credits_raw)
+
+    completed = bool(term and grade_ok)
+    pending = False
+    classification_reason = "term_code_grade" if completed else "course_candidate_not_completed"
+
+    return {
+        "area": "",
+        "term": term,
+        "code": f"{subj} {cnum}",
+        "name": title,
+        "credits_raw": credits_raw,
+        "credits_num": credits_num,
+        "grade": grade_raw_norm,
+        "source": source,
+        "completed": completed,
+        "pending": pending,
+        "credits_nan_row": credits_nan,
+        "classification_reason": classification_reason,
+    }
+
+
+def _build_course_candidate_blocks(full_text: str) -> List[str]:
+    lines = [ln.strip() for ln in re.sub(r"\r\n?", "\n", full_text).split("\n") if ln.strip()]
+    candidates: List[str] = []
+    seen = set()
+    for i in range(len(lines)):
+        if not TERM_SUBJECT_COURSE_RE.search(lines[i]):
+            continue
+        block = lines[i]
+        if block not in seen:
+            seen.add(block)
+            candidates.append(block)
+        for j in range(i + 1, min(i + 4, len(lines))):
+            if TERM_SUBJECT_COURSE_RE.search(lines[j]):
+                break
+            block = f"{block} {lines[j]}".strip()
+            if block in seen:
+                continue
+            seen.add(block)
+            candidates.append(block)
+    return candidates
+
+
+def _extract_courses_from_detail(
+    sections: Dict[str, str], full_text: str
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     det = sections.get("Detail Requirements", "")
-    courses = _extract_courses_from_text(det)
-    if not courses and full_text:
-        courses = _extract_courses_from_text(full_text)
-    return courses
+    candidates = _build_course_candidate_blocks(full_text)
+    parsed: List[Dict[str, Any]] = []
+    for cand in candidates:
+        p = _parse_course_candidate_block(cand)
+        if p:
+            parsed.append(p)
+
+    # fallback legacy parser over detail block for rows not captured by multiline matcher
+    legacy = _extract_courses_from_text(det) if det else []
+    all_courses = parsed + legacy
+
+    debug = {
+        "area_blocks_detected": len(re.findall(r"(?mi)^\s*Area Requirements\s*$", full_text)),
+        "detail_blocks_detected": len(re.findall(r"(?mi)^\s*Detail Requirements\s*$", full_text)),
+        "course_candidate_blocks": len(candidates),
+        "course_candidates_with_period_code": len(
+            [c for c in candidates if TERM_SUBJECT_COURSE_RE.search(c)]
+        ),
+        "course_candidates_with_grade": len([c for c in candidates if GRADE_TOKEN_RE.search(c)]),
+        "debug_raw_candidates_sample": candidates[:30],
+    }
+    return all_courses, debug
 
 
 def _student_stub(sections: Dict[str, str], full_text: str) -> Dict[str, Any]:
@@ -357,13 +465,14 @@ def _dedupe_cursos(courses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return out
 
 
-def parsear_cap_estructurado(texto_completo: str) -> Dict[str, Any]:
+def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[str, Any]:
     texto_completo = (texto_completo or "").strip()
     sections = _split_sections_smart(texto_completo) if texto_completo else {}
 
     program_summary = _pick_program_summary(sections, texto_completo)
     areas = _extract_areas(sections, texto_completo)
-    courses = _dedupe_cursos(_extract_courses_from_detail(sections, texto_completo))
+    courses_pre, extraction_debug = _extract_courses_from_detail(sections, texto_completo)
+    courses = _dedupe_cursos(courses_pre)
     student = _student_stub(sections, texto_completo)
     non_course = _non_course_lines(sections)
 
@@ -404,6 +513,18 @@ def parsear_cap_estructurado(texto_completo: str) -> Dict[str, Any]:
         "courses_with_nan_credits": len([c for c in courses if c.get("credits_num") is None]),
         "pending_requirements_detected": len(pending_courses),
     }
+    debug_extraction = {
+        "pages_read": int(pages_read),
+        "area_blocks_detected": int(extraction_debug.get("area_blocks_detected", 0)),
+        "detail_blocks_detected": int(extraction_debug.get("detail_blocks_detected", 0)),
+        "course_candidate_blocks": int(extraction_debug.get("course_candidate_blocks", 0)),
+        "course_candidates_with_period_code": int(
+            extraction_debug.get("course_candidates_with_period_code", 0)
+        ),
+        "course_candidates_with_grade": int(extraction_debug.get("course_candidates_with_grade", 0)),
+        "courses_raw": len(courses_pre),
+        "courses_normalized": len(courses),
+    }
 
     result: Dict[str, Any] = {
         "student": student,
@@ -419,6 +540,8 @@ def parsear_cap_estructurado(texto_completo: str) -> Dict[str, Any]:
             "pending_courses": pending_courses,
         },
         "debug": debug,
+        "debug_extraction": debug_extraction,
+        "debug_raw_candidates_sample": extraction_debug.get("debug_raw_candidates_sample", []),
         "warnings": warnings,
     }
 
@@ -479,9 +602,20 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                     "courses_with_nan_credits": 0,
                     "pending_requirements_detected": 0,
                 },
+                "debug_extraction": {
+                    "pages_read": int(pags),
+                    "area_blocks_detected": 0,
+                    "detail_blocks_detected": 0,
+                    "course_candidate_blocks": 0,
+                    "course_candidates_with_period_code": 0,
+                    "course_candidates_with_grade": 0,
+                    "courses_raw": 0,
+                    "courses_normalized": 0,
+                },
+                "debug_raw_candidates_sample": [],
                 "warnings": ["PDF sin texto embebido (páginas: %s)." % pags],
             },
             "",
         )
-    parsed = parsear_cap_estructurado(texto)
+    parsed = parsear_cap_estructurado(texto, pages_read=pags)
     return parsed, texto
