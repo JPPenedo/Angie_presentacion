@@ -23,6 +23,8 @@ urlpatterns = [
     path('expo-opciones/', views.expo_opciones_view, name='expo_opciones'),
     # Posiciones sintéticas: larga (bull) y corta (bear) con call y put al mismo strike.
     path('expo-sinteticos/', views.expo_sinteticos_view, name='expo_sinteticos'),
+    # Presentación de cierre del proyecto (acceso directo por URL, sin enlaces internos).
+    path('expo-cierre/', views.expo_cierre_view, name='expo_cierre'),
     # Proyecto de transformación social (ODS 16): landing page informativa.
     path('proyecto-ods16/', views.proyecto_ods16_view, name='proyecto_ods16'),
     # Misma vista; URL pensada para producción: dominio (Railway) + este segmento.
