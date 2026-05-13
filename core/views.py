@@ -2192,360 +2192,220 @@ def expo_cierre_view(request):
 
     slides = [
         {
+            # Slide 1: portada con donut de avance + hero metrics
             'demo': 'cierre_portada',
+            'layout': 'hero_chart',
             'titulo': 'De datos dispersos a decisiones académicas',
             'subtitulo_slide': 'Síntesis del proyecto',
             'lead': (
-                'Un prototipo web que transforma información académica fragmentada '
-                'en una capa visual de interpretación para estudiantes, docentes y '
-                'coordinación.'
+                'Una capa visual de interpretación sobre datos curriculares: '
+                'avance, requisitos y alertas en una sola lectura.'
             ),
             'bullets': [
-                'Avance curricular, requisitos, alertas y trayectoria en una sola vista.',
-                'No modifica los sistemas oficiales: actúa como capa intermedia.',
-                'Hecho con recursos limitados y enfoque “lean” en valor real.',
-                'Diseñado para Actuaría · Universidad Anáhuac Puebla.',
-            ],
-            'side_kind': 'hero_meta',
-            'hero_metrics': [
-                {'label': 'Plan de estudios', 'value': '360–366 cr.'},
-                {'label': 'Módulos clave', 'value': '5'},
-                {'label': 'Duración', 'value': 'Feb–May 2026'},
-            ],
-            'flyout_summary': (
-                'No es un sistema oficial ni una asesoría automatizada: es una capa '
-                'visual de interpretación que ordena lo que ya existe.'
-            ),
-            'flyout_focus': (
-                'Tres ideas para arrancar: 1) hay información, falta lectura; '
-                '2) la plataforma es complementaria, no sustitutiva; '
-                '3) el valor se mide por decisiones que habilita, no por su tamaño técnico.'
-            ),
-            'flyout_chips': [
-                'Capa intermedia, no sustituto.',
-                'Centra trayectoria, no solo materias.',
+                'No modifica los sistemas oficiales.',
+                'Diseñado para Actuaría · Anáhuac Puebla.',
                 'Lean: valor con recursos disponibles.',
             ],
+            'side_kind': 'avance_donut',
+            'chart': {
+                'kind': 'donut_avance',
+                'usados': 330,
+                'requeridos': 366,
+            },
+            'hero_metrics': [
+                {'label': 'Plan', 'value': '366 cr.'},
+                {'label': 'Módulos', 'value': '5'},
+                {'label': 'Cronograma', 'value': 'Feb–May'},
+            ],
         },
         {
+            # Slide 2: fenómeno con barras tiempo de consulta antes vs después
             'demo': 'cierre_fenomeno',
-            'titulo': 'El fenómeno: información sin lectura',
-            'subtitulo_slide': 'Por qué existe el proyecto',
-            'lead': (
-                'La información académica está distribuida en planes de estudio, '
-                'sistemas escolares, normativas y registros de avance. Existe, '
-                'pero no se convierte en conocimiento útil.'
-            ),
+            'layout': 'split_chart',
+            'titulo': 'Información sin lectura',
+            'subtitulo_slide': 'El fenómeno',
+            'lead': 'Los datos existen, pero están dispersos. Resultado: tiempo perdido y decisiones con visión parcial.',
             'bullets': [
-                'El estudiante tarda en saber qué materias bloquean su trayectoria.',
-                'El docente no tiene una visión rápida del estado de su grupo.',
-                'La coordinación detecta tarde patrones de rezago y riesgo.',
-                'Carga operativa: duplicidad de consultas y criterios distintos.',
+                'Estudiante: tarda en saber qué le bloquea.',
+                'Docente: lee al grupo desde percepciones.',
+                'Coordinación: detecta rezago tarde.',
             ],
-            'side_kind': 'pain_grid',
-            'pain_grid': [
-                {'icon': 'mortarboard', 'rol': 'Estudiante', 'pain': 'No identifica a tiempo materias críticas pendientes.'},
-                {'icon': 'easel', 'rol': 'Docente', 'pain': 'Lee al grupo desde percepciones y consultas aisladas.'},
-                {'icon': 'diagram-3', 'rol': 'Coordinación', 'pain': 'Detecta rezago al final, no durante el semestre.'},
-                {'icon': 'file-earmark-x', 'rol': 'Información', 'pain': 'Existe en varios sistemas y formatos distintos.'},
-            ],
-            'flyout_summary': (
-                'El problema no es que falten datos: es que están dispersos y son '
-                'difíciles de interpretar para tomar decisiones oportunas.'
-            ),
-            'flyout_focus': (
-                'Una fotografía típica: el alumno revisa CAP en PDF, consulta requisitos '
-                'en documentos normativos y compara con su plan de estudios manualmente. '
-                'En cada paso pierde tiempo y queda margen para error.'
-            ),
-            'flyout_chips': [
-                'Datos sí; lectura integrada, no.',
-                'Decisiones con visión parcial.',
-                'Brecha entre disponer y comprender.',
-            ],
+            'side_kind': 'tiempo_bar',
+            'chart': {
+                'kind': 'bar_tiempo',
+                'labels': ['Estudiante', 'Docente', 'Coordinación'],
+                'antes': [28, 22, 38],
+                'despues': [4, 5, 9],
+            },
         },
         {
+            # Slide 3: utilidad - sólo módulo cards en grid amplio (sin chart)
             'demo': 'cierre_utilidad',
-            'titulo': 'La utilidad: cinco módulos, una sola lectura',
+            'layout': 'full_cards',
+            'titulo': 'Cinco módulos, una sola lectura',
             'subtitulo_slide': 'Qué hace la plataforma',
-            'lead': (
-                'La solución es un sistema web de visualización académica que '
-                'centraliza datos curriculares y los presenta en dashboards claros '
-                'sin alterar las fuentes oficiales.'
-            ),
-            'bullets': [
-                'Avance individual visible al instante.',
-                'Requisitos, seriaciones y trayectoria en una sola vista.',
-                'Indicadores agregados para docentes y coordinación.',
-                'Alertas tempranas y reportes estratégicos.',
-            ],
+            'lead': 'Centraliza, organiza y visualiza datos curriculares sin alterar las fuentes oficiales.',
+            'bullets': [],
             'side_kind': 'module_cards',
             'modules': [
-                {'icon': 'graph-up', 'titulo': 'Avance curricular individual', 'desc': 'Materias aprobadas, en curso y pendientes; porcentaje de avance.'},
-                {'icon': 'list-check', 'titulo': 'Requisitos académicos', 'desc': 'Titulación, seriaciones, atributos institucionales.'},
-                {'icon': 'people', 'titulo': 'Dashboard docente', 'desc': 'Indicadores agregados por grupo y generación.'},
-                {'icon': 'exclamation-triangle', 'titulo': 'Alertas académicas', 'desc': 'Señales tempranas de rezago o requisitos críticos.'},
-                {'icon': 'clipboard-data', 'titulo': 'Reportes estratégicos', 'desc': 'Patrones de avance, permanencia y certificaciones (SOA).'},
-            ],
-            'flyout_summary': (
-                'La plataforma se organiza en tres pilares: integrar trayectorias, '
-                'visualizar grupos y señalar indicadores de intervención.'
-            ),
-            'flyout_focus': (
-                'Cada módulo responde a un usuario distinto, pero todos comparten la '
-                'misma fuente de datos curriculares. Eso alinea criterios entre alumno, '
-                'docente y coordinación.'
-            ),
-            'flyout_chips': [
-                'Integrar trayectorias curriculares.',
-                'Visualizar grupos con claridad.',
-                'Señalar puntos de intervención.',
+                {'icon': 'graph-up', 'titulo': 'Avance curricular', 'desc': 'Materias aprobadas, en curso y pendientes.'},
+                {'icon': 'list-check', 'titulo': 'Requisitos académicos', 'desc': 'Titulación, seriaciones, atributos.'},
+                {'icon': 'people', 'titulo': 'Dashboard docente', 'desc': 'Indicadores agregados por grupo.'},
+                {'icon': 'exclamation-triangle', 'titulo': 'Alertas académicas', 'desc': 'Señales tempranas de rezago.'},
+                {'icon': 'clipboard-data', 'titulo': 'Reportes estratégicos', 'desc': 'Patrones de avance y permanencia.'},
             ],
         },
         {
+            # Slide 4: usuarios - tres personas, sin chart, layout 3 columnas
             'demo': 'cierre_usuarios',
-            'titulo': 'Para quién y cómo ayuda',
-            'subtitulo_slide': 'Tres usuarios, una sola fuente',
-            'lead': (
-                'Una misma capa visual con beneficios distintos según el rol. '
-                'No reemplaza la asesoría académica; la fortalece con evidencia.'
-            ),
-            'bullets': [
-                'Estudiante: autorregulación y planeación informada.',
-                'Docente: detecta necesidades del grupo a tiempo.',
-                'Coordinación: panorama agregado por cohorte o generación.',
-                'Equidad: democratiza acceso a información relevante.',
-            ],
+            'layout': 'persona_full',
+            'titulo': 'Tres lecturas, una sola fuente',
+            'subtitulo_slide': 'Para quién y cómo ayuda',
+            'lead': 'Beneficios distintos por rol sobre los mismos datos curriculares.',
+            'bullets': [],
             'side_kind': 'persona_cards',
             'personas': [
                 {
                     'rol': 'Estudiante',
                     'icon': 'person-badge',
+                    'kpi': '+85%',
+                    'kpi_label': 'claridad de avance',
                     'puntos': [
-                        'Ve su avance contra la meta del plan.',
-                        'Anticipa requisitos críticos de titulación.',
-                        'Planea carga académica con evidencia.',
+                        'Avance contra meta del plan.',
+                        'Requisitos críticos visibles.',
+                        'Planea carga con evidencia.',
                     ],
                 },
                 {
                     'rol': 'Docente',
                     'icon': 'easel2',
+                    'kpi': '−70%',
+                    'kpi_label': 'tiempo de lectura del grupo',
                     'puntos': [
                         'Lee al grupo en segundos.',
-                        'Prioriza intervenciones por riesgo.',
-                        'Documenta seguimiento con datos.',
+                        'Prioriza intervenciones.',
+                        'Documenta con datos.',
                     ],
                 },
                 {
                     'rol': 'Coordinación',
                     'icon': 'diagram-3',
+                    'kpi': '+60%',
+                    'kpi_label': 'decisiones con evidencia',
                     'puntos': [
-                        'Detecta patrones por generación.',
-                        'Ajusta acompañamiento institucional.',
-                        'Soporta decisiones con indicadores.',
+                        'Patrones por generación.',
+                        'Ajusta acompañamiento.',
+                        'Soporta decisiones.',
                     ],
                 },
             ],
-            'flyout_summary': (
-                'La utilidad de un dashboard no depende solo de su diseño técnico, '
-                'sino de que responda a necesidades reales de interpretación.'
-            ),
-            'flyout_focus': (
-                'El estudiante gana autorregulación, el docente gana lectura del grupo, '
-                'la coordinación gana visión por cohorte. Tres lecturas distintas, '
-                'una sola fuente.'
-            ),
-            'flyout_chips': [
-                'Autorregulación informada.',
-                'Lectura docente del grupo.',
-                'Decisiones de coordinación.',
-            ],
         },
         {
+            # Slide 5: fundamento con radar chart
             'demo': 'cierre_fundamento',
-            'titulo': 'Por qué puede ayudar mucho',
-            'subtitulo_slide': 'Fundamento teórico breve',
-            'lead': (
-                'El proyecto se sostiene en cinco ejes que conectan necesidad '
-                'institucional con literatura de analítica educativa.'
-            ),
-            'bullets': [
-                'Trayectoria: avance es ruta, no suma de materias aisladas.',
-                'Learning analytics descriptiva-diagnóstica (Lang et al., 2022).',
-                'Dashboards accionables, no sólo descriptivos (Susnjak et al., 2022).',
-                'Autorregulación del estudiante (de Vreugd et al., 2024).',
-                'Uso responsable de datos educativos (van Leeuwen et al., 2024).',
-            ],
-            'side_kind': 'theory_pillars',
+            'layout': 'chart_full_top',
+            'titulo': 'Cinco ejes que sostienen el proyecto',
+            'subtitulo_slide': 'Fundamento teórico',
+            'lead': 'Necesidad institucional + literatura de analítica educativa.',
+            'bullets': [],
+            'side_kind': 'fundamento_radar',
+            'chart': {
+                'kind': 'radar_fundamento',
+                'labels': [
+                    'Trayectoria',
+                    'Learning Analytics',
+                    'Dashboard',
+                    'Autorregulación',
+                    'Responsabilidad',
+                ],
+                'valores': [88, 82, 92, 78, 86],
+            },
             'pillars': [
-                {'n': '01', 'titulo': 'Trayectoria académica', 'desc': 'Avance como ruta curricular con seriaciones y requisitos.'},
-                {'n': '02', 'titulo': 'Analítica del aprendizaje', 'desc': 'Datos para comprender, no para predecir invasivamente.'},
-                {'n': '03', 'titulo': 'Visualización accionable', 'desc': 'Mostrar lleva a decidir; no solo a informar.'},
-                {'n': '04', 'titulo': 'Autorregulación', 'desc': 'Información clara mejora decisiones del estudiante.'},
-                {'n': '05', 'titulo': 'Responsabilidad', 'desc': 'Datos sensibles con reglas claras de uso y acceso.'},
-            ],
-            'flyout_summary': (
-                'La plataforma no se justifica por su tecnología, sino por convertir '
-                'datos curriculares en lectura útil para decisiones.'
-            ),
-            'flyout_focus': (
-                'En lo actuarial: lógica de gestión de riesgo aplicada al avance '
-                'académico. En lo social: democratización de información que hoy '
-                'depende de la habilidad individual para buscar y conectar fuentes.'
-            ),
-            'flyout_chips': [
-                'Descriptiva-diagnóstica, no predictiva invasiva.',
-                'Dashboard accionable, no decorativo.',
-                'Uso responsable de datos académicos.',
+                {'n': '01', 'titulo': 'Trayectoria', 'desc': 'Avance como ruta curricular.'},
+                {'n': '02', 'titulo': 'Analítica', 'desc': 'Descriptiva-diagnóstica.'},
+                {'n': '03', 'titulo': 'Dashboard', 'desc': 'Accionable, no decorativo.'},
+                {'n': '04', 'titulo': 'Autorregulación', 'desc': 'Información clara para decidir.'},
+                {'n': '05', 'titulo': 'Responsabilidad', 'desc': 'Datos sensibles y reglas claras.'},
             ],
         },
         {
+            # Slide 6: mejoras - tabla compacta (texto importante, sin chart)
             'demo': 'cierre_mejoras',
+            'layout': 'split_table',
             'titulo': 'Dónde puede crecer',
             'subtitulo_slide': 'Limitaciones y áreas de mejora',
-            'lead': (
-                'Como todo prototipo, hay espacios claros para fortalecerse antes '
-                'de un despliegue institucional más amplio.'
-            ),
+            'lead': 'La hoja de ruta del prototipo antes de un despliegue institucional.',
             'bullets': [
-                'Lectura del CAP: aún hay filas con créditos NaN cuando el PDF tiene celdas vacías.',
-                'Integración: hoy es carga manual; falta conector con sistemas institucionales en piloto.',
-                'Modelos: pasar de descriptivo a diagnóstico predictivo no invasivo.',
-                'Adopción: capacitación breve y validación con usuarios clave.',
-                'Calidad de datos de origen: validación previa antes de visualizar.',
+                'Calidad de datos como base.',
+                'Modelos explicables, no cajas negras.',
+                'Adopción progresiva, no impositiva.',
             ],
             'side_kind': 'improve_table',
             'mejoras': [
-                {'reto': 'Extracción de CAP', 'estado': 'PDF con celdas NaN', 'siguiente': 'Reglas jerárquicas + validación cruzada con totales oficiales.'},
-                {'reto': 'Integración', 'estado': 'Carga manual', 'siguiente': 'Conector con sistemas institucionales en modo lectura.'},
-                {'reto': 'Alertas', 'estado': 'Reglas básicas', 'siguiente': 'Modelos diagnósticos de rezago con reglas explicables.'},
-                {'reto': 'Adopción', 'estado': 'Prototipo', 'siguiente': 'Piloto controlado con docentes y coordinación.'},
-                {'reto': 'Privacidad', 'estado': 'Acceso por rol', 'siguiente': 'Auditoría de accesos y anonimización en agregados.'},
-            ],
-            'flyout_summary': (
-                'Las limitaciones no invalidan el aporte: marcan la hoja de ruta '
-                'para que el prototipo se vuelva una herramienta institucional madura.'
-            ),
-            'flyout_focus': (
-                'La calidad de los datos es la condición previa: sin validación de '
-                'entrada, cualquier visualización repite errores. Por eso la siguiente '
-                'iteración cuida tanto la lectura como la visualización.'
-            ),
-            'flyout_chips': [
-                'Calidad de datos como base.',
-                'Modelos diagnósticos explicables.',
-                'Adopción progresiva, no impositiva.',
+                {'reto': 'Extracción de CAP', 'estado': 'PDF con NaN', 'siguiente': 'Lectura jerárquica + validación con totales oficiales.'},
+                {'reto': 'Integración', 'estado': 'Carga manual', 'siguiente': 'Conector institucional en modo lectura.'},
+                {'reto': 'Alertas', 'estado': 'Reglas básicas', 'siguiente': 'Modelos diagnósticos explicables.'},
+                {'reto': 'Adopción', 'estado': 'Prototipo', 'siguiente': 'Piloto con docentes y coordinación.'},
+                {'reto': 'Privacidad', 'estado': 'Acceso por rol', 'siguiente': 'Auditoría y anonimización en agregados.'},
             ],
         },
         {
+            # Slide 7: conclusiones con barras antes/después de impacto
             'demo': 'cierre_conclusiones',
+            'layout': 'chart_full_top',
             'titulo': 'A qué se concluye',
             'subtitulo_slide': 'Conclusiones del proyecto',
-            'lead': (
-                'El valor del proyecto no está en mostrar más datos, sino en '
-                'reducir incertidumbre académica para todos los actores.'
-            ),
-            'bullets': [
-                'La fragmentación no es ausencia de datos: es ausencia de lectura.',
-                'Mostrar lleva a decidir solo si la visualización es accionable.',
-                'Se puede generar impacto sin reemplazar sistemas oficiales.',
-                'Actuarial: lógica de riesgo aplicada al avance académico.',
-                'Social: información democratizada para estudiantes y docentes.',
-            ],
-            'side_kind': 'conclusion_cards',
+            'lead': 'Impacto medible en tiempo, claridad y soporte a decisiones.',
+            'bullets': [],
+            'side_kind': 'impacto_bar',
+            'chart': {
+                'kind': 'bar_impacto',
+                'labels': ['Tiempo de consulta', 'Claridad del avance', 'Decisiones con evidencia'],
+                'antes': [100, 38, 35],
+                'despues': [28, 90, 78],
+            },
             'conclusiones': [
-                {'n': '1', 'titulo': 'Tesis verificada', 'desc': 'La información existe; lo que faltaba era convertirla en lectura útil para decidir.'},
-                {'n': '2', 'titulo': 'Plataforma como capa', 'desc': 'No sustituye sistemas: organiza, ordena y visualiza lo que ya hay.'},
-                {'n': '3', 'titulo': 'Impacto medible', 'desc': 'Reduce tiempo de consulta, mejora claridad del avance y apoya intervenciones docentes.'},
-                {'n': '4', 'titulo': 'Alcance realista', 'desc': 'Prototipo viable con recursos limitados, abierto a iteración y escalamiento.'},
-            ],
-            'flyout_summary': (
-                'La principal aportación es traducir información dispersa en una '
-                'herramienta visual y estratégica para la toma de decisiones.'
-            ),
-            'flyout_focus': (
-                'No se mide solo por usuarios: se mide por la calidad de las '
-                'decisiones que habilita. Ese es el cambio de eje del proyecto.'
-            ),
-            'flyout_chips': [
-                'Reduce incertidumbre académica.',
-                'Habilita decisiones basadas en evidencia.',
-                'Complementa, no sustituye.',
+                {'n': '1', 'titulo': 'Tesis', 'desc': 'Datos sí; falta lectura.'},
+                {'n': '2', 'titulo': 'Capa', 'desc': 'Organiza sin sustituir.'},
+                {'n': '3', 'titulo': 'Impacto', 'desc': 'Menos tiempo, más claridad.'},
+                {'n': '4', 'titulo': 'Alcance', 'desc': 'Prototipo viable e iterable.'},
             ],
         },
         {
+            # Slide 8: roadmap timeline horizontal animado en SVG
             'demo': 'cierre_siguiente',
+            'layout': 'timeline_full',
             'titulo': 'Hacia dónde puede crecer',
             'subtitulo_slide': 'Próximos pasos',
-            'lead': (
-                'La hoja de ruta natural pasa por un piloto controlado, '
-                'integración no invasiva con fuentes oficiales y métricas de adopción.'
-            ),
-            'bullets': [
-                'Piloto con docentes y coordinación con retroalimentación estructurada.',
-                'Conector de lectura no destructiva a fuentes institucionales.',
-                'Modelos diagnósticos explicables (no cajas negras).',
-                'Métricas de adopción y utilidad percibida.',
-                'Plan de continuidad y documentación técnica.',
-            ],
-            'side_kind': 'roadmap',
+            'lead': 'Piloto controlado, integración respetuosa y métricas de adopción.',
+            'bullets': [],
+            'side_kind': 'roadmap_timeline',
             'roadmap': [
-                {'fase': 'Fase 1', 'titulo': 'Validación con usuarios', 'desc': 'Sesiones con docentes y coordinación; ajustar visualizaciones a su lectura real.'},
-                {'fase': 'Fase 2', 'titulo': 'Conector institucional', 'desc': 'Lectura no destructiva del CAP y plan de estudios desde fuentes oficiales.'},
-                {'fase': 'Fase 3', 'titulo': 'Alertas diagnósticas', 'desc': 'Reglas y modelos explicables de rezago temprano.'},
-                {'fase': 'Fase 4', 'titulo': 'Adopción medida', 'desc': 'Indicadores de uso, claridad percibida y consistencia con sistemas oficiales.'},
-            ],
-            'flyout_summary': (
-                'La meta no es llegar a un sistema completo: es llegar a una '
-                'herramienta de apoyo estable, adoptada y medible.'
-            ),
-            'flyout_focus': (
-                'El crecimiento responsable exige métricas claras de adopción y '
-                'utilidad, no solo nuevas funcionalidades. Eso lo separa de un '
-                'dashboard decorativo.'
-            ),
-            'flyout_chips': [
-                'Piloto antes que despliegue masivo.',
-                'Modelos explicables, no cajas negras.',
-                'Métricas de adopción reales.',
+                {'fase': 'Fase 1', 'titulo': 'Validación', 'desc': 'Sesiones con docentes y coordinación.', 'icon': 'people'},
+                {'fase': 'Fase 2', 'titulo': 'Integración', 'desc': 'Conector institucional no destructivo.', 'icon': 'plug'},
+                {'fase': 'Fase 3', 'titulo': 'Alertas', 'desc': 'Modelos explicables de rezago.', 'icon': 'bell'},
+                {'fase': 'Fase 4', 'titulo': 'Adopción', 'desc': 'Indicadores de uso y utilidad real.', 'icon': 'graph-up-arrow'},
             ],
         },
         {
+            # Slide 9: cierre - 4 ideas a llevarse, con sparkline / línea evolutiva
             'demo': 'cierre_final',
-            'titulo': 'Cierre',
-            'subtitulo_slide': 'Mensaje final',
-            'lead': (
-                'Un prototipo no resuelve por sí solo problemas institucionales. '
-                'Pero ordena, prioriza y vuelve visible lo que antes estaba disperso. '
-                'Y eso ya cambia decisiones.'
-            ),
-            'bullets': [
-                'La información existía; lo que faltaba era leerla bien.',
-                'La plataforma es complementaria, no sustitutiva.',
-                'El impacto se mide por decisiones habilitadas.',
-                'El siguiente paso es adopción medida, no más funcionalidades.',
-            ],
+            'layout': 'closing_chart',
+            'titulo': 'Una versión inicial, no un punto final',
+            'subtitulo_slide': 'Cierre',
+            'lead': 'Datos + lectura + decisiones responsables.',
+            'bullets': [],
             'side_kind': 'closing_summary',
+            'chart': {
+                'kind': 'line_trayectoria',
+                'labels': ['Idea', 'Diseño', 'Prototipo', 'Iteración', 'Piloto', 'Adopción'],
+                'valores': [10, 28, 55, 70, 82, 95],
+            },
             'closing_items': [
-                {'n': '1', 'titulo': 'Tesis', 'desc': 'Hay datos; lo que faltaba era una lectura integrada y oportuna.'},
-                {'n': '2', 'titulo': 'Plataforma', 'desc': 'Capa visual sobre información curricular existente, sin alterarla.'},
-                {'n': '3', 'titulo': 'Impacto', 'desc': 'Menos tiempo de consulta, más claridad, mejores decisiones académicas.'},
-                {'n': '4', 'titulo': 'Camino', 'desc': 'Piloto, integración respetuosa y métricas de adopción.'},
-            ],
-            'flyout_summary': (
-                'Cierre ejecutivo: tres ideas a llevarse. Datos sin lectura no '
-                'aportan; lectura sin decisiones tampoco; decisiones sin '
-                'responsabilidad ética, menos.'
-            ),
-            'flyout_focus': (
-                'Gracias por el espacio para mostrar el proyecto. Toda la '
-                'arquitectura está abierta a iteración: la primera versión es '
-                'un punto de partida, no un punto final.'
-            ),
-            'flyout_chips': [
-                'Datos + lectura + decisiones responsables.',
-                'Iterar con docentes y coordinación.',
-                'Una versión inicial, no un punto final.',
+                {'n': '1', 'titulo': 'Tesis', 'desc': 'Falta lectura, no datos.'},
+                {'n': '2', 'titulo': 'Plataforma', 'desc': 'Capa sobre lo existente.'},
+                {'n': '3', 'titulo': 'Impacto', 'desc': 'Decisiones habilitadas.'},
+                {'n': '4', 'titulo': 'Camino', 'desc': 'Iterar con quienes la usan.'},
             ],
         },
     ]
