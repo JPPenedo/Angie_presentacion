@@ -38,6 +38,59 @@ COURSE_TAIL_RE = re.compile(
     re.IGNORECASE,
 )
 
+SPECIAL_TAG_TOKENS = {"CING", "CLIN", "ABPE", "ABAE", "ABIE", "TBIE", "MTBA"}
+NOISE_TOKENS = {
+    "CING",
+    "CLIN",
+    "ABPE",
+    "ABAE",
+    "ABIE",
+    "TBIE",
+    "MTBA",
+    "H",
+    "Required",
+    "Courses",
+    "Credits",
+    "Source",
+}
+NAME_CUT_MARKERS = [
+    "Total Credits and GPA",
+    "Area Requirements",
+    "Detail Requirements",
+    "https://",
+    "Required",
+    "Source",
+]
+COURSE_NAME_CORRECTIONS = {
+    "HUM 1402": "Antropología fundamental",
+    "HUM 1403": "Persona y trascendencia",
+    "HUM 1405": "Humanismo clásico contemporáneo",
+    "LDR 1401": "Liderazgo desarrollo personal",
+    "LDR 2401": "Liderazgo equipos alto desempeño",
+    "ACT 4401": "Matemáticas actuariales daños",
+    "ACT 4402": "Simulación seguros finanzas",
+    "FIN 2402": "Est financieros toma decisione",
+    "MAT 3411": "Estadística matemática",
+    "MAT 3410": "Ecuacione diferencia diferenci",
+    "MAT 4403": "Seminario de ciencia de datos",
+    "IIND 4412": "Big data para negocios",
+    "SIS 1401": "Algoritmos y programación",
+    "SIS 1402": "Lenguajes orientados a objetos",
+    "SIS 2407": "Programación en la nube",
+    "SIS 3403": "Programació dispositiv móviles",
+    "ISOC 1408": "Hombre y expresión artística",
+    "ESP 0401": "Hab univ para la comunicación",
+    "MAT 0402": "Matemáticas básicas ACT",
+    "CDA 0401": "Competencias Digitales general",
+    "CDA 0402": "Python apli a la Ciencia Datos",
+    "ELDR 0402": "Creación public interés perso",
+    "ELDR 0411": "Empresa a través método caso",
+    "ELDR 0423": "Prin fund análisis casos bioét",
+    "TACL 0436": "Expresarte",
+    "TDPR 0469": "Fútbol Rápido",
+    "TLDR 0413": "Hab pensam toma de decisiones",
+}
+
 
 def extraer_texto_pdf_solo_fitz(data: bytes) -> Tuple[str, int]:
     """Texto del PDF página por página, solo PyMuPDF."""
@@ -445,24 +498,138 @@ def _non_course_lines(sections: Dict[str, str]) -> List[str]:
     return [ln.strip() for ln in nc.split("\n") if ln.strip() and len(ln.strip()) > 2]
 
 
-def _dedupe_cursos(courses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    seen = set()
-    out: List[Dict[str, Any]] = []
-    for c in courses:
-        key = (
-            c.get('code'),
-            c.get('term') or '',
-            c.get('name') or '',
-            c.get('grade') or '',
-            c.get('credits_raw') or '',
-            bool(c.get('completed')),
-            bool(c.get('pending')),
-        )
-        if key in seen:
+def _clean_course_name(name: str) -> Tuple[str, List[str], bool]:
+    original = re.sub(r"\s+", " ", (name or "")).strip()
+    cleaned = original
+    trimmed = False
+    tags: List[str] = []
+
+    for marker in NAME_CUT_MARKERS:
+        pos = cleaned.lower().find(marker.lower())
+        if pos > 0:
+            cleaned = cleaned[:pos].strip()
+            trimmed = True
+
+    tokens = cleaned.split()
+    kept: List[str] = []
+    for tok in tokens:
+        tok_clean = tok.strip(",.;:")
+        if tok_clean.upper() in SPECIAL_TAG_TOKENS:
+            tags.append(tok_clean.upper())
+            trimmed = True
             continue
-        seen.add(key)
-        out.append(c)
-    return out
+        if tok_clean in NOISE_TOKENS:
+            trimmed = True
+            continue
+        kept.append(tok)
+    cleaned = " ".join(kept).strip()
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned or original, sorted(set(tags)), trimmed
+
+
+def _has_valid_grade(grade: str) -> bool:
+    return _is_valid_grade_token((grade or "").strip())
+
+
+def normalize_cap_courses_final(courses: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], Dict[str, int]]:
+    debug_final = {
+        "raw_courses": len(courses),
+        "after_dedup": 0,
+        "duplicates_removed": 0,
+        "names_fixed_by_dictionary": 0,
+        "names_trimmed_by_noise_rules": 0,
+        "nan_credit_completed_courses": 0,
+    }
+    by_code: Dict[str, List[Dict[str, Any]]] = {}
+    for c in courses:
+        code = (c.get("code") or "").strip()
+        if not code:
+            continue
+        by_code.setdefault(code, []).append(c)
+
+    normalized: List[Dict[str, Any]] = []
+
+    for code, rows in by_code.items():
+        prepared = []
+        for r in rows:
+            name_clean, tags, trimmed = _clean_course_name(r.get("name", ""))
+            grade = (r.get("grade") or "").strip()
+            grade_valid = _has_valid_grade(grade)
+            term = (r.get("term") or "").strip()
+            credits_raw = (r.get("credits_raw") or "").strip()
+            credits_num = r.get("credits_num")
+            if credits_num is None:
+                credits_num = _norm_num(credits_raw)
+            is_nan_credit = credits_num is None
+            noise_penalty = len(re.findall(r"(Total Credits and GPA|Area Requirements|Detail Requirements|https://|Source)", r.get("name", ""), re.I))
+            score = 0
+            score += 40 if not tags else 0
+            score += 30 if grade_valid else 0
+            score += 20 if term else 0
+            score += 10 if len(name_clean) >= 8 else 0
+            score -= 5 * noise_penalty
+            score -= max(0, len((r.get("name") or "").split()) - len(name_clean.split()))
+            prepared.append(
+                {
+                    "row": r,
+                    "name_clean": name_clean,
+                    "tags": tags,
+                    "trimmed": trimmed,
+                    "grade_valid": grade_valid,
+                    "term": term,
+                    "credits_num": credits_num,
+                    "credits_raw": credits_raw,
+                    "is_nan_credit": is_nan_credit,
+                    "score": score,
+                }
+            )
+
+        best = sorted(
+            prepared,
+            key=lambda x: (
+                x["score"],
+                -len(x["tags"]),
+                len(x["name_clean"]),
+            ),
+            reverse=True,
+        )[0]
+        row = dict(best["row"])
+        final_name = best["name_clean"]
+        if best["trimmed"]:
+            debug_final["names_trimmed_by_noise_rules"] += 1
+        if code in COURSE_NAME_CORRECTIONS:
+            if final_name != COURSE_NAME_CORRECTIONS[code]:
+                debug_final["names_fixed_by_dictionary"] += 1
+            final_name = COURSE_NAME_CORRECTIONS[code]
+
+        completed = bool(row.get("completed")) or (
+            bool((row.get("term") or "").strip()) and _has_valid_grade(row.get("grade", ""))
+        )
+        if completed and best["is_nan_credit"]:
+            debug_final["nan_credit_completed_courses"] += 1
+
+        normalized.append(
+            {
+                "area": row.get("area", ""),
+                "term": row.get("term", ""),
+                "code": code,
+                "name": final_name,
+                "credits_raw": best["credits_raw"] if best["credits_raw"] else row.get("credits_raw", ""),
+                "credits_num": best["credits_num"],
+                "grade": row.get("grade", ""),
+                "source": row.get("source", ""),
+                "completed": completed,
+                "pending": bool(row.get("pending")) and not completed,
+                "credits_nan_row": best["is_nan_credit"],
+                "classification_reason": row.get("classification_reason", ""),
+                "tags": best["tags"],
+            }
+        )
+
+    normalized.sort(key=lambda c: (c.get("code") or "", c.get("term") or ""))
+    debug_final["after_dedup"] = len(normalized)
+    debug_final["duplicates_removed"] = max(0, debug_final["raw_courses"] - debug_final["after_dedup"])
+    return normalized, debug_final
 
 
 def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[str, Any]:
@@ -472,7 +639,7 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     program_summary = _pick_program_summary(sections, texto_completo)
     areas = _extract_areas(sections, texto_completo)
     courses_pre, extraction_debug = _extract_courses_from_detail(sections, texto_completo)
-    courses = _dedupe_cursos(courses_pre)
+    courses, debug_normalization_final = normalize_cap_courses_final(courses_pre)
     student = _student_stub(sections, texto_completo)
     non_course = _non_course_lines(sections)
 
@@ -541,6 +708,7 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
         },
         "debug": debug,
         "debug_extraction": debug_extraction,
+        "debug_normalization_final": debug_normalization_final,
         "debug_raw_candidates_sample": extraction_debug.get("debug_raw_candidates_sample", []),
         "warnings": warnings,
     }
@@ -611,6 +779,14 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                     "course_candidates_with_grade": 0,
                     "courses_raw": 0,
                     "courses_normalized": 0,
+                },
+                "debug_normalization_final": {
+                    "raw_courses": 0,
+                    "after_dedup": 0,
+                    "duplicates_removed": 0,
+                    "names_fixed_by_dictionary": 0,
+                    "names_trimmed_by_noise_rules": 0,
+                    "nan_credit_completed_courses": 0,
                 },
                 "debug_raw_candidates_sample": [],
                 "warnings": ["PDF sin texto embebido (páginas: %s)." % pags],
