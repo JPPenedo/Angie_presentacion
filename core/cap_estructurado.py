@@ -590,25 +590,58 @@ def _extract_pending_in_block(
 
 
 def _extract_non_course_items(flat: str, anchors: List[Tuple[int, str]]) -> List[Dict[str, Any]]:
-    """Lista [{name, met}] de requisitos no-curso."""
+    """Lista [{name, met}] de requisitos no-curso. Etiquetas largas tienen prioridad."""
     span = _section_span(anchors, flat, "Non Course Requirements")
     if not span:
         return []
     body = flat[span[0]:span[1]]
     items: List[Dict[str, Any]] = []
-    seen: set = set()
-    for label in NON_COURSE_LABELS:
-        if label.lower() in seen:
-            continue
+    # Ordenar etiquetas de mayor a menor longitud para que la versión "Prog.
+    # Competencias Digitales" capture antes que "Competencias Digitales".
+    sorted_labels = sorted(NON_COURSE_LABELS, key=len, reverse=True)
+    # Lista de pares (label_normalizada, met) por aparición, para luego deduplicar.
+    consumed_spans: List[Tuple[int, int]] = []
+
+    def _overlaps(a: int, b: int) -> bool:
+        for s, e in consumed_spans:
+            if a < e and b > s:
+                return True
+        return False
+
+    canonical: Dict[str, Tuple[int, bool]] = {}
+    for label in sorted_labels:
         for m in re.finditer(re.escape(label) + r"\b", body, re.IGNORECASE):
-            # Tomamos una ventana corta posterior y buscamos Yes/No.
+            if _overlaps(m.start(), m.end()):
+                continue
             window = body[m.end(): m.end() + 60]
             yn = re.search(r"\b(Yes|No)\b", window, re.IGNORECASE)
             met = bool(yn and yn.group(1).lower() == "yes")
-            items.append({"name": label, "met": met})
-            seen.add(label.lower())
+            key = _canonical_non_course_key(label)
+            # Quedarse con la primera aparición (texto más completo gana por orden de longitud).
+            if key not in canonical:
+                canonical[key] = (m.start(), met)
+                items.append({"name": label, "met": met})
+            consumed_spans.append((m.start(), m.end()))
             break
+    # Devolver en orden de aparición en el documento.
+    items.sort(key=lambda it: canonical.get(_canonical_non_course_key(it["name"]), (0, False))[0])
     return items
+
+
+def _canonical_non_course_key(label: str) -> str:
+    """Clave canónica para deduplicar etiquetas no-curso (sin acentos / sin prefijos)."""
+    norm = label.lower()
+    norm = norm.replace("á", "a").replace("é", "e").replace("í", "i")
+    norm = norm.replace("ó", "o").replace("ú", "u").replace("ñ", "n")
+    if "competencias digitales" in norm:
+        return "competencias_digitales"
+    if "practicas profesionales" in norm or "prácticas profesionales" in norm:
+        return "practicas_profesionales"
+    if "servicio social" in norm:
+        return "servicio_social"
+    if norm.startswith("ingles") or norm.startswith("english"):
+        return "ingles"
+    return norm.strip()
 
 
 # ============================================================================
@@ -764,16 +797,20 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     completed_only = [c for c in courses_all if c.get("completed")]
     pending_only = [c for c in courses_all if c.get("pending") and not c.get("completed")]
 
-    # Estadísticas de extracción.
+    # Estadísticas de extracción. Sólo consideramos filas que pretenden tener
+    # créditos (las pendientes deliberadamente no traen créditos y no son ruido).
+    rows_with_credit_intent = [
+        c for c in courses_all if c.get("completed") or (c.get("credits_raw") or "").strip()
+    ]
     nan_credit_courses = sum(
-        1 for c in courses_all if (c.get("credits_raw") or "").strip().lower() == "nan"
+        1 for c in rows_with_credit_intent if (c.get("credits_raw") or "").strip().lower() == "nan"
     )
     zero_credit_courses = sum(
-        1 for c in courses_all if c.get("credits_num") == 0.0
+        1 for c in rows_with_credit_intent if c.get("credits_num") == 0.0
     )
     missing_credit_courses = sum(
         1
-        for c in courses_all
+        for c in rows_with_credit_intent
         if c.get("credits_num") is None
         and (c.get("credits_raw") or "").strip().lower() != "nan"
     )
