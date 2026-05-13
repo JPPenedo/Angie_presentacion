@@ -54,6 +54,12 @@ WINDOW_STOP_RE = re.compile(
 )
 SOURCE_TAIL_RE = re.compile(r"^\s*(H|E|OU)\b", re.IGNORECASE)
 WINDOW_CHAR_SPAN = 380
+LEFT_CONTEXT_SPAN = 220
+POST_CONTEXT_SPAN = 160
+INCOMPLETE_TAIL_WORDS = {
+    "de", "del", "y", "e", "o", "u", "para", "la", "el", "los", "las", "al",
+    "en", "con", "por", "sin", "sobre", "su", "sus", "un", "una", "ante",
+}
 
 SPECIAL_TAG_TOKENS = {"CING", "CLIN", "ABPE", "ABAE", "ABIE", "TBIE", "MTBA", "RING"}
 NOISE_TOKENS = {
@@ -211,34 +217,80 @@ def _pick_program_summary(sections: Dict[str, str], full_text: str) -> Dict[str,
     }
 
 
-def _extract_areas(sections: Dict[str, str], full_text: str) -> List[Dict[str, Any]]:
-    """Áreas desde Area Requirements + Total Required por bloque."""
-    ar = sections.get("Area Requirements", "")
-    if not ar:
-        return []
-
-    areas: List[Dict[str, Any]] = []
-    # Posiciones de "Area :" dentro de Area Requirements
-    headers = [(m.start(), m.group(1).strip()) for m in AREA_HEADER_RE.finditer(ar)]
-    for i, (pos, area_name) in enumerate(headers):
-        end = headers[i + 1][0] if i + 1 < len(headers) else len(ar)
-        chunk = ar[pos:end]
-        tm = TOTAL_REQUIRED_RE.search(chunk)
-        if not tm:
-            continue
-        blk = _parse_total_required_block(tm)
-        areas.append(
+def _extract_areas_with_positions(flat_text: str) -> List[Dict[str, Any]]:
+    """
+    Detecta cada bloque `Area : <nombre>` ... `Total Required : <met> <req> <used> <courses>`
+    sobre el texto aplanado, devolviendo posiciones para asociar materias por offset.
+    """
+    pattern = re.compile(
+        r"Area\s*:\s*(?P<name>[^\n\r]{1,140}?)"
+        r"(?=\s*(?:Total Required|Area\s*:|Detail Requirements|Non Course Requirements|$))",
+        re.IGNORECASE,
+    )
+    matches = list(pattern.finditer(flat_text))
+    items: List[Dict[str, Any]] = []
+    for i, m in enumerate(matches):
+        name = re.sub(r"\s+", " ", m.group("name")).strip()
+        start = m.start()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(flat_text)
+        tr = TOTAL_REQUIRED_RE.search(flat_text, m.end(), min(end, m.end() + 400))
+        if tr:
+            blk = _parse_total_required_block(tr)
+            met = blk["met"]
+            req = blk["credits_required"]
+            used = blk["credits_used"]
+            courses_used = blk["courses_used"]
+        else:
+            met = False
+            req = None
+            used = None
+            courses_used = None
+        items.append(
             {
-                "name": area_name,
-                "area": area_name,
-                "met": blk["met"],
-                "credits_required": blk["credits_required"],
-                "credits_used": blk["credits_used"],
-                "courses_required": None,
-                "courses_used": blk["courses_used"],
+                "name": name,
+                "start": start,
+                "end": end,
+                "met": met,
+                "credits_required": req,
+                "credits_used": used,
+                "courses_used": courses_used,
             }
         )
-    return areas
+    return items
+
+
+def _active_area_for(areas: List[Dict[str, Any]], offset: int) -> Dict[str, Any]:
+    """Área activa para un offset en flat: la última cuyo `start <= offset`."""
+    active: Dict[str, Any] = {}
+    for area in areas:
+        if area["start"] <= offset:
+            active = area
+        else:
+            break
+    return active
+
+
+def _extract_areas(sections: Dict[str, str], full_text: str) -> List[Dict[str, Any]]:
+    """Áreas en formato público (compatible con UI)."""
+    flat = re.sub(r"\s+", " ", full_text)
+    areas_pos = _extract_areas_with_positions(flat)
+    out: List[Dict[str, Any]] = []
+    for a in areas_pos:
+        # Sólo exponer áreas que tengan al menos un Total Required asociado.
+        if a.get("credits_required") is None and a.get("courses_used") is None:
+            continue
+        out.append(
+            {
+                "name": a["name"],
+                "area": a["name"],
+                "met": a["met"],
+                "credits_required": a.get("credits_required") or 0.0,
+                "credits_used": a.get("credits_used") or 0.0,
+                "courses_required": None,
+                "courses_used": a.get("courses_used") or 0,
+            }
+        )
+    return out
 
 
 def _parse_course_line(line: str) -> Optional[Dict[str, Any]]:
@@ -415,27 +467,163 @@ def _parse_course_candidate_block(block: str, area_name: str = "") -> Optional[D
     }
 
 
-def _area_positions(full_text: str) -> List[Tuple[int, str]]:
-    """Posiciones de cabeceras `Area : ...` para asociar el área activa a cada anchor."""
-    positions: List[Tuple[int, str]] = []
-    for m in re.finditer(
-        r"Area\s*:\s*([^\n\r]{1,120}?)(?=\s*(?:Total Required|Area\s*:|Detail Requirements|Non Course Requirements|$))",
-        full_text,
-        re.IGNORECASE,
+def _clean_attribute_trailers(name: str) -> Tuple[str, List[str]]:
+    """Quita tokens de atributos (CING/CLIN/...) y huérfanos H/E/OU al final.
+
+    No toca palabras normales del nombre; sólo recorta tokens conocidos en la cola.
+    """
+    text = re.sub(r"\s+", " ", (name or "")).strip()
+    tokens = text.split()
+    tags: List[str] = []
+    while tokens:
+        last_upper = tokens[-1].strip(",.;:").upper()
+        if last_upper in SPECIAL_TAG_TOKENS:
+            tags.append(last_upper)
+            tokens.pop()
+            continue
+        if last_upper in {"H", "E", "OU"} and len(tokens) > 1:
+            tokens.pop()
+            continue
+        break
+    return " ".join(tokens).strip(), sorted(set(tags))
+
+
+def _looks_incomplete_name(name: str) -> bool:
+    words = (name or "").split()
+    if len(words) < 3:
+        return True
+    last = words[-1].lower().strip(",.;:")
+    return last in INCOMPLETE_TAIL_WORDS
+
+
+def _trim_left_context(left_context: str, subj: str, cnum: str) -> str:
+    """Recorta el contexto izquierdo eliminando secciones/links/periodos/cursos previos
+    y deja sólo el fragmento más cercano al periodo del curso actual.
+    """
+    left = left_context
+    for marker in (
+        "Total Credits and GPA",
+        "Total Required",
+        "Area Requirements",
+        "Detail Requirements",
+        "Non Course Requirements",
+        "https://",
+        "http://",
     ):
-        positions.append((m.start(), m.group(1).strip()))
-    return positions
+        pos = left.lower().rfind(marker.lower())
+        if pos != -1:
+            left = left[pos + len(marker):]
+    prev_terms = list(re.finditer(r"\b20\d{4}\b", left))
+    if prev_terms:
+        left = left[prev_terms[-1].end():]
+    # Cualquier código compacto previo (incluye el código del propio curso si quedó pegado).
+    code_compact_re = re.compile(rf"\b{re.escape(subj)}\s*{re.escape(cnum)}\b", re.IGNORECASE)
+    cm = list(code_compact_re.finditer(left))
+    if cm:
+        left = left[cm[-1].end():]
+    # Cualquier código de materia previo (otro curso) en formato `XYZ 1234`.
+    prev_codes = list(re.finditer(r"\b[A-Z]{2,5}\s+\d{4}\b", left))
+    if prev_codes:
+        left = left[prev_codes[-1].end():]
+    # Residual de créditos + grade + source de un curso anterior.
+    prev_cgs = list(
+        re.finditer(
+            r"\b(?:NaN|\d+(?:\.\d+)?)\s+(?:AC|OU|\d+(?:\.\d+)?|NaN)\s+[HEO]\b",
+            left,
+            re.IGNORECASE,
+        )
+    )
+    if prev_cgs:
+        left = left[prev_cgs[-1].end():]
+    # Limpieza ligera: quitar pares número+grade y letras sueltas H/E/O.
+    left = re.sub(
+        r"\b(?:NaN|\d+(?:\.\d+)?)\s+(?:AC|OU|\d+(?:\.\d+)?|NaN)\b",
+        " ",
+        left,
+        flags=re.IGNORECASE,
+    )
+    left = re.sub(r"\b[HEO]\b", " ", left)
+    tokens = left.split()
+    return " ".join(tokens[-10:]).strip()
 
 
-def _active_area_at(area_positions: List[Tuple[int, str]], offset: int) -> str:
-    """Última área cuya cabecera aparece antes del offset dado."""
-    active = ""
-    for pos, name in area_positions:
-        if pos <= offset:
-            active = name
+def _dedupe_consecutive_words(text: str) -> str:
+    out: List[str] = []
+    for w in text.split():
+        if out and out[-1].lower() == w.lower():
+            continue
+        out.append(w)
+    return " ".join(out)
+
+
+def _trim_post_context(post_context: str) -> str:
+    """Toma sólo las primeras palabras del post-context, sin pasar al siguiente curso o periodo."""
+    post = post_context.strip()
+    cuts = [
+        re.search(r"\b20\d{4}\b", post),
+        re.search(r"\b[A-Z]{2,5}\s+\d{4}\b", post),
+        re.search(r"Total (Credits and GPA|Required)", post, re.I),
+        re.search(r"Area\s*:", post, re.I),
+        re.search(r"https?://", post, re.I),
+    ]
+    cuts = [c for c in cuts if c]
+    if cuts:
+        first = min(c.start() for c in cuts)
+        post = post[:first]
+    tokens = post.split()
+    return " ".join(tokens[:10]).strip()
+
+
+def _reconstruct_course_name(
+    right_raw: str, left_context: str, post_context: str, subj: str, cnum: str
+) -> Tuple[str, List[str], str]:
+    """Combina nombre izquierdo + derecho (+ post como último recurso) y elimina duplicados.
+
+    Regla principal: cuando el lado derecho es corto o incompleto, **anteponer** el lado
+    izquierdo (texto justo antes del periodo del curso). El `post` sólo se considera si
+    ni izquierdo ni derecho aportan suficiente.
+    """
+    right_clean, right_tags = _clean_attribute_trailers(right_raw)
+    left_trimmed = _trim_left_context(left_context, subj, cnum)
+    left_clean, _ = _clean_attribute_trailers(left_trimmed)
+    post_trimmed = _trim_post_context(post_context)
+    post_clean, _ = _clean_attribute_trailers(post_trimmed)
+
+    final = ""
+    source = "empty"
+
+    if right_clean and not _looks_incomplete_name(right_clean):
+        final, source = right_clean, "right_only"
+    elif left_clean and right_clean:
+        combined = f"{left_clean} {right_clean}".strip()
+        combined = re.sub(r"\s+", " ", combined)
+        if len(combined.split()) >= max(2, len(right_clean.split())):
+            final, source = combined, "combined"
         else:
-            break
-    return active
+            final, source = right_clean, "right_only"
+    elif left_clean:
+        final, source = left_clean, "left_only"
+    elif right_clean:
+        final, source = right_clean, "right_only"
+
+    # Último recurso: si seguimos vacíos o con una sola palabra (y no usamos left+right),
+    # intentar combinar con `post`. Se evita meter palabras de cursos vecinos.
+    if (not final or len(final.split()) < 2) and post_clean and source != "combined":
+        candidate = f"{final} {post_clean}".strip() if final else post_clean
+        candidate = re.sub(r"\s+", " ", candidate)
+        if len(candidate.split()) > len(final.split()):
+            final = candidate
+            source = "combined" if source != "empty" else "right_only"
+
+    final = _dedupe_consecutive_words(final)
+    final = re.sub(
+        rf"^\s*{re.escape(subj)}\s*{re.escape(cnum)}\s*", "", final, flags=re.IGNORECASE
+    ).strip()
+    final = re.sub(r"\s+", " ", final).strip()
+
+    if not final:
+        return "", right_tags, "empty"
+    return final, right_tags, source
 
 
 def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
@@ -447,7 +635,7 @@ def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]],
     """
     flat = re.sub(r"\s+", " ", full_text)
     anchors = list(PERIOD_ANCHOR_RE.finditer(flat))
-    area_positions = _area_positions(flat)
+    areas_pos = _extract_areas_with_positions(flat)
 
     courses: List[Dict[str, Any]] = []
     rejected_sample: List[Dict[str, str]] = []
@@ -455,6 +643,11 @@ def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]],
 
     windows_with_subject_course = 0
     windows_with_grade = 0
+    names_from_left = 0
+    names_from_right = 0
+    names_combined = 0
+    courses_with_area = 0
+    courses_without_area = 0
 
     for idx, anchor in enumerate(anchors):
         start = anchor.start()
@@ -501,26 +694,52 @@ def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]],
         credits_raw = (cg.group("credits") or "").strip()
         grade_raw = (cg.group("grade") or "").strip().upper()
         source = (cg.group("source") or "").strip().upper()
+        post_after = tail_capped[cg.end():]
         if not source:
-            post = tail_capped[cg.end():].lstrip()
-            sm = SOURCE_TAIL_RE.match(post)
+            post_lstrip = post_after.lstrip()
+            sm = SOURCE_TAIL_RE.match(post_lstrip)
             if sm:
                 source = sm.group(1).upper()
+                post_after = post_lstrip[sm.end():]
+
+        # Contexto izquierdo: ventana inmediatamente antes del periodo.
+        left_context = flat[max(0, start - LEFT_CONTEXT_SPAN):start]
+        post_context = post_after[:POST_CONTEXT_SPAN]
+        final_name, right_tags, name_source = _reconstruct_course_name(
+            title_raw, left_context, post_context, subj, cnum
+        )
+
+        if name_source == "right_only":
+            names_from_right += 1
+        elif name_source == "left_only":
+            names_from_left += 1
+        elif name_source == "combined":
+            names_combined += 1
 
         grade_norm = "" if _is_nan_like(grade_raw) else grade_raw
         grade_ok = _is_valid_grade_token(grade_norm)
         credits_num = _norm_num(credits_raw)
         credits_nan = credits_num is None and _is_nan_like(credits_raw)
-        area_for_anchor = _active_area_at(area_positions, start)
+        active = _active_area_for(areas_pos, start)
+        if active.get("name"):
+            courses_with_area += 1
+        else:
+            courses_without_area += 1
 
         courses.append(
             {
-                "area": area_for_anchor,
+                "area": active.get("name", ""),
+                "area_name": active.get("name", ""),
+                "area_met": bool(active.get("met")) if active else False,
+                "area_credits_required": active.get("credits_required"),
+                "area_credits_used": active.get("credits_used"),
                 "term": anchor.group(1),
                 "code": f"{subj} {cnum}",
                 "subject": subj,
                 "course_number": cnum,
-                "name": title_raw,
+                "name": final_name,
+                "name_right_raw": title_raw,
+                "name_source": name_source,
                 "credits_raw": credits_raw,
                 "credits_num": credits_num,
                 "grade": grade_norm,
@@ -529,10 +748,23 @@ def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]],
                 "pending": False,
                 "credits_nan_row": credits_nan,
                 "classification_reason": "window_anchor",
-                "tags": [],
+                "tags": right_tags,
                 "parse_confidence": "high" if grade_ok else "medium",
             }
         )
+
+    short_names_remaining: List[Dict[str, str]] = []
+    for c in courses:
+        words = (c.get("name") or "").split()
+        if len(words) < 2:
+            short_names_remaining.append(
+                {
+                    "code": c.get("code", ""),
+                    "term": c.get("term", ""),
+                    "name": c.get("name", ""),
+                    "name_right_raw": c.get("name_right_raw", ""),
+                }
+            )
 
     debug = {
         "period_anchors_found": len(anchors),
@@ -542,6 +774,13 @@ def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]],
         "courses_created_from_windows": len(courses),
         "rejected_windows_sample": rejected_sample,
         "raw_windows_sample": raw_windows[:30],
+        "areas_detected": len(areas_pos),
+        "courses_with_area": courses_with_area,
+        "courses_without_area": courses_without_area,
+        "names_reconstructed_from_left_context": names_from_left,
+        "names_reconstructed_from_right_context": names_from_right,
+        "names_combined": names_combined,
+        "short_names_remaining": short_names_remaining[:30],
     }
     return courses, debug
 
@@ -585,6 +824,17 @@ def _extract_courses_from_detail(
         "courses_created_from_windows": window_debug["courses_created_from_windows"],
         "legacy_line_fallback_added": legacy_added,
         "rejected_windows_sample": window_debug["rejected_windows_sample"],
+        "areas_detected": window_debug.get("areas_detected", 0),
+        "courses_with_area": window_debug.get("courses_with_area", 0),
+        "courses_without_area": window_debug.get("courses_without_area", 0),
+        "names_reconstructed_from_left_context": window_debug.get(
+            "names_reconstructed_from_left_context", 0
+        ),
+        "names_reconstructed_from_right_context": window_debug.get(
+            "names_reconstructed_from_right_context", 0
+        ),
+        "names_combined": window_debug.get("names_combined", 0),
+        "short_names_remaining": window_debug.get("short_names_remaining", []),
     }
     return courses, debug
 
@@ -797,11 +1047,17 @@ def normalize_cap_courses_final(courses: List[Dict[str, Any]]) -> Tuple[List[Dic
         normalized.append(
             {
                 "area": best.get("area", ""),
+                "area_name": best.get("area_name", best.get("area", "")),
+                "area_met": bool(best.get("area_met")),
+                "area_credits_required": best.get("area_credits_required"),
+                "area_credits_used": best.get("area_credits_used"),
                 "term": best.get("term", ""),
                 "code": code,
                 "subject": subject,
                 "course_number": cnum,
                 "name": best.get("name", ""),
+                "name_source": best.get("name_source", ""),
+                "name_right_raw": best.get("name_right_raw", ""),
                 "credits_raw": best.get("credits_raw", ""),
                 "credits_num": credits_num,
                 "grade": grade,
@@ -838,6 +1094,10 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
     courses_normalized = [
         {
             "area": c.get("area", ""),
+            "area_name": c.get("area_name", c.get("area", "")),
+            "area_met": bool(c.get("area_met")),
+            "area_credits_required": c.get("area_credits_required"),
+            "area_credits_used": c.get("area_credits_used"),
             "term": c.get("term", ""),
             "code": c.get("code", ""),
             "name": c.get("name", ""),
@@ -849,6 +1109,8 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
             "pending": bool(c.get("pending")),
             "credits_nan_row": bool(c.get("credits_nan_row")),
             "source": c.get("source", ""),
+            "name_source": c.get("name_source", ""),
+            "tags": list(c.get("tags") or []),
         }
         for c in courses
     ]
@@ -918,6 +1180,17 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
         "windows_with_grade": int(extraction_debug.get("windows_with_grade", 0)),
         "courses_created_from_windows": int(extraction_debug.get("courses_created_from_windows", 0)),
         "legacy_line_fallback_added": int(extraction_debug.get("legacy_line_fallback_added", 0)),
+        "areas_detected": int(extraction_debug.get("areas_detected", 0)),
+        "courses_with_area": int(extraction_debug.get("courses_with_area", 0)),
+        "courses_without_area": int(extraction_debug.get("courses_without_area", 0)),
+        "names_reconstructed_from_left_context": int(
+            extraction_debug.get("names_reconstructed_from_left_context", 0)
+        ),
+        "names_reconstructed_from_right_context": int(
+            extraction_debug.get("names_reconstructed_from_right_context", 0)
+        ),
+        "names_combined": int(extraction_debug.get("names_combined", 0)),
+        "short_names_remaining": extraction_debug.get("short_names_remaining", []),
         "courses_raw": len(courses_pre),
         "courses_normalized": len(courses),
     }
