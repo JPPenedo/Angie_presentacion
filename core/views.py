@@ -684,39 +684,136 @@ def _kpi_cap_detail_context(
     Agrupa materias del CAP (o historial demo) para paneles al hacer clic en las tarjetas KPI.
     """
     cap_estructurado = cap_estructurado or {}
-    courses = list(cap_estructurado.get('courses') or [])
+    courses_raw = list(cap_estructurado.get('courses') or [])
+    courses_normalized = list(cap_estructurado.get('courses_normalized') or [])
+    completed_courses = list(cap_estructurado.get('completed_courses') or [])
     ps = dict(cap_estructurado.get('program_summary') or {})
     areas = list(cap_estructurado.get('areas') or [])
 
     grupos_credito: list = []
     promedio_filas: list = []
     todas_materias: list = []
+    debug_counts = {
+        'total_courses_raw': len(courses_raw),
+        'total_courses_normalized': len(courses_normalized),
+        'total_completed_courses': len(completed_courses),
+        'courses_with_numeric_credits': 0,
+        'courses_with_nan_credits': 0,
+        'courses_rendered_in_credit_card': 0,
+    }
 
-    if courses:
+    def _to_str(value) -> str:
+        return str(value).strip() if value is not None else ''
+
+    def _is_nan_like(value) -> bool:
+        txt = _to_str(value).lower()
+        return txt in {'', 'nan', 'none', 'null', '-', 'n/a'}
+
+    def _has_grade(course: dict) -> bool:
+        g = _to_str(course.get('grade', course.get('calificacion', course.get('nota', ''))))
+        return not _is_nan_like(g)
+
+    def _has_term(course: dict) -> bool:
+        term = _to_str(course.get('term', course.get('periodo', course.get('semester', ''))))
+        return bool(term)
+
+    def _has_code(course: dict) -> bool:
+        code = _to_str(course.get('code', course.get('codigo', course.get('course_code', ''))))
+        return bool(code)
+
+    def _is_completed(course: dict) -> bool:
+        if course.get('completed') is True:
+            return True
+        estado = _to_str(course.get('estado')).lower()
+        if estado in {'yes', 'si', 'sí', 'completed', 'aprobada', 'cursada'}:
+            return True
+        return _has_grade(course)
+
+    def _normalize_course(course: dict) -> dict:
+        code = _to_str(course.get('code', course.get('codigo', course.get('course_code', ''))))
+        term = _to_str(course.get('term', course.get('periodo', course.get('semester', ''))))
+        name = _to_str(course.get('name', course.get('nombre', course.get('course_name', ''))))
+        grade = _to_str(course.get('grade', course.get('calificacion', course.get('nota', ''))))
+        credits_raw = _to_str(
+            course.get('credits_raw', course.get('credits', course.get('creditos', '')))
+        )
+        completed = _is_completed(course)
+        pending = bool(course.get('pending')) and not completed
+        credits_nan = bool(course.get('credits_nan_row')) or _is_nan_like(credits_raw)
+        return {
+            'term': term,
+            'code': code,
+            'name': name,
+            'credits_raw': credits_raw,
+            'grade': '' if _is_nan_like(grade) else grade,
+            'source': _to_str(course.get('source', '')),
+            'completed': completed,
+            'pending': pending,
+            'credits_nan_row': credits_nan,
+        }
+
+    candidate_courses = courses_raw + courses_normalized + completed_courses
+
+    if candidate_courses:
+        normalized_courses = []
+        seen = set()
+        for course in candidate_courses:
+            norm = _normalize_course(course)
+            visible = _has_code(norm) and (
+                _has_grade(norm) or norm.get('completed') is True or _has_term(norm)
+            )
+            if not visible:
+                continue
+            key = (
+                norm.get('code'),
+                norm.get('term'),
+                norm.get('name'),
+                norm.get('grade'),
+                norm.get('credits_raw'),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            normalized_courses.append(norm)
+
+        def _credit_bucket(course: dict) -> str:
+            raw = _to_str(course.get('credits_raw'))
+            if _is_nan_like(raw):
+                return 'NaN / sin valor en fila'
+            try:
+                val = float(raw)
+            except ValueError:
+                return 'NaN / sin valor en fila'
+            if abs(val) < 1e-9:
+                return '0 cr.'
+            return f'{val:.2f} cr.'
+
         by_cred = defaultdict(list)
-        for c in courses:
-            raw = (c.get('credits_raw') or '').strip()
-            if not raw or str(raw).lower() == 'nan':
-                label = 'NaN (sin valor en fila)'
-            else:
-                label = f'{raw} cr.'
+        for c in normalized_courses:
+            label = _credit_bucket(c)
             by_cred[label].append(c)
+            if label == 'NaN / sin valor en fila':
+                debug_counts['courses_with_nan_credits'] += 1
+            else:
+                debug_counts['courses_with_numeric_credits'] += 1
 
         def _cred_sort_key(item):
             lbl = item[0]
-            if 'NaN' in lbl:
+            if lbl == 'NaN / sin valor en fila':
                 return (2, lbl)
+            if lbl == '0 cr.':
+                return (1, 0.0)
             try:
                 num = float(lbl.replace(' cr.', '').strip())
                 return (0, -num)
             except ValueError:
-                return (1, lbl)
+                return (2, lbl)
 
         grupos_credito = [{'label': g, 'cursos': lst} for g, lst in sorted(by_cred.items(), key=_cred_sort_key)]
 
-        for c in courses:
+        for c in normalized_courses:
             g = c.get('grade')
-            if not g or str(g).lower() == 'nan':
+            if not g or _is_nan_like(g):
                 continue
             try:
                 float(g)
@@ -725,18 +822,19 @@ def _kpi_cap_detail_context(
             promedio_filas.append(c)
         promedio_filas.sort(key=lambda x: float(x['grade']), reverse=True)
 
-        todas_materias = courses
+        todas_materias = normalized_courses
+        debug_counts['courses_rendered_in_credit_card'] = len(normalized_courses)
 
     elif es_demo_alumno and historial:
         by_cred = defaultdict(list)
         for sem in historial:
             for m in sem.get('materias', []):
                 cr = m.get('creditos', 0)
-                label = f'{cr} cr.'
+                label = f'{float(cr):.2f} cr.' if cr else '0 cr.'
                 by_cred[label].append(
                     {
                         'term': '',
-                        'code': '',
+                        'code': f"DEMO-{sem.get('semestre', '')[:3]}-{len(by_cred[label]) + 1}",
                         'name': m.get('nombre', ''),
                         'credits_raw': str(cr),
                         'grade': str(m.get('calificacion', '')),
@@ -761,7 +859,7 @@ def _kpi_cap_detail_context(
                 promedio_filas.append(
                     {
                         'term': '',
-                        'code': '',
+                        'code': f"DEMO-{sem.get('semestre', '')[:3]}",
                         'name': m.get('nombre', ''),
                         'credits_raw': str(m.get('creditos', '')),
                         'grade': str(m.get('calificacion', '')),
@@ -781,6 +879,8 @@ def _kpi_cap_detail_context(
                 'progress_percent': float(pct_avance),
                 'courses_used': len(todas_materias),
             }
+        debug_counts['courses_with_numeric_credits'] = len(todas_materias)
+        debug_counts['courses_rendered_in_credit_card'] = len(todas_materias)
 
     has_summary_or_areas = bool(ps) or bool(areas)
     enabled = bool(grupos_credito or todas_materias or has_summary_or_areas)
@@ -792,6 +892,8 @@ def _kpi_cap_detail_context(
         'kpi_program_summary': ps,
         'kpi_todas_materias': todas_materias,
         'kpi_panel_enabled': enabled,
+        'kpi_debug_counts': debug_counts,
+        'kpi_debug_counts_json': json.dumps(debug_counts, ensure_ascii=False, indent=2),
     }
 
 

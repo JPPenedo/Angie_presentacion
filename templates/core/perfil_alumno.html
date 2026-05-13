@@ -325,8 +325,16 @@
       </div>
       {% endfor %}
       <p class="small text-secondary mb-0">Total contabilizado en tarjeta: <strong class="text-light">{{ total_creditos_hist }}</strong> cr. hacia meta <strong class="text-light">{{ meta_creditos }}</strong> (según resumen global del CAP cuando existe).</p>
+      <details class="mt-2">
+        <summary class="small text-info" style="cursor:pointer;">Debug de renderizado de materias</summary>
+        <pre class="small mb-0 mt-2" style="background:#0d1117;border:1px solid rgba(255,255,255,0.08);border-radius:0.5rem;padding:0.65rem;white-space:pre-wrap;">{{ kpi_debug_counts_json }}</pre>
+      </details>
       {% else %}
       <p class="small text-secondary mb-0">No se pudo agrupar por créditos: no hay filas de materias en el JSON del CAP. Verifica que el PDF tenga texto en «Detail Requirements» o revisa las advertencias de lectura estructurada más abajo.</p>
+      <details class="mt-2">
+        <summary class="small text-info" style="cursor:pointer;">Debug de renderizado de materias</summary>
+        <pre class="small mb-0 mt-2" style="background:#0d1117;border:1px solid rgba(255,255,255,0.08);border-radius:0.5rem;padding:0.65rem;white-space:pre-wrap;">{{ kpi_debug_counts_json }}</pre>
+      </details>
       {% endif %}
     </div>
     <div id="pf-kpi-panel-avance" class="pf-kpi-panel" data-pf-panel="avance">
