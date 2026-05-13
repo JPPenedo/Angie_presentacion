@@ -39,6 +39,22 @@ COURSE_TAIL_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Parser por ventanas ancladas en periodos.
+PERIOD_ANCHOR_RE = re.compile(r"\b(20\d{4})\b")
+COURSE_LABEL_RE = re.compile(r"\b([A-Z]{2,5})\s+(\d{4})\b")
+WINDOW_CREDIT_GRADE_RE = re.compile(
+    r"(?P<credits>NaN|\d+(?:\.\d+)?|-)\s+"
+    r"(?P<grade>AC|OU|\d+(?:\.\d+)?|NaN)"
+    r"(?:\s+(?P<source>[HEOU](?:U)?))?",
+    re.IGNORECASE,
+)
+WINDOW_STOP_RE = re.compile(
+    r"(Total Credits and GPA|Total Required|Area Requirements|Detail Requirements|https?://)",
+    re.IGNORECASE,
+)
+SOURCE_TAIL_RE = re.compile(r"^\s*(H|E|OU)\b", re.IGNORECASE)
+WINDOW_CHAR_SPAN = 380
+
 SPECIAL_TAG_TOKENS = {"CING", "CLIN", "ABPE", "ABAE", "ABIE", "TBIE", "MTBA", "RING"}
 NOISE_TOKENS = {
     "CING",
@@ -399,66 +415,176 @@ def _parse_course_candidate_block(block: str, area_name: str = "") -> Optional[D
     }
 
 
+def _area_positions(full_text: str) -> List[Tuple[int, str]]:
+    """Posiciones de cabeceras `Area : ...` para asociar el área activa a cada anchor."""
+    positions: List[Tuple[int, str]] = []
+    for m in re.finditer(
+        r"Area\s*:\s*([^\n\r]{1,120}?)(?=\s*(?:Total Required|Area\s*:|Detail Requirements|Non Course Requirements|$))",
+        full_text,
+        re.IGNORECASE,
+    ):
+        positions.append((m.start(), m.group(1).strip()))
+    return positions
+
+
+def _active_area_at(area_positions: List[Tuple[int, str]], offset: int) -> str:
+    """Última área cuya cabecera aparece antes del offset dado."""
+    active = ""
+    for pos, name in area_positions:
+        if pos <= offset:
+            active = name
+        else:
+            break
+    return active
+
+
+def _extract_courses_from_windows(full_text: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """
+    Parser por ventanas ancladas en periodos `20XXXX`.
+
+    No exige líneas limpias: aplana el texto y, por cada periodo, evalúa una ventana
+    de hasta WINDOW_CHAR_SPAN caracteres en busca de subject + course_number + créditos + grade.
+    """
+    flat = re.sub(r"\s+", " ", full_text)
+    anchors = list(PERIOD_ANCHOR_RE.finditer(flat))
+    area_positions = _area_positions(flat)
+
+    courses: List[Dict[str, Any]] = []
+    rejected_sample: List[Dict[str, str]] = []
+    raw_windows: List[str] = []
+
+    windows_with_subject_course = 0
+    windows_with_grade = 0
+
+    for idx, anchor in enumerate(anchors):
+        start = anchor.start()
+        hard_end = min(len(flat), start + WINDOW_CHAR_SPAN)
+        if idx + 1 < len(anchors):
+            hard_end = min(hard_end, anchors[idx + 1].start())
+        stop_match = WINDOW_STOP_RE.search(flat, anchor.end(), hard_end)
+        if stop_match:
+            hard_end = stop_match.start()
+        window = flat[start:hard_end].strip()
+        if not window:
+            continue
+        raw_windows.append(window)
+
+        after_term = window[len(anchor.group(0)):].lstrip()
+        course_match = COURSE_LABEL_RE.search(after_term)
+        if not course_match:
+            if len(rejected_sample) < 15:
+                rejected_sample.append({"reason": "no_subject_course", "window": window[:200]})
+            continue
+        windows_with_subject_course += 1
+
+        subj = course_match.group(1)
+        cnum = course_match.group(2)
+        tail = after_term[course_match.end():].lstrip()
+
+        # Si dentro de la cola aparece otra etiqueta `[A-Z]{2,5} \d{4}`, recortamos antes.
+        next_course = COURSE_LABEL_RE.search(tail)
+        if next_course:
+            tail_capped = tail[: next_course.start()].rstrip()
+        else:
+            tail_capped = tail
+
+        cg = WINDOW_CREDIT_GRADE_RE.search(tail_capped)
+        if not cg:
+            if len(rejected_sample) < 15:
+                rejected_sample.append(
+                    {"reason": "no_credit_grade", "window": window[:200]}
+                )
+            continue
+        windows_with_grade += 1
+
+        title_raw = tail_capped[: cg.start()].strip()
+        credits_raw = (cg.group("credits") or "").strip()
+        grade_raw = (cg.group("grade") or "").strip().upper()
+        source = (cg.group("source") or "").strip().upper()
+        if not source:
+            post = tail_capped[cg.end():].lstrip()
+            sm = SOURCE_TAIL_RE.match(post)
+            if sm:
+                source = sm.group(1).upper()
+
+        grade_norm = "" if _is_nan_like(grade_raw) else grade_raw
+        grade_ok = _is_valid_grade_token(grade_norm)
+        credits_num = _norm_num(credits_raw)
+        credits_nan = credits_num is None and _is_nan_like(credits_raw)
+        area_for_anchor = _active_area_at(area_positions, start)
+
+        courses.append(
+            {
+                "area": area_for_anchor,
+                "term": anchor.group(1),
+                "code": f"{subj} {cnum}",
+                "subject": subj,
+                "course_number": cnum,
+                "name": title_raw,
+                "credits_raw": credits_raw,
+                "credits_num": credits_num,
+                "grade": grade_norm,
+                "source": source,
+                "completed": bool(anchor.group(1) and grade_ok),
+                "pending": False,
+                "credits_nan_row": credits_nan,
+                "classification_reason": "window_anchor",
+                "tags": [],
+                "parse_confidence": "high" if grade_ok else "medium",
+            }
+        )
+
+    debug = {
+        "period_anchors_found": len(anchors),
+        "period_windows_processed": len(raw_windows),
+        "windows_with_subject_course": windows_with_subject_course,
+        "windows_with_grade": windows_with_grade,
+        "courses_created_from_windows": len(courses),
+        "rejected_windows_sample": rejected_sample,
+        "raw_windows_sample": raw_windows[:30],
+    }
+    return courses, debug
+
+
 def _extract_courses_from_detail(
     sections: Dict[str, str], full_text: str
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    lines = [ln.strip() for ln in re.sub(r"\r\n?", "\n", full_text).split("\n") if ln.strip()]
-    courses: List[Dict[str, Any]] = []
-    raw_candidates: List[str] = []
-    active_section = ""
-    active_area = ""
+    courses, window_debug = _extract_courses_from_windows(full_text)
 
-    for i, line in enumerate(lines):
-        low = line.lower()
-        if low in {h.lower() for h in SECTION_HEADERS}:
-            active_section = line
-            continue
-
-        am = re.match(r"^Area\s*:\s*(.+)$", line, re.I)
-        if am:
-            active_area = am.group(1).strip()
-            continue
-
-        if not TERM_SUBJECT_COURSE_RE.search(line):
-            continue
-
-        block = line
-        for j in range(i + 1, min(i + 4, len(lines))):
-            nxt = lines[j]
-            nxt_low = nxt.lower()
-            if nxt_low in {h.lower() for h in SECTION_HEADERS}:
-                break
-            if re.match(r"^Area\s*:\s*(.+)$", nxt, re.I):
-                break
-            if TERM_SUBJECT_COURSE_RE.search(nxt):
-                break
-            block = f"{block} {nxt}".strip()
-
-        raw_candidates.append(block)
-        parsed = _parse_course_candidate_block(block, area_name=active_area)
-        if parsed:
-            parsed["section"] = active_section
-            courses.append(parsed)
-
-    # fallback para casos no capturados en multiline
+    # fallback line-based para filas que la ventana no haya cubierto
     det = sections.get("Detail Requirements", "")
-    legacy = _extract_courses_from_text(det) if det else []
-    for c in legacy:
+    legacy_lines = _extract_courses_from_text(det) if det else []
+    seen_keys = {(c.get("term"), c.get("code")) for c in courses}
+    legacy_added = 0
+    for c in legacy_lines:
+        key = (c.get("term"), c.get("code"))
+        if key in seen_keys:
+            continue
         c.setdefault("subject", (c.get("code", " ").split(" ", 1)[0] if c.get("code") else ""))
-        c.setdefault("course_number", (c.get("code", " ").split(" ", 1)[1] if " " in c.get("code", "") else ""))
+        c.setdefault(
+            "course_number",
+            (c.get("code", " ").split(" ", 1)[1] if " " in c.get("code", "") else ""),
+        )
         c.setdefault("parse_confidence", "low")
         c.setdefault("tags", [])
         courses.append(c)
+        seen_keys.add(key)
+        legacy_added += 1
 
     debug = {
         "area_blocks_detected": len(re.findall(r"(?mi)^\s*Area Requirements\s*$", full_text)),
         "detail_blocks_detected": len(re.findall(r"(?mi)^\s*Detail Requirements\s*$", full_text)),
-        "course_candidate_blocks": len(raw_candidates),
-        "course_candidates_with_period_code": len(
-            [c for c in raw_candidates if TERM_SUBJECT_COURSE_RE.search(c)]
-        ),
-        "course_candidates_with_grade": len([c for c in raw_candidates if GRADE_TOKEN_RE.search(c)]),
-        "debug_raw_candidates_sample": raw_candidates[:30],
+        "course_candidate_blocks": window_debug["period_windows_processed"],
+        "course_candidates_with_period_code": window_debug["period_anchors_found"],
+        "course_candidates_with_grade": window_debug["windows_with_grade"],
+        "debug_raw_candidates_sample": window_debug["raw_windows_sample"],
+        "period_anchors_found": window_debug["period_anchors_found"],
+        "period_windows_processed": window_debug["period_windows_processed"],
+        "windows_with_subject_course": window_debug["windows_with_subject_course"],
+        "windows_with_grade": window_debug["windows_with_grade"],
+        "courses_created_from_windows": window_debug["courses_created_from_windows"],
+        "legacy_line_fallback_added": legacy_added,
+        "rejected_windows_sample": window_debug["rejected_windows_sample"],
     }
     return courses, debug
 
@@ -786,6 +912,12 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
             extraction_debug.get("course_candidates_with_period_code", 0)
         ),
         "course_candidates_with_grade": int(extraction_debug.get("course_candidates_with_grade", 0)),
+        "period_anchors_found": int(extraction_debug.get("period_anchors_found", 0)),
+        "period_windows_processed": int(extraction_debug.get("period_windows_processed", 0)),
+        "windows_with_subject_course": int(extraction_debug.get("windows_with_subject_course", 0)),
+        "windows_with_grade": int(extraction_debug.get("windows_with_grade", 0)),
+        "courses_created_from_windows": int(extraction_debug.get("courses_created_from_windows", 0)),
+        "legacy_line_fallback_added": int(extraction_debug.get("legacy_line_fallback_added", 0)),
         "courses_raw": len(courses_pre),
         "courses_normalized": len(courses),
     }
@@ -811,6 +943,7 @@ def parsear_cap_estructurado(texto_completo: str, pages_read: int = 0) -> Dict[s
         "debug_extraction": debug_extraction,
         "debug_normalization_final": debug_normalization_final,
         "debug_raw_candidates_sample": extraction_debug.get("debug_raw_candidates_sample", []),
+        "debug_rejected_windows_sample": extraction_debug.get("rejected_windows_sample", []),
         "warnings": warnings,
     }
 
@@ -896,6 +1029,12 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                     "course_candidate_blocks": 0,
                     "course_candidates_with_period_code": 0,
                     "course_candidates_with_grade": 0,
+                    "period_anchors_found": 0,
+                    "period_windows_processed": 0,
+                    "windows_with_subject_course": 0,
+                    "windows_with_grade": 0,
+                    "courses_created_from_windows": 0,
+                    "legacy_line_fallback_added": 0,
                     "courses_raw": 0,
                     "courses_normalized": 0,
                 },
@@ -907,6 +1046,7 @@ def procesar_pdf_cap_estructurado(data: bytes) -> Tuple[Dict[str, Any], str]:
                     "nan_credit_completed_courses": 0,
                 },
                 "debug_raw_candidates_sample": [],
+                "debug_rejected_windows_sample": [],
                 "warnings": ["PDF sin texto embebido (páginas: %s)." % pags],
             },
             "",
