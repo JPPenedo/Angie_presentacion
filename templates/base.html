@@ -447,6 +447,9 @@
     <a href="{% url 'core:expo_actuaria' %}" class="sidebar-link {% if request.path == '/expo-actuaria/' %}active{% endif %}">
       <span class="s-icon"><i class="bi bi-easel2"></i></span>Exposición actuarial
     </a>
+    <a href="{% url 'core:esquemas_evaluacion_lista' %}" class="sidebar-link {% if '/esquemas-evaluacion/' in request.path %}active{% endif %}">
+      <span class="s-icon"><i class="bi bi-table"></i></span>Esquema de evaluación
+    </a>
     {% endif %}
 
     <div class="sidebar-section-label" style="margin-top:0.5rem;">Sistema</div>

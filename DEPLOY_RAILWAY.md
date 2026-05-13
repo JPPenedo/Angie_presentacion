@@ -107,6 +107,18 @@ railway run python manage.py createsuperuser
 
 (necesitas Railway CLI logueado y vinculado al proyecto: `railway link`).
 
+## 9b. Limpiar cuentas registradas (excepto rol director)
+
+Para borrar todas las filas de `CuentaAlumno` **excepto** las que tengan `rol=director` (por ejemplo reinicio de pruebas):
+
+```bash
+python manage.py limpiar_cuentas
+```
+
+En Railway: `railway run python manage.py limpiar_cuentas`
+
+> El acceso demo director (`26000000` / contraseña de administrador) no está en esta tabla; vive en código.
+
 ---
 
 ## Troubleshooting

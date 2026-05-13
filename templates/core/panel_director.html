@@ -33,6 +33,7 @@
           <th>Correo (registro)</th>
           <th>Verificado</th>
           <th>CAP</th>
+          <th>Lectura (vista)</th>
           <th>Alta</th>
         </tr>
       </thead>
@@ -52,11 +53,21 @@
             <span class="text-muted small">Sin subir</span>
             {% endif %}
           </td>
+          <td class="small text-muted" style="max-width:220px;">
+            {% if c.cap_error_lectura %}
+            <span class="text-warning">{{ c.cap_error_lectura|truncatechars:80 }}</span>
+            {% endif %}
+            {% if c.cap_texto_extraido %}
+            <div style="font-size:0.7rem;max-height:4.5rem;overflow:hidden;">{{ c.cap_texto_extraido|truncatechars:180 }}</div>
+            {% elif not c.cap_subido_en %}
+            <span class="text-secondary">—</span>
+            {% endif %}
+          </td>
           <td class="small text-muted">{{ c.created_at|date:"d/m/Y" }}</td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="7" class="text-center text-muted py-5">Aún no hay cuentas registradas. Cuando un usuario cree cuenta y suba su CAP, aparecerá aquí.</td>
+          <td colspan="8" class="text-center text-muted py-5">Aún no hay cuentas registradas. Cuando un usuario cree cuenta y suba su CAP, aparecerá aquí.</td>
         </tr>
         {% endfor %}
       </tbody>

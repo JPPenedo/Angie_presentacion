@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}{% if esquema %}Editar{% else %}Nuevo{% endif %} esquema · Evaluación{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a href="{% url 'core:esquemas_evaluacion_lista' %}" class="small text-muted text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Volver a la lista</a>
+  <h1 class="h4 fw-bold text-white mt-2 mb-1">{% if esquema %}Editar{% else %}Nuevo{% endif %} esquema de evaluación</h1>
+  <p class="text-muted small mb-0">
+    Escribe el nombre exacto del criterio y el porcentaje del syllabus. Marca <strong>Negrita</strong> para énfasis (ej. examen medio término) y <strong>Total</strong> para filas tipo “Total parciales” en rojo.
+  </p>
+</div>
+
+{% if error_guardar %}
+<div class="alert-banner alert-banner-error mb-3" role="alert"><i class="bi bi-exclamation-circle-fill"></i><span>{{ error_guardar }}</span></div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card-dark p-3" style="border-radius:1rem;">
+      <div class="mb-3">
+        <label class="form-label small text-muted">Materia</label>
+        <input type="text" id="fldMateria" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Ej. Probabilidad I" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label small text-muted">Periodo (opcional)</label>
+        <input type="text" id="fldPeriodo" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Ej. Ene–May 2026" />
+      </div>
+      <div id="bloquesEditor"></div>
+      <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill mt-2" id="btnAddBloque"><i class="bi bi-plus-lg"></i> Añadir bloque lateral</button>
+    </div>
+    <form method="post" class="mt-3" id="formGuardar">
+      {% csrf_token %}
+      <input type="hidden" name="payload" id="fldPayload" value="" />
+      <button type="submit" class="btn rounded-pill fw-semibold px-4" style="background:linear-gradient(135deg,#a87b4a,#6e4328);color:#faf7f2;border:none;">Guardar esquema</button>
+    </form>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-dark p-3" style="border-radius:1rem;">
+      <div class="small text-muted mb-2 fw-bold">Vista previa</div>
+      <div class="table-responsive" id="previewWrap"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ev-bloque { border: 1px solid rgba(255,255,255,0.12); border-radius: 0.65rem; padding: 0.75rem; margin-bottom: 0.75rem; background: rgba(0,0,0,0.2); }
+  .ev-bloque h6 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: #b8956e; margin-bottom: 0.5rem; }
+  .ev-rubro { display: grid; grid-template-columns: 1fr 80px auto auto; gap: 0.35rem; align-items: center; margin-bottom: 0.35rem; }
+  @media (max-width: 600px) { .ev-rubro { grid-template-columns: 1fr; } }
+  .ev-syllabus { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+  .ev-syllabus th, .ev-syllabus td { border: 1px solid rgba(255,255,255,0.2); padding: 0.4rem 0.55rem; }
+  .ev-syllabus th { color: #b8956e; font-size: 0.74rem; }
+  .ev-side { background: rgba(201,160,106,0.08); text-align: center; vertical-align: middle; font-weight: 600; width: 130px; }
+  .ev-total { color: #e57373; font-weight: 700; }
+</style>
+
+{% if initial_json %}
+<script type="application/json" id="ev-initial">{{ initial_json|safe }}</script>
+{% endif %}
+<script>
+(function () {
+  const el = document.getElementById('ev-initial');
+  const initial = el ? JSON.parse(el.textContent) : null;
+  let state = initial || {
+    materia: '',
+    periodo: '',
+    bloques: [
+      { etiqueta: 'Parciales 60%', rubros: [{ nombre: '', porcentaje: '', destacado: false, es_total: false }] }
+    ]
+  };
+
+  const bloquesEl = document.getElementById('bloquesEditor');
+  const previewEl = document.getElementById('previewWrap');
+  const fldMateria = document.getElementById('fldMateria');
+  const fldPeriodo = document.getElementById('fldPeriodo');
+
+  fldMateria.value = state.materia || '';
+  fldPeriodo.value = state.periodo || '';
+
+  function renderEditor() {
+    bloquesEl.innerHTML = '';
+    state.bloques.forEach((bloque, bi) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'ev-bloque';
+      wrap.innerHTML = '<h6>Bloque lateral (texto en primera columna)</h6>';
+      const lbl = document.createElement('input');
+      lbl.type = 'text';
+      lbl.className = 'form-control form-control-sm bg-dark text-light border-secondary mb-2';
+      lbl.placeholder = 'Ej. Parciales 60%';
+      lbl.value = bloque.etiqueta;
+      lbl.addEventListener('input', () => { state.bloques[bi].etiqueta = lbl.value; syncPreview(); });
+      wrap.appendChild(lbl);
+
+      bloque.rubros.forEach((rub, ri) => {
+        const row = document.createElement('div');
+        row.className = 'ev-rubro';
+        row.innerHTML = `
+          <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary ev-n" placeholder="Criterio (nombre del syllabus)" />
+          <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary ev-p" placeholder="%" inputmode="decimal" />
+          <label class="small text-muted m-0"><input type="checkbox" class="ev-d" /> Negrita</label>
+          <label class="small text-muted m-0"><input type="checkbox" class="ev-t" /> Total</label>
+        `;
+        const n = row.querySelector('.ev-n');
+        const p = row.querySelector('.ev-p');
+        const d = row.querySelector('.ev-d');
+        const t = row.querySelector('.ev-t');
+        n.value = rub.nombre;
+        p.value = rub.porcentaje;
+        d.checked = rub.destacado;
+        t.checked = rub.es_total;
+        n.addEventListener('input', () => { state.bloques[bi].rubros[ri].nombre = n.value; syncPreview(); });
+        p.addEventListener('input', () => { state.bloques[bi].rubros[ri].porcentaje = p.value; syncPreview(); });
+        d.addEventListener('change', () => { state.bloques[bi].rubros[ri].destacado = d.checked; syncPreview(); });
+        t.addEventListener('change', () => { state.bloques[bi].rubros[ri].es_total = t.checked; syncPreview(); });
+        wrap.appendChild(row);
+      });
+
+      const addR = document.createElement('button');
+      addR.type = 'button';
+      addR.className = 'btn btn-sm btn-outline-secondary rounded-pill mt-1';
+      addR.textContent = '+ Criterio';
+      addR.onclick = () => {
+        state.bloques[bi].rubros.push({ nombre: '', porcentaje: '', destacado: false, es_total: false });
+        renderEditor(); syncPreview();
+      };
+      wrap.appendChild(addR);
+
+      if (state.bloques.length > 1) {
+        const rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'btn btn-sm btn-link text-danger p-0 ms-2 mt-1';
+        rm.textContent = 'Quitar bloque';
+        rm.onclick = () => {
+          state.bloques.splice(bi, 1);
+          renderEditor(); syncPreview();
+        };
+        wrap.appendChild(rm);
+      }
+
+      bloquesEl.appendChild(wrap);
+    });
+    syncPreview();
+  }
+
+  function syncPreview() {
+    let html = '<table class="ev-syllabus"><thead><tr><th></th><th>Criterios de evaluación</th><th class="text-center">Porcentaje</th></tr></thead><tbody>';
+    state.bloques.forEach(bloque => {
+      const totalRows = Math.max(bloque.rubros.length, 1);
+      if (!bloque.rubros.length) {
+        html += `<tr><td class="ev-side">${escapeHtml(bloque.etiqueta || '—')}</td><td colspan="2" class="text-muted">Añade criterios</td></tr>`;
+        return;
+      }
+      bloque.rubros.forEach((rub, idx) => {
+        const tdSide = idx === 0 ? `<td class="ev-side" rowspan="${bloque.rubros.length}">${escapeHtml(bloque.etiqueta || '—')}</td>` : '';
+        const nm = (rub.nombre || '').trim();
+        const st = rub.destacado ? 'font-weight:700' : '';
+        const cl = rub.es_fila_total ? ' ev-total' : '';
+        const pct = (rub.porcentaje || '').toString().trim();
+        html += `<tr>${tdSide}<td style="${st}" class="${cl.trim()}">${escapeHtml(nm || '—')}</td><td class="text-center${cl}">${pct ? escapeHtml(pct) + '%' : '—'}</td></tr>`;
+      });
+    });
+    html += '</tbody></table>';
+    previewEl.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  document.getElementById('btnAddBloque').onclick = () => {
+    state.bloques.push({ etiqueta: '40%', rubros: [{ nombre: '', porcentaje: '', destacado: false, es_total: false }] });
+    renderEditor();
+  };
+
+  document.getElementById('formGuardar').onsubmit = function () {
+    state.materia = fldMateria.value.trim();
+    state.periodo = fldPeriodo.value.trim();
+    document.getElementById('fldPayload').value = JSON.stringify({
+      materia: state.materia,
+      periodo: state.periodo,
+      bloques: state.bloques.map(b => ({
+        etiqueta: b.etiqueta,
+        rubros: b.rubros.map(r => ({
+          nombre: r.nombre,
+          porcentaje: r.porcentaje,
+          destacado: r.destacado,
+          es_total: r.es_total
+        }))
+      }))
+    });
+    return true;
+  };
+
+  renderEditor();
+})();
+</script>
+{% endblock %}

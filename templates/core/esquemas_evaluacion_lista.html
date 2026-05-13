@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Esquemas de evaluación{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h1 class="h4 fw-bold text-white mb-1">Esquemas de evaluación por materia</h1>
+  <p class="text-muted small mb-0" style="max-width:40rem;">
+    Replica el formato del syllabus: bloques laterales (ej. parciales 60 %, finales 40 %) y cada criterio con el mismo nombre y porcentaje que indique tu profesor.
+  </p>
+</div>
+
+{% if not cuenta %}
+<div class="alert-banner alert-banner-info mb-4">
+  <i class="bi bi-info-circle-fill"></i>
+  <span>Necesitas una cuenta creada en el sitio (rol alumno) para guardar esquemas. El alumno demo no tiene fila en la base de datos.</span>
+</div>
+<a href="{% url 'core:perfil_alumno' %}" class="btn btn-outline-secondary btn-sm rounded-pill">Volver al perfil</a>
+{% else %}
+<div class="d-flex flex-wrap gap-2 mb-4">
+  <a href="{% url 'core:esquema_evaluacion_nuevo' %}" class="btn rounded-pill fw-semibold" style="background:linear-gradient(135deg,#a87b4a,#6e4328);color:#faf7f2;border:none;">
+    <i class="bi bi-plus-lg me-1"></i>Nuevo esquema
+  </a>
+  <a href="{% url 'core:perfil_alumno' %}" class="btn btn-outline-secondary rounded-pill">Volver al perfil</a>
+</div>
+
+{% if esquemas %}
+<div class="row g-3">
+  {% for e in esquemas %}
+  <div class="col-12">
+    <div class="card-dark p-0 overflow-hidden" style="border-radius:1rem;">
+      <div class="d-flex flex-wrap justify-content-between align-items-center px-3 py-2 border-bottom border-secondary border-opacity-25">
+        <div>
+          <strong class="text-white">{{ e.nombre_materia }}</strong>
+          {% if e.periodo %}<span class="text-muted small ms-2">{{ e.periodo }}</span>{% endif %}
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{% url 'core:esquema_evaluacion_editar' e.pk %}" class="btn btn-sm btn-outline-secondary rounded-pill">Editar</a>
+          <form method="post" action="{% url 'core:esquema_evaluacion_eliminar' e.pk %}" class="d-inline" onsubmit="return confirm('¿Eliminar este esquema?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Eliminar</button>
+          </form>
+        </div>
+      </div>
+      <div class="p-3 table-responsive">
+        <table class="eval-syllabus-preview w-100">
+          <thead>
+            <tr>
+              <th class="eval-th-side"></th>
+              <th class="eval-th-mid">Criterios de evaluación</th>
+              <th class="eval-th-pct">Porcentaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in e.bloques.all %}
+              {% with rubros=b.rubros.all %}
+              {% if rubros %}
+              {% for r in rubros %}
+              <tr>
+                {% if forloop.first %}
+                <td class="eval-side" rowspan="{{ rubros|length }}">{{ b.etiqueta_grupo }}</td>
+                {% endif %}
+                <td class="eval-crit {% if r.destacado %}eval-strong{% endif %} {% if r.es_fila_total %}eval-total{% endif %}">{{ r.nombre_criterio }}</td>
+                <td class="eval-pct text-center {% if r.es_fila_total %}eval-total{% endif %}">{% if r.porcentaje is not None %}{{ r.porcentaje }}%{% else %}—{% endif %}</td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td class="eval-side">{{ b.etiqueta_grupo }}</td>
+                <td colspan="2" class="text-muted">Sin criterios</td>
+              </tr>
+              {% endif %}
+              {% endwith %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Aún no hay esquemas. Crea uno con los rubros de tu syllabus.</p>
+{% endif %}
+{% endif %}
+
+<style>
+  .eval-syllabus-preview { border-collapse: collapse; font-size: 0.84rem; }
+  .eval-syllabus-preview th, .eval-syllabus-preview td {
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.45rem 0.65rem;
+  }
+  .eval-th-mid, .eval-th-pct, .eval-th-side {
+    color: #b8956e;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-align: center;
+  }
+  .eval-th-mid { text-align: left; }
+  .eval-side {
+    background: rgba(201,160,106,0.08);
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    width: 140px;
+    color: var(--text);
+  }
+  .eval-crit { text-align: left; color: var(--text); }
+  .eval-pct { color: var(--text-muted); }
+  .eval-strong { font-weight: 700; }
+  .eval-total { color: #e57373 !important; font-weight: 700; }
+</style>
+{% endblock %}

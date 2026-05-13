@@ -38,5 +38,25 @@ urlpatterns = [
     path('logout/',              views.logout_view,    name='logout'),
     path('panel-director/',      views.panel_director, name='panel_director'),
     path('mi-perfil/subir-cap/', views.subir_cap_alumno, name='subir_cap'),
+    path(
+        'mi-perfil/esquemas-evaluacion/nueva/',
+        views.esquema_evaluacion_nuevo,
+        name='esquema_evaluacion_nuevo',
+    ),
+    path(
+        'mi-perfil/esquemas-evaluacion/<int:pk>/editar/',
+        views.esquema_evaluacion_editar,
+        name='esquema_evaluacion_editar',
+    ),
+    path(
+        'mi-perfil/esquemas-evaluacion/<int:pk>/eliminar/',
+        views.esquema_evaluacion_eliminar,
+        name='esquema_evaluacion_eliminar',
+    ),
+    path(
+        'mi-perfil/esquemas-evaluacion/',
+        views.esquemas_evaluacion_lista,
+        name='esquemas_evaluacion_lista',
+    ),
     path('mi-perfil/',           views.perfil_alumno,  name='perfil_alumno'),
 ]

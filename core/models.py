@@ -26,6 +26,9 @@ class CuentaAlumno(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     cap_subido_en = models.DateTimeField(null=True, blank=True)
     cap_nombre_archivo = models.CharField(max_length=260, default="", blank=True)
+    cap_texto_extraido = models.TextField(blank=True)
+    cap_error_lectura = models.CharField(max_length=500, blank=True)
+    cap_ultima_lectura_en = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -39,3 +42,75 @@ class CuentaAlumno(models.Model):
             and self.reset_token_expires_at
             and self.reset_token_expires_at > timezone.now()
         )
+
+
+class EsquemaEvaluacionMateria(models.Model):
+    """Esquema tipo syllabus: criterios y porcentajes por materia y periodo."""
+
+    cuenta = models.ForeignKey(
+        CuentaAlumno,
+        on_delete=models.CASCADE,
+        related_name="esquemas_evaluacion",
+    )
+    nombre_materia = models.CharField(max_length=200)
+    periodo = models.CharField(max_length=120, blank=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-actualizado_en"]
+        verbose_name = "Esquema de evaluación"
+        verbose_name_plural = "Esquemas de evaluación"
+
+    def __str__(self):
+        return f"{self.nombre_materia} ({self.cuenta.id_institucional})"
+
+
+class BloqueEvaluacion(models.Model):
+    """Grupo lateral (ej. Parciales 60 %)."""
+
+    esquema = models.ForeignKey(
+        EsquemaEvaluacionMateria,
+        on_delete=models.CASCADE,
+        related_name="bloques",
+    )
+    etiqueta_grupo = models.CharField(max_length=120)
+    orden = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["orden", "id"]
+
+
+class RubroEvaluacion(models.Model):
+    """Fila: criterio + porcentaje como en el syllabus."""
+
+    bloque = models.ForeignKey(
+        BloqueEvaluacion,
+        on_delete=models.CASCADE,
+        related_name="rubros",
+    )
+    nombre_criterio = models.CharField(max_length=400)
+    porcentaje = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    destacado = models.BooleanField(default=False)
+    es_fila_total = models.BooleanField(default=False)
+    orden = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["orden", "id"]
+
+
+class CapLectura(models.Model):
+    """Historial de subidas y lecturas del CAP."""
+
+    cuenta = models.ForeignKey(
+        CuentaAlumno,
+        on_delete=models.CASCADE,
+        related_name="cap_lecturas",
+    )
+    nombre_archivo = models.CharField(max_length=260)
+    texto_extraido = models.TextField(blank=True)
+    error_lectura = models.CharField(max_length=500, blank=True)
+    subido_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-subido_en"]

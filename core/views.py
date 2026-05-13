@@ -9,16 +9,25 @@ Guía de lectura (tipo profesor):
 3) Finalmente sigue el flujo de vistas: login -> dashboard/docente o perfil/alumno.
 """
 
-from django.shortcuts import render, redirect
+from decimal import Decimal, InvalidOperation
+
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.contrib.auth.hashers import check_password, make_password
-from django.db import DatabaseError
+from django.db import DatabaseError, transaction
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 import copy
 import json
 
-from .models import CuentaAlumno
+from .cap_lectura import extraer_texto_cap
+from .models import (
+    BloqueEvaluacion,
+    CapLectura,
+    CuentaAlumno,
+    EsquemaEvaluacionMateria,
+    RubroEvaluacion,
+)
 
 # ---------------------------------------------------------------------------
 # Usuarios demo (sin modelos, autenticación por sesión)
@@ -384,6 +393,20 @@ def _redirect_home_for_rol(rol):
     return redirect('core:dashboard')
 
 
+def _cuenta_alumno_plataforma(request):
+    """Cuenta en BD vinculada a la sesión, solo si es alumno de carrera (rol alumno)."""
+    usuario = _usuario_sesion(request)
+    if not usuario or usuario.get('rol') != 'alumno':
+        return None
+    try:
+        cuenta = CuentaAlumno.objects.filter(id_institucional=usuario['matricula']).first()
+        if cuenta and cuenta.rol == 'alumno':
+            return cuenta
+    except DatabaseError:
+        return None
+    return None
+
+
 def _require_login(request):
     """
     Profesor: guardia de acceso.
@@ -657,11 +680,7 @@ def perfil_alumno(request):
         return _redirect_home_for_rol(usuario['rol'])
 
     es_demo_alumno = usuario['correo'] == '90000002'
-    cuenta_db = None
-    try:
-        cuenta_db = CuentaAlumno.objects.filter(id_institucional=usuario['matricula']).first()
-    except DatabaseError:
-        cuenta_db = None
+    cuenta_db = _cuenta_alumno_plataforma(request)
 
     meta_creditos = usuario.get('creditos_totales') or 360
 
@@ -691,9 +710,8 @@ def perfil_alumno(request):
             promedio_global = 8.4
             cap_ok = True
             cap_message = (
-                'CAP registrado en plataforma. En el producto completo aquí aparecerían créditos '
-                'oficiales, materias desbloqueadas (grafo de prerrequisitos) y proyección hacia los '
-                '360 cr., como en la exposición actuarial.'
+                'CAP registrado. La lectura automática aparece abajo cuando el archivo permite extraer texto '
+                '(PDF con texto, CSV o XLSX).'
             )
         else:
             cap_ok = bool(cuenta_db and cuenta_db.cap_subido_en)
@@ -732,32 +750,220 @@ def perfil_alumno(request):
         'bloques_creditos_json': json.dumps(chunks),
         'cap_ok': cap_ok,
         'cap_message': cap_message,
+        'cap_texto_preview': (
+            (cuenta_db.cap_texto_extraido or '')[:2500] if cuenta_db else ''
+        ),
+        'cap_lectura_error': cuenta_db.cap_error_lectura if cuenta_db else '',
     }
     return render(request, 'core/perfil_alumno.html', context)
 
 
 @require_POST
 def subir_cap_alumno(request):
-    """Registra en base de datos la subida simulada del CAP (cuentas creadas en el sitio)."""
+    """Sube el CAP, intenta extraer texto (PDF/CSV/XLSX) y guarda historial de lecturas."""
     redir = _require_login(request)
     if redir:
         return redir
     usuario = _usuario_sesion(request)
     if usuario['rol'] != 'alumno':
         return _redirect_home_for_rol(usuario['rol'])
-    try:
-        cuenta = CuentaAlumno.objects.filter(id_institucional=usuario['matricula']).first()
-    except DatabaseError:
+    cuenta = _cuenta_alumno_plataforma(request)
+    if not cuenta:
         return redirect('core:perfil_alumno')
-    if cuenta and cuenta.rol == 'alumno':
-        archivo = request.FILES.get('cap_file')
-        nombre = (getattr(archivo, 'name', '') or '').strip()
-        if not nombre:
-            nombre = (request.POST.get('nombre_simulado') or 'CAP_academico.pdf').strip()[:260]
-        cuenta.cap_subido_en = timezone.now()
-        cuenta.cap_nombre_archivo = nombre[:260]
-        cuenta.save()
+
+    archivo = request.FILES.get('cap_file')
+    texto_extraido = ''
+    error_lectura = ''
+    if archivo:
+        raw = archivo.read()
+        nombre = (archivo.name or '')[:260]
+        texto_extraido, error_lectura = extraer_texto_cap(raw, nombre)
+    else:
+        nombre = (request.POST.get('nombre_simulado') or 'CAP_simulado.pdf').strip()[:260]
+        error_lectura = 'Simulación sin archivo: no se ejecutó lectura automática.'
+
+    now = timezone.now()
+    cuenta.cap_subido_en = now
+    cuenta.cap_nombre_archivo = nombre
+    cuenta.cap_texto_extraido = (texto_extraido or '')[:500000]
+    cuenta.cap_error_lectura = (error_lectura or '')[:500]
+    cuenta.cap_ultima_lectura_en = now
+    cuenta.save()
+
+    CapLectura.objects.create(
+        cuenta=cuenta,
+        nombre_archivo=nombre,
+        texto_extraido=cuenta.cap_texto_extraido[:500000],
+        error_lectura=cuenta.cap_error_lectura,
+    )
     return redirect('core:perfil_alumno')
+
+
+def esquemas_evaluacion_lista(request):
+    redir = _require_login(request)
+    if redir:
+        return redir
+    usuario = _usuario_sesion(request)
+    if usuario['rol'] != 'alumno':
+        return _redirect_home_for_rol(usuario['rol'])
+
+    cuenta = _cuenta_alumno_plataforma(request)
+    esquemas = []
+    if cuenta:
+        esquemas = list(
+            EsquemaEvaluacionMateria.objects.filter(cuenta=cuenta)
+            .prefetch_related('bloques__rubros')
+        )
+
+    return render(
+        request,
+        'core/esquemas_evaluacion_lista.html',
+        {
+            'usuario': usuario,
+            'grupos_nav': [],
+            'cuenta': cuenta,
+            'esquemas': esquemas,
+        },
+    )
+
+
+@require_http_methods(['GET', 'POST'])
+def esquema_evaluacion_nuevo(request):
+    return _esquema_evaluacion_form(request, None)
+
+
+@require_http_methods(['GET', 'POST'])
+def esquema_evaluacion_editar(request, pk):
+    return _esquema_evaluacion_form(request, pk)
+
+
+def _esquema_evaluacion_form(request, pk):
+    redir = _require_login(request)
+    if redir:
+        return redir
+    usuario = _usuario_sesion(request)
+    if usuario['rol'] != 'alumno':
+        return _redirect_home_for_rol(usuario['rol'])
+
+    cuenta = _cuenta_alumno_plataforma(request)
+    if not cuenta:
+        return redirect('core:esquemas_evaluacion_lista')
+
+    esquema = None
+    if pk is not None:
+        esquema = get_object_or_404(EsquemaEvaluacionMateria, pk=pk, cuenta=cuenta)
+
+    error_guardar = None
+    if request.method == 'POST':
+        try:
+            payload = json.loads(request.POST.get('payload', ''))
+        except json.JSONDecodeError:
+            error_guardar = 'Formato de datos inválido.'
+        else:
+            materia = (payload.get('materia') or '').strip()[:200]
+            periodo = (payload.get('periodo') or '').strip()[:120]
+            bloques_data = payload.get('bloques')
+            if not materia:
+                error_guardar = 'Indica el nombre de la materia.'
+            elif not isinstance(bloques_data, list) or not bloques_data:
+                error_guardar = 'Añade al menos un bloque con criterios.'
+            else:
+                try:
+                    with transaction.atomic():
+                        if esquema is None:
+                            esquema = EsquemaEvaluacionMateria.objects.create(
+                                cuenta=cuenta,
+                                nombre_materia=materia,
+                                periodo=periodo,
+                            )
+                        else:
+                            esquema.nombre_materia = materia
+                            esquema.periodo = periodo
+                            esquema.save()
+                            esquema.bloques.all().delete()
+
+                        for bi, bloque_raw in enumerate(bloques_data):
+                            etiqueta = (bloque_raw.get('etiqueta') or '').strip()[:120]
+                            if not etiqueta:
+                                etiqueta = f'Bloque {bi + 1}'
+                            bloque = BloqueEvaluacion.objects.create(
+                                esquema=esquema,
+                                etiqueta_grupo=etiqueta,
+                                orden=bi,
+                            )
+                            rubros_raw = bloque_raw.get('rubros') or []
+                            for ri, rubro_raw in enumerate(rubros_raw):
+                                nombre_r = (rubro_raw.get('nombre') or '').strip()[:400]
+                                if not nombre_r:
+                                    continue
+                                pct_raw = rubro_raw.get('porcentaje')
+                                pct = None
+                                if pct_raw is not None and str(pct_raw).strip() != '':
+                                    try:
+                                        pct = Decimal(str(pct_raw).replace(',', '.'))
+                                    except (InvalidOperation, ValueError):
+                                        pct = None
+                                RubroEvaluacion.objects.create(
+                                    bloque=bloque,
+                                    nombre_criterio=nombre_r,
+                                    porcentaje=pct,
+                                    destacado=bool(rubro_raw.get('destacado')),
+                                    es_fila_total=bool(rubro_raw.get('es_total')),
+                                    orden=ri,
+                                )
+                    return redirect('core:esquemas_evaluacion_lista')
+                except Exception as exc:  # noqa: BLE001
+                    error_guardar = f'No se pudo guardar: {exc}'
+
+    initial_json = None
+    if esquema and request.method == 'GET':
+        bloques_out = []
+        for bloque in esquema.bloques.all().prefetch_related('rubros'):
+            bloques_out.append({
+                'etiqueta': bloque.etiqueta_grupo,
+                'rubros': [
+                    {
+                        'nombre': r.nombre_criterio,
+                        'porcentaje': '' if r.porcentaje is None else str(r.porcentaje),
+                        'destacado': r.destacado,
+                        'es_total': r.es_fila_total,
+                    }
+                    for r in bloque.rubros.all()
+                ],
+            })
+        initial_json = json.dumps({
+            'materia': esquema.nombre_materia,
+            'periodo': esquema.periodo,
+            'bloques': bloques_out,
+        }, ensure_ascii=False)
+
+    return render(
+        request,
+        'core/esquema_evaluacion_editar.html',
+        {
+            'usuario': usuario,
+            'grupos_nav': [],
+            'cuenta': cuenta,
+            'esquema': esquema,
+            'initial_json': initial_json,
+            'error_guardar': error_guardar,
+        },
+    )
+
+
+@require_POST
+def esquema_evaluacion_eliminar(request, pk):
+    redir = _require_login(request)
+    if redir:
+        return redir
+    usuario = _usuario_sesion(request)
+    if usuario['rol'] != 'alumno':
+        return _redirect_home_for_rol(usuario['rol'])
+    cuenta = _cuenta_alumno_plataforma(request)
+    if not cuenta:
+        return redirect('core:esquemas_evaluacion_lista')
+    EsquemaEvaluacionMateria.objects.filter(pk=pk, cuenta=cuenta).delete()
+    return redirect('core:esquemas_evaluacion_lista')
 
 
 def panel_director(request):

@@ -1,5 +1,17 @@
 from django.contrib import admin
-from .models import CuentaAlumno
+
+from .models import (
+    BloqueEvaluacion,
+    CapLectura,
+    CuentaAlumno,
+    EsquemaEvaluacionMateria,
+    RubroEvaluacion,
+)
+
+admin.site.register(EsquemaEvaluacionMateria)
+admin.site.register(BloqueEvaluacion)
+admin.site.register(RubroEvaluacion)
+admin.site.register(CapLectura)
 
 
 @admin.register(CuentaAlumno)
