@@ -521,12 +521,18 @@
       border: 1px solid var(--card-edge);
       background: rgba(8, 15, 28, 0.45);
       border-top: 3px solid var(--accent);
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, background 0.2s, transform 0.22s, box-shadow 0.22s;
     }
     .axis-pill:nth-child(even) { border-top-color: var(--orange); }
+    .axis-pill:nth-child(1) { background: linear-gradient(160deg, rgba(20, 36, 58, 0.7) 0%, rgba(8, 15, 28, 0.45) 100%); }
+    .axis-pill:nth-child(2) { background: linear-gradient(160deg, rgba(58, 36, 22, 0.35) 0%, rgba(8, 15, 28, 0.5) 100%); }
+    .axis-pill:nth-child(3) { background: linear-gradient(160deg, rgba(18, 40, 52, 0.65) 0%, rgba(8, 15, 28, 0.45) 100%); }
+    .axis-pill:nth-child(4) { background: linear-gradient(160deg, rgba(48, 32, 52, 0.25) 0%, rgba(8, 15, 28, 0.48) 100%); }
     .axis-pill:hover {
-      background: rgba(224, 120, 56, 0.06);
-      border-color: rgba(224, 120, 56, 0.25);
+      background: rgba(224, 120, 56, 0.08);
+      border-color: rgba(224, 120, 56, 0.32);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
     }
     .axis-pill strong {
       font-family: var(--font-cards);
@@ -592,6 +598,171 @@
       border-color: rgba(224, 120, 56, 0.4);
       background: rgba(224, 120, 56, 0.08);
     }
+
+    /* —— Hero video (carátula superior) —— */
+    .hero-video {
+      position: relative;
+      min-height: min(92vh, 960px);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 5.25rem clamp(1.25rem, 4vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+      overflow: hidden;
+    }
+    .hero-video__media {
+      position: absolute;
+      inset: 0;
+      background: var(--navy-deep);
+    }
+    .hero-video__media video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-video__scrim {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to top, rgba(4, 6, 12, 0.94) 0%, rgba(4, 6, 12, 0.5) 42%, rgba(4, 6, 12, 0.35) 100%),
+        linear-gradient(110deg, rgba(212, 98, 46, 0.32) 0%, transparent 52%),
+        radial-gradient(ellipse 90% 70% at 85% 20%, rgba(107, 147, 184, 0.12), transparent 55%);
+    }
+    .hero-video__vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55);
+    }
+    .hero-video__grid {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 1.85rem;
+    }
+    .hero-video .hero-kicker {
+      color: rgba(255, 247, 240, 0.82);
+    }
+    .hero-video .hero-sub {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border-left-color: var(--orange-highlight);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .hero-video .hero-lead {
+      color: rgba(255, 248, 242, 0.9);
+      max-width: 34rem;
+    }
+    .hero-video__stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .hero-video__stat-row .hero-stat-item {
+      position: relative;
+      flex: 1 1 140px;
+      min-width: 120px;
+    }
+
+    /* Recuadros: variantes cálidas / frías / mix */
+    .reveal-card--warm {
+      background: linear-gradient(158deg, rgba(48, 32, 24, 0.55) 0%, rgba(14, 24, 44, 0.97) 52%, rgba(12, 20, 38, 0.99) 100%);
+      border-color: rgba(232, 148, 94, 0.22);
+    }
+    .reveal-card--warm::before {
+      background: linear-gradient(180deg, #f0a068, var(--orange-deep));
+    }
+    .reveal-card--cool {
+      background: linear-gradient(158deg, rgba(16, 36, 58, 0.98) 0%, rgba(12, 22, 42, 0.99) 100%);
+      border-color: rgba(123, 167, 204, 0.28);
+    }
+    .reveal-card--cool::before {
+      background: linear-gradient(180deg, #8eb8da, var(--accent-deep));
+    }
+    .reveal-card--duo {
+      background: linear-gradient(145deg, rgba(24, 42, 68, 0.96) 0%, rgba(28, 22, 18, 0.35) 45%, rgba(15, 26, 46, 0.98) 100%);
+      border-color: rgba(255, 250, 245, 0.14);
+    }
+    .reveal-card--duo::before {
+      background: linear-gradient(180deg, var(--accent), var(--orange));
+    }
+    .reveal-card--warm:hover,
+    .reveal-card--warm:focus-within,
+    .reveal-card--cool:hover,
+    .reveal-card--cool:focus-within,
+    .reveal-card--duo:hover,
+    .reveal-card--duo:focus-within {
+      transform: translateY(-4px);
+      box-shadow:
+        0 28px 64px rgba(0, 0, 0, 0.48),
+        0 0 0 1px rgba(224, 120, 56, 0.12) inset,
+        0 0 48px rgba(107, 147, 184, 0.08);
+    }
+
+    /* Plano de sala (recinto) */
+    .plano-sala-block {
+      margin-top: 3.25rem;
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+      border-radius: calc(var(--radius) + 0.25rem);
+      border: 1px solid rgba(224, 120, 56, 0.22);
+      background:
+        radial-gradient(ellipse 70% 60% at 0% 100%, rgba(212, 98, 46, 0.12), transparent 55%),
+        radial-gradient(ellipse 60% 50% at 100% 0%, rgba(107, 147, 184, 0.1), transparent 50%),
+        linear-gradient(165deg, rgba(16, 28, 48, 0.95) 0%, rgba(8, 14, 26, 0.98) 100%);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    .plano-sala-block .section-eyebrow { margin-top: 0; }
+    .plano-sala-block .section-title { margin-bottom: 0.35rem; }
+    .plano-sala-block .section-desc { margin-bottom: 1.25rem; }
+    .plano-figure {
+      margin: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--card-edge);
+      background: rgba(6, 10, 18, 0.65);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+    .plano-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+    .plano-caption {
+      margin: 0;
+      padding: 0.9rem 1rem 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      border-top: 1px solid rgba(224, 120, 56, 0.15);
+      background: rgba(4, 8, 16, 0.45);
+    }
+    .reveal-full .plano-inline {
+      margin: 1rem 0 0.5rem;
+      border-radius: 0.65rem;
+      overflow: hidden;
+      border: 1px solid rgba(123, 167, 204, 0.25);
+    }
+    .reveal-full .plano-inline img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .reveal-full .plano-inline figcaption {
+      font-size: 0.78rem;
+      color: #b8c0ce;
+      padding: 0.55rem 0.75rem;
+      margin: 0;
+      background: rgba(6, 12, 22, 0.9);
+    }
   </style>
 </head>
 <body>
@@ -601,9 +772,16 @@
     <a href="{% url 'core:login' %}">Ingresar</a>
   </nav>
 
-  <header class="hero-immersive" id="inicio">
-    <div class="hero-panel--orange">
-      <div class="hero-panel__inner">
+  <header class="hero-video" id="inicio">
+    <div class="hero-video__media" aria-hidden="true">
+      <video autoplay muted loop playsinline>
+        <source src="{% static 'cudea/brand-pantallas-cudea.mp4' %}" type="video/mp4" />
+      </video>
+      <div class="hero-video__scrim"></div>
+      <div class="hero-video__vignette"></div>
+    </div>
+    <div class="hero-video__grid">
+      <div>
         <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
         <h1 class="hero-title">CUDEA</h1>
         <p class="hero-sub">Convierte tu visión en acción · Edición 3.0</p>
@@ -613,23 +791,10 @@
         <div>
           <a class="hero-cta" href="#contenido">Explorar el proyecto</a>
           <a class="hero-cta hero-cta--ghost" href="#ejes">Ver ejes temáticos</a>
+          <a class="hero-cta hero-cta--ghost" href="#atmosfera">Ver atmósfera</a>
         </div>
       </div>
-    </div>
-    <div class="hero-panel--photo" role="img" aria-label="Ambiente CUDEA: conversación y energía entre ponentes">
-      <div class="hero-photo-base" aria-hidden="true"></div>
-      <img
-        class="hero-photo-el"
-        src="{% static 'cudea/hero-duo.png' %}"
-        width="1600"
-        height="900"
-        alt=""
-        decoding="async"
-        fetchpriority="high"
-      />
-      <div class="hero-photo-grade" aria-hidden="true"></div>
-      <div class="hero-photo-vignette" aria-hidden="true"></div>
-      <div class="hero-stat">
+      <div class="hero-video__stat-row">
         <div class="hero-stat-item">
           <strong>2 días</strong>
           <span>Formato masivo · Cuatro ejes</span>
@@ -646,6 +811,51 @@
     </div>
   </header>
 
+  <section class="hero-immersive" id="atmosfera" aria-labelledby="atmosfera-title">
+    <div class="hero-panel--orange">
+      <div class="hero-panel__inner">
+        <p class="hero-kicker">Pulso del recinto</p>
+        <h2 class="hero-title" id="atmosfera-title" style="font-size: clamp(2.2rem, 6vw, 3.85rem);">La experiencia en la sala</h2>
+        <p class="hero-sub">Cámara cercana al diálogo entre ponentes</p>
+        <p class="hero-lead">
+          CUDEA se construye como <strong>espectáculo con intención formativa</strong>: la imagen resume el tono conversacional y la energía en el escenario —el mismo espíritu que la <strong>pasarela en T</strong>, el LED y el flujo entre bloques buscan sostener en la realidad.
+        </p>
+        <div>
+          <a class="hero-cta" href="#recinto">Plano de sala</a>
+          <a class="hero-cta hero-cta--ghost" href="#contenido">Capítulos del trabajo</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-panel--photo" role="img" aria-label="Ambiente CUDEA: conversación y energía entre ponentes">
+      <div class="hero-photo-base" aria-hidden="true"></div>
+      <img
+        class="hero-photo-el"
+        src="{% static 'cudea/hero-duo.png' %}"
+        width="1600"
+        height="900"
+        alt=""
+        decoding="async"
+        loading="lazy"
+      />
+      <div class="hero-photo-grade" aria-hidden="true"></div>
+      <div class="hero-photo-vignette" aria-hidden="true"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-item">
+          <strong>Pasarela</strong>
+          <span>Contacto visual · menos frontalidad</span>
+        </div>
+        <div class="hero-stat-item">
+          <strong>Networking</strong>
+          <span>Brunch, Jardín de las Letras</span>
+        </div>
+        <div class="hero-stat-item">
+          <strong>Gran formato</strong>
+          <span>LED, rider técnico integrado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="wrap" id="contenido">
     <p class="section-eyebrow">Capítulos del trabajo</p>
     <h2 class="section-title">Ideas centrales, en capas</h2>
@@ -656,10 +866,10 @@
     <p class="hint-hover">Azul + naranja · Hover para expandir · *Practicum II* (CUDEA 3.0)</p>
 
     <div class="grid-cards">
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--warm" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Relevancia</span>
-          <span class="tag tag--blue">§ 2.1</span>
+          <span class="tag tag--blue">Secc. 2.1</span>
         </div>
         <h3>Más que un congreso: una plataforma de acción</h3>
         <p class="card-lead">Del discurso aspiracional a la ejecución responsable.</p>
@@ -668,13 +878,18 @@
           <p>En un entorno de incertidumbre política y transformación de modelos de negocio, la industria del entretenimiento como <strong>espacio de formación y conexión emocional</strong> permite posicionar CUDEA como respuesta formativa y práctica. El proyecto nace de estudiantes de distintas carreras y se dirige a quienes buscan acercarse a <strong>tomadores de decisión reales</strong> en los sectores público y privado.</p>
           <p class="pull">«El espectáculo no es el fin, sino el medio para potenciar el mensaje.»</p>
           <p>Marcos citados en el documento: <strong>edutainment</strong> (aprendizaje dinámico y participativo), <strong>teoría de la experiencia del entretenimiento</strong> (eventos memorables que involucran emocionalmente), <strong>event marketing</strong> (vínculo institución–audiencia) y alineación con valores de la Universidad Anáhuac Puebla.</p>
+          <p>La propuesta se sostiene en que el formato masivo no diluye el rigor: panel, Q&amp;A y momentos de convivencia están pensados para que el asistente <strong>pase del insight a la conversación</strong> —de escuchar una tesis a intercambiar criterio con quien la ejecuta en la vida real. El practicum enfatiza coherencia entre narrativa («visión en acción»), selección de ponentes y sensación en sala.</p>
+          <ul>
+            <li><strong>Promesa dual:</strong> inspiración aspiracional + herramientas y contactos aplicables al corto plazo.</li>
+            <li><strong>Riesgo gestionado:</strong> producción profesional y hospitality que cuidan la percepción de seriedad del evento universitario.</li>
+          </ul>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--cool" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--blue">Trayectoria</span>
-          <span class="tag tag--orange">§ 3.1</span>
+          <span class="tag tag--orange">Secc. 3.1</span>
         </div>
         <h3>Tres ediciones, tres promesas narrativas</h3>
         <p class="card-lead">2023 · 2024 · 3.0 — misma esencia, mayor ambición.</p>
@@ -683,13 +898,15 @@
           <p><strong>CUDEA 2023 — 11 de noviembre.</strong> Jornada ~12 h (8:30–22:00 aprox.); ~200 asistentes; acceso ~$1,500 MXN. Línea: <em>«Donde se forjan líderes se proyecta el futuro»</em>. Inauguración y conferencia «México como líder» (Eduardo Rivera Pérez); paneles en empresa, Pymes/startups, política (Zepeda / Osorio Chong); conferencias con Contreras, Allegret, Bitso, etc.; cierre con Larry Rubin; alfombra roja y cena. Patrocinadores ejemplo: LiderIn, Bone, Creadores México, Deforest.</p>
           <p><strong>CUDEA 2024 — 8 y 9 de noviembre.</strong> Dos días. Línea: <em>«Visión México 2034: Encuentra tu porqué»</em>. Educación financiera como eje; IA y acompañamiento a la empresa; industrias entretenimiento, turismo, marketing, automotriz; nuevos formatos escénicos y mayor logística.</p>
           <p><strong>CUDEA 3.0.</strong> Consolida <em>«Convierte tu visión en acción»</em>: evento masivo, regional, cuatro ejes temáticos, alianzas con marcas e instituciones y producción alineada a estándares de la industria.</p>
+          <p>En retrospectiva, cada salto respondió a la misma pregunta operativa: ¿cómo convertir <strong>notoriedad</strong> en <strong>activos</strong> para el alumno (redes, casos, confianza)? La 2023 probó formato intensivo de un día; la 2024 extendió el tiempo para acomodar más industrias y conversaciones en frío; la 3.0 apuesta por <strong>densidad multieje</strong> sin perder la sensación de evento único.</p>
+          <p class="pull">La continuidad narrativa no es repetición de eslogan: es tensión deliberada entre escala, intimidad y producción.</p>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--duo" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Territorio cultural</span>
-          <span class="tag tag--blue">§ 3.2</span>
+          <span class="tag tag--blue">Secc. 3.2</span>
         </div>
         <h3>Necesidades que el proyecto nombra y atiende</h3>
         <p class="card-lead">Agenda, gratificación, persuasión —y networking real.</p>
@@ -697,13 +914,18 @@
         <div class="reveal-full">
           <p>El documento articula <strong>agenda setting</strong>: CUDEA posiciona en la conversación universitaria temas como liderazgo, emprendimiento, política y acción social. <strong>Usos y gratificaciones</strong> explica por qué el alumno elige el evento: conocimiento aplicable, red de contacto e inspiración cercana. La <strong>comunicación persuasiva</strong> refuerza storytelling, elección de ponentes y difusión aspiracional.</p>
           <p>El diferencial operativo es el <strong>networking directo</strong> (brunch, comidas, espacios de convivencia), con testimonios de empleo, emprendimiento y colaboraciones tras ediciones previas. El entretenimiento como medio rompe jerarquías y hace accesible el diálogo con líderes.</p>
+          <p>Desde la perspectiva del practicum, esos marcos explican por qué el evento no compite solo con otros congresos, sino con cualquier experiencia que <strong>ocupe el mismo fin de semana cognitivo</strong>: redes sociales, streaming, oferta cultural en Puebla y fatiga de pantalla. CUDEA compensa con presencia física, ritual (registro, alfombra, bloques) y recompensas sociales visibles (proximidad a la pasarela, activaciones).</p>
+          <ul>
+            <li><strong>Agenda setting:</strong> qué temas “cuentan” en el campus durante noviembre.</li>
+            <li><strong>Gratificaciones:</strong> status, aprendizaje, pertenencia a una comunidad que repite asistencia.</li>
+          </ul>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--warm" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--blue">Audiencias</span>
-          <span class="tag tag--orange">§ 3.3</span>
+          <span class="tag tag--orange">Secc. 3.3</span>
         </div>
         <h3>Público meta y ecosistema</h3>
         <p class="card-lead">Multidisciplina dentro del campus —y más allá.</p>
@@ -711,13 +933,15 @@
         <div class="reveal-full">
           <p>Históricamente se involucraron <strong>23 de 27 carreras</strong> del portafolio Anáhuac Puebla. La 3.0 busca ampliar ese alcance interdepartamental como punto de encuentro para intercambiar miradas y pasar a <strong>proyectos concretos</strong>.</p>
           <p><strong>Stakeholders:</strong> la universidad (auditorio, sala expo, jardines, canales oficiales, coauspicio de clausura vía escuelas); patrocinadores con activaciones y experiencia de marca; proveedores técnicos que garantizan estándar de gran formato.</p>
+          <p>El diseño de audiencias contempla perfiles heterogéneos con un denominador común: <strong>alta disposición al networking</strong> y tolerancia a jornadas largas si el payoff (contenido + escena + contactos) es creíble. Por eso el documento enfatiza segmentación de boletaje y beneficios diferenciados: no todos buscan lo mismo, pero todos pueden encontrar un “gancho” —de cercanía escénica a activación de marca.</p>
+          <p>Los egresados recientes y líderes estudiantiles actúan como <strong>multiplicadores</strong>: arrastran grupos, explican el valor del evento en su escuela y legitiman la inversión de tiempo frente a otras actividades del semestre.</p>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--cool" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Patrocinio</span>
-          <span class="tag tag--blue">§ 3.3–3.4</span>
+          <span class="tag tag--blue">Secc. 3.3–3.4</span>
         </div>
         <h3>Aliados que visten la experiencia</h3>
         <p class="card-lead">Marca aspiracional, cultura, alimentos, merch y técnica.</p>
@@ -730,26 +954,33 @@
             <li><strong>Maja</strong> — merchandising «Fashion in Action». <strong>Kigo</strong> — registro y bienvenida.</li>
             <li><strong>Producciones Audiovisuales</strong> — montaje integral; modelo de <strong>patrocinio parcial en especie</strong> + complemento financiado con ingresos por boletaje.</li>
           </ul>
+          <p>La lectura financiera del practicum es clara: los aliados no son “logos decorativos”; sostienen <strong>cohortes de experiencia</strong> (alimentos, movilidad aspiracional, cultura, técnica) que elevan la percepción del boleto. Coordinar storytelling de marca con el guion del evento evita choques de tono —cada activación debe poder explicarse en una frase compatible con <em>«visión en acción»</em>.</p>
+          <p>Operativamente, el equipo debe mapear entregables por marca: metros de activación, tiempos de aforo, responsables en piso y métricas mínimas (impresiones, leads cualitativos, contenido UGC).</p>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--duo" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--blue">Competencia</span>
-          <span class="tag tag--orange">§ 3.4</span>
+          <span class="tag tag--orange">Secc. 3.4</span>
         </div>
         <h3>Calendario y canibalización de presupuesto</h3>
         <p class="card-lead">Misma audiencia, múltiples ofertas —habrá que elegir.</p>
         <p class="reveal-teaser">Eventos internos febrero–abril, colegiaturas y oferta cultural/ musical en Puebla compiten por atención y bolsa.</p>
         <div class="reveal-full">
           <p>El análisis lista referencias como: <strong>Día A</strong> (ej. feb. 2026 ~$400); <strong>Congreso de Comunicación</strong> (mar., preventa ~$650); <strong>Congreso de Entretenimiento Centro</strong> (mar.); <strong>Dise Ingenia</strong> (abr. ~$700); seminarios de liderazgo (~$1,500); <strong>The Race</strong> negocios (abr. ~$700); factores como <strong>Resuena</strong> u otros conciertos (~$2,000). CUDEA responde con <strong>densidad temática multieje</strong>, <strong>perfiles de ponentes</strong> y paquete formativo + networking como promesa integrada.</p>
+          <p>La canibalización no es solo precio: es <strong>energía mental y física</strong>. Un alumno puede costear varios eventos, pero no asistir a todos con la misma intensidad. Por eso CUDEA busca diferenciarse en “una sola compra, muchas conversaciones” y en producción que justifique desplazarse al recinto en lugar de consumir contenido en replay.</p>
+          <ul>
+            <li><strong>Estrategia:</strong> ventana de preventa y bundles con narrativa de ahorro vs. comprar experiencias sueltas.</li>
+            <li><strong>Riesgo:</strong> solapamiento de fechas con otros congresos internos; requiere coordinación institucional temprana.</li>
+          </ul>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--warm" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Espacio</span>
-          <span class="tag tag--blue">§ 5.1–5.3</span>
+          <span class="tag tag--blue">Secc. 5.1–5.3</span>
         </div>
         <h3>Recinto, escena tipo pasarela y flujo social</h3>
         <p class="card-lead">Centro de Exposiciones — frescura y aforo a la medida.</p>
@@ -758,13 +989,19 @@
           <p>Ubicación: <strong>Centro de Exposiciones</strong> del Edificio Liderazgo — espacio reciente que refuerza imagen moderna. Aforo citado en narrativa ~700 personas para equilibrio convocatoria–experiencia; ficha técnica del recinto menciona <strong>~630 m²</strong>, dimensiones ~27×23 m, altura ~13 m, hasta <strong>600 personas sentadas</strong>, LED fijo 12×6 m, audio e iluminación de sala.</p>
           <p>La <strong>pasarela en T</strong> acerca ponentes a la audiencia, reduce frontalidad «congreso» y refuerza contacto visual. Mobiliario lounge (sillones, mesas, lámparas) busca conversación auténtica; el documento también mencionaba uso del naranja en escenografía por congruencia cromática con la línea (en esta web el naranja cumple ese rol visual).</p>
           <p><strong>Seat map:</strong> articula <strong>Special Guest</strong>, VIP y gral.; proximidad a pasarela como beneficio tangible. <strong>Jardín de las Letras</strong>: extensión para catering y networking entre bloques.</p>
+          <p>El plano de distribución (imagen y bloque ampliado más abajo) resume la lógica del piso: acceso y circulación, <strong>bodega / backstage</strong> para carga y descarga sin cortar al público, escenario con mesa de panelistas y extensión en T hacia los bloques de butacas —lo que materializa la promesa de “acercar el liderazgo al asiento”.</p>
+          <figure class="plano-inline">
+            <img src="{% static 'cudea/plano-sala.png' %}" width="1200" height="675" alt="Vista superior del salón con pasarela en T y bloques de asientos." loading="lazy" decoding="async" />
+            <figcaption>Vista rápida: la versión completa con pie editorial está en <a href="#recinto">Distribución de sala y flujo de asistentes</a>.</figcaption>
+          </figure>
+          <p>Montaje y desmontaje compiten por horas con otras actividades universitarias; por eso el practicum insiste en <strong>ventanas de rigging</strong>, prueba de línea y validación de pesos sobre la estructura de pasarela —detalles aburridos en papel, decisivos en el día del evento.</p>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--cool" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--blue">Special Guest</span>
-          <span class="tag tag--orange">§ 5.2</span>
+          <span class="tag tag--orange">Secc. 5.2</span>
         </div>
         <h3>Comunidad, códigos y venta orgánica</h3>
         <p class="card-lead">De asistente fiel a embajador del evento.</p>
@@ -772,13 +1009,19 @@
         <div class="reveal-full">
           <p>Dirigido a estudiantes de ediciones previas con afinidad y liderazgo. Objetivos: <strong>reconocimiento</strong>, <strong>crecimiento orgánico</strong> mediante códigos personalizados de boleto, y <strong>pertenencia</strong> que trascienda el fin de semana del evento.</p>
           <p>El seat map materializa la promesa: zonas cercanas a la interacción central, conviviendo en momentos puntuales con VIP e incluso ponentes —refuerzo del valor percibido y del boca a boca.</p>
+          <p>En la práctica, el programa convierte a quien ya confía en CUDEA en <strong>canal de distribución</strong>: cada código enlaza compra, atribución y storytelling (“quién te invitó al evento”). Eso alimenta comunidad sin sacrificar control operativo —el equipo puede leer qué células del campus están empujando la convocatoria.</p>
+          <p class="pull">Special Guest no es solo “mejor asiento”: es relato de lealtad recompensada con proximidad y estatus visible.</p>
+          <ul>
+            <li><strong>Reglas claras:</strong> elegibilidad, beneficios y límites para evitar fricción con VIP pagador.</li>
+            <li><strong>Comunicación:</strong> mensajes dedicados en redes y correo para que el cohorte se sienta nominado, no filtrado.</li>
+          </ul>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--duo" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Producción</span>
-          <span class="tag tag--blue">§ 5.4</span>
+          <span class="tag tag--blue">Secc. 5.4</span>
         </div>
         <h3>Rider técnico y cotización referencial</h3>
         <p class="card-lead">Escala de evento profesional —sin recortar la promesa.</p>
@@ -786,13 +1029,18 @@
         <div class="reveal-full">
           <p>Partidas ejemplo del documento: pantalla LED principal, audio line array, consola digital, DANTE, micrófonos, iluminación robótica y arquitectónica, operadores, escenario pasarela T, faldón LED, señalética, lounge, planta de energía, cableado, grabación multicámara, fotografía. <strong>Total referencia citado: ~$438,500 MXN</strong> (orden de magnitud del presupuesto técnico en la versión entregada).</p>
           <p>Reglas de uso del espacio institucional (no perforar, validar equipo extra, tiempos de montaje) condicionan la logística y refuerzan coordinación temprana con la universidad.</p>
+          <p>La coherencia técnica con la narrativa es deliberada: si el discurso habla de “acción” y “gran formato”, el oído y la retina deben sentir <strong>headroom</strong> —bajos limpios en video, voces inteligibles en panel y transiciones musicales que marquen ritual sin distraer del contenido.</p>
+          <ul>
+            <li><strong>Multi-cámara + grabación:</strong> activo posventa para patrocinadores, escuela y comunidad (clips cortos, no solo archivo largo).</li>
+            <li><strong>Faldón LED:</strong> refuerza patrocinios y anuncia bloques sin romper la escena principal.</li>
+          </ul>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--warm" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--blue">Hospitalidad</span>
-          <span class="tag tag--orange">§ 5.5</span>
+          <span class="tag tag--orange">Secc. 5.5</span>
         </div>
         <h3>Experiencia ponente e invitado</h3>
         <p class="card-lead">VIP, catering, imagen y movilidad foránea.</p>
@@ -800,13 +1048,15 @@
         <div class="reveal-full">
           <p>Sala VIP dedicada: clima, cocina, baño privado, lounge con salas de piel, pantalla, espejos de cuerpo completo para imagen. <strong>Catering continuo</strong>: café, agua, refrescos, snacks; consideración de restricciones alimentarias y limpieza permanente.</p>
           <p><strong>Movilidad:</strong> hospedaje una noche para foráneos; traslados en <strong>Suburban negras</strong> desde aeropuerto con chofer, itinerario y seguimiento. Coordinación de entradas y salidas para optimizar la experiencia de cada ponente.</p>
+          <p>La hospitality es donde muchos eventos pierden credibilidad: filas, calor, incertidumbre de horarios. CUDEA documenta <strong>ritmos de servicio</strong> (reposición de café, puntos de agua en pasillo, staffing visible) porque el ponente cansado o mal hidratado reduce calidad en escena —y eso impacta percepción de marca del evento y de la universidad.</p>
+          <p>Los espejos de cuerpo completo y el lounge no son lujo ornamental: son señal de <strong>respeto por la imagen pública</strong> del invitado antes de salir a pasarela o panel.</p>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--cool" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Medios</span>
-          <span class="tag tag--blue">§ 4.3</span>
+          <span class="tag tag--blue">Secc. 4.3</span>
         </div>
         <h3>Formatos comunicativos 3.0</h3>
         <p class="card-lead">Transmedia antes, durante y después del recinto.</p>
@@ -814,13 +1064,19 @@
         <div class="reveal-full">
           <p><strong>Instagram</strong> concentra expectativa, rápida interacción y comunidad. <strong>LinkedIn</strong> valida tono profesional y calidad de speaker lineup. Medios masivos citados: <strong>SICOM</strong>, <strong>ULTRA 92.5</strong>, <strong>El Heraldo</strong>, <strong>Imagen Radio</strong>. En campus: piezas tipo <em>moopies</em>, loops en salones y presencia en puntos de tránsito.</p>
           <p>En sala: contenidos audiovisuales, loops y escenografía alineados a <em>«Convierte tu visión en acción»</em> —la comunicación es parte del producto, no un apéndice.</p>
+          <p>La pieza audiovisual superior de esta página funciona como <strong>metáfora de pantallas</strong>: refuerza la promesa de producción seria antes de que el visitante llegue a los capítulos textuales. El reto transmedia es mantener una sola voz creativa entre avances de 15 s, piezas de radio y narrativa en el LED principal.</p>
+          <ul>
+            <li><strong>Antes:</strong> calendario de revelación de ponentes y pruebas sociales (ediciones previas).</li>
+            <li><strong>Durante:</strong> contenido “snackeable” que no compita con lo que ocurre en vivo.</li>
+            <li><strong>Después:</strong> archivo corto que alimente comunidad y patrocinio del año siguiente.</li>
+          </ul>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--duo" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--blue">Justificación</span>
-          <span class="tag tag--orange">§ 3.6</span>
+          <span class="tag tag--orange">Secc. 3.6</span>
         </div>
         <h3>Impacto individual, institucional y de mercado laboral</h3>
         <p class="card-lead">Datos INEGI / OIT como telón de fondo.</p>
@@ -832,13 +1088,14 @@
             <li>~400 asistentes proyectados en la justificación cuantitativa.</li>
             <li>Impacto en <strong>motivación</strong>, <strong>proyección profesional</strong> y <strong>redes</strong> según narrativa de stakeholders.</li>
           </ul>
+          <p>La apuesta no es medir “satisfacción genérica” al salir del salón, sino habilitar <strong>trayectorias</strong>: más confianza para postularse, más vocabulario para negociar, más referencias para armar un proyecto. El evento comprime tiempo —dos días intensos— para acelerar ese proceso que de otra forma tomaría meses de charlas dispersas.</p>
         </div>
       </article>
 
-      <article class="reveal-card" tabindex="0">
+      <article class="reveal-card reveal-card--warm" tabindex="0">
         <div class="tag-row">
           <span class="tag tag--orange">Activaciones</span>
-          <span class="tag tag--blue">§ 5.3</span>
+          <span class="tag tag--blue">Secc. 5.3</span>
         </div>
         <h3>Zonas verdes y operación integrada</h3>
         <p class="card-lead">Exhibición de marca donde circula la gente.</p>
@@ -846,8 +1103,31 @@
         <div class="reveal-full">
           <p>Se prevén <strong>zonas verdes</strong> (áreas de activación) distribuidas según flujo natural: accesos, salidas del auditorio y corredores de networking. Cada marca recibe espacio para experiencia, muestra y conversación —articulando retorno de inversión con visibilidad y contacto cualitativo.</p>
           <p>Operativamente se articula <strong>registro digital</strong>, control de accesos, segmentación (general, Special Guest, VIP, staff) y cumplimiento del seat map como pieza de una sola máquina: producción + comunidad + monetización.</p>
+          <p>El plano de sala ayuda a pensar esas zonas como <strong>vectores de tráfico</strong>: no basta ubicar un stand “bonito” si contradice evacuación, líneas de visión o timing de apertura de puertas. Buenas activaciones acompañan el guion del día —firma de libros cuando el bloque es literario, prueba de producto cuando el bloque es consumo, etc.</p>
+          <p class="pull">Patrocinio exitoso aquí es conversación sostenida, no solo logo en pantalla.</p>
         </div>
       </article>
+    </div>
+
+    <div class="plano-sala-block" id="recinto">
+      <p class="section-eyebrow">El espacio del evento</p>
+      <h2 class="section-title">Distribución de sala y flujo de asistentes</h2>
+      <p class="section-desc">
+        Plano tipo planta del <strong>Centro de Exposiciones</strong> (Edificio Liderazgo): escenario, <strong>mesa tipo panel</strong>, <strong>pasarela en T</strong> hacia el público y bloques de butacas. Los accesos y la <strong>bodega</strong> posterior ordenan la operación de montaje y hospitality sin cruzar el flujo principal del aforo.
+      </p>
+      <figure class="plano-figure">
+        <img
+          src="{% static 'cudea/plano-sala.png' %}"
+          width="1600"
+          height="900"
+          alt="Plano: acceso, bodega, escenario con mesa de panelistas, pasarela en T en azul y bloques de asientos alrededor."
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption class="plano-caption">
+          Referencia visual alineada al seat map del practicum: proximidad a la pasarela como valor para <em>Special Guest</em> y VIP, y aforo denso compatible con producción de gran formato (LED, audio de sala).
+        </figcaption>
+      </figure>
     </div>
   </section>
 
@@ -875,10 +1155,10 @@
         </div>
       </div>
 
-      <article class="reveal-card" tabindex="0" style="margin-top: 1.6rem;">
+      <article class="reveal-card reveal-card--cool" tabindex="0" style="margin-top: 1.6rem;">
         <div class="tag-row">
           <span class="tag tag--blue">Panel de ponentes</span>
-          <span class="tag tag--orange">§ 3.5</span>
+          <span class="tag tag--orange">Secc. 3.5</span>
         </div>
         <h3>Nombres citados en el documento (referencia)</h3>
         <p class="card-lead">Lista sintética; el PDF desarrolla biografías y sesiones.</p>
@@ -890,6 +1170,8 @@
             <li><strong>Sector privado:</strong> Juan Pablo Cisneros (CCE), Raúl Cervantes (The Cheesecake Factory MX), Pablo Aguilera (Provenza), Diego Díaz, José Luis Schettino, Jesús Barrédez (CEMEX Tepeaca), Beatriz Camacho (COPARMEX Puebla).</li>
             <li><strong>Motivación:</strong> Blanca Sánchez (Porsche), Gerardo Jean (Televisa), Nicolás Ferrairo (National Geographic).</li>
           </ul>
+          <p>La lista es <strong>referencial</strong>: el PDF desarrolla biografías, sesiones y titulares de conferencia. Sirve como mapa de densidad —cuatro ejes con perfiles que combinan relevancia mediática, autoridad sectorial y casos accionables para el alumno.</p>
+          <p>Al armar lineup, el practicum sugiere cuidar <strong>ritmo</strong> entre bloques: política y negocio necesitan mesas con preguntas incómodas; motivación necesita historias con data y no solo frases —por eso medios y marcas globales aterrizan bien si traen operaciones concretas detrás del discurso.</p>
         </div>
       </article>
     </div>
