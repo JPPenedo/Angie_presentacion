@@ -450,6 +450,9 @@
     {% endif %}
 
     <div class="sidebar-section-label" style="margin-top:0.5rem;">Sistema</div>
+    <a href="{% url 'core:cudea' %}" class="sidebar-link {% if '/cudea/' in request.path %}active{% endif %}">
+      <span class="s-icon"><i class="bi bi-megaphone-fill"></i></span>CUDEA 3.0
+    </a>
     <a href="#" class="sidebar-link">
       <span class="s-icon"><i class="bi bi-info-circle"></i></span>Acerca de
     </a>

@@ -349,11 +349,47 @@
       color: var(--off);
       margin-bottom: 0.35rem;
     }
+
+    .cudea-topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      padding: 0.65rem clamp(1rem, 3vw, 1.5rem);
+      background: rgba(8, 15, 28, 0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--card-edge);
+    }
+    .cudea-topnav a {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .cudea-topnav a:hover {
+      color: var(--off);
+      border-color: var(--card-edge);
+      background: rgba(244, 241, 235, 0.06);
+    }
   </style>
 </head>
 <body>
 
-  <header class="hero" id="inicio">
+  <nav class="cudea-topnav" aria-label="Enlace a la plataforma">
+    <a href="{% url 'core:dashboard' %}">Plataforma</a>
+    <a href="{% url 'core:login' %}">Ingresar</a>
+  </nav>
+
+  <header class="hero" id="inicio" style="padding-top:3rem;">
     <div class="hero-copy">
       <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
       <h1 class="hero-title">CUDEA</h1>
