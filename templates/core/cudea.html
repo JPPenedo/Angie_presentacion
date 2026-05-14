@@ -54,9 +54,26 @@
     @media (min-width: 900px) {
       .hero-immersive {
         grid-template-columns: minmax(280px, 1.02fr) minmax(260px, 0.98fr);
+        grid-template-rows: minmax(320px, 1fr) auto;
         min-height: min(100vh, 1080px);
         padding-top: 3rem;
       }
+      .hero-immersive__stat-row {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .hero-immersive__stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1.15rem clamp(1.35rem, 4vw, 3.2rem) 1.35rem;
+      background: rgba(6, 10, 18, 0.92);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .hero-immersive__stat-row .hero-stat-item {
+      position: relative;
+      flex: 1 1 160px;
     }
 
     .hero-panel--orange {
@@ -169,6 +186,35 @@
       box-shadow:
         inset 0 0 100px rgba(0, 0, 0, 0.45),
         inset 12px 0 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Foto dupla (#atmosfera): encuadre en los dos ponentes */
+    #atmosfera .hero-photo-el {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      object-fit: cover;
+      object-position: 48% 28%;
+    }
+    @media (max-width: 899px) {
+      #atmosfera .hero-photo-el {
+        object-position: 50% 22%;
+      }
+    }
+    #atmosfera .hero-photo-grade {
+      opacity: 0.85;
+      background:
+        linear-gradient(to top, rgba(6, 8, 14, 0.45) 0%, transparent 42%),
+        linear-gradient(to right, rgba(160, 70, 40, 0.12) 0%, transparent 32%),
+        linear-gradient(105deg, rgba(212, 98, 46, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse 65% 55% at 72% 28%, transparent 0%, rgba(4, 6, 12, 0.12) 100%);
+    }
+    #atmosfera .hero-photo-vignette {
+      box-shadow:
+        inset 0 0 80px rgba(0, 0, 0, 0.3),
+        inset 8px 0 28px rgba(0, 0, 0, 0.12);
     }
 
     .hero-kicker {
@@ -435,42 +481,44 @@
     }
     .reveal-card:hover .reveal-full,
     .reveal-card:focus-within .reveal-full {
-      max-height: 4800px;
+      max-height: 92000px;
       opacity: 1;
-      padding-top: 1.05rem;
+      padding-top: 1.35rem;
+      padding-bottom: 0.35rem;
       margin-top: 0.85rem;
       border-top: 1px solid rgba(224, 120, 56, 0.2);
     }
 
     .reveal-full p {
-      margin: 0 0 0.9rem;
+      margin: 0 0 1.05rem;
       font-family: var(--font-body);
-      font-size: 0.875rem;
-      color: #dce1ea;
+      font-size: 0.98rem;
+      color: #e8ecf4;
       font-weight: 400;
-      line-height: 1.62;
+      line-height: 1.68;
     }
     .reveal-full p:last-child { margin-bottom: 0; }
     .reveal-full ul {
-      margin: 0 0 0.85rem;
-      padding-left: 1.15rem;
+      margin: 0 0 1rem;
+      padding-left: 1.25rem;
       font-family: var(--font-body);
-      font-size: 0.84rem;
-      color: #dce1ea;
-      line-height: 1.58;
+      font-size: 0.95rem;
+      color: #e2e8f2;
+      line-height: 1.65;
     }
     .reveal-full li { margin-bottom: 0.45rem; }
     .reveal-full li strong { color: var(--off); font-weight: 500; }
     .reveal-full .pull {
       font-family: var(--font-display);
-      font-size: 0.88rem;
+      font-size: 1.02rem;
       font-style: italic;
       color: var(--off);
       border-left: 3px solid var(--orange);
-      padding: 0.65rem 0 0.65rem 1rem;
-      margin: 0.85rem 0;
+      padding: 0.85rem 0 0.85rem 1.15rem;
+      margin: 1rem 0;
       background: rgba(224, 120, 56, 0.07);
       border-radius: 0 0.5rem 0.5rem 0;
+      line-height: 1.55;
     }
 
     .tag-row {
@@ -599,77 +647,73 @@
       background: rgba(224, 120, 56, 0.08);
     }
 
-    /* —— Hero video (carátula superior) —— */
+    /* —— Hero video: solo el video, sin velos ni texto encima —— */
     .hero-video {
       position: relative;
-      min-height: min(92vh, 960px);
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      padding: 5.25rem clamp(1.25rem, 4vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+      padding: 3.15rem 0 0;
+      margin: 0;
+      background: #000;
       overflow: hidden;
     }
     .hero-video__media {
-      position: absolute;
-      inset: 0;
-      background: var(--navy-deep);
+      position: relative;
+      width: 100%;
+      min-height: min(72vh, 560px);
+      max-height: calc(100vh - 3.15rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
     }
     .hero-video__media video {
-      position: absolute;
+      display: block;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      max-height: calc(100vh - 3.15rem);
+      max-width: 100%;
+      object-fit: contain;
       object-position: center;
     }
-    .hero-video__scrim {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
+
+    /* Bloque de título y CTAs debajo del video */
+    .hero-continuity {
       background:
-        linear-gradient(to top, rgba(4, 6, 12, 0.94) 0%, rgba(4, 6, 12, 0.5) 42%, rgba(4, 6, 12, 0.35) 100%),
-        linear-gradient(110deg, rgba(212, 98, 46, 0.32) 0%, transparent 52%),
-        radial-gradient(ellipse 90% 70% at 85% 20%, rgba(107, 147, 184, 0.12), transparent 55%);
+        radial-gradient(ellipse 90% 70% at 15% 0%, rgba(212, 98, 46, 0.08), transparent 50%),
+        linear-gradient(180deg, #0c121c 0%, var(--navy-deep) 100%);
+      border-bottom: 1px solid var(--card-edge);
+      padding: 2.75rem clamp(1.25rem, 4vw, 2.5rem) 2.5rem;
     }
-    .hero-video__vignette {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55);
-    }
-    .hero-video__grid {
-      position: relative;
-      z-index: 2;
-      width: 100%;
+    .hero-continuity__inner {
       max-width: 1140px;
       margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      gap: 1.85rem;
     }
-    .hero-video .hero-kicker {
+    .hero-continuity .hero-kicker {
       color: rgba(255, 247, 240, 0.82);
     }
-    .hero-video .hero-sub {
+    .hero-continuity .hero-title {
+      color: #fff;
+    }
+    .hero-continuity .hero-sub {
       color: #fff;
       background: rgba(255, 255, 255, 0.1);
       border-left-color: var(--orange-highlight);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
-    .hero-video .hero-lead {
+    .hero-continuity .hero-lead {
       color: rgba(255, 248, 242, 0.9);
-      max-width: 34rem;
+      max-width: 40rem;
     }
-    .hero-video__stat-row {
+    .hero-continuity__stat-row {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
+      margin-top: 1.75rem;
     }
-    .hero-video__stat-row .hero-stat-item {
+    .hero-continuity__stat-row .hero-stat-item {
       position: relative;
-      flex: 1 1 140px;
-      min-width: 120px;
+      flex: 1 1 160px;
+      min-width: 140px;
     }
 
     /* Recuadros: variantes cálidas / frías / mix */
@@ -707,7 +751,7 @@
         0 0 48px rgba(107, 147, 184, 0.08);
     }
 
-    /* Plano de sala (recinto) */
+    /* Plano: recuadro que crece al hover */
     .plano-sala-block {
       margin-top: 3.25rem;
       padding: clamp(1.5rem, 3vw, 2.25rem);
@@ -721,22 +765,59 @@
     }
     .plano-sala-block .section-eyebrow { margin-top: 0; }
     .plano-sala-block .section-title { margin-bottom: 0.35rem; }
-    .plano-sala-block .section-desc { margin-bottom: 1.25rem; }
-    .plano-figure {
+    .plano-sala-block .section-desc { margin-bottom: 1rem; }
+    .plano-expand {
       margin: 0;
       border-radius: var(--radius);
-      overflow: hidden;
       border: 1px solid var(--card-edge);
-      background: rgba(6, 10, 18, 0.65);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      background: rgba(4, 8, 16, 0.75);
+      overflow: hidden;
+      cursor: zoom-in;
+      outline: none;
+      transition: border-color 0.35s, box-shadow 0.35s;
     }
-    .plano-figure img {
+    .plano-expand:focus-within,
+    .plano-expand:hover {
+      border-color: rgba(224, 120, 56, 0.45);
+      box-shadow:
+        0 0 0 1px rgba(107, 147, 184, 0.15) inset,
+        0 18px 48px rgba(0, 0, 0, 0.4);
+      cursor: zoom-out;
+    }
+    .plano-expand__hint {
+      margin: 0;
+      padding: 0.65rem 1rem;
+      font-family: var(--font-label);
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange-highlight);
+      background: rgba(212, 98, 46, 0.1);
+      border-bottom: 1px solid rgba(224, 120, 56, 0.2);
+    }
+    .plano-expand__viewport {
+      position: relative;
+      max-height: 11.5rem;
+      overflow: hidden;
+      transition: max-height 0.75s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .plano-expand:hover .plano-expand__viewport,
+    .plano-expand:focus-within .plano-expand__viewport {
+      max-height: min(2400px, 92vh);
+    }
+    .plano-expand__viewport img {
       display: block;
       width: 100%;
       height: auto;
-      vertical-align: middle;
+      transform: scale(0.82);
+      transform-origin: center top;
+      transition: transform 0.65s cubic-bezier(0.33, 1, 0.68, 1);
     }
-    .plano-caption {
+    .plano-expand:hover .plano-expand__viewport img,
+    .plano-expand:focus-within .plano-expand__viewport img {
+      transform: scale(1);
+    }
+    .plano-expand .plano-caption {
       margin: 0;
       padding: 0.9rem 1rem 1rem;
       font-size: 0.82rem;
@@ -745,23 +826,11 @@
       border-top: 1px solid rgba(224, 120, 56, 0.15);
       background: rgba(4, 8, 16, 0.45);
     }
-    .reveal-full .plano-inline {
-      margin: 1rem 0 0.5rem;
-      border-radius: 0.65rem;
-      overflow: hidden;
-      border: 1px solid rgba(123, 167, 204, 0.25);
-    }
-    .reveal-full .plano-inline img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-    .reveal-full .plano-inline figcaption {
-      font-size: 0.78rem;
-      color: #b8c0ce;
-      padding: 0.55rem 0.75rem;
-      margin: 0;
-      background: rgba(6, 12, 22, 0.9);
+    @media (prefers-reduced-motion: reduce) {
+      .plano-expand__viewport,
+      .plano-expand__viewport img {
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -777,24 +846,23 @@
       <video autoplay muted loop playsinline>
         <source src="{% static 'cudea/brand-pantallas-cudea.mp4' %}" type="video/mp4" />
       </video>
-      <div class="hero-video__scrim"></div>
-      <div class="hero-video__vignette"></div>
     </div>
-    <div class="hero-video__grid">
+  </header>
+
+  <section class="hero-continuity" aria-labelledby="continuity-title">
+    <div class="hero-continuity__inner">
+      <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
+      <h1 class="hero-title" id="continuity-title">CUDEA</h1>
+      <p class="hero-sub">Convierte tu visión en acción · Edición 3.0</p>
+      <p class="hero-lead">
+        Cumbre Universitaria de Desarrollo Empresarial Anáhuac: evento académico–experiencial que acerca a la comunidad con <strong>líderes reales</strong> del sector público y privado —edutainment, paneles y <strong>networking estructurado</strong>.
+      </p>
       <div>
-        <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
-        <h1 class="hero-title">CUDEA</h1>
-        <p class="hero-sub">Convierte tu visión en acción · Edición 3.0</p>
-        <p class="hero-lead">
-          Cumbre Universitaria de Desarrollo Empresarial Anáhuac: evento académico–experiencial que acerca a la comunidad con <strong>líderes reales</strong> del sector público y privado —edutainment, paneles y <strong>networking estructurado</strong>.
-        </p>
-        <div>
-          <a class="hero-cta" href="#contenido">Explorar el proyecto</a>
-          <a class="hero-cta hero-cta--ghost" href="#ejes">Ver ejes temáticos</a>
-          <a class="hero-cta hero-cta--ghost" href="#atmosfera">Ver atmósfera</a>
-        </div>
+        <a class="hero-cta" href="#contenido">Explorar el proyecto</a>
+        <a class="hero-cta hero-cta--ghost" href="#ejes">Ver ejes temáticos</a>
+        <a class="hero-cta hero-cta--ghost" href="#atmosfera">Ver atmósfera</a>
       </div>
-      <div class="hero-video__stat-row">
+      <div class="hero-continuity__stat-row">
         <div class="hero-stat-item">
           <strong>2 días</strong>
           <span>Formato masivo · Cuatro ejes</span>
@@ -809,7 +877,7 @@
         </div>
       </div>
     </div>
-  </header>
+  </section>
 
   <section class="hero-immersive" id="atmosfera" aria-labelledby="atmosfera-title">
     <div class="hero-panel--orange">
@@ -826,32 +894,32 @@
         </div>
       </div>
     </div>
-    <div class="hero-panel--photo" role="img" aria-label="Ambiente CUDEA: conversación y energía entre ponentes">
+    <div class="hero-panel--photo" role="img" aria-label="Dos ponentes en conversación durante CUDEA">
       <div class="hero-photo-base" aria-hidden="true"></div>
       <img
         class="hero-photo-el"
         src="{% static 'cudea/hero-duo.png' %}"
         width="1600"
         height="900"
-        alt=""
+        alt="Dos ponentes CUDEA en el escenario, conversación cercana."
         decoding="async"
         loading="lazy"
       />
       <div class="hero-photo-grade" aria-hidden="true"></div>
       <div class="hero-photo-vignette" aria-hidden="true"></div>
-      <div class="hero-stat">
-        <div class="hero-stat-item">
-          <strong>Pasarela</strong>
-          <span>Contacto visual · menos frontalidad</span>
-        </div>
-        <div class="hero-stat-item">
-          <strong>Networking</strong>
-          <span>Brunch, Jardín de las Letras</span>
-        </div>
-        <div class="hero-stat-item">
-          <strong>Gran formato</strong>
-          <span>LED, rider técnico integrado</span>
-        </div>
+    </div>
+    <div class="hero-immersive__stat-row">
+      <div class="hero-stat-item">
+        <strong>Pasarela</strong>
+        <span>Contacto visual · menos frontalidad</span>
+      </div>
+      <div class="hero-stat-item">
+        <strong>Networking</strong>
+        <span>Brunch, Jardín de las Letras</span>
+      </div>
+      <div class="hero-stat-item">
+        <strong>Gran formato</strong>
+        <span>LED, rider técnico integrado</span>
       </div>
     </div>
   </section>
@@ -989,11 +1057,7 @@
           <p>Ubicación: <strong>Centro de Exposiciones</strong> del Edificio Liderazgo — espacio reciente que refuerza imagen moderna. Aforo citado en narrativa ~700 personas para equilibrio convocatoria–experiencia; ficha técnica del recinto menciona <strong>~630 m²</strong>, dimensiones ~27×23 m, altura ~13 m, hasta <strong>600 personas sentadas</strong>, LED fijo 12×6 m, audio e iluminación de sala.</p>
           <p>La <strong>pasarela en T</strong> acerca ponentes a la audiencia, reduce frontalidad «congreso» y refuerza contacto visual. Mobiliario lounge (sillones, mesas, lámparas) busca conversación auténtica; el documento también mencionaba uso del naranja en escenografía por congruencia cromática con la línea (en esta web el naranja cumple ese rol visual).</p>
           <p><strong>Seat map:</strong> articula <strong>Special Guest</strong>, VIP y gral.; proximidad a pasarela como beneficio tangible. <strong>Jardín de las Letras</strong>: extensión para catering y networking entre bloques.</p>
-          <p>El plano de distribución (imagen y bloque ampliado más abajo) resume la lógica del piso: acceso y circulación, <strong>bodega / backstage</strong> para carga y descarga sin cortar al público, escenario con mesa de panelistas y extensión en T hacia los bloques de butacas —lo que materializa la promesa de “acercar el liderazgo al asiento”.</p>
-          <figure class="plano-inline">
-            <img src="{% static 'cudea/plano-sala.png' %}" width="1200" height="675" alt="Vista superior del salón con pasarela en T y bloques de asientos." loading="lazy" decoding="async" />
-            <figcaption>Vista rápida: la versión completa con pie editorial está en <a href="#recinto">Distribución de sala y flujo de asistentes</a>.</figcaption>
-          </figure>
+          <p>El plano de distribución (bloque ampliado en <a href="#recinto">«Distribución de sala»</a>) resume la lógica del piso: acceso y circulación, <strong>bodega / backstage</strong> para carga y descarga sin cortar al público, escenario con mesa de panelistas y extensión en T hacia los bloques de butacas —lo que materializa la promesa de “acercar el liderazgo al asiento”.</p>
           <p>Montaje y desmontaje compiten por horas con otras actividades universitarias; por eso el practicum insiste en <strong>ventanas de rigging</strong>, prueba de línea y validación de pesos sobre la estructura de pasarela —detalles aburridos en papel, decisivos en el día del evento.</p>
         </div>
       </article>
@@ -1109,21 +1173,24 @@
       </article>
     </div>
 
-    <div class="plano-sala-block" id="recinto">
+    <div class="plano-sala-block" id="recinto" tabindex="-1">
       <p class="section-eyebrow">El espacio del evento</p>
       <h2 class="section-title">Distribución de sala y flujo de asistentes</h2>
       <p class="section-desc">
         Plano tipo planta del <strong>Centro de Exposiciones</strong> (Edificio Liderazgo): escenario, <strong>mesa tipo panel</strong>, <strong>pasarela en T</strong> hacia el público y bloques de butacas. Los accesos y la <strong>bodega</strong> posterior ordenan la operación de montaje y hospitality sin cruzar el flujo principal del aforo.
       </p>
-      <figure class="plano-figure">
-        <img
-          src="{% static 'cudea/plano-sala.png' %}"
-          width="1600"
-          height="900"
-          alt="Plano: acceso, bodega, escenario con mesa de panelistas, pasarela en T en azul y bloques de asientos alrededor."
-          loading="lazy"
-          decoding="async"
-        />
+      <figure class="plano-expand" tabindex="0" aria-label="Plano de sala: pasa el cursor para ampliar">
+        <p class="plano-expand__hint">Pasa el cursor (o enfoca) para ampliar el plano</p>
+        <div class="plano-expand__viewport">
+          <img
+            src="{% static 'cudea/plano-sala.png' %}"
+            width="1600"
+            height="900"
+            alt="Plano: acceso, bodega, escenario con mesa de panelistas, pasarela en T en azul y bloques de asientos alrededor."
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
         <figcaption class="plano-caption">
           Referencia visual alineada al seat map del practicum: proximidad a la pasarela como valor para <em>Special Guest</em> y VIP, y aforo denso compatible con producción de gran formato (LED, audio de sala).
         </figcaption>
