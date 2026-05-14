@@ -2500,6 +2500,14 @@ def expo_cierre_view(request):
     return render(request, 'core/expo_cierre.html', context)
 
 
+def cudea_landing_view(request):
+    """
+    Landing editorial CUDEA 3.0 (Practicum II). Sintetiza el documento académico
+    en secciones con revelado al hover; sin autenticación.
+    """
+    return render(request, 'core/cudea.html')
+
+
 def proyecto_ods16_view(request):
     """
     Plataforma funcional 'Denuncia Verde' (ODS 16 · Paz, justicia e instituciones

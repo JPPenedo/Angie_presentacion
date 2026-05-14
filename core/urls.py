@@ -25,6 +25,8 @@ urlpatterns = [
     path('expo-sinteticos/', views.expo_sinteticos_view, name='expo_sinteticos'),
     # Presentación de cierre del proyecto (acceso directo por URL, sin enlaces internos).
     path('expo-cierre/', views.expo_cierre_view, name='expo_cierre'),
+    # CUDEA 3.0 — landing sintética (Practicum II · Dirección de Empresas de Entretenimiento).
+    path('cudea/', views.cudea_landing_view, name='cudea'),
     # Proyecto de transformación social (ODS 16): landing page informativa.
     path('proyecto-ods16/', views.proyecto_ods16_view, name='proyecto_ods16'),
     # Misma vista; URL pensada para producción: dominio (Railway) + este segmento.

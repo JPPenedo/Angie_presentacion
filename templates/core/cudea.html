@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CUDEA 3.0 · Cumbre Universitaria de Desarrollo Empresarial Anáhuac</title>
+  <meta name="description" content="CUDEA 3.0 — Convierte tu visión en acción. Cumbre académica–experiencial en la Universidad Anáhuac Puebla." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0f1a2e;
+      --navy-deep: #080f1c;
+      --navy-mid: #152238;
+      --off: #f4f1eb;
+      --muted: #c5c9d4;
+      --accent: #7ba7cc;
+      --accent-soft: rgba(123, 167, 204, 0.22);
+      --card-edge: rgba(244, 241, 235, 0.12);
+      --radius: 1rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Outfit', system-ui, sans-serif;
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--off);
+      background: var(--navy-deep);
+    }
+
+    /* —— Hero split (referencia editorial) —— */
+    .hero {
+      min-height: min(92vh, 900px);
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px) {
+      .hero { grid-template-columns: 1.05fr 0.95fr; min-height: 100vh; }
+    }
+
+    .hero-copy {
+      background: var(--navy);
+      padding: clamp(2rem, 5vw, 4.5rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px solid var(--card-edge);
+    }
+    @media (min-width: 900px) {
+      .hero-copy { border-bottom: none; border-right: 1px solid var(--card-edge); }
+    }
+
+    .hero-kicker {
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      font-weight: 500;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(3.2rem, 9vw, 5.75rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      margin: 0 0 1rem;
+      color: #fff;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1a1f28;
+      background: var(--off);
+      display: inline-block;
+      padding: 0.45rem 0.85rem;
+      max-width: 100%;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .hero-lead {
+      margin-top: 1.75rem;
+      max-width: 32rem;
+      color: var(--muted);
+      font-size: 0.98rem;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      margin-top: 2.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.85rem 1.6rem;
+      background: var(--off);
+      color: var(--navy);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 320px;
+      background:
+        radial-gradient(ellipse 80% 70% at 60% 45%, rgba(123, 167, 204, 0.18), transparent 55%),
+        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(244, 241, 235, 0.06), transparent 45%),
+        linear-gradient(160deg, var(--navy-mid) 0%, var(--navy-deep) 100%);
+      overflow: hidden;
+    }
+
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60 L60 0' stroke='rgba(244,241,235,0.03)' stroke-width='1'/%3E%3C/svg%3E");
+      opacity: 0.9;
+    }
+
+    .hero-stat {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      z-index: 1;
+    }
+    .hero-stat-item {
+      border: 1px solid var(--card-edge);
+      background: rgba(8, 15, 28, 0.65);
+      backdrop-filter: blur(10px);
+      padding: 0.85rem 1.1rem;
+      border-radius: 0.5rem;
+    }
+    .hero-stat-item strong {
+      display: block;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--accent);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    .hero-stat-item span {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* —— Sections —— */
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 4rem clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    .section-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.85rem, 4vw, 2.5rem);
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+    }
+    .section-desc {
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 42rem;
+      margin: 0 0 2.5rem;
+      font-size: 0.98rem;
+    }
+
+    .hint-hover {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hint-hover::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--accent-soft);
+    }
+
+    .grid-cards {
+      display: grid;
+      gap: 1.25rem;
+    }
+    @media (min-width: 700px) {
+      .grid-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* —— Hover-reveal cards —— */
+    .reveal-card {
+      --pad: 1.35rem;
+      background: var(--navy-mid);
+      border: 1px solid var(--card-edge);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      cursor: default;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+    .reveal-card:hover,
+    .reveal-card:focus-within {
+      border-color: rgba(123, 167, 204, 0.45);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(145deg, rgba(21, 34, 56, 0.98), rgba(15, 26, 46, 0.99));
+    }
+
+    .reveal-card h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+
+    .reveal-teaser {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    .reveal-full {
+      margin: 0;
+      padding-top: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        max-height 0.65s cubic-bezier(0.33, 1, 0.68, 1),
+        opacity 0.4s ease,
+        padding-top 0.4s ease;
+    }
+    .reveal-card:hover .reveal-full,
+    .reveal-card:focus-within .reveal-full {
+      max-height: 2200px;
+      opacity: 1;
+      padding-top: 1rem;
+      margin-top: 0.75rem;
+      border-top: 1px solid var(--card-edge);
+    }
+
+    .reveal-full p {
+      margin: 0 0 0.85rem;
+      font-size: 0.86rem;
+      color: #d7dbe5;
+      font-weight: 300;
+    }
+    .reveal-full p:last-child { margin-bottom: 0; }
+    .reveal-full ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.85rem;
+      color: #d7dbe5;
+      font-weight: 300;
+    }
+    .reveal-full li { margin-bottom: 0.4rem; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.75rem;
+    }
+    .tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--card-edge);
+      color: var(--accent);
+    }
+
+    /* Full-width band */
+    .band {
+      background: var(--navy);
+      border-top: 1px solid var(--card-edge);
+      border-bottom: 1px solid var(--card-edge);
+    }
+
+    .axes {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 768px) {
+      .axes { grid-template-columns: repeat(4, 1fr); }
+    }
+    .axis-pill {
+      text-align: center;
+      padding: 1.1rem 0.75rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--card-edge);
+      background: rgba(8, 15, 28, 0.4);
+    }
+    .axis-pill strong {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--off);
+      margin-bottom: 0.35rem;
+    }
+    .axis-pill span {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    footer.site-foot {
+      padding: 3rem clamp(1.25rem, 4vw, 2.5rem);
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--card-edge);
+    }
+    footer.site-foot .brand-mark {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.25rem;
+      color: var(--off);
+      margin-bottom: 0.35rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero" id="inicio">
+    <div class="hero-copy">
+      <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
+      <h1 class="hero-title">CUDEA</h1>
+      <p class="hero-sub">Convierte tu visión en acción · Edición 3.0</p>
+      <p class="hero-lead">
+        Cumbre Universitaria de Desarrollo Empresarial Anáhuac: un evento académico–experiencial que acerca a la comunidad universitaria con líderes que toman decisiones reales en el sector público y privado —con narrativa de <strong style="color:var(--off);font-weight:500;">edutainment</strong> y networking de alto valor.
+      </p>
+      <a class="hero-cta" href="#contenido">Explorar el proyecto</a>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-stat">
+        <div class="hero-stat-item">
+          <strong>2 días</strong>
+          <span>Formato masivo · Cuatro ejes</span>
+        </div>
+        <div class="hero-stat-item">
+          <strong>~400</strong>
+          <span>Asistentes proyectados · Multidisciplina</span>
+        </div>
+        <div class="hero-stat-item">
+          <strong>23 / 27</strong>
+          <span>Carreras involucradas (ediciones previas)</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="wrap" id="contenido">
+    <p class="section-eyebrow">Mapa del documento</p>
+    <h2 class="section-title">Ideas centrales, en capas</h2>
+    <p class="section-desc">
+      Cada bloque resume una parte del trabajo de investigación y planeación. <strong style="color:var(--off);font-weight:500;">Pasa el cursor</strong> (o entra con teclado al recuadro) para leer el apartado completo.
+    </p>
+
+    <p class="hint-hover">Hover para expandir · Contenido basado en *Practicum II* (CUDEA 3.0)</p>
+
+    <div class="grid-cards">
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Relevancia</span><span class="tag">2.1</span></div>
+        <h3>Por qué importa CUDEA 3.0</h3>
+        <p class="reveal-teaser">Conecta alto valor académico con experiencia propia de la industria del entretenimiento: conferencias, paneles, conversatorios y activaciones que forman jóvenes críticos y ejecutores.</p>
+        <div class="reveal-full">
+          <p>En un contexto de incertidumbre y cambio en modelos empresariales, CUDEA responde al reto de pasar del discurso a la acción. La tercera edición consolida la línea <em>“Convierte tu visión en acción”</em>, integrando contenido intelectual con narrativa estratégica: el espectáculo es el medio, no el fin.</p>
+          <p>El marco teórico incluye <strong>edutainment</strong> (aprendizaje dinámico y emotivo), <strong>event marketing</strong> para vínculo con marca institucional y patrocinadores, y una propuesta alineada a los valores de la Universidad Anáhuac Puebla.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Trayectoria</span><span class="tag">3.1</span></div>
+        <h3>Tres ediciones, una evolución</h3>
+        <p class="reveal-teaser">De un día intenso (2023) a una cumbre de dos jornadas (2024) y, hoy, una plataforma 3.0 centrada en la ejecución.</p>
+        <div class="reveal-full">
+          <p><strong>CUDEA 2023 (11 nov).</strong> ~12 h continuas, ~200 estudiantes, acceso en torno a $1,500 MXN. Línea: <em>“Donde se forjan líderes se proyecta el futuro”</em>. Apertura con Eduardo Rivera Pérez; paneles sobre empresa, inversión, política; cierre con Larry Rubin y experiencia de alfombra roja.</p>
+          <p><strong>CUDEA 2024 (8–9 nov).</strong> Dos días, mayor complejidad. Línea: <em>“Visión México 2034: Encuentra tu porqué”</em>. Educación financiera, IA y empresa, industrias creativas y cierre con enfoque en propósito.</p>
+          <p><strong>CUDEA 3.0.</strong> Afianza el puente hacia la acción congresiva con producción profesional, más carreras involucradas y experiencia tipo industria.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Necesidades</span><span class="tag">3.2</span></div>
+        <h3>Lo sociocultural que atiende</h3>
+        <p class="reveal-teaser">Pensamiento crítico, decisión en contextos complejos y redes reales —más allá de foros académicos clásicos.</p>
+        <div class="reveal-full">
+          <p>La cumbre responde a la falta de espacios que conecten aula y mundo profesional con interacción directa. Complementos teóricos citados incluyen <strong>agenda setting</strong> (qué temas importan en la conversación universitaria), <strong>usos y gratificaciones</strong> (por qué el alumno elige CUDEA) y <strong>comunicación persuasiva</strong> en storytelling y redes.</p>
+          <p>Un diferencial clave es el <strong>networking uno a uno</strong>, con evidencia anecdótica de oportunidades laborales y colaboraciones generadas en ediciones previas.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Audiencias</span><span class="tag">3.3</span></div>
+        <h3>Público meta y actores</h3>
+        <p class="reveal-teaser">Universitarios 18–25, emprendedores, líderes estudiantiles y aliados institucionales —con mirada transversal en el campus.</p>
+        <div class="reveal-full">
+          <p>El proyecto ha convocado perfiles de negocios, comunicación, derecho, ingeniería, diseño, relaciones internacionales y ciencias sociales, entre otros.</p>
+          <p><strong>Stakeholders:</strong> la universidad como anfitriona (espacios, difusión, honorarios para cierre), facultades que aportan al ponente de clausura, patrocinadores con experiencias de marca y proveedores técnicos que profesionalizan la puesta en escena.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Aliados</span><span class="tag">3.3 · 3.4</span></div>
+        <h3>Marcas y producción</h3>
+        <p class="reveal-teaser">De Porsche a la mesa de Alsea; de Gandhi al montaje con Producciones Audiovisuales.</p>
+        <div class="reveal-full">
+          <ul>
+            <li><strong>Porsche</strong> — patrocinio principal; exhibición aspiracional, experiencias de manejo selectas.</li>
+            <li><strong>Gandhi</strong> — librería en sitio, firmas y curaduría de lecturas.</li>
+            <li><strong>Grupo Alsea</strong> — alimentación con marcas del portafolio (Chili’s, P.F. Chang’s, Italianni’s, The Cheesecake Factory, Vips).</li>
+            <li><strong>Maja</strong> — merch “Fashion in Action”. <strong>Kigo</strong> — registro y bienvenida.</li>
+            <li><strong>Producciones Audiovisuales</strong> — audio, video, iluminación, pantallas; esquema de patrocinio parcial + cobertura con ingresos por boletaje.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Competencia</span><span class="tag">3.4</span></div>
+        <h3>Contexto en campus y ciudad</h3>
+        <p class="reveal-teaser">La agenda estudiantil compite por tiempo y presupuesto: otros congresos, colegiaturas y entretenimiento masivo.</p>
+        <div class="reveal-full">
+          <p>Se identifican eventos internos próximos en calendario (Día A, congresos de comunicación, entretenimiento, negocios, etc.) con rangos de precio que compiten por la misma audiencia, además de factores como pagos de colegiatura y conciertos en Puebla.</p>
+          <p>CUDEA 3.0 se diferencia por <strong>multieje temático</strong>, <strong>ponentes de alto perfil</strong> e <strong>integración de networking + producción de entretenimiento</strong> como promesa central.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Recinto</span><span class="tag">5.1–5.3</span></div>
+        <h3>Espacio, escena y experiencia</h3>
+        <p class="reveal-teaser">Centro de Exposiciones (Edificio Liderazgo), pasarela en T y Jardín de las Letras para comida y networking.</p>
+        <div class="reveal-full">
+          <p>Recinto con aforo proyectado ~700 personas (documento), diseño de pasarela tipo <strong>T</strong> para acercar ponentes y audiencia, pantalla en faldón y estética lounge (sillones, mesas, ambiente conversacional).</p>
+          <p>El <strong>Jardín de las Letras</strong> articula la transición a momentos de comida y networking. El <strong>seat map</strong> dimensiona zonas preferenciales alineadas al programa <strong>Special Guest</strong> (embajadores con códigos y recompensas de cercanía).</p>
+          <p>Rider técnico: LED 12×6 m, audio line array, iluminación robótica, multicámara y fotografía profesional —presupuesto referencial ~$438,500 MXN en cotización citada.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Comunicación</span><span class="tag">4.3</span></div>
+        <h3>Formatos y canales</h3>
+        <p class="reveal-teaser">Piezas digitales, radio, pantallas en campus y diseño escénico como extensión del mensaje.</p>
+        <div class="reveal-full">
+          <p>Instagram ancla expectativa e interactividad; LinkedIn refuerza posicionamiento profesional. Medios mencionados: <strong>SICOM</strong>, <strong>ULTRA 92.5</strong>, <strong>El Heraldo</strong>, <strong>Imagen Radio</strong>, además de piezas impresas tipo <em>moopies</em> y loop en salones.</p>
+          <p>La comunicación 3.0 busca funcionar como <strong>experiencia continua</strong> alineada a lógica transmedia del entretenimiento.</p>
+        </div>
+      </article>
+
+      <article class="reveal-card" tabindex="0">
+        <div class="tag-row"><span class="tag">Justificación</span><span class="tag">3.6</span></div>
+        <h3>Impacto e indicadores sociales</h3>
+        <p class="reveal-teaser">Empleabilidad juvenil, informalidad y brecha entre universidad e industria —datos INEGI / OIT como marco.</p>
+        <div class="reveal-full">
+          <p>El texto vincula la pertinencia del evento con la dificultad de inserción laboral de calidad y la escasez de redes estratégicas. CUDEA se presenta como plataforma de <strong>vinculación práctica</strong> y <strong>capital social</strong>.</p>
+          <ul>
+            <li>Networking y mentoría</li>
+            <li>Vinculación con empresas</li>
+            <li>Habilidades de análisis y ejecución</li>
+            <li>Impulso al emprendimiento y liderazgo</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap" style="padding-bottom: 3rem;">
+      <p class="section-eyebrow">Descripción del evento</p>
+      <h2 class="section-title">Cuatro ejes temáticos</h2>
+      <p class="section-desc">Estructura de contenido de CUDEA 3.0 — conferencias, paneles, conversatorios, networking y programa <em>Special Guest</em>.</p>
+      <div class="axes">
+        <div class="axis-pill">
+          <strong>Política</strong>
+          <span>Gobernanza, decisiones públicas y liderazgo con figuras nacionales y especialistas.</span>
+        </div>
+        <div class="axis-pill">
+          <strong>Emprendimiento</strong>
+          <span>Ideas a proyectos: disciplina, innovación y casos de ejecución real.</span>
+        </div>
+        <div class="axis-pill">
+          <strong>Sector privado</strong>
+          <span>Empresa como motor: CCE, retail global planta industrial y cámaras.</span>
+        </div>
+        <div class="axis-pill">
+          <strong>Motivación</strong>
+          <span>Marca, medios y creatividad de alto nivel —Porsche, Televisa, National Geographic.</span>
+        </div>
+      </div>
+      <article class="reveal-card" tabindex="0" style="margin-top: 1.5rem;">
+        <h3 style="margin-bottom:0.5rem;">Algunos ponentes citados en el documento</h3>
+        <p class="reveal-teaser">Listado representativo; el PDF desarrolla perfiles y sesiones completas.</p>
+        <div class="reveal-full">
+          <ul>
+            <li><strong>Política:</strong> Jorge Álvarez Máynez, Óscar Tendero, Larry Rubin, Mariana Rodríguez, Dinko Villegas, Raymundo Morales (SEMAR).</li>
+            <li><strong>Emprendimiento:</strong> Mauricio Quintana, Paulo Serafín, Francisco Escalante (SMASHER), Homero Díaz, Ely Chahín (TYASA).</li>
+            <li><strong>Sector privado:</strong> Juan Pablo Cisneros (CCE), Raúl Cervantes, Pablo Aguilera, Diego Díaz, José Luis Schettino, Jesús Barrédez (CEMEX), Beatriz Camacho (COPARMEX Puebla).</li>
+            <li><strong>Motivación:</strong> Blanca Sánchez (Porsche), Gerardo Jean (Televisa), Nicolás Ferrairo (National Geographic).</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="brand-mark">CUDEA 3.0</div>
+    <div>Cumbre Universitaria de Desarrollo Empresarial Anáhuac · Universidad Anáhuac Puebla</div>
+    <div style="margin-top:1rem;opacity:0.85;">
+      <strong>Paula Serafín López</strong> · Practicum II · Lic. Dirección de Empresas de Entretenimiento · 14 de mayo de 2026
+    </div>
+    <div style="margin-top:1.25rem;font-size:0.72rem;max-width:36rem;margin-left:auto;margin-right:auto;line-height:1.5;">
+      Documento de referencia: <em>Practicum II-2</em> · Contenido sintetizado para uso editorial; no sustituye el informe completo.
+    </div>
+  </footer>
+
+</body>
+</html>
