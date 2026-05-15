@@ -702,6 +702,55 @@
       object-position: center;
     }
 
+    /* Videomemoria al pie: mismo lenguaje visual que el resto de CUDEA */
+    .videomemoria {
+      background:
+        radial-gradient(ellipse 85% 55% at 50% 0%, rgba(212, 98, 46, 0.12), transparent 52%),
+        linear-gradient(180deg, #0a1018 0%, var(--navy-deep) 65%, #060910 100%);
+      border-top: 1px solid var(--card-edge);
+      padding: 2.75rem clamp(1.25rem, 4vw, 2.5rem) 3.25rem;
+    }
+    .videomemoria__inner {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+    .videomemoria .section-title {
+      color: var(--off);
+    }
+    .videomemoria .section-desc {
+      color: var(--muted);
+      max-width: 42rem;
+    }
+    .videomemoria__frame {
+      margin-top: 1.5rem;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-height: min(72vh, 720px);
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #05070c;
+      box-shadow:
+        0 28px 64px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .videomemoria__frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .videomemoria__note {
+      margin: 1rem 0 0;
+      font-size: 0.75rem;
+      color: rgba(180, 188, 201, 0.85);
+      line-height: 1.5;
+    }
+
     /* Bloque de título y CTAs debajo del video */
     .hero-continuity {
       background:
@@ -1779,6 +1828,30 @@
           </p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="videomemoria" id="videomemoria" aria-labelledby="videomemoria-title">
+    <div class="videomemoria__inner">
+      <p class="section-eyebrow">Memoria</p>
+      <h2 class="section-title" id="videomemoria-title">Videomemoria CUDEA 2026</h2>
+      <p class="section-desc">
+        Resumen en vídeo del espíritu del proyecto: formato académico–experiencial, comunidad y marca CUDEA. Se muestra aquí el contenido alojado en YouTube para una reproducción fluida sin cargar archivos pesados en el repositorio.
+      </p>
+      <div class="videomemoria__frame">
+        <iframe
+          src="https://www.youtube.com/embed/_BnvHJHla0Y"
+          title="Videomemoria CUDEA 2026"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+      <p class="videomemoria__note">
+        <a href="https://youtu.be/_BnvHJHla0Y" target="_blank" rel="noopener noreferrer">Abrir en YouTube</a>
+        · Practicum II · Paula Serafín López
+      </p>
     </div>
   </section>
 
