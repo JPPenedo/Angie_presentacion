@@ -384,16 +384,16 @@
       border: 1px solid var(--line);
       border-radius: calc(var(--radius) + 2px);
       background: var(--bg);
-      overflow: hidden;
+      overflow: visible;
+      outline: none;
       transition:
         box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        border-color 0.35s ease,
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        border-color 0.35s ease;
     }
-    .val-smart:hover {
+    .val-smart:hover,
+    .val-smart:focus-within {
       border-color: rgba(61, 107, 92, 0.24);
       box-shadow: 0 16px 44px rgba(20, 24, 22, 0.09);
-      transform: translateY(-4px);
     }
     .val-smart__top {
       padding: 1.05rem 1.2rem 0.95rem;
@@ -420,38 +420,187 @@
       line-height: 1.3;
       max-width: none;
     }
+    .val-smart:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .val-smart__hint {
+      margin: 0;
+      padding: 0.55rem 1.2rem 0;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      transition: opacity 0.3s ease;
+    }
+    .val-smart__expand {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 0;
+      padding: 0.65rem 1.2rem 1.15rem;
+      justify-content: center;
+    }
+    .val-smart:hover .val-smart__expand,
+    .val-smart:focus-within .val-smart__expand {
+      justify-content: flex-start;
+    }
+    .val-smart__fig {
+      margin: 0;
+      padding: 0;
+      flex: 0 0 auto;
+      width: min(200px, 38vw);
+      max-width: 42%;
+      transition:
+        width 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+        flex 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+        max-width 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .val-smart:hover .val-smart__fig,
+    .val-smart:focus-within .val-smart__fig {
+      flex: 1 1 56%;
+      width: 56%;
+      max-width: none;
+    }
+    .val-smart__img-shell {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #1a2332;
+    }
+    .val-smart__expand img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 118px;
+      object-fit: contain;
+      transition: max-height 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .val-smart:hover .val-smart__expand img,
+    .val-smart:focus-within .val-smart__expand img {
+      max-height: min(68vh, 520px);
+    }
+    .val-smart__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 0.2rem;
+      padding: 0.65rem 0.8rem;
+      background: linear-gradient(transparent 12%, rgba(12, 16, 22, 0.35) 45%, rgba(12, 16, 22, 0.88) 100%);
+      color: rgba(246, 244, 239, 0.96);
+      font-size: 0.72rem;
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+    }
+    .val-smart__overlay-lead {
+      margin: 0;
+      font-weight: 600;
+      font-size: 0.76rem;
+    }
+    .val-smart__overlay-cite {
+      margin: 0;
+      font-size: 0.68rem;
+      color: rgba(246, 244, 239, 0.75);
+    }
+    .val-smart:hover .val-smart__overlay,
+    .val-smart:focus-within .val-smart__overlay {
+      opacity: 1;
+    }
     .val-smart__body {
-      padding: 1.15rem 1.2rem 0.25rem;
+      flex: 0 1 0;
+      min-width: 0;
+      width: 0;
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      padding: 0;
+      transition:
+        flex 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.35s ease 0.06s,
+        max-width 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+        padding 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .val-smart:hover .val-smart__body,
+    .val-smart:focus-within .val-smart__body {
+      flex: 1 1 44%;
+      width: auto;
+      max-width: 100%;
+      min-width: min(20rem, 100%);
+      opacity: 1;
+      padding: 0.15rem 0 0.15rem 1.05rem;
+      overflow: visible;
     }
     .val-smart__body p {
-      margin: 0 0 0.9rem;
-      font-size: 0.88rem;
+      margin: 0 0 0.85rem;
+      font-size: 0.86rem;
       line-height: 1.68;
       max-width: none;
       color: var(--ink-soft);
     }
     .val-smart__body p:last-child { margin-bottom: 0; }
-    .val-smart__fig {
-      margin: 0;
-      padding: 0 1.2rem 1.15rem;
+    .val-smart:hover .val-smart__hint,
+    .val-smart:focus-within .val-smart__hint {
+      opacity: 0.45;
     }
-    .val-smart__fig img {
-      display: block;
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #1a2332;
-    }
-    .val-smart__cite {
-      display: block;
-      margin-top: 0.7rem;
-      font-size: 0.7rem;
-      color: var(--muted);
-      line-height: 1.55;
+    @media (hover: none), (max-width: 720px) {
+      .val-smart__hint { display: none; }
+      .val-smart__expand {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .val-smart__fig {
+        width: 100% !important;
+        max-width: none !important;
+        flex: none !important;
+      }
+      .val-smart__expand img {
+        max-height: min(52vh, 380px);
+      }
+      .val-smart__body {
+        flex: none !important;
+        width: 100% !important;
+        max-width: none !important;
+        opacity: 1 !important;
+        padding: 0.85rem 0 0 !important;
+        overflow: visible !important;
+      }
+      .val-smart__overlay {
+        opacity: 1;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
-      .val-smart:hover { transform: none; }
+      .val-smart__fig,
+      .val-smart__body,
+      .val-smart__expand img,
+      .val-smart__overlay {
+        transition: none !important;
+      }
+      .val-smart__hint { display: none; }
+      .val-smart__expand {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .val-smart__fig {
+        flex: 1 1 280px;
+        width: 100%;
+        max-width: none;
+      }
+      .val-smart__expand img {
+        max-height: min(55vh, 400px);
+      }
+      .val-smart__body {
+        flex: 1 1 240px;
+        min-width: min(100%, 18rem);
+        width: auto;
+        max-width: none;
+        opacity: 1;
+        padding: 0.5rem 0 0 0;
+      }
+      .val-smart__overlay { opacity: 1; }
     }
   </style>
 </head>
@@ -518,19 +667,27 @@
         <div class="stat"><strong>Puebla</strong><span>Secretaría de Turismo: millones de visitantes; espacio para turismo cultural y experiencias.</span></div>
       </div>
 
-      <div class="val-smart val-reveal">
+      <div class="val-smart val-reveal" tabindex="0">
         <div class="val-smart__top">
           <p class="val-smart__kicker">Industria en México · GEMO PwC</p>
           <h3 class="val-smart__title">El negocio del entretenimiento y los medios: casi 65&nbsp;% de crecimiento en diez años</h3>
         </div>
-        <div class="val-smart__body">
-          <p>La infografía resume la lectura de <em>El Economista</em> sobre el informe <strong>GEMO 2023–2027</strong>: dos series —<strong>total industria</strong> (línea amarilla) y <strong>acceso a internet</strong> (línea rosa)— muestran un mercado en expansión. Entre <strong>2014 y 2023</strong> el titular enfatiza un incremento cercano al <strong>65&nbsp;%</strong> en el ingreso agregado del sector. Para Awakening, el mensaje no es solo “hay crecimiento”, sino que ese crecimiento va acompañado de una infraestructura simbólica y técnica (<strong>conectividad, hábitos digitales</strong>) compatible con narrativas transmedia, preventa online y producción de contenido antes del día del evento.</p>
-          <p>Nota metodológica (según la propia gráfica): año base 2013; a partir de <strong>2023</strong> las cifras incorporan <strong>proyecciones</strong> de PwC; pueden existir variaciones por redondeo o ajustes entre ediciones del informe.</p>
+        <p class="val-smart__hint">Pasa el cursor sobre la imagen para ampliarla; el texto aparece al costado y sobre la gráfica.</p>
+        <div class="val-smart__expand">
+          <figure class="val-smart__fig">
+            <div class="val-smart__img-shell">
+              <img src="{% static 'val/crecimiento-industria-medios-mx.png' %}" alt="Líneas de ingresos de la industria de entretenimiento y medios en México y de acceso a internet, 2013 a 2027, en millones de dólares. Fuente GEMO PwC, El Economista." width="1200" height="675" loading="lazy" decoding="async" />
+              <div class="val-smart__overlay" aria-hidden="true">
+                <p class="val-smart__overlay-lead">~65&nbsp;% en 10 años · industria y acceso a internet (GEMO)</p>
+                <p class="val-smart__overlay-cite">Infografía: El Economista · PwC GEMO 2023–2027</p>
+              </div>
+            </div>
+          </figure>
+          <div class="val-smart__body">
+            <p>La infografía resume la lectura de <em>El Economista</em> sobre el informe <strong>GEMO 2023–2027</strong>: dos series —<strong>total industria</strong> (línea amarilla) y <strong>acceso a internet</strong> (línea rosa)— muestran un mercado en expansión. Entre <strong>2014 y 2023</strong> el titular enfatiza un incremento cercano al <strong>65&nbsp;%</strong> en el ingreso agregado del sector. Para Awakening, el mensaje no es solo “hay crecimiento”, sino que ese crecimiento va acompañado de una infraestructura simbólica y técnica (<strong>conectividad, hábitos digitales</strong>) compatible con narrativas transmedia, preventa online y producción de contenido antes del día del evento.</p>
+            <p>Nota metodológica (según la propia gráfica): año base 2013; a partir de <strong>2023</strong> las cifras incorporan <strong>proyecciones</strong> de PwC; pueden existir variaciones por redondeo o ajustes entre ediciones del informe.</p>
+          </div>
         </div>
-        <figure class="val-smart__fig">
-          <img src="{% static 'val/crecimiento-industria-medios-mx.png' %}" alt="Líneas de ingresos de la industria de entretenimiento y medios en México y de acceso a internet, 2013 a 2027, en millones de dólares. Fuente GEMO PwC, El Economista." width="1200" height="675" loading="lazy" decoding="async" />
-          <figcaption class="val-smart__cite">Infografía: <em>El Economista</em> · Fuente: GEMO 2023–2027 de PwC.</figcaption>
-        </figure>
       </div>
     </div>
   </section>
@@ -544,19 +701,27 @@
     <p class="section-p">Desde la política cultural, el festival cumple una función de <strong>articulación simbólica</strong>: congrega a jóvenes urbanos con representaciones de lo salvaje, lo luminoso y lo colectivo que contrapesan la rutina citadina. Esa función no es menor en Puebla, donde convergen patrimonio, industria creativa emergente y turismo que busca experiencias memorables. Las <strong>necesidades sociales</strong> —en el sentido del documento— no se agotan en el entretenimiento: incluyen pertenencia, estética compartida y marcos éticos donde el placer no niegue la responsabilidad ambiental.</p>
     <p class="section-p">La convergencia que describe Jenkins sugiere que las audiencias esperan <strong>participar antes, durante y después</strong> del evento: conversaciones en video corto, arte de fans, coordinación de viajes compartidos y narrativas colaborativas. La propuesta contempla calendarios de contenido, ganchos narrativos del bosque y piezas educativas breves que anticipan el tono sostenible sin sacrificar el deseo lúdico. La cocreación aquí es <strong>ordenada</strong>: la producción delimita un universo reconocible, pero deja espacio a la interpretación y al rumor social.</p>
 
-    <div class="val-smart val-reveal">
+    <div class="val-smart val-reveal" tabindex="0">
       <div class="val-smart__top">
         <p class="val-smart__kicker">Inversión publicitaria · México 2023</p>
         <h3 class="val-smart__title">Internet concentra más inversión que televisión, radio y papel juntos</h3>
       </div>
-      <div class="val-smart__body">
-        <p>El diagrama circular resume la <strong>inversión publicitaria por canal</strong> en México para <strong>2023</strong> (millones de dólares), según la misma línea de fuentes <strong>GEMO / PwC</strong> difundida por <em>El Economista</em>. <strong>Digital encabeza con 4,087&nbsp;MUSD</strong>, por encima de <strong>televisión (1,658)</strong>, <strong>radio (392)</strong>, <strong>publicidad exterior (373)</strong>, <strong>videojuegos y esports (293)</strong>, <strong>periódicos y revistas (253)</strong> y <strong>otros (386)</strong>, categoría que incluye medios corporativos, cine, streaming y podcasts. La lectura para Awakening es directa: una estrategia de festival contemporáneo debe invertir talento y presupuesto en <strong>canales digitales, formatos compartibles y narrativa transmedia</strong>; la televisión y la prensa pueden ser complementarias, pero ya no bastan para explicar dónde vive la atención del público joven.</p>
-        <p>El pie del original advierte que las cifras a partir de <strong>2023</strong> incorporan <strong>proyecciones</strong> y que pueden existir diferencias por redondeo; conviene tratarlas como <strong>órdenes de magnitud</strong> para diseño de mercadotecnia y no como presupuestos cerrados de medios.</p>
+      <p class="val-smart__hint">Pasa el cursor sobre la imagen para ampliarla; el texto aparece al costado y sobre la gráfica.</p>
+      <div class="val-smart__expand">
+        <figure class="val-smart__fig">
+          <div class="val-smart__img-shell">
+            <img src="{% static 'val/inversion-publicitaria-mx-2023.png' %}" alt="Gráfica de dona: inversión publicitaria en México por canal en 2023 en millones de dólares. Digital, TV, radio, exterior, videojuegos, prensa y otros. Fuente GEMO PwC." width="1100" height="620" loading="lazy" decoding="async" />
+            <div class="val-smart__overlay" aria-hidden="true">
+              <p class="val-smart__overlay-lead">Digital ~4,087&nbsp;MUSD — lidera vs. TV, radio y papel</p>
+              <p class="val-smart__overlay-cite">El Economista · GEMO / PwC 2023–2027</p>
+            </div>
+          </div>
+        </figure>
+        <div class="val-smart__body">
+          <p>El diagrama circular resume la <strong>inversión publicitaria por canal</strong> en México para <strong>2023</strong> (millones de dólares), según la misma línea de fuentes <strong>GEMO / PwC</strong> difundida por <em>El Economista</em>. <strong>Digital encabeza con 4,087&nbsp;MUSD</strong>, por encima de <strong>televisión (1,658)</strong>, <strong>radio (392)</strong>, <strong>publicidad exterior (373)</strong>, <strong>videojuegos y esports (293)</strong>, <strong>periódicos y revistas (253)</strong> y <strong>otros (386)</strong>, categoría que incluye medios corporativos, cine, streaming y podcasts. La lectura para Awakening es directa: una estrategia de festival contemporáneo debe invertir talento y presupuesto en <strong>canales digitales, formatos compartibles y narrativa transmedia</strong>; la televisión y la prensa pueden ser complementarias, pero ya no bastan para explicar dónde vive la atención del público joven.</p>
+          <p>El pie del original advierte que las cifras a partir de <strong>2023</strong> incorporan <strong>proyecciones</strong> y que pueden existir diferencias por redondeo; conviene tratarlas como <strong>órdenes de magnitud</strong> para diseño de mercadotecnia y no como presupuestos cerrados de medios.</p>
+        </div>
       </div>
-      <figure class="val-smart__fig">
-        <img src="{% static 'val/inversion-publicitaria-mx-2023.png' %}" alt="Gráfica de dona: inversión publicitaria en México por canal en 2023 en millones de dólares. Digital, TV, radio, exterior, videojuegos, prensa y otros. Fuente GEMO PwC." width="1100" height="620" loading="lazy" decoding="async" />
-        <figcaption class="val-smart__cite">Infografía: <em>El Economista</em> · Fuente: GEMO 2023–2027 de PwC.</figcaption>
-      </figure>
     </div>
   </section>
 
@@ -601,19 +766,27 @@
     <p class="section-p"><strong>Seguridad:</strong> filtros estrictos (mochilas transparentes, prohibición de inflamables en bosque), brigadas, evacuación señalizada y colaboración con autoridades. El guion operativo contempla revisión estructural previa a apertura, radios internas para producción y monitoreo continuo de iluminación y aforo en senderos estrechos.</p>
     <p class="section-p">La <strong>cadena de suministro</strong> prioriza proveedores regionales para catering, textil y servicios técnicos cuando la calidad lo permita; el objetivo es acortar kilómetros recorridos y alinear narrativa de territorio con hechos logísticos. Los residuos se gestionan con estaciones visiblemente rotuladas, personal capacitado y auditoría visual nocturna para evitar que el abandono informal comprometa la relación con comunidades vecinas. El montaje contempla áreas de mantenimiento técnico alejadas de zonas de drenaje natural, con lonas y plataformas que distribuyen el peso del equipo y reducen compactación del suelo.</p>
 
-    <div class="val-smart val-reveal">
+    <div class="val-smart val-reveal" tabindex="0">
       <div class="val-smart__top">
         <p class="val-smart__kicker">Impacto ambiental · giras y conciertos</p>
         <h3 class="val-smart__title">La huella de carbono media de una gira: dónde concentra el show su emisión</h3>
       </div>
-      <div class="val-smart__body">
-        <p>El diagrama tipo “huella de carbono media de una gira” distribuye emisiones típicas en <strong>recinto (34&nbsp;%)</strong>, <strong>viajes del público (33&nbsp;%)</strong>, <strong>merchandising (12&nbsp;%)</strong>, <strong>alojamiento (10&nbsp;%)</strong>, <strong>viajes del grupo (9&nbsp;%)</strong> y <strong>promoción (2&nbsp;%)</strong>. No es un estudio exclusivo de Awakening, pero sí un <strong>espejo sectorial</strong> útil: explica por qué la estrategia del practicum insiste en <strong>movilidad compartida</strong>, <strong>proveeduría local</strong>, <strong>arquitectura escénica liviana</strong> y campañas digitales frente a circuitos promocionales físicos intensivos en material.</p>
-        <p>Leído junto con el compromiso de <strong>un árbol por asistente</strong> y la reducción de residuos, el mensaje es coherente: en el formato clásico de gira los rubros de <strong>recinto y transporte del público</strong> concentran la mayor parte del impacto; un festival en bosque debe trabajar esos ejes con diseño de rutas, horarios escalonados, incentivos al carpool y controles de energía en escena —aceptando que el reto del recinto natural es distinto al del coliseo, pero no por ello menos exigible en términos de planificación.</p>
+      <p class="val-smart__hint">Pasa el cursor sobre la imagen para ampliarla; el texto aparece al costado y sobre la gráfica.</p>
+      <div class="val-smart__expand">
+        <figure class="val-smart__fig">
+          <div class="val-smart__img-shell">
+            <img src="{% static 'val/huella-carbono-gira.png' %}" alt="Gráfico circular: huella de carbono media de una gira por categoría: recinto, viajes del público, merchandising, alojamiento, viajes del grupo y promoción, con porcentajes." width="1000" height="562" loading="lazy" decoding="async" />
+            <div class="val-smart__overlay" aria-hidden="true">
+              <p class="val-smart__overlay-lead">Recinto y viajes del público ~67&nbsp;% combinados</p>
+              <p class="val-smart__overlay-cite">Referencia visual · emisiones típicas en giras</p>
+            </div>
+          </div>
+        </figure>
+        <div class="val-smart__body">
+          <p>El diagrama tipo “huella de carbono media de una gira” distribuye emisiones típicas en <strong>recinto (34&nbsp;%)</strong>, <strong>viajes del público (33&nbsp;%)</strong>, <strong>merchandising (12&nbsp;%)</strong>, <strong>alojamiento (10&nbsp;%)</strong>, <strong>viajes del grupo (9&nbsp;%)</strong> y <strong>promoción (2&nbsp;%)</strong>. No es un estudio exclusivo de Awakening, pero sí un <strong>espejo sectorial</strong> útil: explica por qué la estrategia del practicum insiste en <strong>movilidad compartida</strong>, <strong>proveeduría local</strong>, <strong>arquitectura escénica liviana</strong> y campañas digitales frente a circuitos promocionales físicos intensivos en material.</p>
+          <p>Leído junto con el compromiso de <strong>un árbol por asistente</strong> y la reducción de residuos, el mensaje es coherente: en el formato clásico de gira los rubros de <strong>recinto y transporte del público</strong> concentran la mayor parte del impacto; un festival en bosque debe trabajar esos ejes con diseño de rutas, horarios escalonados, incentivos al carpool y controles de energía en escena —aceptando que el reto del recinto natural es distinto al del coliseo, pero no por ello menos exigible en términos de planificación.</p>
+        </div>
       </div>
-      <figure class="val-smart__fig">
-        <img src="{% static 'val/huella-carbono-gira.png' %}" alt="Gráfico circular: huella de carbono media de una gira por categoría: recinto, viajes del público, merchandising, alojamiento, viajes del grupo y promoción, con porcentajes." width="1000" height="562" loading="lazy" decoding="async" />
-        <figcaption class="val-smart__cite">Infografía de referencia sobre emisiones típicas asociadas a giras musicales (desglose porcentual por categoría).</figcaption>
-      </figure>
     </div>
 
     <div class="quote">«Más que un festival de conciertos: experiencia multisensorial donde entretenimiento y sostenibilidad comparten el mismo guion.»</div>
