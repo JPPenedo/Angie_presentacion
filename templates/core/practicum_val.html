@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Awakening · Practicum VAL · Festival inmersivo</title>
+  <meta name="description" content="Awakening — festival inmersivo en bosque. Convergencia de música, naturaleza, tecnología y arte escénico. Practicum II · Valeria Villegas Fernández." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6f4ef;
+      --bg-elev: #ece8df;
+      --ink: #141816;
+      --ink-soft: #3d4540;
+      --muted: #6b736d;
+      --line: rgba(20, 24, 22, 0.08);
+      --accent: #3d6b5c;
+      --accent-soft: rgba(61, 107, 92, 0.12);
+      --wash: #c9d4ce;
+      --radius: 14px;
+      --font-sans: 'Sora', system-ui, sans-serif;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --max: 1120px;
+      --read: 38rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      background: var(--bg);
+    }
+
+    a { color: var(--accent); text-underline-offset: 3px; }
+    a:hover { color: var(--ink); }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.75rem clamp(1rem, 3vw, 1.5rem);
+      background: rgba(246, 244, 239, 0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar__brand {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .topbar__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1rem;
+      justify-content: flex-end;
+    }
+    .topbar__links a {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .topbar__links a:hover { color: var(--accent); }
+
+    .hero {
+      padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem) clamp(3rem, 8vw, 5.5rem);
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, var(--accent-soft), transparent 55%),
+        radial-gradient(ellipse 60% 45% at 85% 30%, rgba(201, 212, 206, 0.45), transparent 50%),
+        var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero__wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+    .hero__eyebrow {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 1rem;
+    }
+    .hero__title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(2.75rem, 9vw, 4.75rem);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin: 0 0 1.25rem;
+      max-width: 12ch;
+    }
+    .hero__tagline {
+      font-family: var(--font-serif);
+      font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin: 0 0 1.75rem;
+      max-width: var(--read);
+    }
+    .hero__lede {
+      max-width: var(--read);
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--ink-soft);
+    }
+    .hero__grid {
+      margin-top: 2.5rem;
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      max-width: 520px;
+    }
+    .hero__chip {
+      padding: 0.85rem 1rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .hero__chip strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      text-transform: none;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .shell {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 2rem);
+    }
+
+    .section-num {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--wash);
+      margin: 0 0 0.5rem;
+    }
+    .section-h {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(1.65rem, 3.5vw, 2.15rem);
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 0 0 1.25rem;
+      max-width: 20ch;
+    }
+    .section-p {
+      margin: 0 0 1rem;
+      max-width: var(--read);
+      font-size: 0.94rem;
+    }
+    .section-p:last-child { margin-bottom: 0; }
+
+    .band {
+      background: var(--bg-elev);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .split {
+      display: grid;
+      gap: 2rem;
+    }
+    @media (min-width: 860px) {
+      .split {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+        gap: 3.5rem;
+        align-items: start;
+      }
+    }
+
+    .pill-list {
+      list-style: none;
+      margin: 1.5rem 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .pill-list li {
+      padding: 0.9rem 1.1rem;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      font-size: 0.88rem;
+    }
+    .pill-list li strong { color: var(--ink); font-weight: 600; }
+
+    details.val-block {
+      margin-bottom: 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg);
+      overflow: hidden;
+    }
+    details.val-block[open] {
+      box-shadow: 0 10px 32px rgba(20, 24, 22, 0.06);
+    }
+    details.val-block summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 1rem 1.15rem;
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    details.val-block summary::-webkit-details-marker { display: none; }
+    details.val-block summary::after {
+      content: '+';
+      font-weight: 400;
+      color: var(--accent);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+    details.val-block[open] summary::after { content: '−'; }
+    details.val-block .val-inner {
+      padding: 0 1.15rem 1.15rem;
+      border-top: 1px solid var(--line);
+    }
+    details.val-block .val-inner p {
+      margin: 0.85rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      max-width: none;
+    }
+
+    .quote {
+      margin: 1.5rem 0;
+      padding: 1.1rem 0 1.1rem 1.15rem;
+      border-left: 2px solid var(--accent);
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-soft);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1.75rem;
+    }
+    .stat {
+      padding: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--bg);
+    }
+    .stat strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .stat span { font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
+
+    footer.val-foot {
+      padding: 3rem clamp(1.25rem, 4vw, 2rem);
+      border-top: 1px solid var(--line);
+      background: var(--ink);
+      color: rgba(246, 244, 239, 0.72);
+      font-size: 0.8rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+    footer.val-foot .val-foot__name {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--bg);
+      margin-bottom: 0.35rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="topbar__brand" href="#inicio">Awakening</a>
+    <nav class="topbar__links" aria-label="Secciones">
+      <a href="#marco">Marco</a>
+      <a href="#contexto">Contexto</a>
+      <a href="#necesidades">Necesidades</a>
+      <a href="#evento">Experiencia</a>
+      <a href="#logistica">Logística</a>
+      <a href="#justificacion">Justificación</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="inicio">
+    <div class="hero__wrap">
+      <p class="hero__eyebrow">Practicum · Dirección de Empresas de Entretenimiento</p>
+      <h1 class="hero__title">Awakening</h1>
+      <p class="hero__tagline">El despertar del bosque — música, naturaleza, tecnología y arte escénico en una sola experiencia inmersiva.</p>
+      <p class="hero__lede">
+        Propuesta académica que explora el <strong>entretenimiento inmersivo</strong> y el <em>storyliving</em>: el público deja de ser mero espectador para habitar una narrativa en un <strong>bosque en Puebla</strong>, con iluminación reactiva, sonido ambiental y una escenografía orgánica que dialoga con el entorno —sin renunciar a la <strong>conciencia ambiental</strong> ni a una operación responsable.
+      </p>
+      <div class="hero__grid">
+        <div class="hero__chip"><strong>Inmersión</strong> sensorial · participación</div>
+        <div class="hero__chip"><strong>Naturaleza</strong> como narrativa</div>
+        <div class="hero__chip"><strong>Tecnología</strong> reactiva · bajo impacto</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell" id="marco">
+    <p class="section-num">02 · Introducción</p>
+    <h2 class="section-h">Marco conceptual</h2>
+    <div class="split">
+      <div>
+        <p class="section-p">La industria del entretenimiento se aleja del esquema escenario–público pasivo: las audiencias jóvenes buscan <strong>experiencias que integren emoción, cuerpo y sentido</strong>. El documento sitúa el festival en la línea del entretenimiento inmersivo, cercano al <strong>storyliving</strong> —la historia vivida en el espacio, no solo contada.</p>
+        <p class="section-p">Desde la comunicación, los elementos escenográficos, la luz y el sonido funcionan como <strong>canales</strong> en un sistema simbólico (Lasswell): no solo hay mensaje verbal o musical, sino una red de estímulos que construyen identidad experiencial. La <strong>teoría de la recepción</strong> enfatiza que el sentido lo negocia el asistente; en un bosque interactivo, esa negociación se vuelve <strong>co-creativa</strong>.</p>
+      </div>
+      <div>
+        <ul class="pill-list">
+          <li><strong>Storyliving</strong> — narrativa habitada, no solo consumida.</li>
+          <li><strong>Entorno reactivo</strong> — tracking e iluminación que responde al movimiento.</li>
+          <li><strong>Tesis del proyecto</strong> — convergencia música electrónica/ambiental, naturaleza y tecnología para una experiencia única.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="contexto">
+    <div class="shell">
+      <p class="section-num">03.1 · Antecedentes</p>
+      <h2 class="section-h">De la transmisión unidireccional al evento experiencial</h2>
+      <p class="section-p">Históricamente, el modelo tipo Shannon–Weaver describía al artista como emisor y al público como receptor; la evolución técnica y cultural volvió la escenografía y el diseño sensorial protagonistas. Hoy conviven <strong>crecimiento de la economía creativa</strong> (UNCTAD) y, al mismo tiempo, <strong>presión ambiental</strong> sobre bosques y ciudades —paradoja que Awakening aborda al vincular asombro escénico con <strong>sensibilización ecológica</strong>.</p>
+      <p class="section-p">El festival se plantea como <strong>“despertar del bosque”</strong>: metáfora de reconexión con lo natural frente a deterioro ecológico documentado por PNUMA, SEMARNAT y la realidad de Puebla (urbanización, pérdida de cobertura forestal). No es solo ocio: es <strong>vehículo simbólico</strong> para reflexionar sobre preservación.</p>
+      <div class="stats">
+        <div class="stat"><strong>PwC</strong><span>Industria global entretenimiento y medios &gt; 2.3 b USD; impulso de experiencias en vivo.</span></div>
+        <div class="stat"><strong>Jóvenes MX</strong><span>INEGI: preocupación alta por clima y contaminación —público receptivo a eventos sustentables.</span></div>
+        <div class="stat"><strong>Puebla</strong><span>Secretaría de Turismo: millones de visitantes; espacio para turismo cultural y experiencias.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell" id="necesidades">
+    <p class="section-num">03.2 – 03.3</p>
+    <h2 class="section-h">Necesidades sociales y público meta</h2>
+    <p class="section-p">Las industrias culturales producen <strong>significados compartidos</strong> (Hesmondhalgh); UNESCO y políticas creativas refuerzan su peso económico y de cohesión. Jenkins describe <strong>convergencia</strong> y participación activa de las audiencias —coherente con un festival donde el entorno reacciona al cuerpo.</p>
+    <p class="section-p">La <strong>economía de la experiencia</strong> (Pine &amp; Gilmore) y el estado de <strong>flujo</strong> (Csíkszentmihályi) explican por qué estímulos múltiples y narrativa envolvente elevan el valor percibido. En Puebla, público joven y creativo busca propuestas que integren <strong>arte, tecnología, música y paisaje</strong> más allá del club o concierto lineal.</p>
+    <p class="section-p"><strong>Público meta:</strong> aproximadamente <strong>20–35 años</strong>, afinidad por música y estética digital, procedencia local y ciudades cercanas (CDMX, Querétaro, Tlaxcala), alta presencia en redes —el diseño del festival es deliberadamente <strong>“compartible”</strong>. Stakeholders: productores, artistas y DJs/performers, proveedores técnicos e inmersivos, patrocinadores, autoridades y, centralmente, la <strong>comunidad y el ecosistema forestal</strong>.</p>
+  </section>
+
+  <section class="band" id="competencia">
+    <div class="shell">
+      <p class="section-num">03.4</p>
+      <h2 class="section-h">Competencia y diferenciación</h2>
+      <p class="section-p">Referentes nacionales como <strong>EDC México</strong> o <strong>Dreamfields</strong> concentran escala urbana y line-ups masivos. Awakening se distingue al situar la <strong>naturaleza como co-autora</strong> del relato: bosque como escenario narrativo, no solo locación, con <strong>intimidad sensorial</strong> frente al recinto convencional.</p>
+    </div>
+  </section>
+
+  <section class="shell" id="evento">
+    <p class="section-num">03.5</p>
+    <h2 class="section-h">Descripción de la experiencia</h2>
+    <p class="section-p">El mensaje (Lasswell) se transmite por luz, sonido, instalaciones y el propio paisaje: <strong>magia del bosque</strong>, conexión y conciencia ambiental. El escenario central abandona la caja rígida: <strong>estructura orgánica</strong> (raíces, ramas estilizadas) integrada al paisaje, con <strong>bambú y acero reciclado</strong>, priorizando materiales reutilizables o reciclables.</p>
+    <p class="section-p">La música prioriza <strong>ambiente, orquestal ligero, folk contemporáneo y fantasía</strong> —cuerdas, arpa, flautas, coros etéreos y electrónica atmosférica— con <strong>performances</strong> que fusionan movimiento e iluminación. La luz LED de bajo consumo, sensores en el suelo y <strong>tracking visual</strong> sugieren que el bosque “reacciona” al visitante; proyecciones sutiles sobre vegetación refuerzan el despertar orgánico.</p>
+
+    <details class="val-block" open>
+      <summary>Recorridos y universos explorables</summary>
+      <div class="val-inner">
+        <p>Zonas con instalaciones, performers como “seres del bosque” e intervenciones escénicas distribuidas, para que el recorrido sea narrativo y no solo una grada frente al escenario.</p>
+      </div>
+    </details>
+    <details class="val-block">
+      <summary>Medios y narrativa transmedia</summary>
+      <div class="val-inner">
+        <p>Campañas digitales previas sobre movilidad compartida, reducción de residuos y prácticas sostenibles; contenidos alineados con la tesis de sensibilización.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="shell" id="logistica">
+    <p class="section-num">Operación</p>
+    <h2 class="section-h">Logística y compromiso ambiental</h2>
+    <p class="section-p">El documento detalla tres fases: <strong>montaje, operación y desmontaje</strong> en entorno natural (referencia a área forestal, p. ej. vinculada al <strong>Parque Nacional Iztaccíhuatl-Popocatépetl</strong>), con transporte de equipo, talento desde ciudades cercanas, generadores y cableado protegido, delimitación de zonas sensibles y coordinación con <strong>Protección Civil</strong>.</p>
+    <p class="section-p"><strong>Sustentabilidad:</strong> transporte compartido y biocombustibles donde aplica; energía híbrida solar y soluciones experimentales (pisos cinéticos, aprovechamiento climático); separación de residuos con <strong>incentivos</strong> (fichas / recompensas); compostaje de orgánicos para reforestación; <strong>compromiso de un árbol por asistente</strong>; proveedores priorizados locales para reducir huella logística.</p>
+    <p class="section-p"><strong>Seguridad:</strong> filtros estrictos (mochilas transparentes, prohibición de inflamables en bosque), brigadas, evacuación señalizada y colaboración con autoridades.</p>
+
+    <div class="quote">«Más que un festival de conciertos: experiencia multisensorial donde entretenimiento y sostenibilidad comparten el mismo guion.»</div>
+  </section>
+
+  <section class="band" id="justificacion">
+    <div class="shell">
+      <p class="section-num">03.6</p>
+      <h2 class="section-h">Justificación</h2>
+      <p class="section-p">Awakening responde a la demanda de <strong>ocio experiencial</strong> y a la urgencia de <strong>relevar el vínculo sociedad–naturaleza</strong> en México y Puebla. Como bien simbólico y económico (Hesmondhalgh), el festival articula cultura, tecnología y responsabilidad ecológica —un contrapeso creativo al modelo masivo urbano, alineado con tendencias globales de inmersión y con valores de una generación que pide <strong>significado y sustentabilidad</strong> en el mismo boleto.</p>
+    </div>
+  </section>
+
+  <footer class="val-foot">
+    <div class="val-foot__name">Valeria Villegas Fernández</div>
+    <div>ID 00462784 · Licenciatura en Dirección de Empresas de Entretenimiento</div>
+    <div>Universidad Anáhuac Puebla · Practicum II · 12 de febrero de 2026</div>
+    <div style="margin-top:1rem;opacity:.85;">Contenido sintetizado desde el documento académico; no sustituye el informe completo.</div>
+  </footer>
+
+</body>
+</html>

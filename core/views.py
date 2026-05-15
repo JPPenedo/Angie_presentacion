@@ -2508,6 +2508,14 @@ def cudea_landing_view(request):
     return render(request, 'core/cudea.html')
 
 
+def practicum_val_landing_view(request):
+    """
+    Landing «Awakening» (Practicum II · Valeria Villegas Fernández).
+    Presentación limpia, tipografía y paleta independientes de la landing CUDEA.
+    """
+    return render(request, 'core/practicum_val.html')
+
+
 def proyecto_ods16_view(request):
     """
     Plataforma funcional 'Denuncia Verde' (ODS 16 · Paz, justicia e instituciones
