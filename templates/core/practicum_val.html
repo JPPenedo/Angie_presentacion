@@ -141,6 +141,15 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--muted);
+      transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s ease,
+        border-color 0.3s ease;
+    }
+    .hero__chip:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(20, 24, 22, 0.09);
+      border-color: rgba(61, 107, 92, 0.35);
     }
     .hero__chip strong {
       display: block;
@@ -215,6 +224,17 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       font-size: 0.88rem;
+      border-left: 3px solid transparent;
+      transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+    .pill-list li:hover {
+      transform: translateX(4px);
+      border-left-color: var(--accent);
+      border-color: rgba(61, 107, 92, 0.2);
+      box-shadow: 0 8px 24px rgba(20, 24, 22, 0.06);
     }
     .pill-list li strong { color: var(--ink); font-weight: 600; }
 
@@ -224,9 +244,15 @@
       border-radius: var(--radius);
       background: var(--bg);
       overflow: hidden;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+    }
+    details.val-block:hover {
+      border-color: rgba(61, 107, 92, 0.22);
     }
     details.val-block[open] {
       box-shadow: 0 10px 32px rgba(20, 24, 22, 0.06);
+      transform: scale(1.01);
+      border-color: rgba(61, 107, 92, 0.25);
     }
     details.val-block summary {
       cursor: pointer;
@@ -240,6 +266,10 @@
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
+      transition: background 0.3s ease;
+    }
+    details.val-block:hover summary {
+      background: rgba(61, 107, 92, 0.06);
     }
     details.val-block summary::-webkit-details-marker { display: none; }
     details.val-block summary::after {
@@ -282,6 +312,18 @@
       border-radius: var(--radius);
       border: 1px solid var(--line);
       background: var(--bg);
+      transition:
+        transform 0.35s ease,
+        border-color 0.3s ease,
+        box-shadow 0.35s ease;
+    }
+    .stat:nth-child(1) { background: linear-gradient(145deg, var(--bg) 0%, rgba(61, 107, 92, 0.06) 100%); }
+    .stat:nth-child(2) { background: linear-gradient(145deg, var(--bg) 0%, rgba(201, 212, 206, 0.35) 100%); }
+    .stat:nth-child(3) { background: linear-gradient(145deg, var(--bg) 0%, rgba(61, 107, 92, 0.08) 100%); }
+    .stat:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: rgba(61, 107, 92, 0.28);
+      box-shadow: 0 14px 36px rgba(20, 24, 22, 0.08);
     }
     .stat strong {
       display: block;
@@ -309,6 +351,32 @@
       color: var(--bg);
       margin-bottom: 0.35rem;
     }
+
+    /* Aparición al hacer scroll */
+    .val-reveal {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .val-reveal.is-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .val-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .hero__chip:hover,
+      .pill-list li:hover,
+      .stat:hover,
+      details.val-block[open] {
+        transform: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -325,13 +393,13 @@
     </nav>
   </header>
 
-  <section class="hero" id="inicio">
+  <section class="hero val-reveal" id="inicio">
     <div class="hero__wrap">
       <p class="hero__eyebrow">Practicum · Dirección de Empresas de Entretenimiento</p>
       <h1 class="hero__title">Awakening</h1>
       <p class="hero__tagline">El despertar del bosque — música, naturaleza, tecnología y arte escénico en una sola experiencia inmersiva.</p>
       <p class="hero__lede">
-        Propuesta académica que explora el <strong>entretenimiento inmersivo</strong> y el <em>storyliving</em>: el público deja de ser mero espectador para habitar una narrativa en un <strong>bosque en Puebla</strong>, con iluminación reactiva, sonido ambiental y una escenografía orgánica que dialoga con el entorno —sin renunciar a la <strong>conciencia ambiental</strong> ni a una operación responsable.
+        Propuesta académica que explora el <strong>entretenimiento inmersivo</strong> y el <em>storyliving</em>: el público deja de ser mero espectador para habitar una narrativa en un <strong>bosque en Puebla</strong>, con iluminación reactiva, sonido ambiental y una escenografía orgánica que dialoga con el entorno —sin renunciar a la <strong>conciencia ambiental</strong> ni a una operación responsable. Cada recorrido mezcla estímulo y reflexión: el asistente percibe el festival como <strong>ritual de paso</strong> entre la ciudad y un imaginario natural donde la tecnología actúa como puente, no como ruido.
       </p>
       <div class="hero__grid">
         <div class="hero__chip"><strong>Inmersión</strong> sensorial · participación</div>
@@ -341,13 +409,13 @@
     </div>
   </section>
 
-  <section class="shell" id="marco">
+  <section class="shell val-reveal" id="marco">
     <p class="section-num">02 · Introducción</p>
     <h2 class="section-h">Marco conceptual</h2>
     <div class="split">
       <div>
         <p class="section-p">La industria del entretenimiento se aleja del esquema escenario–público pasivo: las audiencias jóvenes buscan <strong>experiencias que integren emoción, cuerpo y sentido</strong>. El documento sitúa el festival en la línea del entretenimiento inmersivo, cercano al <strong>storyliving</strong> —la historia vivida en el espacio, no solo contada.</p>
-        <p class="section-p">Desde la comunicación, los elementos escenográficos, la luz y el sonido funcionan como <strong>canales</strong> en un sistema simbólico (Lasswell): no solo hay mensaje verbal o musical, sino una red de estímulos que construyen identidad experiencial. La <strong>teoría de la recepción</strong> enfatiza que el sentido lo negocia el asistente; en un bosque interactivo, esa negociación se vuelve <strong>co-creativa</strong>.</p>
+        <p class="section-p">Desde la comunicación, los elementos escenográficos, la luz y el sonido funcionan como <strong>canales</strong> en un sistema simbólico (Lasswell): no solo hay mensaje verbal o musical, sino una red de estímulos que construyen identidad experiencial. La <strong>teoría de la recepción</strong> enfatiza que el sentido lo negocia el asistente; en un bosque interactivo, esa negociación se vuelve <strong>co-creativa</strong>. Así, el festival no “informa” únicamente con palabras: ordena el tiempo, el espacio y la expectativa para que la audiencia interprete en cuerpo presente qué significa “despertar” un entorno natural.</p>
       </div>
       <div>
         <ul class="pill-list">
@@ -359,12 +427,12 @@
     </div>
   </section>
 
-  <section class="band" id="contexto">
+  <section class="band val-reveal" id="contexto">
     <div class="shell">
       <p class="section-num">03.1 · Antecedentes</p>
       <h2 class="section-h">De la transmisión unidireccional al evento experiencial</h2>
       <p class="section-p">Históricamente, el modelo tipo Shannon–Weaver describía al artista como emisor y al público como receptor; la evolución técnica y cultural volvió la escenografía y el diseño sensorial protagonistas. Hoy conviven <strong>crecimiento de la economía creativa</strong> (UNCTAD) y, al mismo tiempo, <strong>presión ambiental</strong> sobre bosques y ciudades —paradoja que Awakening aborda al vincular asombro escénico con <strong>sensibilización ecológica</strong>.</p>
-      <p class="section-p">El festival se plantea como <strong>“despertar del bosque”</strong>: metáfora de reconexión con lo natural frente a deterioro ecológico documentado por PNUMA, SEMARNAT y la realidad de Puebla (urbanización, pérdida de cobertura forestal). No es solo ocio: es <strong>vehículo simbólico</strong> para reflexionar sobre preservación.</p>
+      <p class="section-p">El festival se plantea como <strong>“despertar del bosque”</strong>: metáfora de reconexión con lo natural frente a deterioro ecológico documentado por PNUMA, SEMARNAT y la realidad de Puebla (urbanización, pérdida de cobertura forestal). No es solo ocio: es <strong>vehículo simbólico</strong> para reflexionar sobre preservación. La propuesta reconoce la tensión entre industria creativa en crecimiento y límites planetarios, y busca que el euforia estética del evento conviva con pequeñas “pausas” de sentido —instalaciones o rutas que evocan fragilidad del ecosistema sin convertir el festival en conferencia.</p>
       <div class="stats">
         <div class="stat"><strong>PwC</strong><span>Industria global entretenimiento y medios &gt; 2.3 b USD; impulso de experiencias en vivo.</span></div>
         <div class="stat"><strong>Jóvenes MX</strong><span>INEGI: preocupación alta por clima y contaminación —público receptivo a eventos sustentables.</span></div>
@@ -373,23 +441,23 @@
     </div>
   </section>
 
-  <section class="shell" id="necesidades">
+  <section class="shell val-reveal" id="necesidades">
     <p class="section-num">03.2 – 03.3</p>
     <h2 class="section-h">Necesidades sociales y público meta</h2>
     <p class="section-p">Las industrias culturales producen <strong>significados compartidos</strong> (Hesmondhalgh); UNESCO y políticas creativas refuerzan su peso económico y de cohesión. Jenkins describe <strong>convergencia</strong> y participación activa de las audiencias —coherente con un festival donde el entorno reacciona al cuerpo.</p>
     <p class="section-p">La <strong>economía de la experiencia</strong> (Pine &amp; Gilmore) y el estado de <strong>flujo</strong> (Csíkszentmihályi) explican por qué estímulos múltiples y narrativa envolvente elevan el valor percibido. En Puebla, público joven y creativo busca propuestas que integren <strong>arte, tecnología, música y paisaje</strong> más allá del club o concierto lineal.</p>
-    <p class="section-p"><strong>Público meta:</strong> aproximadamente <strong>20–35 años</strong>, afinidad por música y estética digital, procedencia local y ciudades cercanas (CDMX, Querétaro, Tlaxcala), alta presencia en redes —el diseño del festival es deliberadamente <strong>“compartible”</strong>. Stakeholders: productores, artistas y DJs/performers, proveedores técnicos e inmersivos, patrocinadores, autoridades y, centralmente, la <strong>comunidad y el ecosistema forestal</strong>.</p>
+    <p class="section-p"><strong>Público meta:</strong> aproximadamente <strong>20–35 años</strong>, afinidad por música y estética digital, procedencia local y ciudades cercanas (CDMX, Querétaro, Tlaxcala), alta presencia en redes —el diseño del festival es deliberadamente <strong>“compartible”</strong>. Stakeholders: productores, artistas y DJs/performers, proveedores técnicos e inmersivos, patrocinadores, autoridades y, centralmente, la <strong>comunidad y el ecosistema forestal</strong>. DataReportal (2024) subraya el peso de redes en México: un formato visual fuerte multiplica el alcance orgánico si la producción cuida momentos fotogénicos sin saturar la noche.</p>
   </section>
 
-  <section class="band" id="competencia">
+  <section class="band val-reveal" id="competencia">
     <div class="shell">
       <p class="section-num">03.4</p>
       <h2 class="section-h">Competencia y diferenciación</h2>
-      <p class="section-p">Referentes nacionales como <strong>EDC México</strong> o <strong>Dreamfields</strong> concentran escala urbana y line-ups masivos. Awakening se distingue al situar la <strong>naturaleza como co-autora</strong> del relato: bosque como escenario narrativo, no solo locación, con <strong>intimidad sensorial</strong> frente al recinto convencional.</p>
+      <p class="section-p">Referentes nacionales como <strong>EDC México</strong> o <strong>Dreamfields</strong> concentran escala urbana y line-ups masivos. Awakening se distingue al situar la <strong>naturaleza como co-autora</strong> del relato: bosque como escenario narrativo, no solo locación, con <strong>intimidad sensorial</strong> frente al recinto convencional. La comparación no desmerece esos formatos: solo delimita un nicho donde el riesgo operativo (clima, suelo, permisos) se intercambia por <strong>diferenciación narrativa</strong> y por una promesa de proximidad entre público y paisaje.</p>
     </div>
   </section>
 
-  <section class="shell" id="evento">
+  <section class="shell val-reveal" id="evento">
     <p class="section-num">03.5</p>
     <h2 class="section-h">Descripción de la experiencia</h2>
     <p class="section-p">El mensaje (Lasswell) se transmite por luz, sonido, instalaciones y el propio paisaje: <strong>magia del bosque</strong>, conexión y conciencia ambiental. El escenario central abandona la caja rígida: <strong>estructura orgánica</strong> (raíces, ramas estilizadas) integrada al paisaje, con <strong>bambú y acero reciclado</strong>, priorizando materiales reutilizables o reciclables.</p>
@@ -398,41 +466,64 @@
     <details class="val-block" open>
       <summary>Recorridos y universos explorables</summary>
       <div class="val-inner">
-        <p>Zonas con instalaciones, performers como “seres del bosque” e intervenciones escénicas distribuidas, para que el recorrido sea narrativo y no solo una grada frente al escenario.</p>
+        <p>Zonas con instalaciones, performers como “seres del bosque” e intervenciones escénicas distribuidas, para que el recorrido sea narrativo y no solo una grada frente al escenario. El documento enfatiza apariciones inesperadas y rutas explorables: la historia se cuenta también caminando, deteniéndose y eligiendo caminos —un contraste deliberado con el concierto frontal clásico.</p>
       </div>
     </details>
     <details class="val-block">
       <summary>Medios y narrativa transmedia</summary>
       <div class="val-inner">
-        <p>Campañas digitales previas sobre movilidad compartida, reducción de residuos y prácticas sostenibles; contenidos alineados con la tesis de sensibilización.</p>
+        <p>Campañas digitales previas sobre movilidad compartida, reducción de residuos y prácticas sostenibles; contenidos alineados con la tesis de sensibilización. Piezas previas al evento pueden incluir “decretos” narrativos del bosque, calendarios de revelado y material educativo breve para que la expectativa ya porte un vocabulario ecológico antes del primer foco en sala.</p>
       </div>
     </details>
   </section>
 
-  <section class="shell" id="logistica">
+  <section class="shell val-reveal" id="logistica">
     <p class="section-num">Operación</p>
     <h2 class="section-h">Logística y compromiso ambiental</h2>
     <p class="section-p">El documento detalla tres fases: <strong>montaje, operación y desmontaje</strong> en entorno natural (referencia a área forestal, p. ej. vinculada al <strong>Parque Nacional Iztaccíhuatl-Popocatépetl</strong>), con transporte de equipo, talento desde ciudades cercanas, generadores y cableado protegido, delimitación de zonas sensibles y coordinación con <strong>Protección Civil</strong>.</p>
     <p class="section-p"><strong>Sustentabilidad:</strong> transporte compartido y biocombustibles donde aplica; energía híbrida solar y soluciones experimentales (pisos cinéticos, aprovechamiento climático); separación de residuos con <strong>incentivos</strong> (fichas / recompensas); compostaje de orgánicos para reforestación; <strong>compromiso de un árbol por asistente</strong>; proveedores priorizados locales para reducir huella logística.</p>
-    <p class="section-p"><strong>Seguridad:</strong> filtros estrictos (mochilas transparentes, prohibición de inflamables en bosque), brigadas, evacuación señalizada y colaboración con autoridades.</p>
+    <p class="section-p"><strong>Seguridad:</strong> filtros estrictos (mochilas transparentes, prohibición de inflamables en bosque), brigadas, evacuación señalizada y colaboración con autoridades. El guion operativo contempla revisión estructural previa a apertura, radios internas para producción y monitoreo continuo de iluminación y aforo en senderos estrechos.</p>
 
     <div class="quote">«Más que un festival de conciertos: experiencia multisensorial donde entretenimiento y sostenibilidad comparten el mismo guion.»</div>
   </section>
 
-  <section class="band" id="justificacion">
+  <section class="band val-reveal" id="justificacion">
     <div class="shell">
       <p class="section-num">03.6</p>
       <h2 class="section-h">Justificación</h2>
-      <p class="section-p">Awakening responde a la demanda de <strong>ocio experiencial</strong> y a la urgencia de <strong>relevar el vínculo sociedad–naturaleza</strong> en México y Puebla. Como bien simbólico y económico (Hesmondhalgh), el festival articula cultura, tecnología y responsabilidad ecológica —un contrapeso creativo al modelo masivo urbano, alineado con tendencias globales de inmersión y con valores de una generación que pide <strong>significado y sustentabilidad</strong> en el mismo boleto.</p>
+      <p class="section-p">Awakening responde a la demanda de <strong>ocio experiencial</strong> y a la urgencia de <strong>relevar el vínculo sociedad–naturaleza</strong> en México y Puebla. Como bien simbólico y económico (Hesmondhalgh), el festival articula cultura, tecnología y responsabilidad ecológica —un contrapeso creativo al modelo masivo urbano, alineado con tendencias globales de inmersión y con valores de una generación que pide <strong>significado y sustentabilidad</strong> en el mismo boleto. En suma, el proyecto argumenta que la industria del entretenimiento puede ser <strong>sitio de encuentro</strong> entre euforia colectiva y ética ambiental, si el diseño de producción traduce en reglas claras lo que el relato promete en escena.</p>
     </div>
   </section>
 
-  <footer class="val-foot">
+  <footer class="val-foot val-reveal">
     <div class="val-foot__name">Valeria Villegas Fernández</div>
     <div>ID 00462784 · Licenciatura en Dirección de Empresas de Entretenimiento</div>
     <div>Universidad Anáhuac Puebla · Practicum II · 12 de febrero de 2026</div>
-    <div style="margin-top:1rem;opacity:.85;">Contenido sintetizado desde el documento académico; no sustituye el informe completo.</div>
   </footer>
 
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.val-reveal').forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      var blocks = document.querySelectorAll('.val-reveal');
+      if (!blocks.length || !('IntersectionObserver' in window)) {
+        blocks.forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
+          });
+        },
+        { rootMargin: '0px 0px -10% 0px', threshold: 0.08 }
+      );
+      blocks.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
 </body>
 </html>
