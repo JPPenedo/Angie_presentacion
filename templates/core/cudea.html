@@ -859,6 +859,256 @@
         transition: none;
       }
     }
+
+    /* Recuadros alineados al documento Formato + imágenes PDF */
+    .doc-split {
+      display: grid;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .doc-split--tables { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+      .doc-split--hero-brand { grid-template-columns: minmax(0, 1.15fr) minmax(200px, 380px); gap: 2rem; align-items: center; }
+    }
+    .cudea-smart {
+      margin-top: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      background: rgba(16, 27, 45, 0.65);
+      overflow: visible;
+      outline: none;
+      transition: box-shadow 0.4s ease, border-color 0.35s ease;
+    }
+    .cudea-smart:hover,
+    .cudea-smart:focus-within {
+      border-color: rgba(212, 98, 46, 0.4);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+    }
+    .cudea-smart:focus-visible {
+      outline: 2px solid var(--orange-highlight);
+      outline-offset: 3px;
+    }
+    .cudea-smart__top {
+      padding: 1rem 1.15rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(212, 98, 46, 0.08) 0%, transparent 55%);
+    }
+    .cudea-smart__kicker {
+      font-family: var(--font-label);
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange-highlight);
+      margin: 0 0 0.35rem;
+    }
+    .cudea-smart__title {
+      font-family: var(--font-cards);
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--off);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .cudea-smart__hint {
+      margin: 0;
+      padding: 0.5rem 1.15rem 0;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+    .cudea-smart__expand {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0.4rem 1.15rem 0.9rem;
+      gap: 0;
+    }
+    .cudea-smart:hover .cudea-smart__expand,
+    .cudea-smart:focus-within .cudea-smart__expand {
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .cudea-smart__fig {
+      margin: 0;
+      padding: 0;
+      flex: 0 0 auto;
+      width: fit-content;
+      max-width: min(220px, 88vw);
+      transition: flex 0.45s ease, width 0.45s ease, max-width 0.45s ease;
+    }
+    .cudea-smart:hover .cudea-smart__fig,
+    .cudea-smart:focus-within .cudea-smart__fig {
+      flex: 1 1 55%;
+      width: 55%;
+      max-width: none;
+    }
+    .cudea-smart__img-shell {
+      position: relative;
+      display: inline-block;
+      vertical-align: top;
+      max-width: 100%;
+      line-height: 0;
+      border-radius: calc(var(--radius) - 2px);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #0a0e16;
+    }
+    .cudea-smart__expand img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: min(200px, 85vw);
+      max-height: 104px;
+      object-fit: contain;
+      transition: max-height 0.45s ease, max-width 0.45s ease;
+    }
+    .cudea-smart:hover .cudea-smart__expand img,
+    .cudea-smart:focus-within .cudea-smart__expand img {
+      max-width: 100%;
+      max-height: min(65vh, 480px);
+    }
+    .cudea-smart__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 0.15rem;
+      padding: 0.55rem 0.7rem;
+      background: linear-gradient(transparent 8%, rgba(6, 10, 18, 0.5) 40%, rgba(6, 10, 18, 0.9) 100%);
+      color: rgba(242, 235, 228, 0.96);
+      font-size: 0.68rem;
+      line-height: 1.35;
+      opacity: 0;
+      transition: opacity 0.32s ease;
+      pointer-events: none;
+    }
+    .cudea-smart:hover .cudea-smart__overlay,
+    .cudea-smart:focus-within .cudea-smart__overlay { opacity: 1; }
+    .cudea-smart__overlay p { margin: 0; font-weight: 600; }
+    .cudea-smart__overlay span { font-size: 0.64rem; color: rgba(242, 235, 228, 0.75); }
+    .cudea-smart__body {
+      flex: 0 1 0;
+      align-self: flex-start;
+      min-width: 0;
+      min-height: 0;
+      width: 0;
+      max-width: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      padding: 0;
+      pointer-events: none;
+      transition: flex 0.45s ease, opacity 0.3s ease, max-width 0.45s ease, max-height 0.45s ease, padding 0.45s ease;
+    }
+    .cudea-smart:hover .cudea-smart__body,
+    .cudea-smart:focus-within .cudea-smart__body {
+      flex: 1 1 44%;
+      width: auto;
+      max-width: 100%;
+      max-height: min(72vh, 1400px);
+      min-width: min(18rem, 100%);
+      opacity: 1;
+      padding: 0.1rem 0 0.1rem 1rem;
+      overflow: auto;
+      pointer-events: auto;
+    }
+    .cudea-smart__body p {
+      margin: 0 0 0.75rem;
+      font-size: 0.84rem;
+      line-height: 1.62;
+      color: var(--muted);
+    }
+    .cudea-smart__body p:last-child { margin-bottom: 0; }
+    @media (hover: none), (max-width: 720px) {
+      .cudea-smart__hint { display: none; }
+      .cudea-smart__expand {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .cudea-smart__fig {
+        width: 100% !important;
+        max-width: none !important;
+        flex: none !important;
+      }
+      .cudea-smart__expand img { max-height: min(48vh, 360px); }
+      .cudea-smart__body {
+        flex: none !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        opacity: 1 !important;
+        padding: 0.75rem 0 0 !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+      }
+      .cudea-smart__overlay { opacity: 1; }
+    }
+
+    .cudea-table-wrap {
+      margin-top: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: auto;
+      background: rgba(6, 10, 18, 0.6);
+    }
+    .cudea-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      color: var(--off);
+    }
+    .cudea-table th,
+    .cudea-table td {
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      vertical-align: top;
+    }
+    .cudea-table th {
+      font-family: var(--font-label);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange-highlight);
+      background: rgba(212, 98, 46, 0.08);
+    }
+    .cudea-table tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+    .cudea-table td:first-child { font-weight: 500; color: rgba(242, 235, 228, 0.92); white-space: nowrap; }
+    .figure-inline {
+      margin: 1.25rem 0 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .figure-inline img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+    .figure-inline figcaption {
+      padding: 0.65rem 0.85rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: rgba(4, 8, 14, 0.55);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .smart-grid-2 {
+      display: grid;
+      gap: 1.25rem;
+    }
+    @media (min-width: 820px) {
+      .smart-grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+    .doc-block {
+      margin: 2rem 0 2.5rem;
+      padding: 1.75rem clamp(1rem, 3vw, 1.5rem) 2rem;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: rgba(6, 10, 18, 0.45);
+    }
   </style>
 </head>
 <body>
@@ -878,29 +1128,37 @@
 
   <section class="hero-continuity" aria-labelledby="continuity-title">
     <div class="hero-continuity__inner">
-      <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
-      <h1 class="hero-title" id="continuity-title">CUDEA</h1>
-      <p class="hero-sub">Convierte tu visión en acción · Edición 3.0</p>
-      <p class="hero-lead">
-        Cumbre Universitaria de Desarrollo Empresarial Anáhuac: evento académico–experiencial que acerca a la comunidad con <strong>líderes reales</strong> del sector público y privado —edutainment, paneles y <strong>networking estructurado</strong>.
-      </p>
-      <div>
-        <a class="hero-cta" href="#contenido">Explorar el proyecto</a>
-        <a class="hero-cta hero-cta--ghost" href="#ejes">Ver ejes temáticos</a>
-        <a class="hero-cta hero-cta--ghost" href="#atmosfera">Ver atmósfera</a>
+      <div class="doc-split doc-split--hero-brand">
+        <div>
+          <p class="hero-kicker">Universidad Anáhuac Puebla · Dirección de Empresas de Entretenimiento</p>
+          <h1 class="hero-title" id="continuity-title">CUDEA</h1>
+          <p class="hero-sub">Convierte tu visión en acción · Tercera edición</p>
+          <p class="hero-lead">
+            <strong>Cumbre Universitaria de Desarrollo Empresarial Anáhuac.</strong> CUDEA 3.0 surge como respuesta a la necesidad de que los jóvenes universitarios pasen de las ideas a la acción —con <strong>edutainment</strong>, conferencias, paneles, conversatorios, <strong>networking estratégico</strong> y activaciones de marca, alineado al documento de proyecto <em>Formato</em>.
+          </p>
+          <div>
+            <a class="hero-cta" href="#contenido">Explorar el proyecto</a>
+            <a class="hero-cta hero-cta--ghost" href="#documento-formato">Tablas y datos del recinto</a>
+            <a class="hero-cta hero-cta--ghost" href="#atmosfera">Ver atmósfera</a>
+          </div>
+        </div>
+        <figure class="figure-inline" style="margin:0;">
+          <img src="{% static 'cudea/brand-cudea-gradient.png' %}" width="800" height="1000" alt="Logotipo CUDEA, Cumbre de Desarrollo Empresarial Anáhuac, sobre degradado institucional." loading="eager" decoding="async" />
+          <figcaption>Identidad gráfica · Kit de marca CUDEA 3.0</figcaption>
+        </figure>
       </div>
       <div class="hero-continuity__stat-row">
         <div class="hero-stat-item">
-          <strong>2 días</strong>
-          <span>Formato masivo · Cuatro ejes</span>
+          <strong>20–21 mar</strong>
+          <span>2026 · Anáhuac Puebla (referencia difusión oficial)</span>
         </div>
         <div class="hero-stat-item">
-          <strong>~400</strong>
-          <span>Asistentes proyectados</span>
+          <strong>~700</strong>
+          <span>Aforo narrativo del recinto (ficha técnica: 600 sentados)</span>
         </div>
         <div class="hero-stat-item">
           <strong>23 / 27</strong>
-          <span>Carreras · ediciones previas</span>
+          <span>Carreras representadas · comunidad multidisciplinaria</span>
         </div>
       </div>
     </div>
@@ -925,10 +1183,10 @@
       <div class="hero-photo-base" aria-hidden="true"></div>
       <img
         class="hero-photo-el"
-        src="{% static 'cudea/hero-duo.png' %}"
+        src="{% static 'cudea/evento-sala-pasarela-t.png' %}"
         width="1600"
         height="900"
-        alt="Dos ponentes CUDEA en el escenario, conversación cercana."
+        alt="Vista cenital del recinto: pasarela en T, lounge y bloques de asistentes; Liderazgo Anáhuac al fondo."
         decoding="async"
         loading="lazy"
       />
@@ -959,6 +1217,116 @@
     </p>
 
     <p class="hint-hover">Azul + naranja · Hover para expandir · *Practicum II* (CUDEA 3.0)</p>
+
+    <div class="doc-block" id="documento-formato">
+      <p class="section-eyebrow">Documento Formato</p>
+      <h2 class="section-title">Del contexto laboral al networking estructurado</h2>
+      <p class="section-desc">
+        El informe sitúa a CUDEA frente a retos reales del alumnado: falta de experiencia, redes y vínculo con el mercado. El <strong>INEGI</strong> documenta que <strong>más del 50&nbsp;%</strong> de los jóvenes en México trabaja en <strong>informalidad</strong>; la <strong>OIT</strong> enfatiza en América Latina escasez de práctica, contactos y vinculación. CUDEA responde con <strong>capital social</strong>, proximidad a decisores y formatos participativos. Las gráficas siguientes sintetizan datos citados en el trabajo para anclar la justificación cuantitativa.
+      </p>
+
+      <div class="smart-grid-2" style="margin-top:1.5rem;">
+        <div class="cudea-smart" tabindex="0">
+          <div class="cudea-smart__top">
+            <p class="cudea-smart__kicker">INEGI · referencia visual</p>
+            <h3 class="cudea-smart__title">Condiciones laborales de jóvenes en México</h3>
+          </div>
+          <p class="cudea-smart__hint">Pasa el cursor sobre la gráfica para ampliar y leer la interpretación.</p>
+          <div class="cudea-smart__expand">
+            <figure class="cudea-smart__fig">
+              <div class="cudea-smart__img-shell">
+                <img src="{% static 'cudea/chart-informalidad-jovenes.png' %}" alt="Gráfica circular: informalidad laboral juvenil 52 por ciento y empleo formal 48 por ciento." width="640" height="480" loading="lazy" decoding="async" />
+                <div class="cudea-smart__overlay" aria-hidden="true">
+                  <p>52&nbsp;% informalidad · 48&nbsp;% formal</p>
+                  <span>Justificación del puente universidad–mercado en el PDF</span>
+                </div>
+              </div>
+            </figure>
+            <div class="cudea-smart__body">
+              <p>La visual resume la tesis del documento: sin carriles de formalización y redes, el talento joven tropieza antes de competir. CUDEA no sustituye políticas laborales, pero sí <strong>concentra en dos días</strong> encuentros con líderes, casos y credenciales que acortan distancia psicológica hacia empleo y emprendimiento.</p>
+            </div>
+          </div>
+        </div>
+        <div class="cudea-smart" tabindex="0">
+          <div class="cudea-smart__top">
+            <p class="cudea-smart__kicker">Networking · evidencia</p>
+            <h3 class="cudea-smart__title">Impacto del networking profesional</h3>
+          </div>
+          <p class="cudea-smart__hint">Pasa el cursor sobre la gráfica para ampliar.</p>
+          <div class="cudea-smart__expand">
+            <figure class="cudea-smart__fig">
+              <div class="cudea-smart__img-shell">
+                <img src="{% static 'cudea/chart-networking-laboral.png' %}" alt="Barras: probabilidad de oportunidades laborales sin networking 35 por ciento y con networking 75 por ciento." width="640" height="480" loading="lazy" decoding="async" />
+                <div class="cudea-smart__overlay" aria-hidden="true">
+                  <p>35&nbsp;% sin redes vs. 75&nbsp;% con networking</p>
+                  <span>Argumento para brunch, lounges y Special Guest</span>
+                </div>
+              </div>
+            </figure>
+            <div class="cudea-smart__body">
+              <p>El contraste refuerza el diseño de CUDEA: <strong>zonas de convivencia</strong>, itinerarios que obligan a cruzar miradas y activaciones donde la conversación es el producto. El PDF vincula esta lógica con patrocinios y hospitalidad que mantienen energía para dialogar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-title" style="font-size:1.35rem;margin-top:2.25rem;">Ficha técnica · Centro de Exposiciones (Edificio Liderazgo)</h3>
+      <p class="section-desc" style="margin-top:0.5rem;">
+        Tabla tomada del apartado <strong>5.4 Rider técnico</strong> del documento <em>Formato</em>: espacio oficial de CUDEA&nbsp;3.0 en el campus.
+      </p>
+      <div class="cudea-table-wrap">
+        <table class="cudea-table">
+          <thead>
+            <tr><th>Concepto</th><th>Detalle</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Nombre del espacio</td><td>Centro de Exposiciones — Edificio Liderazgo Anáhuac</td></tr>
+            <tr><td>Ubicación</td><td>Edificio Liderazgo, edificio&nbsp;5</td></tr>
+            <tr><td>Superficie total</td><td>630,45&nbsp;m²</td></tr>
+            <tr><td>Dimensiones (largo × ancho × altura)</td><td>27,00&nbsp;m × 23,35&nbsp;m × 13,00&nbsp;m</td></tr>
+            <tr><td>Capacidad máxima</td><td>600 personas sentadas</td></tr>
+            <tr><td>Accesos</td><td>2 accesos desde el vestíbulo principal; 3 accesos secundarios</td></tr>
+            <tr><td>Áreas complementarias</td><td>Vestíbulo y circulaciones; sala de invitados especiales; área de catering; cabina de control; 2 bodegas junto a entradas de vestíbulo; baños de mujeres y hombres; Gruta de la Virgen (exterior al volumen principal)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="section-title" style="font-size:1.35rem;margin-top:2rem;">Programa arquitectónico (leyenda)</h3>
+      <p class="section-desc" style="margin-top:0.5rem;">Correspondencia numérica con la <strong>planta arquitectónica</strong> del mismo documento.</p>
+      <div class="cudea-table-wrap">
+        <table class="cudea-table">
+          <thead>
+            <tr><th>#</th><th>Área</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Centro de Exposiciones (salón principal)</td></tr>
+            <tr><td>2</td><td>Vestíbulo y circulaciones</td></tr>
+            <tr><td>3</td><td>Sala de invitados especiales</td></tr>
+            <tr><td>4</td><td>Área de catering</td></tr>
+            <tr><td>5</td><td>Cabina de control</td></tr>
+            <tr><td>6</td><td>Bodegas</td></tr>
+            <tr><td>7</td><td>Baños de mujeres</td></tr>
+            <tr><td>8</td><td>Baños de hombres</td></tr>
+            <tr><td>9</td><td>Gruta de la Virgen</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="section-title" style="font-size:1.35rem;margin-top:2rem;">Equipamiento audiovisual fijo en sala</h3>
+      <p class="section-desc" style="margin-top:0.5rem;">Resumen de ítems listados en la ficha del PDF (verificación y complementos sujetos a coordinación institucional).</p>
+      <div class="cudea-table-wrap">
+        <table class="cudea-table">
+          <thead>
+            <tr><th>Partida</th><th>Especificación</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Audio</td><td>12 bocinas (6 por lado); monitor de audio de piso 10&quot;; 6 micrófonos de mano inalámbricos; 2 micrófonos de podio inalámbricos; consola digital en cabina; Stage Rack por DANTE; monitoreo en cabina</td></tr>
+            <tr><td>Video / pantalla</td><td>1 pantalla LED principal 12 × 6&nbsp;m; 1 monitor prompter 50&quot;; equipo de cómputo en cabina; nodos CAT repartidos en piso hacia cabina; se recomienda convertidores AV a CAT para reducir cableado superficial</td></tr>
+            <tr><td>Iluminación</td><td>Iluminación fija arquitectónica; iluminación de color ambiental; 6 luces robóticas; controladora en cabina</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <div class="grid-cards">
       <article class="reveal-card reveal-card--warm" tabindex="0">
@@ -1200,28 +1568,125 @@
       </article>
     </div>
 
+    <div class="doc-block" id="difusion-campus">
+      <p class="section-eyebrow">Difusión y ponentes</p>
+      <h2 class="section-title" style="font-size:1.65rem;">Kit en campus y calle</h2>
+      <p class="section-desc">
+        El documento enlaza <strong>material gráfico</strong>, <strong>código QR</strong> y presencia física (mupis) con la narrativa «4&nbsp;ejes · 1&nbsp;futuro». La pieza institucional muestra <strong>cuatro ejes</strong> —política, emprendimiento, sector privado, motivación— y ejemplos de <strong>ponentes</strong> alineados a cada bloque.
+      </p>
+      <div class="smart-grid-2" style="margin-top:1.25rem;">
+        <div class="cudea-smart" tabindex="0">
+          <div class="cudea-smart__top">
+            <p class="cudea-smart__kicker">Emprendimiento · visibilidad</p>
+            <h3 class="cudea-smart__title">Mupi: Mauricio Quintana · 3.ª edición</h3>
+          </div>
+          <p class="cudea-smart__hint">Amplía la imagen para leer el contexto.</p>
+          <div class="cudea-smart__expand">
+            <figure class="cudea-smart__fig">
+              <div class="cudea-smart__img-shell">
+                <img src="{% static 'cudea/mupi-mauricio-quintana.png' %}" alt="Pantalla exterior: 3ra edición CUDEA, Mauricio Quintana, director comercial Club América." width="900" height="1200" loading="lazy" decoding="async" />
+                <div class="cudea-smart__overlay" aria-hidden="true">
+                  <p>Dir. Comercial Club América</p>
+                  <span>Eje emprendimiento · presencia urbana</span>
+                </div>
+              </div>
+            </figure>
+            <div class="cudea-smart__body">
+              <p>El PDF ubica referentes del eje emprendimiento con casos deportivos y de marca. El mupi concentra <strong>nombre, cargo y edición</strong>, conectando la promesa de CUDEA con figuras que el público reconoce fuera del aula.</p>
+            </div>
+          </div>
+        </div>
+        <div class="cudea-smart" tabindex="0">
+          <div class="cudea-smart__top">
+            <p class="cudea-smart__kicker">Kit publicitario</p>
+            <h3 class="cudea-smart__title">Cartel digital · ponentes y QR</h3>
+          </div>
+          <p class="cudea-smart__hint">Amplía para detalle.</p>
+          <div class="cudea-smart__expand">
+            <figure class="cudea-smart__fig">
+              <div class="cudea-smart__img-shell">
+                <img src="{% static 'cudea/kit-cartel-ponentes.png' %}" alt="Monitor con cartel CUDEA: fecha, hora, sede, ejes temáticos, QR y fotos de ponentes." width="1200" height="900" loading="lazy" decoding="async" />
+                <div class="cudea-smart__overlay" aria-hidden="true">
+                  <p>Política · Emprendimiento · Sector privado · Motivación</p>
+                  <span>Jueves 19 marzo · 8:45 · Anáhuac Puebla (pieza de referencia)</span>
+                </div>
+              </div>
+            </figure>
+            <div class="cudea-smart__body">
+              <p>La composición replica la lógica del <strong>kit</strong>: jerarquía de marca, fecha y ubicación, storytelling por rostros y un <strong>QR</strong> para conversión. Coherente con la estrategia transmedia descrita en el informe (expectativa, comunidad, boleto).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-block" id="aliados-visuales">
+      <p class="section-eyebrow">Patrocinios en imagen</p>
+      <h2 class="section-title" style="font-size:1.65rem;">Marcas que habitan el evento</h2>
+      <p class="section-desc">
+        El texto del <em>Formato</em> detalla activaciones (<strong>Porsche</strong>, <strong>Gandhi</strong>, <strong>Grupo Alsea</strong>, <strong>Maja</strong>, <strong>Kigo</strong>, etc.). Aquí se muestran el tablero de aliados y una activación real en campus.
+      </p>
+      <div class="smart-grid-2" style="margin-top:1.25rem;">
+        <figure class="figure-inline" style="margin:0;">
+          <img src="{% static 'cudea/sponsors-board.png' %}" width="900" height="1400" alt="Mural Sponsored by: logotipos MAJA, Vips, Chili's, Victorinox, El Heraldo de Puebla, Brooks Brothers, Kigo, Porsche, Cheesecake Factory, Gandhi, KidZania y otros." loading="lazy" decoding="async" />
+          <figcaption>Tablero de patrocinadores · lectura alineada al apartado de patrocinios del PDF</figcaption>
+        </figure>
+        <div class="cudea-smart" tabindex="0" style="margin-top:0;">
+          <div class="cudea-smart__top">
+            <p class="cudea-smart__kicker">Activación premium</p>
+            <h3 class="cudea-smart__title">Porsche en campus</h3>
+          </div>
+          <p class="cudea-smart__hint">Amplía la foto.</p>
+          <div class="cudea-smart__expand">
+            <figure class="cudea-smart__fig">
+              <div class="cudea-smart__img-shell">
+                <img src="{% static 'cudea/porsche-activacion-campus.png' %}" alt="Activación Porsche: auto rojo, letras tridimensionales y stand de marca en jardín del campus." width="1200" height="800" loading="lazy" decoding="async" />
+                <div class="cudea-smart__overlay" aria-hidden="true">
+                  <p>Experiencia de marca en exterior</p>
+                  <span>Coherente con narrativa aspiracional del practicum</span>
+                </div>
+              </div>
+            </figure>
+            <div class="cudea-smart__body">
+              <p>El PDF describe exhibición de modelos, <strong>test drive</strong> para invitados y narrativa alineada a «acción». La activación ancla la dimensión <strong>event marketing</strong> que el documento teórico vincula con la industria del entretenimiento.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="plano-sala-block" id="recinto" tabindex="-1">
       <p class="section-eyebrow">El espacio del evento</p>
       <h2 class="section-title">Distribución de sala y flujo de asistentes</h2>
       <p class="section-desc">
-        Plano tipo planta del <strong>Centro de Exposiciones</strong> (Edificio Liderazgo): escenario, <strong>mesa tipo panel</strong>, <strong>pasarela en T</strong> hacia el público y bloques de butacas. Los accesos y la <strong>bodega</strong> posterior ordenan la operación de montaje y hospitality sin cruzar el flujo principal del aforo.
+        <strong>Planta y programa oficial</strong> extraídos del documento <em>Formato</em>: superficie, leyenda arquitectónica y circulaciones del Centro de Exposiciones (Edificio Liderazgo). Debajo, <strong>perspectivas interiores conceptuales</strong> del mismo anexo.
       </p>
-      <figure class="plano-expand" tabindex="0" aria-label="Plano de sala: pasa el cursor para ampliar">
+      <figure class="plano-expand" tabindex="0" aria-label="Planta arquitectónica: pasa el cursor para ampliar">
         <p class="plano-expand__hint">Pasa el cursor (o enfoca) para ampliar el plano</p>
         <div class="plano-expand__viewport">
           <img
-            src="{% static 'cudea/plano-sala.png' %}"
-            width="1600"
-            height="900"
-            alt="Plano: acceso, bodega, escenario con mesa de panelistas, pasarela en T en azul y bloques de asientos alrededor."
+            src="{% static 'cudea/centro-exposiciones-plano-programa.png' %}"
+            width="2000"
+            height="1100"
+            alt="Planta del Centro de Exposiciones Anáhuac Puebla con leyenda numérica y áreas señaladas."
             loading="lazy"
             decoding="async"
           />
         </div>
         <figcaption class="plano-caption">
-          Referencia visual alineada al seat map del practicum: proximidad a la pasarela como valor para <em>Special Guest</em> y VIP, y aforo denso compatible con producción de gran formato (LED, audio de sala).
+          Programa arquitectónico y planta según ficha del PDF · ver tablas en <a href="#documento-formato">Datos del documento Formato</a>.
         </figcaption>
       </figure>
+      <figure class="figure-inline" style="margin-top:1.5rem;">
+        <img src="{% static 'cudea/centro-exposiciones-perspectivas.png' %}" width="1600" height="900" alt="Collage de perspectivas interiores conceptuales: sala principal, lobby y visión escénica con pantalla Anáhuac." loading="lazy" decoding="async" />
+        <figcaption>Perspectivas interiores conceptuales · Centro de Exposiciones</figcaption>
+      </figure>
+      <details style="margin-top:1.25rem;border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);background:rgba(6,10,18,0.35);padding:0.65rem 1rem;">
+        <summary style="cursor:pointer;font-weight:600;color:var(--off);">Plano de sala tipo pasarela (referencia de producción anterior)</summary>
+        <div style="margin-top:0.75rem;">
+          <img src="{% static 'cudea/plano-sala.png' %}" width="1600" height="900" alt="Plano alternativo de sala con pasarela en T y bodega." style="width:100%;height:auto;border-radius:8px;" loading="lazy" decoding="async" />
+        </div>
+      </details>
     </div>
   </section>
 
@@ -1230,6 +1695,34 @@
       <p class="section-eyebrow">Descripción del evento</p>
       <h2 class="section-title">Cuatro ejes temáticos</h2>
       <p class="section-desc">CUDEA 3.0 estructura el programa en <strong>política, emprendimiento, sector privado y motivación</strong> —con conferencias magistrales, paneles, conversatorios, networking y <em>Special Guest</em> como capa de comunidad.</p>
+
+      <div class="smart-grid-2" style="margin-bottom:1.75rem;">
+        <div class="cudea-smart" tabindex="0">
+          <div class="cudea-smart__top">
+            <p class="cudea-smart__kicker">Networking · pieza Heraldo</p>
+            <h3 class="cudea-smart__title" style="font-size:1rem;">«Una conversación puede cambiar tu futuro»</h3>
+          </div>
+          <p class="cudea-smart__hint">Amplía para leer la fecha y el copy del pie.</p>
+          <div class="cudea-smart__expand">
+            <figure class="cudea-smart__fig">
+              <div class="cudea-smart__img-shell">
+                <img src="{% static 'cudea/poster-networking-2026.png' %}" alt="Cartel CUDEA networking con fotografía de estudiante y ejecutivo Porsche, pie con tercera edición 20 y 21 marzo 2026 Anáhuac Puebla." width="800" height="1100" loading="lazy" decoding="async" />
+                <div class="cudea-smart__overlay" aria-hidden="true">
+                  <p>Tercera edición · 20–21 marzo 2026</p>
+                  <span>Más que conferencias: conexión estudiantes–líderes</span>
+                </div>
+              </div>
+            </figure>
+            <div class="cudea-smart__body">
+              <p>Texto del propio arte: <em>«Es más que conferencias. Es el espacio donde estudiantes y líderes conectan, comparten ideas y construyen oportunidades.»</em> Coherente con el argumento de <strong>capital social</strong> del documento <em>Formato</em>.</p>
+            </div>
+          </div>
+        </div>
+        <figure class="figure-inline" style="margin:0;">
+          <img src="{% static 'cudea/audiencia-liderazgo.png' %}" width="1400" height="900" alt="Audiencia joven en sala moderna con letrero Liderazgo al fondo." loading="lazy" decoding="async" />
+          <figcaption>Público en formato profesional · lectura alineada a los ejes de liderazgo y motivación</figcaption>
+        </figure>
+      </div>
       <div class="axes">
         <div class="axis-pill">
           <strong>Política</strong>
@@ -1271,6 +1764,24 @@
     </div>
   </section>
 
+  <section class="hero-continuity" style="padding:2rem 1.25rem;border-bottom:1px solid var(--card-edge);" aria-label="Equipo e institución">
+    <div class="hero-continuity__inner">
+      <div class="doc-split doc-split--hero-brand">
+        <figure class="figure-inline" style="margin:0;">
+          <img src="{% static 'cudea/foto-equipo-institucional.png' %}" width="1200" height="800" alt="Grupo de siete personas en traje formal frente al logo Anáhuac, comité o representación institucional CUDEA." loading="lazy" decoding="async" />
+          <figcaption>Comunidad organizadora · imagen institucional Anáhuac Puebla</figcaption>
+        </figure>
+        <div>
+          <p class="hero-kicker">Cierre</p>
+          <h2 class="hero-title" style="font-size:clamp(1.6rem,4vw,2.2rem);">Labor conjunta</h2>
+          <p class="hero-lead" style="color:rgba(242,235,228,0.9);">
+            CUDEA 3.0 se construye desde el liderazgo estudiantil con respaldo académico y operativo de la universidad. La fotografía resume el tono profesional del encuentro descrito en el documento <em>Formato</em>: formalidad, co-branding institucional y trabajo en equipo visible.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer class="site-foot">
     <div class="brand-mark">CUDEA 3.0</div>
     <div>Cumbre Universitaria de Desarrollo Empresarial Anáhuac · Universidad Anáhuac Puebla</div>
@@ -1278,7 +1789,7 @@
       <strong>Paula Serafín López</strong> · Practicum II · Lic. Dirección de Empresas de Entretenimiento · 14 de mayo de 2026
     </div>
     <div style="margin-top:1.25rem;font-size:0.72rem;max-width:40rem;margin-left:auto;margin-right:auto;line-height:1.55;">
-      Documento de referencia: <em>Practicum II-2</em> · Contenido ampliado y sintetizado para esta landing; no sustituye el informe completo entregado en asignatura.
+      Documento de referencia: <em>Formato.pdf</em> (versión entregada para Practicum II) · Contenidos y tablas transcritos para esta landing; la versión PDF completa prevalece ante cualquier discrepancia.
     </div>
   </footer>
 
