@@ -437,19 +437,20 @@
       flex-direction: row;
       align-items: flex-start;
       gap: 0;
-      padding: 0.65rem 1.2rem 1.15rem;
+      padding: 0.4rem 1.2rem 0.85rem;
       justify-content: center;
     }
     .val-smart:hover .val-smart__expand,
     .val-smart:focus-within .val-smart__expand {
       justify-content: flex-start;
+      align-items: stretch;
     }
     .val-smart__fig {
       margin: 0;
       padding: 0;
       flex: 0 0 auto;
-      width: min(200px, 38vw);
-      max-width: 42%;
+      width: fit-content;
+      max-width: min(240px, 88vw);
       transition:
         width 0.48s cubic-bezier(0.22, 1, 0.36, 1),
         flex 0.48s cubic-bezier(0.22, 1, 0.36, 1),
@@ -463,6 +464,10 @@
     }
     .val-smart__img-shell {
       position: relative;
+      display: inline-block;
+      vertical-align: top;
+      max-width: 100%;
+      line-height: 0;
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--line);
@@ -470,14 +475,16 @@
     }
     .val-smart__expand img {
       display: block;
-      width: 100%;
+      width: auto;
       height: auto;
-      max-height: 118px;
+      max-width: min(220px, 85vw);
+      max-height: 108px;
       object-fit: contain;
-      transition: max-height 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: max-height 0.48s cubic-bezier(0.22, 1, 0.36, 1), max-width 0.48s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .val-smart:hover .val-smart__expand img,
     .val-smart:focus-within .val-smart__expand img {
+      max-width: 100%;
       max-height: min(68vh, 520px);
     }
     .val-smart__overlay {
@@ -512,16 +519,21 @@
     }
     .val-smart__body {
       flex: 0 1 0;
+      align-self: flex-start;
       min-width: 0;
+      min-height: 0;
       width: 0;
       max-width: 0;
+      max-height: 0;
       opacity: 0;
       overflow: hidden;
       padding: 0;
+      pointer-events: none;
       transition:
         flex 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.35s ease 0.06s,
+        opacity 0.32s ease 0.04s,
         max-width 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+        max-height 0.48s cubic-bezier(0.22, 1, 0.36, 1),
         padding 0.48s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .val-smart:hover .val-smart__body,
@@ -529,10 +541,12 @@
       flex: 1 1 44%;
       width: auto;
       max-width: 100%;
+      max-height: min(75vh, 1600px);
       min-width: min(20rem, 100%);
       opacity: 1;
       padding: 0.15rem 0 0.15rem 1.05rem;
-      overflow: visible;
+      overflow: auto;
+      pointer-events: auto;
     }
     .val-smart__body p {
       margin: 0 0 0.85rem;
@@ -564,9 +578,11 @@
         flex: none !important;
         width: 100% !important;
         max-width: none !important;
+        max-height: none !important;
         opacity: 1 !important;
         padding: 0.85rem 0 0 !important;
         overflow: visible !important;
+        pointer-events: auto !important;
       }
       .val-smart__overlay {
         opacity: 1;
@@ -597,8 +613,11 @@
         min-width: min(100%, 18rem);
         width: auto;
         max-width: none;
+        max-height: none !important;
         opacity: 1;
         padding: 0.5rem 0 0 0;
+        pointer-events: auto;
+        overflow: visible;
       }
       .val-smart__overlay { opacity: 1; }
     }
