@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -377,6 +378,81 @@
         transform: none;
       }
     }
+
+    .val-smart {
+      margin-top: 2rem;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 2px);
+      background: var(--bg);
+      overflow: hidden;
+      transition:
+        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.35s ease,
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .val-smart:hover {
+      border-color: rgba(61, 107, 92, 0.24);
+      box-shadow: 0 16px 44px rgba(20, 24, 22, 0.09);
+      transform: translateY(-4px);
+    }
+    .val-smart__top {
+      padding: 1.05rem 1.2rem 0.95rem;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(61, 107, 92, 0.09) 0%, transparent 55%),
+        var(--bg);
+    }
+    .val-smart__kicker {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 0.4rem;
+    }
+    .val-smart__title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 1.08rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.3;
+      max-width: none;
+    }
+    .val-smart__body {
+      padding: 1.15rem 1.2rem 0.25rem;
+    }
+    .val-smart__body p {
+      margin: 0 0 0.9rem;
+      font-size: 0.88rem;
+      line-height: 1.68;
+      max-width: none;
+      color: var(--ink-soft);
+    }
+    .val-smart__body p:last-child { margin-bottom: 0; }
+    .val-smart__fig {
+      margin: 0;
+      padding: 0 1.2rem 1.15rem;
+    }
+    .val-smart__fig img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #1a2332;
+    }
+    .val-smart__cite {
+      display: block;
+      margin-top: 0.7rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .val-smart:hover { transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -399,7 +475,7 @@
       <h1 class="hero__title">Awakening</h1>
       <p class="hero__tagline">El despertar del bosque — música, naturaleza, tecnología y arte escénico en una sola experiencia inmersiva.</p>
       <p class="hero__lede">
-        Propuesta académica que explora el <strong>entretenimiento inmersivo</strong> y el <em>storyliving</em>: el público deja de ser mero espectador para habitar una narrativa en un <strong>bosque en Puebla</strong>, con iluminación reactiva, sonido ambiental y una escenografía orgánica que dialoga con el entorno —sin renunciar a la <strong>conciencia ambiental</strong> ni a una operación responsable. Cada recorrido mezcla estímulo y reflexión: el asistente percibe el festival como <strong>ritual de paso</strong> entre la ciudad y un imaginario natural donde la tecnología actúa como puente, no como ruido.
+        Propuesta académica que explora el <strong>entretenimiento inmersivo</strong> y el <em>storyliving</em>: el público deja de ser mero espectador para habitar una narrativa en un <strong>bosque en Puebla</strong>, con iluminación reactiva, sonido ambiental y una escenografía orgánica que dialoga con el entorno —sin renunciar a la <strong>conciencia ambiental</strong> ni a una operación responsable. Cada recorrido mezcla estímulo y reflexión: el asistente percibe el festival como <strong>ritual de paso</strong> entre la ciudad y un imaginario natural donde la tecnología actúa como puente, no como ruido. El trabajo argumenta que un evento de esta naturaleza atiende <strong>demandas de sentido y escala</strong> propias de la industria del entretenimiento en México —donde el crecimiento de ingresos y la importancia del ecosistema digital son tendencias documentadas— pero lo hace mediante un formato que privilegia la <strong>intimidad sensorial</strong> frente al modelo de recinto cerrado y masivo.
       </p>
       <div class="hero__grid">
         <div class="hero__chip"><strong>Inmersión</strong> sensorial · participación</div>
@@ -416,6 +492,7 @@
       <div>
         <p class="section-p">La industria del entretenimiento se aleja del esquema escenario–público pasivo: las audiencias jóvenes buscan <strong>experiencias que integren emoción, cuerpo y sentido</strong>. El documento sitúa el festival en la línea del entretenimiento inmersivo, cercano al <strong>storyliving</strong> —la historia vivida en el espacio, no solo contada.</p>
         <p class="section-p">Desde la comunicación, los elementos escenográficos, la luz y el sonido funcionan como <strong>canales</strong> en un sistema simbólico (Lasswell): no solo hay mensaje verbal o musical, sino una red de estímulos que construyen identidad experiencial. La <strong>teoría de la recepción</strong> enfatiza que el sentido lo negocia el asistente; en un bosque interactivo, esa negociación se vuelve <strong>co-creativa</strong>. Así, el festival no “informa” únicamente con palabras: ordena el tiempo, el espacio y la expectativa para que la audiencia interprete en cuerpo presente qué significa “despertar” un entorno natural.</p>
+        <p class="section-p">El documento del practicum desarrolla además la noción de que el entretenimiento inmersivo opera como <strong>pedagogía afectiva</strong>: no se trata de transmitir un manifiesto, sino de combinar ritmo, escenografía y naturaleza para que el público <em>sienta</em> la continuidad entre espectáculo y ecosistema. El cuerpo —temperatura, fatiga, asombro, proximidad con otros cuerpos— forma parte del mensaje. Por eso la propuesta insiste en rutas caminables, zonas de pausa y contrastes de intensidad lumínica y sonora: el visitante necesita tiempo cognitivo y sensorial para integrar la experiencia, de modo similar a como una obra teatral ambiental distribuye la atención en el espacio escénico ampliado.</p>
       </div>
       <div>
         <ul class="pill-list">
@@ -433,10 +510,27 @@
       <h2 class="section-h">De la transmisión unidireccional al evento experiencial</h2>
       <p class="section-p">Históricamente, el modelo tipo Shannon–Weaver describía al artista como emisor y al público como receptor; la evolución técnica y cultural volvió la escenografía y el diseño sensorial protagonistas. Hoy conviven <strong>crecimiento de la economía creativa</strong> (UNCTAD) y, al mismo tiempo, <strong>presión ambiental</strong> sobre bosques y ciudades —paradoja que Awakening aborda al vincular asombro escénico con <strong>sensibilización ecológica</strong>.</p>
       <p class="section-p">El festival se plantea como <strong>“despertar del bosque”</strong>: metáfora de reconexión con lo natural frente a deterioro ecológico documentado por PNUMA, SEMARNAT y la realidad de Puebla (urbanización, pérdida de cobertura forestal). No es solo ocio: es <strong>vehículo simbólico</strong> para reflexionar sobre preservación. La propuesta reconoce la tensión entre industria creativa en crecimiento y límites planetarios, y busca que el euforia estética del evento conviva con pequeñas “pausas” de sentido —instalaciones o rutas que evocan fragilidad del ecosistema sin convertir el festival en conferencia.</p>
+      <p class="section-p">En paralelo, la digitalización de los hábitos de consumo cultural —streaming, comunidades en línea y experiencias presenciales que terminan como contenido compartido— explica por qué Awakening no separa la “noche del festival” del <strong>ecosistema mediático</strong> que la rodea. El mismo público que compra accesos a macroeventos consume fragmentos en el teléfono; el bosque ofrece una escena donde lo memorable nace del <strong>paisaje habitado</strong>, no solo del artista en primer plano. Así, el proyecto académico conecta la economía de la atención con una ética del lugar: el mensaje debe ser coherente desde la campaña previa hasta el desmontaje, para que la promesa de naturaleza y tecnología no quede reducida a un efecto visual aislado.</p>
+      <p class="section-p">Los reportes sectoriales para México ofrecen un respaldo cuantitativo: el trabajo cita el <strong>Global Entertainment &amp; Media Outlook (GEMO) 2023–2027 de PwC</strong>, que proyecta trayectorias de ingresos para el conjunto de entretenimiento y medios. De forma orientativa, el material gráfico que acompaña esta sección resume el crecimiento del ingreso total de la industria —del orden de <strong>17,230 millones de dólares (2014)</strong> a <strong>28,063 millones (2023)</strong>, con visión hacia <strong>33,655 millones (2027)</strong>— junto con la serie de <strong>acceso a internet</strong> (aprox. <strong>5,805 → 10,444 → 12,306</strong> millones de dólares en los mismos hitos). Awakening se inserta en ese marco: la oferta inmersiva puede competir por relevancia si traduce datos de mercado en experiencia distintiva y operación cuidada.</p>
       <div class="stats">
         <div class="stat"><strong>PwC</strong><span>Industria global entretenimiento y medios &gt; 2.3 b USD; impulso de experiencias en vivo.</span></div>
         <div class="stat"><strong>Jóvenes MX</strong><span>INEGI: preocupación alta por clima y contaminación —público receptivo a eventos sustentables.</span></div>
         <div class="stat"><strong>Puebla</strong><span>Secretaría de Turismo: millones de visitantes; espacio para turismo cultural y experiencias.</span></div>
+      </div>
+
+      <div class="val-smart val-reveal">
+        <div class="val-smart__top">
+          <p class="val-smart__kicker">Industria en México · GEMO PwC</p>
+          <h3 class="val-smart__title">El negocio del entretenimiento y los medios: casi 65&nbsp;% de crecimiento en diez años</h3>
+        </div>
+        <div class="val-smart__body">
+          <p>La infografía resume la lectura de <em>El Economista</em> sobre el informe <strong>GEMO 2023–2027</strong>: dos series —<strong>total industria</strong> (línea amarilla) y <strong>acceso a internet</strong> (línea rosa)— muestran un mercado en expansión. Entre <strong>2014 y 2023</strong> el titular enfatiza un incremento cercano al <strong>65&nbsp;%</strong> en el ingreso agregado del sector. Para Awakening, el mensaje no es solo “hay crecimiento”, sino que ese crecimiento va acompañado de una infraestructura simbólica y técnica (<strong>conectividad, hábitos digitales</strong>) compatible con narrativas transmedia, preventa online y producción de contenido antes del día del evento.</p>
+          <p>Nota metodológica (según la propia gráfica): año base 2013; a partir de <strong>2023</strong> las cifras incorporan <strong>proyecciones</strong> de PwC; pueden existir variaciones por redondeo o ajustes entre ediciones del informe.</p>
+        </div>
+        <figure class="val-smart__fig">
+          <img src="{% static 'val/crecimiento-industria-medios-mx.png' %}" alt="Líneas de ingresos de la industria de entretenimiento y medios en México y de acceso a internet, 2013 a 2027, en millones de dólares. Fuente GEMO PwC, El Economista." width="1200" height="675" loading="lazy" decoding="async" />
+          <figcaption class="val-smart__cite">Infografía: <em>El Economista</em> · Fuente: GEMO 2023–2027 de PwC.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -447,6 +541,23 @@
     <p class="section-p">Las industrias culturales producen <strong>significados compartidos</strong> (Hesmondhalgh); UNESCO y políticas creativas refuerzan su peso económico y de cohesión. Jenkins describe <strong>convergencia</strong> y participación activa de las audiencias —coherente con un festival donde el entorno reacciona al cuerpo.</p>
     <p class="section-p">La <strong>economía de la experiencia</strong> (Pine &amp; Gilmore) y el estado de <strong>flujo</strong> (Csíkszentmihályi) explican por qué estímulos múltiples y narrativa envolvente elevan el valor percibido. En Puebla, público joven y creativo busca propuestas que integren <strong>arte, tecnología, música y paisaje</strong> más allá del club o concierto lineal.</p>
     <p class="section-p"><strong>Público meta:</strong> aproximadamente <strong>20–35 años</strong>, afinidad por música y estética digital, procedencia local y ciudades cercanas (CDMX, Querétaro, Tlaxcala), alta presencia en redes —el diseño del festival es deliberadamente <strong>“compartible”</strong>. Stakeholders: productores, artistas y DJs/performers, proveedores técnicos e inmersivos, patrocinadores, autoridades y, centralmente, la <strong>comunidad y el ecosistema forestal</strong>. DataReportal (2024) subraya el peso de redes en México: un formato visual fuerte multiplica el alcance orgánico si la producción cuida momentos fotogénicos sin saturar la noche.</p>
+    <p class="section-p">Desde la política cultural, el festival cumple una función de <strong>articulación simbólica</strong>: congrega a jóvenes urbanos con representaciones de lo salvaje, lo luminoso y lo colectivo que contrapesan la rutina citadina. Esa función no es menor en Puebla, donde convergen patrimonio, industria creativa emergente y turismo que busca experiencias memorables. Las <strong>necesidades sociales</strong> —en el sentido del documento— no se agotan en el entretenimiento: incluyen pertenencia, estética compartida y marcos éticos donde el placer no niegue la responsabilidad ambiental.</p>
+    <p class="section-p">La convergencia que describe Jenkins sugiere que las audiencias esperan <strong>participar antes, durante y después</strong> del evento: conversaciones en video corto, arte de fans, coordinación de viajes compartidos y narrativas colaborativas. La propuesta contempla calendarios de contenido, ganchos narrativos del bosque y piezas educativas breves que anticipan el tono sostenible sin sacrificar el deseo lúdico. La cocreación aquí es <strong>ordenada</strong>: la producción delimita un universo reconocible, pero deja espacio a la interpretación y al rumor social.</p>
+
+    <div class="val-smart val-reveal">
+      <div class="val-smart__top">
+        <p class="val-smart__kicker">Inversión publicitaria · México 2023</p>
+        <h3 class="val-smart__title">Internet concentra más inversión que televisión, radio y papel juntos</h3>
+      </div>
+      <div class="val-smart__body">
+        <p>El diagrama circular resume la <strong>inversión publicitaria por canal</strong> en México para <strong>2023</strong> (millones de dólares), según la misma línea de fuentes <strong>GEMO / PwC</strong> difundida por <em>El Economista</em>. <strong>Digital encabeza con 4,087&nbsp;MUSD</strong>, por encima de <strong>televisión (1,658)</strong>, <strong>radio (392)</strong>, <strong>publicidad exterior (373)</strong>, <strong>videojuegos y esports (293)</strong>, <strong>periódicos y revistas (253)</strong> y <strong>otros (386)</strong>, categoría que incluye medios corporativos, cine, streaming y podcasts. La lectura para Awakening es directa: una estrategia de festival contemporáneo debe invertir talento y presupuesto en <strong>canales digitales, formatos compartibles y narrativa transmedia</strong>; la televisión y la prensa pueden ser complementarias, pero ya no bastan para explicar dónde vive la atención del público joven.</p>
+        <p>El pie del original advierte que las cifras a partir de <strong>2023</strong> incorporan <strong>proyecciones</strong> y que pueden existir diferencias por redondeo; conviene tratarlas como <strong>órdenes de magnitud</strong> para diseño de mercadotecnia y no como presupuestos cerrados de medios.</p>
+      </div>
+      <figure class="val-smart__fig">
+        <img src="{% static 'val/inversion-publicitaria-mx-2023.png' %}" alt="Gráfica de dona: inversión publicitaria en México por canal en 2023 en millones de dólares. Digital, TV, radio, exterior, videojuegos, prensa y otros. Fuente GEMO PwC." width="1100" height="620" loading="lazy" decoding="async" />
+        <figcaption class="val-smart__cite">Infografía: <em>El Economista</em> · Fuente: GEMO 2023–2027 de PwC.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section class="band val-reveal" id="competencia">
@@ -454,6 +565,8 @@
       <p class="section-num">03.4</p>
       <h2 class="section-h">Competencia y diferenciación</h2>
       <p class="section-p">Referentes nacionales como <strong>EDC México</strong> o <strong>Dreamfields</strong> concentran escala urbana y line-ups masivos. Awakening se distingue al situar la <strong>naturaleza como co-autora</strong> del relato: bosque como escenario narrativo, no solo locación, con <strong>intimidad sensorial</strong> frente al recinto convencional. La comparación no desmerece esos formatos: solo delimita un nicho donde el riesgo operativo (clima, suelo, permisos) se intercambia por <strong>diferenciación narrativa</strong> y por una promesa de proximidad entre público y paisaje.</p>
+      <p class="section-p">El practicum describe una lógica competitiva de <strong>“menor densidad de aforo, mayor densidad de significado”</strong>: menos butacas equivalentes a más metros de recorrido, más puntos de instalación y más tiempo de permanencia en el territorio. Eso implica tickets posiblemente más altos en el margen superior, pero también una narrativa de exclusividad ecológica —no elitista por condición social, sino por <strong>cupo limitado</strong> motivado por conservación y seguridad en senderos. Operativamente, la competencia ya no es solo line-up contra line-up: es <strong>capacidad de producción sostenible + licencia social + coherencia estética</strong> frente a macrofestivales de gran plaza.</p>
+      <p class="section-p">En términos de amenazas y sustitutos, el proyecto reconoce que el público puede optar por escenarios urbanos con infraestructura probada, o por experiencias digitales en casa (streaming, contenido inmersivo en RV). Awakening apuesta a lo que esos sustitutos no pueden replicar del todo: <strong>olfato, temperatura, textura bajo los pies, silencio entre actos y proximidad física</strong> compartida. La barrera de entrada para competidores que quieran imitar el formato es la <strong>gobernanza del territorio natural</strong>, la sensibilidad lumínica y la reputación de cumplimiento ambiental.</p>
     </div>
   </section>
 
@@ -462,17 +575,19 @@
     <h2 class="section-h">Descripción de la experiencia</h2>
     <p class="section-p">El mensaje (Lasswell) se transmite por luz, sonido, instalaciones y el propio paisaje: <strong>magia del bosque</strong>, conexión y conciencia ambiental. El escenario central abandona la caja rígida: <strong>estructura orgánica</strong> (raíces, ramas estilizadas) integrada al paisaje, con <strong>bambú y acero reciclado</strong>, priorizando materiales reutilizables o reciclables.</p>
     <p class="section-p">La música prioriza <strong>ambiente, orquestal ligero, folk contemporáneo y fantasía</strong> —cuerdas, arpa, flautas, coros etéreos y electrónica atmosférica— con <strong>performances</strong> que fusionan movimiento e iluminación. La luz LED de bajo consumo, sensores en el suelo y <strong>tracking visual</strong> sugieren que el bosque “reacciona” al visitante; proyecciones sutiles sobre vegetación refuerzan el despertar orgánico.</p>
+    <p class="section-p">La experiencia se organiza en <strong>capítulos espaciales</strong>: una llegada con control de ritmo lumínico, núcleos de mayor intensidad sonora alrededor del escenario orgánico, y “islas” de quietud donde predominan piezas acústicas o narración susurrada. El documento sugiere que el visitante debe sentir progresión: de la expectativa urbana a la extrañeza benigna del bosque encendido, y de allí a un cierre que evoque comunidad —coros finales, patrones de luz que se apagan de forma gradual, mensajes visuales sobre reforestación o hábitat. El guion evita el choque permanente de estímulos para no caer en fatiga sensorial; la inmersión también necesita <strong>contrastes</strong> para ser memorizable.</p>
+    <p class="section-p">En accesibilidad y confort, la propuesta contempla señalética clara en rutas, puntos de hidratación, áreas de descanso y protocolos de acompañamiento para quienes no estén habituados a caminar en terreno irregular. El festival celebra el bosque, pero reconoce que el valor de la experiencia depende de que el cuerpo se sienta <strong>cuidado</strong>: alternancia de pendientes, superficies segunas, iluminación suficiente en tránsitos y personal de orientación visible.</p>
 
     <details class="val-block" open>
       <summary>Recorridos y universos explorables</summary>
       <div class="val-inner">
-        <p>Zonas con instalaciones, performers como “seres del bosque” e intervenciones escénicas distribuidas, para que el recorrido sea narrativo y no solo una grada frente al escenario. El documento enfatiza apariciones inesperadas y rutas explorables: la historia se cuenta también caminando, deteniéndose y eligiendo caminos —un contraste deliberado con el concierto frontal clásico.</p>
+        <p>Zonas con instalaciones, performers como “seres del bosque” e intervenciones escénicas distribuidas, para que el recorrido sea narrativo y no solo una grada frente al escenario. El documento enfatiza apariciones inesperadas y rutas explorables: la historia se cuenta también caminando, deteniéndose y eligiendo caminos —un contraste deliberado con el concierto frontal clásico. Cada bifurcación menor puede mapearse a un <strong>microargumento</strong>: por ejemplo, un sendero más oscuro que introduce un solo de viento, versus un claro más iluminado con danza y coros; el visitante construye su propia “edición” de la noche como en una narrativa hipertextual.</p>
       </div>
     </details>
     <details class="val-block">
       <summary>Medios y narrativa transmedia</summary>
       <div class="val-inner">
-        <p>Campañas digitales previas sobre movilidad compartida, reducción de residuos y prácticas sostenibles; contenidos alineados con la tesis de sensibilización. Piezas previas al evento pueden incluir “decretos” narrativos del bosque, calendarios de revelado y material educativo breve para que la expectativa ya porte un vocabulario ecológico antes del primer foco en sala.</p>
+        <p>Campañas digitales previas sobre movilidad compartida, reducción de residuos y prácticas sostenibles; contenidos alineados con la tesis de sensibilización. Piezas previas al evento pueden incluir “decretos” narrativos del bosque, calendarios de revelado y material educativo breve para que la expectativa ya porte un vocabulario ecológico antes del primer foco en sala. En coherencia con la infografía de inversión publicitaria, la apuesta principal es <strong>digital y audiovisual</strong>: trailers conceptuales, detrás de cámaras de montaje responsable, colaboraciones con creadores de mediana escala y activaciones que inviten a registrar compromisos concretos (viaje compartido, contenedores, merch de baja huella).</p>
       </div>
     </details>
   </section>
@@ -482,7 +597,24 @@
     <h2 class="section-h">Logística y compromiso ambiental</h2>
     <p class="section-p">El documento detalla tres fases: <strong>montaje, operación y desmontaje</strong> en entorno natural (referencia a área forestal, p. ej. vinculada al <strong>Parque Nacional Iztaccíhuatl-Popocatépetl</strong>), con transporte de equipo, talento desde ciudades cercanas, generadores y cableado protegido, delimitación de zonas sensibles y coordinación con <strong>Protección Civil</strong>.</p>
     <p class="section-p"><strong>Sustentabilidad:</strong> transporte compartido y biocombustibles donde aplica; energía híbrida solar y soluciones experimentales (pisos cinéticos, aprovechamiento climático); separación de residuos con <strong>incentivos</strong> (fichas / recompensas); compostaje de orgánicos para reforestación; <strong>compromiso de un árbol por asistente</strong>; proveedores priorizados locales para reducir huella logística.</p>
+    <p class="section-p">Durante el <strong>montaje</strong>, el documento prevé ventanas de trabajo diurnas donde sea posible, inventario de equipos para evitar duplicar fletes, y capacitación breve a cuadrillas sobre suelo húmedo, anclaje de estructuras y retiro de residuos de empaque. En <strong>operación</strong>, se prioriza monitoreo de niveles de sonido en límites del sitio, gestión de colas en accesos angostos y protocolos de primeros auxilios alineados con tiempos de respuesta en zona boscosa. El <strong>desmontaje</strong> incluye verificación fotográfica de limpieza, restauración de marcas de paso y, cuando aplique, lectura conjunta con un biólogo o guardabosques asesor para asegurar que no queden cables, puntales ni residuos orgánicos ajenos al lugar.</p>
     <p class="section-p"><strong>Seguridad:</strong> filtros estrictos (mochilas transparentes, prohibición de inflamables en bosque), brigadas, evacuación señalizada y colaboración con autoridades. El guion operativo contempla revisión estructural previa a apertura, radios internas para producción y monitoreo continuo de iluminación y aforo en senderos estrechos.</p>
+    <p class="section-p">La <strong>cadena de suministro</strong> prioriza proveedores regionales para catering, textil y servicios técnicos cuando la calidad lo permita; el objetivo es acortar kilómetros recorridos y alinear narrativa de territorio con hechos logísticos. Los residuos se gestionan con estaciones visiblemente rotuladas, personal capacitado y auditoría visual nocturna para evitar que el abandono informal comprometa la relación con comunidades vecinas. El montaje contempla áreas de mantenimiento técnico alejadas de zonas de drenaje natural, con lonas y plataformas que distribuyen el peso del equipo y reducen compactación del suelo.</p>
+
+    <div class="val-smart val-reveal">
+      <div class="val-smart__top">
+        <p class="val-smart__kicker">Impacto ambiental · giras y conciertos</p>
+        <h3 class="val-smart__title">La huella de carbono media de una gira: dónde concentra el show su emisión</h3>
+      </div>
+      <div class="val-smart__body">
+        <p>El diagrama tipo “huella de carbono media de una gira” distribuye emisiones típicas en <strong>recinto (34&nbsp;%)</strong>, <strong>viajes del público (33&nbsp;%)</strong>, <strong>merchandising (12&nbsp;%)</strong>, <strong>alojamiento (10&nbsp;%)</strong>, <strong>viajes del grupo (9&nbsp;%)</strong> y <strong>promoción (2&nbsp;%)</strong>. No es un estudio exclusivo de Awakening, pero sí un <strong>espejo sectorial</strong> útil: explica por qué la estrategia del practicum insiste en <strong>movilidad compartida</strong>, <strong>proveeduría local</strong>, <strong>arquitectura escénica liviana</strong> y campañas digitales frente a circuitos promocionales físicos intensivos en material.</p>
+        <p>Leído junto con el compromiso de <strong>un árbol por asistente</strong> y la reducción de residuos, el mensaje es coherente: en el formato clásico de gira los rubros de <strong>recinto y transporte del público</strong> concentran la mayor parte del impacto; un festival en bosque debe trabajar esos ejes con diseño de rutas, horarios escalonados, incentivos al carpool y controles de energía en escena —aceptando que el reto del recinto natural es distinto al del coliseo, pero no por ello menos exigible en términos de planificación.</p>
+      </div>
+      <figure class="val-smart__fig">
+        <img src="{% static 'val/huella-carbono-gira.png' %}" alt="Gráfico circular: huella de carbono media de una gira por categoría: recinto, viajes del público, merchandising, alojamiento, viajes del grupo y promoción, con porcentajes." width="1000" height="562" loading="lazy" decoding="async" />
+        <figcaption class="val-smart__cite">Infografía de referencia sobre emisiones típicas asociadas a giras musicales (desglose porcentual por categoría).</figcaption>
+      </figure>
+    </div>
 
     <div class="quote">«Más que un festival de conciertos: experiencia multisensorial donde entretenimiento y sostenibilidad comparten el mismo guion.»</div>
   </section>
@@ -492,6 +624,7 @@
       <p class="section-num">03.6</p>
       <h2 class="section-h">Justificación</h2>
       <p class="section-p">Awakening responde a la demanda de <strong>ocio experiencial</strong> y a la urgencia de <strong>relevar el vínculo sociedad–naturaleza</strong> en México y Puebla. Como bien simbólico y económico (Hesmondhalgh), el festival articula cultura, tecnología y responsabilidad ecológica —un contrapeso creativo al modelo masivo urbano, alineado con tendencias globales de inmersión y con valores de una generación que pide <strong>significado y sustentabilidad</strong> en el mismo boleto. En suma, el proyecto argumenta que la industria del entretenimiento puede ser <strong>sitio de encuentro</strong> entre euforia colectiva y ética ambiental, si el diseño de producción traduce en reglas claras lo que el relato promete en escena.</p>
+      <p class="section-p">Los recuadros con datos de <strong>GEMO / PwC</strong> y la infografía de <strong>inversión digital en publicidad</strong> refuerzan que el contexto macroeconómico favorece propuestas ambiciosas en medios y live experiences, siempre que la promesa se sustente en números de operación y en licencia social. La figura sobre <strong>huella de carbono en giras</strong> funciona como recordatorio: la responsabilidad no es un apartado de color en el PDF, sino una traducción obligada a <strong>decisiones de transporte, energía y consumo</strong>. Cerrar el círculo implica que patrocinadores, público y equipo técnico reconozcan el festival como <strong>contrato ético</strong> de corto plazo sobre un activo natural de largo plazo —el bosque— que no puede agotarse en una sola edición.</p>
     </div>
   </section>
 
