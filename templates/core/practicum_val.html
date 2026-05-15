@@ -336,6 +336,44 @@
     }
     .stat span { font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
 
+    /* Videomemoria (YouTube) al pie — mismo patrón que la landing CUDEA */
+    .val-videomemoria {
+      border-top: 1px solid var(--line);
+      background:
+        radial-gradient(ellipse 75% 50% at 50% 0%, var(--accent-soft), transparent 55%),
+        var(--bg-elev);
+    }
+    .val-videomemoria .section-h {
+      max-width: none;
+    }
+    .val-videomemoria__frame {
+      margin-top: 1.5rem;
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-height: min(72vh, 720px);
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--ink);
+      box-shadow: 0 20px 48px rgba(20, 24, 22, 0.12);
+    }
+    .val-videomemoria__frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .val-videomemoria__note {
+      margin: 1rem 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     footer.val-foot {
       padding: 3rem clamp(1.25rem, 4vw, 2rem);
       border-top: 1px solid var(--line);
@@ -634,6 +672,7 @@
       <a href="#evento">Experiencia</a>
       <a href="#logistica">Logística</a>
       <a href="#justificacion">Justificación</a>
+      <a href="#videomemoria">Vídeo</a>
     </nav>
   </header>
 
@@ -817,6 +856,30 @@
       <h2 class="section-h">Justificación</h2>
       <p class="section-p">Awakening responde a la demanda de <strong>ocio experiencial</strong> y a la urgencia de <strong>relevar el vínculo sociedad–naturaleza</strong> en México y Puebla. Como bien simbólico y económico (Hesmondhalgh), el festival articula cultura, tecnología y responsabilidad ecológica —un contrapeso creativo al modelo masivo urbano, alineado con tendencias globales de inmersión y con valores de una generación que pide <strong>significado y sustentabilidad</strong> en el mismo boleto. En suma, el proyecto argumenta que la industria del entretenimiento puede ser <strong>sitio de encuentro</strong> entre euforia colectiva y ética ambiental, si el diseño de producción traduce en reglas claras lo que el relato promete en escena.</p>
       <p class="section-p">Los recuadros con datos de <strong>GEMO / PwC</strong> y la infografía de <strong>inversión digital en publicidad</strong> refuerzan que el contexto macroeconómico favorece propuestas ambiciosas en medios y live experiences, siempre que la promesa se sustente en números de operación y en licencia social. La figura sobre <strong>huella de carbono en giras</strong> funciona como recordatorio: la responsabilidad no es un apartado de color en el PDF, sino una traducción obligada a <strong>decisiones de transporte, energía y consumo</strong>. Cerrar el círculo implica que patrocinadores, público y equipo técnico reconozcan el festival como <strong>contrato ético</strong> de corto plazo sobre un activo natural de largo plazo —el bosque— que no puede agotarse en una sola edición.</p>
+    </div>
+  </section>
+
+  <section class="val-videomemoria val-reveal" id="videomemoria" aria-labelledby="val-videomemoria-title">
+    <div class="shell">
+      <p class="section-num">Memoria</p>
+      <h2 class="section-h" id="val-videomemoria-title">Videomemoria Awakening</h2>
+      <p class="section-p">
+        Resumen en vídeo del practicum: espíritu del festival inmersivo, tono del documento y propuesta de Awakening. El contenido está en YouTube para una reproducción fluida sin archivos pesados en el sitio.
+      </p>
+      <div class="val-videomemoria__frame">
+        <iframe
+          src="https://www.youtube.com/embed/5skuKybw3cg"
+          title="Videomemoria Awakening · Practicum VAL"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+      <p class="val-videomemoria__note">
+        <a href="https://youtu.be/5skuKybw3cg" target="_blank" rel="noopener noreferrer">Abrir en YouTube</a>
+        · Practicum II · Valeria Villegas Fernández
+      </p>
     </div>
   </section>
 
